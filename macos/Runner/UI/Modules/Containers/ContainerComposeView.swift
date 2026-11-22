@@ -17,6 +17,14 @@ struct ContainerComposeProject: Identifiable, Equatable {
     }
 }
 
+struct ContainerComposeContainer: Identifiable, Equatable {
+    let id: String
+    let name: String
+    let image: String
+    let state: String
+    let status: String
+}
+
 @MainActor
 final class ContainerComposeStore: ObservableObject {
     @Published var projects: [ContainerComposeProject] = []
@@ -100,6 +108,65 @@ final class ContainerComposeStore: ObservableObject {
         return error
     }
 
+    func loadContent(path: String) async throws -> String {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getComposeContent",
+            arguments: ["path": path]
+        )
+        return raw as? String ?? ""
+    }
+
+    func updateContent(
+        name: String,
+        path: String,
+        content: String
+    ) async -> String? {
+        await perform(
+            "updateCompose",
+            ["name": name, "path": path, "content": content]
+        )
+    }
+
+    func validateContent(name: String, content: String) async -> String? {
+        await perform(
+            "testCompose",
+            ["name": name, "content": content]
+        )
+    }
+
+    func cleanLogs(name: String, path: String) async -> String? {
+        await perform(
+            "cleanComposeLog",
+            ["name": name, "path": path]
+        )
+    }
+
+    func loadContainers(name: String) async throws -> [ContainerComposeContainer] {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getComposeContainers",
+            arguments: ["name": name]
+        )
+        return (raw as? [[String: Any]] ?? []).compactMap { item in
+            let name = item["name"] as? String ?? ""
+            guard !name.isEmpty else { return nil }
+            return ContainerComposeContainer(
+                id: item["id"] as? String ?? name,
+                name: name,
+                image: item["image"] as? String ?? "",
+                state: item["state"] as? String ?? "",
+                status: item["status"] as? String ?? ""
+            )
+        }
+    }
+
+    func loadLogs(name: String, tail: String = "500") async throws -> String {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getComposeLogs",
+            arguments: ["name": name, "tail": tail]
+        )
+        return raw as? String ?? ""
+    }
+
     private func perform(_ method: String, _ arguments: [String: Any]) async -> String? {
         do {
             let raw = try await ChannelManager.shared.invokeDataMethodAsync(
@@ -122,6 +189,7 @@ struct ContainerComposeSectionView: View {
 
     @State private var showCreateSheet = false
     @State private var pendingDelete: ContainerComposeProject?
+    @State private var detailProject: ContainerComposeProject?
     @State private var actionError: String?
 
     var body: some View {
@@ -173,6 +241,11 @@ struct ContainerComposeSectionView: View {
         .sheet(item: $pendingDelete) { project in
             ContainerComposeDeleteSheet(store: store, project: project)
         }
+        .sheet(item: $detailProject) { project in
+            ContainerComposeDetailView(store: store, project: project)
+                .environmentObject(translations)
+                .frame(minWidth: 720, minHeight: 560)
+        }
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(
@@ -222,6 +295,14 @@ struct ContainerComposeSectionView: View {
             Spacer()
             Menu {
                 Button {
+                    detailProject = project
+                } label: {
+                    Label(translations.get("containerComposeDetailTitle",
+                                           fallback: "Compose details"),
+                          systemImage: "info.circle")
+                }
+                Divider()
+                Button {
                     operate(project, operation: "up")
                 } label: {
                     Label(translations.get("commonStart", fallback: "Start"),
@@ -253,6 +334,10 @@ struct ContainerComposeSectionView: View {
             .frame(width: 24)
         }
         .padding(.vertical, 2)
+        .contentShape(Rectangle())
+        .onTapGesture(count: 2) {
+            detailProject = project
+        }
     }
 
     private func operate(_ project: ContainerComposeProject, operation: String) {

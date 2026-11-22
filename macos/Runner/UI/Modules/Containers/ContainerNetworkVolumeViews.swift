@@ -7,6 +7,8 @@ struct ContainerNetworkItem: Identifiable, Equatable {
     let driver: String
     let subnet: String
     let gateway: String
+    let createdAt: String
+    let attachable: Bool
 
     var isSystem: Bool {
         ["host", "none", "bridge"].contains(name)
@@ -34,7 +36,9 @@ final class ContainerNetworkStore: ObservableObject {
                     name: name,
                     driver: item["driver"] as? String ?? "",
                     subnet: item["subnet"] as? String ?? "",
-                    gateway: item["gateway"] as? String ?? ""
+                    gateway: item["gateway"] as? String ?? "",
+                    createdAt: item["createdAt"] as? String ?? "",
+                    attachable: item["attachable"] as? Bool ?? false
                 )
             }
             errorMessage = nil
@@ -81,6 +85,7 @@ struct ContainerNetworksSectionView: View {
 
     @State private var showCreateSheet = false
     @State private var pendingDelete: ContainerNetworkItem?
+    @State private var detailNetwork: ContainerNetworkItem?
     @State private var actionError: String?
 
     var body: some View {
@@ -139,6 +144,10 @@ struct ContainerNetworksSectionView: View {
                             }
                         }
                         .padding(.vertical, 2)
+                        .contentShape(Rectangle())
+                        .onTapGesture(count: 2) {
+                            detailNetwork = network
+                        }
                     }
                 }
                 .listStyle(.inset)
@@ -166,6 +175,11 @@ struct ContainerNetworksSectionView: View {
         }
         .sheet(isPresented: $showCreateSheet) {
             ContainerNetworkCreateSheet(store: store)
+        }
+        .sheet(item: $detailNetwork) { network in
+            ContainerNetworkDetailView(store: store, network: network)
+                .environmentObject(translations)
+                .frame(width: 460, height: 420)
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
@@ -284,6 +298,7 @@ struct ContainerVolumeItem: Identifiable, Equatable {
     let name: String
     let driver: String
     let mountpoint: String
+    let createdAt: String
 
     var id: String { name }
 }
@@ -307,7 +322,8 @@ final class ContainerVolumeStore: ObservableObject {
                 return ContainerVolumeItem(
                     name: name,
                     driver: item["driver"] as? String ?? "",
-                    mountpoint: item["mountpoint"] as? String ?? ""
+                    mountpoint: item["mountpoint"] as? String ?? "",
+                    createdAt: item["createdAt"] as? String ?? ""
                 )
             }
             errorMessage = nil
@@ -351,6 +367,7 @@ struct ContainerVolumesSectionView: View {
 
     @State private var showCreateSheet = false
     @State private var pendingDelete: ContainerVolumeItem?
+    @State private var detailVolume: ContainerVolumeItem?
     @State private var actionError: String?
 
     var body: some View {
@@ -395,6 +412,10 @@ struct ContainerVolumesSectionView: View {
                             .buttonStyle(.borderless)
                         }
                         .padding(.vertical, 2)
+                        .contentShape(Rectangle())
+                        .onTapGesture(count: 2) {
+                            detailVolume = volume
+                        }
                     }
                 }
                 .listStyle(.inset)
@@ -422,6 +443,11 @@ struct ContainerVolumesSectionView: View {
         }
         .sheet(isPresented: $showCreateSheet) {
             ContainerVolumeCreateSheet(store: store)
+        }
+        .sheet(item: $detailVolume) { volume in
+            ContainerVolumeDetailView(store: store, volume: volume)
+                .environmentObject(translations)
+                .frame(width: 460, height: 380)
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
@@ -521,5 +547,154 @@ private struct ContainerVolumeCreateSheet: View {
             dismiss()
         }
         isSaving = false
+    }
+}
+
+private struct ContainerNetworkDetailView: View {
+    @ObservedObject var store: ContainerNetworkStore
+    let network: ContainerNetworkItem
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var translations: TranslationsManager
+
+    @State private var isDeleting = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section(translations.get("containerNetworkDetailTitle",
+                                         fallback: "Network details")) {
+                    InfoLine(label: translations.get("commonName", fallback: "Name"),
+                             value: network.name)
+                    InfoLine(label: "ID", value: network.id)
+                    InfoLine(label: translations.get("containerNetworkDriverLabel",
+                                                     fallback: "Driver"),
+                             value: network.driver.isEmpty ? "--" : network.driver)
+                    InfoLine(label: translations.get("containerNetworkSubnetHint",
+                                                     fallback: "Subnet"),
+                             value: network.subnet.isEmpty ? "--" : network.subnet)
+                    InfoLine(label: translations.get("containerNetworkGatewayHint",
+                                                     fallback: "Gateway"),
+                             value: network.gateway.isEmpty ? "--" : network.gateway)
+                    InfoLine(label: translations.get("containerNetworkAttachableLabel",
+                                                     fallback: "Attachable"),
+                             value: network.attachable
+                                 ? translations.get("commonYes", fallback: "Yes")
+                                 : translations.get("commonNo", fallback: "No"))
+                    InfoLine(label: translations.get("containerResourceCreatedAtLabel",
+                                                     fallback: "Created"),
+                             value: network.createdAt.isEmpty
+                                 ? "--"
+                                 : TimestampFormat.display(network.createdAt))
+                }
+                if !network.isSystem {
+                    Section {
+                        Button(role: .destructive) {
+                            Task { await delete() }
+                        } label: {
+                            Label(translations.get("commonDelete", fallback: "Delete"),
+                                  systemImage: "trash")
+                        }
+                        .disabled(isDeleting)
+                    }
+                }
+                if let errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .listStyle(.inset)
+            .navigationTitle(network.name)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(translations.get("commonClose", fallback: "Close")) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func delete() async {
+        isDeleting = true
+        if let error = await store.delete(network) {
+            errorMessage = error.isEmpty
+                ? translations.get("commonDeleteFailed", fallback: "Delete failed")
+                : error
+        } else {
+            dismiss()
+        }
+        isDeleting = false
+    }
+}
+
+private struct ContainerVolumeDetailView: View {
+    @ObservedObject var store: ContainerVolumeStore
+    let volume: ContainerVolumeItem
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var translations: TranslationsManager
+
+    @State private var isDeleting = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section(translations.get("containerVolumeDetailTitle",
+                                         fallback: "Volume details")) {
+                    InfoLine(label: translations.get("commonName", fallback: "Name"),
+                             value: volume.name)
+                    InfoLine(label: translations.get("containerNetworkDriverLabel",
+                                                     fallback: "Driver"),
+                             value: volume.driver.isEmpty ? "--" : volume.driver)
+                    InfoLine(label: translations.get("containerVolumeMountpointLabel",
+                                                     fallback: "Mount point"),
+                             value: volume.mountpoint.isEmpty ? "--" : volume.mountpoint)
+                    InfoLine(label: translations.get("containerResourceCreatedAtLabel",
+                                                     fallback: "Created"),
+                             value: volume.createdAt.isEmpty
+                                 ? "--"
+                                 : TimestampFormat.display(volume.createdAt))
+                }
+                Section {
+                    Button(role: .destructive) {
+                        Task { await delete() }
+                    } label: {
+                        Label(translations.get("commonDelete", fallback: "Delete"),
+                              systemImage: "trash")
+                    }
+                    .disabled(isDeleting)
+                }
+                if let errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .listStyle(.inset)
+            .navigationTitle(volume.name)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(translations.get("commonClose", fallback: "Close")) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func delete() async {
+        isDeleting = true
+        if let error = await store.delete(volume) {
+            errorMessage = error.isEmpty
+                ? translations.get("commonDeleteFailed", fallback: "Delete failed")
+                : error
+        } else {
+            dismiss()
+        }
+        isDeleting = false
     }
 }

@@ -327,10 +327,12 @@ class ContainerSectionModelTests: XCTestCase {
 
   func testNetworkSystemClassification() {
     XCTAssertTrue(ContainerNetworkItem(
-      id: "bridge", name: "bridge", driver: "bridge", subnet: "", gateway: ""
+      id: "bridge", name: "bridge", driver: "bridge", subnet: "", gateway: "",
+      createdAt: "", attachable: false
     ).isSystem)
     XCTAssertFalse(ContainerNetworkItem(
-      id: "custom", name: "custom", driver: "bridge", subnet: "", gateway: ""
+      id: "custom", name: "custom", driver: "bridge", subnet: "", gateway: "",
+      createdAt: "", attachable: true
     ).isSystem)
   }
 
@@ -357,5 +359,50 @@ class MacReleaseManifestTests: XCTestCase {
         == "NSPrivacyAccessedAPICategoryUserDefaults"
     }
     XCTAssertTrue(declared)
+  }
+}
+
+class MacContainerDetailModelTests: XCTestCase {
+  func testComposeContainerCarriesStateAndImage() {
+    let container = ContainerComposeContainer(
+      id: "abc",
+      name: "web-1",
+      image: "nginx:latest",
+      state: "running",
+      status: "Up 2 hours"
+    )
+
+    XCTAssertEqual(container.name, "web-1")
+    XCTAssertEqual(container.image, "nginx:latest")
+    XCTAssertEqual(container.state, "running")
+  }
+
+  func testNetworkAndVolumeDetailFields() {
+    let network = ContainerNetworkItem(
+      id: "net-1", name: "custom", driver: "bridge",
+      subnet: "172.20.0.0/16", gateway: "172.20.0.1",
+      createdAt: "2026-11-23 00:00:00", attachable: true
+    )
+    let volume = ContainerVolumeItem(
+      name: "data", driver: "local", mountpoint: "/var/lib/docker/volumes/data",
+      createdAt: "2026-11-23 00:00:00"
+    )
+
+    XCTAssertTrue(network.attachable)
+    XCTAssertEqual(network.subnet, "172.20.0.0/16")
+    XCTAssertEqual(volume.mountpoint, "/var/lib/docker/volumes/data")
+    XCTAssertFalse(volume.createdAt.isEmpty)
+  }
+
+  func testComposeDetailLabelsResolve() {
+    let translations = TranslationsManager.shared
+    for key in [
+      "containerComposeDetailTitle", "containerComposeFileTitle",
+      "containerComposeValidateSuccess", "containerNetworkDetailTitle",
+      "containerResourceCreatedAtLabel", "containerVolumeDetailTitle",
+      "containerVolumeMountpointLabel",
+    ] {
+      XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+    }
   }
 }
