@@ -24534,6 +24534,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Operations apply to the selected backend and can change firewall rules.'**
   String get firewallV2BackendActionsHint;
+
+  /// No description provided for @containerComposeDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose details'**
+  String get containerComposeDetailTitle;
+
+  /// No description provided for @containerComposeFileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose file'**
+  String get containerComposeFileTitle;
+
+  /// No description provided for @containerComposeValidateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose validation passed'**
+  String get containerComposeValidateSuccess;
+
+  /// No description provided for @containerNetworkDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network details'**
+  String get containerNetworkDetailTitle;
+
+  /// No description provided for @containerResourceCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get containerResourceCreatedAtLabel;
+
+  /// No description provided for @containerVolumeDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume details'**
+  String get containerVolumeDetailTitle;
+
+  /// No description provided for @containerVolumeMountpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mount point'**
+  String get containerVolumeMountpointLabel;
 }
 
 class _AppLocalizationsDelegate

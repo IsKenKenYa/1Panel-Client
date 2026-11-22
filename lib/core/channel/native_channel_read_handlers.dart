@@ -916,6 +916,89 @@ class NativeChannelReadHandlers {
   }
 
 
+  /// Compose 项目内容。参数：`{path: String}`。POST /containers/compose。
+  static Future<dynamic> getComposeContent(dynamic arguments) async {
+    try {
+      final path = (arguments?['path'] as String? ?? '').trim();
+      if (path.isEmpty) {
+        return '';
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      final response = await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/compose'),
+        data: <String, dynamic>{'path': path},
+      );
+      final data = response.data?['data'];
+      return data is String ? data : '';
+    } catch (e) {
+      appLogger.e('Failed to get compose content for native: $e');
+      return '';
+    }
+  }
+
+  /// Compose 项目容器列表。参数：`{name: String}`。POST /containers/search。
+  static Future<dynamic> getComposeContainers(dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return [];
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      final response = await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/search'),
+        data: <String, dynamic>{
+          'page': 1,
+          'pageSize': 100,
+          'compose': name,
+        },
+      );
+      final items = ApiResponseParser.asList(
+        response.data,
+        nestedItemsKey: 'items',
+      );
+      return items
+          .whereType<Map>()
+          .map((item) => <String, Object?>{
+                'id': item['id']?.toString() ?? '',
+                'name': item['name']?.toString() ?? '',
+                'image': item['image']?.toString() ?? '',
+                'state': item['state']?.toString() ?? '',
+                'status': item['status']?.toString() ?? '',
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get compose containers for native: $e');
+      return [];
+    }
+  }
+
+  /// Compose 项目日志：汇总项目内各容器日志。参数：`{name: String, tail?: String}`。
+  static Future<dynamic> getComposeLogs(dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return '';
+      }
+      final tail = (arguments?['tail'] as String? ?? '').trim();
+      final containers = await getComposeContainers({'name': name});
+      final buffer = StringBuffer();
+      for (final raw in (containers as List).whereType<Map>()) {
+        final containerName = '${raw['name'] ?? ''}';
+        if (containerName.isEmpty) continue;
+        final logs = await ContainerService().getContainerLogs(
+          containerName,
+          tail: tail.isEmpty ? null : tail,
+        );
+        buffer.writeln('===== $containerName =====');
+        buffer.writeln(logs);
+      }
+      return buffer.toString();
+    } catch (e) {
+      appLogger.e('Failed to get compose logs for native: $e');
+      return '';
+    }
+  }
+
   /// Compose 项目列表（B18）。
   static Future<dynamic> getComposes(dynamic arguments) async {
     try {

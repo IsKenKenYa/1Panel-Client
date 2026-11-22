@@ -12626,4 +12626,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firewallV2BackendActionsHint => '操作作用于当前选中的后端，可能改变防火墙规则。';
+
+  @override
+  String get containerComposeDetailTitle => 'Compose 详情';
+
+  @override
+  String get containerComposeFileTitle => 'Compose 文件';
+
+  @override
+  String get containerComposeValidateSuccess => 'Compose 校验通过';
+
+  @override
+  String get containerNetworkDetailTitle => '网络详情';
+
+  @override
+  String get containerResourceCreatedAtLabel => '创建时间';
+
+  @override
+  String get containerVolumeDetailTitle => '存储卷详情';
+
+  @override
+  String get containerVolumeMountpointLabel => '挂载点';
 }

@@ -5318,5 +5318,12 @@
   "firewallV2BackendActions": "Backend actions",
   "firewallV2BackendInitializeAction": "Initialize backend",
   "firewallV2BackendCleanupAction": "Cleanup backend",
-  "firewallV2BackendActionsHint": "Operations apply to the selected backend and can change firewall rules."
+  "firewallV2BackendActionsHint": "Operations apply to the selected backend and can change firewall rules.",
+  "containerComposeDetailTitle": "Compose details",
+  "containerComposeFileTitle": "Compose file",
+  "containerComposeValidateSuccess": "Compose validation passed",
+  "containerNetworkDetailTitle": "Network details",
+  "containerResourceCreatedAtLabel": "Created",
+  "containerVolumeDetailTitle": "Volume details",
+  "containerVolumeMountpointLabel": "Mount point"
 }

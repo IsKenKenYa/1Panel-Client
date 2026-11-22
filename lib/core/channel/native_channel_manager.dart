@@ -119,6 +119,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.getOllamaContext(arguments);
       case 'getComposes':
         return NativeChannelReadHandlers.getComposes(arguments);
+      case 'getComposeContent':
+        return NativeChannelReadHandlers.getComposeContent(arguments);
+      case 'getComposeContainers':
+        return NativeChannelReadHandlers.getComposeContainers(arguments);
+      case 'getComposeLogs':
+        return NativeChannelReadHandlers.getComposeLogs(arguments);
       case 'getPanelSslInfo':
         return NativeChannelReadHandlers.getPanelSslInfo(arguments);
       case 'getWebsiteCertificates':
@@ -444,6 +450,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.createCompose(arguments);
       case 'updateCompose':
         return NativeChannelWriteHandlers.updateCompose(arguments);
+      case 'testCompose':
+        return NativeChannelWriteHandlers.testCompose(arguments);
+      case 'cleanComposeLog':
+        return NativeChannelWriteHandlers.cleanComposeLog(arguments);
       case 'updateOpenrestyHttps':
         return NativeChannelWriteHandlers.updateOpenrestyHttps(arguments);
       case 'updateOpenrestyConfig':

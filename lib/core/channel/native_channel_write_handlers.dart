@@ -2249,6 +2249,47 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 校验 Compose 配置。参数：`{name: String 必填, content: String 必填}`
+  static Future<Map<String, dynamic>> testCompose(dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final content = arguments['content'] as String? ?? '';
+      if (name.isEmpty || content.trim().isEmpty) {
+        return {'success': false, 'error': 'name and content are required'};
+      }
+      await OrchestrationService().testCompose(
+        ContainerComposeCreate(
+          from: 'edit',
+          name: name,
+          file: content,
+          taskID: DateTime.now().millisecondsSinceEpoch.toString(),
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('testCompose failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 清理 Compose 日志。参数：`{name: String 必填, path: String 必填}`
+  static Future<Map<String, dynamic>> cleanComposeLog(dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final path = (arguments['path'] as String? ?? '').trim();
+      if (name.isEmpty || path.isEmpty) {
+        return {'success': false, 'error': 'name and path are required'};
+      }
+      await OrchestrationService().cleanComposeLog(
+        ContainerComposeLogCleanRequest(name: name, path: path),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('cleanComposeLog failed: $e');
+      return _err(e);
+    }
+  }
+
   // ── 网关 HTTPS 开关（B19）────────────────────────────────────────────────
 
   static const Set<String> _httpsOperates = {'enable', 'disable'};

@@ -13015,4 +13015,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get firewallV2BackendActionsHint =>
       'Operations apply to the selected backend and can change firewall rules.';
+
+  @override
+  String get containerComposeDetailTitle => 'Compose details';
+
+  @override
+  String get containerComposeFileTitle => 'Compose file';
+
+  @override
+  String get containerComposeValidateSuccess => 'Compose validation passed';
+
+  @override
+  String get containerNetworkDetailTitle => 'Network details';
+
+  @override
+  String get containerResourceCreatedAtLabel => 'Created';
+
+  @override
+  String get containerVolumeDetailTitle => 'Volume details';
+
+  @override
+  String get containerVolumeMountpointLabel => 'Mount point';
 }
