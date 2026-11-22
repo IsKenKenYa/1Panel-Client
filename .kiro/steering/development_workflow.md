@@ -7,7 +7,7 @@ inclusion: auto
 > **强制规则以 `AGENTS.md` 为准**，其中「最高优先级执行规则」优先于本文全部内容。每次用户消息提到 AGENTS.md 时，必须重新阅读 `AGENTS.md` 全文。
 >
 > - 默认在当前分支直接修改与提交，新建分支必须得到用户明确同意；提交消息遵循 Conventional Commits 且必须包含 `scope`，按模块或类别分别提交。详见 `AGENTS.md`「分支、发布与 CI」与「提交与合并请求规范」。
-> - 每次改动完成后自动执行完整测试闭环（理解需求 → 测试用例设计 → 自动化测试基线准备 → 功能开发 → 单元测试 → 集成测试 → 文档与基线回写），迭代到门禁全部通过。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
+> - 每次改动完成后自动执行完整测试闭环（理解需求 → 测试用例设计 → 自动化测试基线准备 → 功能开发 → 单元测试 → 集成测试 → 文档与基线回写 → 提交），迭代到门禁全部通过后按模块提交，未提交视同闭环未完成。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
 
 ## 实时功能规划（强制）
 
@@ -219,6 +219,8 @@ hflutter build hap --release
 # 或使用完整 Flutter-OH 路径：
 /Volumes/FanXiangMac/DevTools/Flutter_HMOS/flutter_flutter/bin/flutter build hap --release
 ```
+
+门禁全绿后立即按「按模块或类别分组提交（强制）」提交本批次改动；多会话共用工作区时用显式文件路径 `git add`，禁止 `git add -A` 与 `git add -u`。
 
 ## HarmonyOS / OHOS 开发规则
 
