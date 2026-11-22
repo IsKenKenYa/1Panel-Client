@@ -100,6 +100,7 @@ struct FirewallFlatRow: Identifiable {
 @MainActor
 final class FirewallFlatModel: ObservableObject {
     @Published var values: [FirewallFlatRow] = []
+    @Published var ipv6Enabled = false
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -108,6 +109,7 @@ final class FirewallFlatModel: ObservableObject {
         do {
             let raw = try await ChannelManager.shared.invokeDataMethodAsync(method)
             let payload = raw as? [String: Any] ?? [:]
+            ipv6Enabled = payload["ipv6Enabled"] as? Bool ?? false
             values = payload
                 .map { FirewallFlatRow(label: $0.key, value: "\($0.value)") }
                 .sorted { $0.label < $1.label }
@@ -135,6 +137,7 @@ struct FirewallModuleView: View {
     @State private var editor: FirewallRuleEditor?
     @State private var pendingDelete: FirewallRuleModel?
     @State private var pendingOperation: String?
+    @State private var pendingFlatAction: String?
     @State private var toastText: String?
     @State private var hasLoaded = false
 
@@ -250,6 +253,26 @@ struct FirewallModuleView: View {
             }
         } message: {
             Text(operationMessage(pendingOperation ?? ""))
+        }
+        .confirmationDialog(
+            flatActionTitle,
+            isPresented: Binding(
+                get: { pendingFlatAction != nil },
+                set: { if !$0 { pendingFlatAction = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let action = pendingFlatAction {
+                Button(flatActionTitle) {
+                    Task { await runFlatAction(action) }
+                }
+                Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
+                    pendingFlatAction = nil
+                }
+            }
+        } message: {
+            Text(translations.get("firewallV2ConfirmTitle",
+                                  fallback: "Confirm the firewall change"))
         }
         .operationNotice(toastText)
     }
@@ -418,6 +441,46 @@ struct FirewallModuleView: View {
             } else {
                 List {
                     Section(sectionTitle(section)) {
+                        if section == "settings" {
+                            Toggle(
+                                translations.get("firewallV2IPv6Enable", fallback: "Enable IPv6"),
+                                isOn: Binding(
+                                    get: { model.ipv6Enabled },
+                                    set: { value in
+                                        pendingFlatAction = value ? "ipv6:true" : "ipv6:false"
+                                    }
+                                )
+                            )
+                        }
+                        if section == "forward" {
+                            Button {
+                                pendingFlatAction = "forward"
+                            } label: {
+                                Label(translations.get("firewallV2EnableForwardAction",
+                                                       fallback: "Enable forwarding"),
+                                      systemImage: "arrow.left.arrow.right")
+                            }
+                        }
+                        if section == "docker" {
+                            Menu {
+                                Button(translations.get("firewallV2DockerInitializeAction",
+                                                        fallback: "Initialize")) {
+                                    pendingFlatAction = "docker:initialize"
+                                }
+                                Button(translations.get("firewallV2DockerBindAction",
+                                                        fallback: "Bind")) {
+                                    pendingFlatAction = "docker:bind"
+                                }
+                                Button(translations.get("firewallV2DockerUnbindAction",
+                                                        fallback: "Unbind")) {
+                                    pendingFlatAction = "docker:unbind"
+                                }
+                            } label: {
+                                Label(translations.get("firewallV2DockerActionLabel",
+                                                       fallback: "Docker guard action"),
+                                      systemImage: "shield.lefthalf.filled")
+                            }
+                        }
                         ForEach(model.values) { item in
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(item.label)
@@ -436,6 +499,63 @@ struct FirewallModuleView: View {
                     await loadSection()
                 }
             }
+        }
+    }
+
+    private var flatActionTitle: String {
+        guard let action = pendingFlatAction else { return "" }
+        if action.hasPrefix("ipv6:") {
+            return translations.get("firewallV2IPv6Enable", fallback: "Enable IPv6")
+        }
+        if action == "forward" {
+            return translations.get("firewallV2EnableForwardAction",
+                                    fallback: "Enable forwarding")
+        }
+        if action.hasPrefix("docker:") {
+            let operation = action.replacingOccurrences(of: "docker:", with: "")
+            switch operation {
+            case "initialize":
+                return translations.get("firewallV2DockerInitializeAction",
+                                        fallback: "Initialize")
+            case "bind":
+                return translations.get("firewallV2DockerBindAction", fallback: "Bind")
+            default:
+                return translations.get("firewallV2DockerUnbindAction", fallback: "Unbind")
+            }
+        }
+        return action
+    }
+
+    private func runFlatAction(_ action: String) async {
+        pendingFlatAction = nil
+        let method: String
+        let arguments: [String: Any]
+        if action.hasPrefix("ipv6:") {
+            method = "updateFirewallIPv6"
+            arguments = ["enabled": action.hasSuffix("true")]
+        } else if action == "forward" {
+            method = "enableFirewallForward"
+            arguments = [:]
+        } else {
+            method = "operateFirewallDockerGuard"
+            arguments = ["operation": action.replacingOccurrences(of: "docker:", with: "")]
+        }
+        do {
+            let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+                method,
+                arguments: arguments
+            )
+            let payload = raw as? [String: Any] ?? [:]
+            if payload["success"] as? Bool == true {
+                await loadSection()
+                showToast(translations.get("commonOperationSuccess",
+                                           fallback: "Operation succeeded"))
+            } else {
+                showToast(payload["error"] as? String
+                    ?? translations.get("commonOperationFailed", fallback: "Operation failed"))
+            }
+        } catch {
+            showToast(error.localizedDescription)
         }
     }
 

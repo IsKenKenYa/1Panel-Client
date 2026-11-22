@@ -9166,6 +9166,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'Backend, IPv6, whitelist and ping control';
 
   @override
+  String get firewallV2EnableForwardAction => 'Enable forwarding';
+
+  @override
+  String get firewallV2DockerInitializeAction => 'Initialize';
+
+  @override
+  String get firewallV2DockerBindAction => 'Bind';
+
+  @override
+  String get firewallV2DockerUnbindAction => 'Unbind';
+
+  @override
+  String get firewallV2DockerActionLabel => 'Docker guard action';
+
+  @override
+  String get firewallV2IPv6Enable => 'Enable IPv6';
+
+  @override
+  String get firewallV2ConfirmTitle => 'Confirm the firewall change';
+
+  @override
   String get firewallV2LoadFailed => 'Failed to load firewall data';
 
   @override

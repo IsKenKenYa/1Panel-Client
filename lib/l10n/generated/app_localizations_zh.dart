@@ -8930,6 +8930,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get firewallV2SettingsDesc => '后端、IPv6、白名单与禁 Ping';
 
   @override
+  String get firewallV2EnableForwardAction => '启用转发';
+
+  @override
+  String get firewallV2DockerInitializeAction => '初始化';
+
+  @override
+  String get firewallV2DockerBindAction => '绑定';
+
+  @override
+  String get firewallV2DockerUnbindAction => '解绑';
+
+  @override
+  String get firewallV2DockerActionLabel => 'Docker 守卫操作';
+
+  @override
+  String get firewallV2IPv6Enable => '启用 IPv6';
+
+  @override
+  String get firewallV2ConfirmTitle => '确认防火墙变更';
+
+  @override
   String get firewallV2LoadFailed => '加载防火墙信息失败';
 
   @override

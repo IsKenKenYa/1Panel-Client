@@ -17275,6 +17275,48 @@ abstract class AppLocalizations {
   /// **'Backend, IPv6, whitelist and ping control'**
   String get firewallV2SettingsDesc;
 
+  /// No description provided for @firewallV2EnableForwardAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable forwarding'**
+  String get firewallV2EnableForwardAction;
+
+  /// No description provided for @firewallV2DockerInitializeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialize'**
+  String get firewallV2DockerInitializeAction;
+
+  /// No description provided for @firewallV2DockerBindAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind'**
+  String get firewallV2DockerBindAction;
+
+  /// No description provided for @firewallV2DockerUnbindAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind'**
+  String get firewallV2DockerUnbindAction;
+
+  /// No description provided for @firewallV2DockerActionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker guard action'**
+  String get firewallV2DockerActionLabel;
+
+  /// No description provided for @firewallV2IPv6Enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable IPv6'**
+  String get firewallV2IPv6Enable;
+
+  /// No description provided for @firewallV2ConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm the firewall change'**
+  String get firewallV2ConfirmTitle;
+
   /// No description provided for @firewallV2LoadFailed.
   ///
   /// In en, this message translates to:
