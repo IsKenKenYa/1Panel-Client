@@ -5348,6 +5348,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerTemplateCreateTitle => '新建编排模版';
 
   @override
+  String get containerTemplateViewContent => '查看内容';
+
+  @override
   String get containerCreate => '创建容器';
 
   @override

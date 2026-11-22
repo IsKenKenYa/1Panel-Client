@@ -96,6 +96,7 @@
 		AA11BB22CC33DD44EE55FF1D /* ContainerComposeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66001D /* ContainerComposeDetailView.swift */; };
 		AA11BB22CC33DD44EE55FF1E /* ContainerCreateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66001E /* ContainerCreateSheet.swift */; };
 		AA11BB22CC33DD44EE55FF1F /* ContainerImageRepoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66001F /* ContainerImageRepoViews.swift */; };
+		AA11BB22CC33DD44EE55FF20 /* ContainerTemplatesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660020 /* ContainerTemplatesSection.swift */; };
 		AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */; };
 		AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660016 /* SecurityView.swift */; };
 		AA11BB22CC33DD44EE55FF17 /* FirewallModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660017 /* FirewallModuleView.swift */; };
@@ -225,6 +226,7 @@
 		BB22CC33DD44EE55FF66001D /* ContainerComposeDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerComposeDetailView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66001E /* ContainerCreateSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerCreateSheet.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66001F /* ContainerImageRepoViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerImageRepoViews.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660020 /* ContainerTemplatesSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerTemplatesSection.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LogsModuleView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660016 /* SecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SecurityView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660017 /* FirewallModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FirewallModuleView.swift; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 				BB22CC33DD44EE55FF66001D /* ContainerComposeDetailView.swift */,
 				BB22CC33DD44EE55FF66001E /* ContainerCreateSheet.swift */,
 				BB22CC33DD44EE55FF66001F /* ContainerImageRepoViews.swift */,
+				BB22CC33DD44EE55FF660020 /* ContainerTemplatesSection.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -908,6 +911,7 @@ children = (
 				AA11BB22CC33DD44EE55FF1D /* ContainerComposeDetailView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF1E /* ContainerCreateSheet.swift in Sources */,
 				AA11BB22CC33DD44EE55FF1F /* ContainerImageRepoViews.swift in Sources */,
+				AA11BB22CC33DD44EE55FF20 /* ContainerTemplatesSection.swift in Sources */,
 				AA11BB22CC33DD44EE55FF1B /* WebsiteDeepConfigSections.swift in Sources */,
 				AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */,

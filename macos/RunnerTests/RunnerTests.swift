@@ -425,7 +425,9 @@ class MacContainerDetailModelTests: XCTestCase {
       "containerComposeDetailTitle", "containerComposeFileTitle",
       "containerComposeValidateSuccess", "containerNetworkDetailTitle",
       "containerResourceCreatedAtLabel", "containerVolumeDetailTitle",
-      "containerVolumeMountpointLabel",
+      "containerVolumeMountpointLabel", "containerTabTemplates",
+      "containerTemplateCreateTitle", "containerTemplateContentHint",
+      "containerTemplateViewContent",
     ] {
       XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
     }

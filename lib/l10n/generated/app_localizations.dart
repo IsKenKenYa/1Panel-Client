@@ -10388,6 +10388,12 @@ abstract class AppLocalizations {
   /// **'New Compose Template'**
   String get containerTemplateCreateTitle;
 
+  /// No description provided for @containerTemplateViewContent.
+  ///
+  /// In en, this message translates to:
+  /// **'View Content'**
+  String get containerTemplateViewContent;
+
   /// No description provided for @containerCreate.
   ///
   /// In en, this message translates to:

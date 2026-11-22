@@ -2326,6 +2326,7 @@
   "containerRepoUrlExample": "e.g. https://github.com/user/repo",
   "containerTemplateContentHint": "YAML content",
   "containerTemplateCreateTitle": "New Compose Template",
+  "containerTemplateViewContent": "View Content",
   "containerCreate": "Create Container",
   "containerCreateBasicSectionTitle": "Basic Configuration",
   "containerCreateRestartLabel": "Restart policy",

@@ -5519,6 +5519,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerTemplateCreateTitle => 'New Compose Template';
 
   @override
+  String get containerTemplateViewContent => 'View Content';
+
+  @override
   String get containerCreate => 'Create Container';
 
   @override

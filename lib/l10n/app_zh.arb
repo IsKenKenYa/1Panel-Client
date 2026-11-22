@@ -2263,6 +2263,7 @@
   "containerRepoUrlExample": "例如 https://github.com/user/repo",
   "containerTemplateContentHint": "YAML 内容",
   "containerTemplateCreateTitle": "新建编排模版",
+  "containerTemplateViewContent": "查看内容",
   "containerCreate": "创建容器",
   "containerCreateBasicSectionTitle": "基本配置",
   "containerCreateRestartLabel": "重启策略",

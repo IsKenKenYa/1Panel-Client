@@ -8,6 +8,7 @@ enum ContainerSection: String, CaseIterable, Identifiable {
     case volumes
     case compose
     case repositories
+    case templates
 
     var id: String { rawValue }
 
@@ -19,6 +20,7 @@ enum ContainerSection: String, CaseIterable, Identifiable {
         case .volumes: return "containerTabVolumes"
         case .compose: return "orchestrationCompose"
         case .repositories: return "containerTabRepositories"
+        case .templates: return "containerTabTemplates"
         }
     }
 }
@@ -63,6 +65,8 @@ struct ContainersView: View {
                     ContainerComposeSectionView()
                 case .repositories:
                     ContainerReposSectionView()
+                case .templates:
+                    ContainerTemplatesSectionView()
                 }
             }
         }
@@ -227,6 +231,7 @@ struct ContainersView: View {
         case .volumes: return "Volumes"
         case .compose: return "Compose"
         case .repositories: return "Repositories"
+        case .templates: return "Templates"
         }
     }
 }
