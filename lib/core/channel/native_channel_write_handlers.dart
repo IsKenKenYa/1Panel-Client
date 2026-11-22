@@ -563,6 +563,121 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 网站反向代理缓存配置。参数：
+  /// `{websiteID: int, open: bool, cacheLimit: int, cacheLimitUnit: String,
+  ///   shareCache: int, shareCacheUnit: String, cacheExpire: int,
+  ///   cacheExpireUnit: String}`。POST /websites/proxy/config。
+  static Future<Map<String, dynamic>> updateWebsiteProxyCache(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      final cacheLimit = _boundedInt(arguments['cacheLimit'], 'cacheLimit');
+      final shareCache = _boundedInt(arguments['shareCache'], 'shareCache');
+      final cacheExpire = _boundedInt(arguments['cacheExpire'], 'cacheExpire');
+      if (cacheLimit == null || shareCache == null || cacheExpire == null) {
+        return {
+          'success': false,
+          'error': 'cacheLimit, shareCache and cacheExpire are required',
+        };
+      }
+      await (await _websiteApi()).updateWebsiteProxyCacheConfig({
+        'websiteID': websiteID,
+        'open': arguments['open'] ?? false,
+        'cacheLimit': cacheLimit,
+        'cacheLimitUnit': arguments['cacheLimitUnit'] as String? ?? 'g',
+        'shareCache': shareCache,
+        'shareCacheUnit': arguments['shareCacheUnit'] as String? ?? 'm',
+        'cacheExpire': cacheExpire,
+        'cacheExpireUnit': arguments['cacheExpireUnit'] as String? ?? 'h',
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteProxyCache failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站真实 IP 配置。参数：
+  /// `{websiteID: int, open: bool, ipFrom: String, ipHeader: String,
+  ///   ipOther: String}`。POST /websites/realip/config。
+  static Future<Map<String, dynamic>> updateWebsiteRealIP(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      final open = arguments['open'] == true;
+      final ipFrom = (arguments['ipFrom'] as String? ?? '').trim();
+      final ipHeader = (arguments['ipHeader'] as String? ?? '').trim();
+      final ipOther = (arguments['ipOther'] as String? ?? '').trim();
+      if (open && ipFrom.isEmpty) {
+        return {'success': false, 'error': 'ipFrom is required'};
+      }
+      if (open && ipHeader.isEmpty) {
+        return {'success': false, 'error': 'ipHeader is required'};
+      }
+      if (open && ipHeader == 'other' && ipOther.isEmpty) {
+        return {'success': false, 'error': 'ipOther is required'};
+      }
+      await (await _websiteApi()).updateWebsiteRealIpConfig({
+        'websiteID': websiteID,
+        'open': open,
+        'ipFrom': ipFrom.isEmpty ? '127.0.0.1' : ipFrom,
+        'ipHeader': ipHeader.isEmpty ? 'X-Real-IP' : ipHeader,
+        'ipOther': ipOther,
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteRealIP failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站 TCP/UDP 转发配置。参数：
+  /// `{websiteID: int, streamPorts: String, udp: bool, name: String,
+  ///   algorithm: String, servers: [Map]}`。POST /websites/stream/update。
+  static Future<Map<String, dynamic>> updateWebsiteStream(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      final streamPorts = (arguments['streamPorts'] as String? ?? '').trim();
+      if (streamPorts.isEmpty) {
+        return {'success': false, 'error': 'streamPorts is required'};
+      }
+      await (await _websiteApi()).updateWebsiteStreamConfig({
+        'websiteID': websiteID,
+        'streamPorts': streamPorts,
+        'udp': arguments['udp'] == true,
+        'name': arguments['name'] as String? ?? '',
+        'algorithm': arguments['algorithm'] as String? ?? '',
+        'servers': (arguments['servers'] as List?)
+                ?.whereType<Map>()
+                .map((server) => server.cast<String, dynamic>())
+                .toList() ??
+            const <Map<String, dynamic>>[],
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteStream failed: $e');
+      return _err(e);
+    }
+  }
+
+  static int? _boundedInt(Object? value, String field) {
+    final parsed = int.tryParse('$value');
+    if (parsed == null || parsed < 0 || parsed > 9999) {
+      return null;
+    }
+    return parsed;
+  }
+
   static const Set<String> _pathAuthOperates = {'create', 'edit', 'delete'};
 
   /// 网站路径 BasicAuth 操作。参数：

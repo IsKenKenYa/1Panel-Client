@@ -271,6 +271,7 @@ class WebsiteInfo extends Equatable {
   final bool? favorite;
   final bool? openBaseDir;
   final String? algorithm;
+  final bool? udp;
   final int? runtimeId;
   final String? runtimeName;
   final String? runtimeTypeName;
@@ -319,6 +320,7 @@ class WebsiteInfo extends Equatable {
     this.favorite,
     this.openBaseDir,
     this.algorithm,
+    this.udp,
     this.runtimeId,
     this.runtimeName,
     this.runtimeTypeName,
@@ -378,6 +380,7 @@ class WebsiteInfo extends Equatable {
       favorite: json['favorite'] as bool?,
       openBaseDir: json['openBaseDir'] as bool?,
       algorithm: json['algorithm'] as String?,
+      udp: json['udp'] as bool?,
       runtimeId: json['runtimeID'] as int? ?? json['runtimeId'] as int?,
       runtimeName: json['runtimeName'] as String?,
       runtimeTypeName: json['runtimeType'] as String?,
@@ -444,6 +447,7 @@ class WebsiteInfo extends Equatable {
       'favorite': favorite,
       'openBaseDir': openBaseDir,
       'algorithm': algorithm,
+      'udp': udp,
       'runtimeID': runtimeId,
       'runtimeName': runtimeName,
       'runtimeType': runtimeTypeName,
@@ -495,6 +499,7 @@ class WebsiteInfo extends Equatable {
         favorite,
         openBaseDir,
         algorithm,
+        udp,
         runtimeId,
         runtimeName,
         runtimeTypeName,

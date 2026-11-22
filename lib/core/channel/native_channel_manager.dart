@@ -253,6 +253,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getWebsiteAuths(arguments);
       case 'getWebsitePathAuths':
         return NativeChannelReadHandlers.getWebsitePathAuths(arguments);
+      case 'getWebsiteProxyCache':
+        return NativeChannelReadHandlers.getWebsiteProxyCache(arguments);
+      case 'getWebsiteRealIP':
+        return NativeChannelReadHandlers.getWebsiteRealIP(arguments);
+      case 'getWebsiteStream':
+        return NativeChannelReadHandlers.getWebsiteStream(arguments);
       case 'getWebsiteDomains':
         return NativeChannelReadHandlers.getWebsiteDomains(arguments);
       case 'getWebsiteLogs':
@@ -326,6 +332,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateWebsiteAuth(arguments);
       case 'updateWebsitePathAuth':
         return NativeChannelWriteHandlers.updateWebsitePathAuth(arguments);
+      case 'updateWebsiteProxyCache':
+        return NativeChannelWriteHandlers.updateWebsiteProxyCache(arguments);
+      case 'updateWebsiteRealIP':
+        return NativeChannelWriteHandlers.updateWebsiteRealIP(arguments);
+      case 'updateWebsiteStream':
+        return NativeChannelWriteHandlers.updateWebsiteStream(arguments);
       case 'addWebsiteDomains':
         return NativeChannelWriteHandlers.addWebsiteDomains(arguments);
       case 'deleteWebsiteDomain':

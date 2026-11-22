@@ -1336,6 +1336,55 @@ class NativeChannelReadHandlers {
     }
   }
 
+  /// 网站反向代理缓存配置。参数：`{id: int}`。GET /websites/proxy/config/{id}。
+  static Future<dynamic> getWebsiteProxyCache(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null) {
+        return <String, dynamic>{};
+      }
+      return await (await _websiteApi()).getWebsiteProxyCacheConfig(id);
+    } catch (e) {
+      appLogger.e('Failed to get website proxy cache for native: $e');
+      return <String, dynamic>{};
+    }
+  }
+
+  /// 网站真实 IP 配置。参数：`{id: int}`。GET /websites/realip/config/{id}。
+  static Future<dynamic> getWebsiteRealIP(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null) {
+        return <String, dynamic>{};
+      }
+      return await (await _websiteApi()).getWebsiteRealIpConfig(id);
+    } catch (e) {
+      appLogger.e('Failed to get website real ip for native: $e');
+      return <String, dynamic>{};
+    }
+  }
+
+  /// 网站 TCP/UDP 转发配置。参数：`{id: int}`。GET /websites/:id。
+  static Future<dynamic> getWebsiteStream(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null) {
+        return <String, dynamic>{};
+      }
+      final info = await (await _websiteApi()).getWebsiteDetail(id);
+      return <String, dynamic>{
+        'streamPorts': info.streamPorts ?? '',
+        'udp': info.udp ?? false,
+        'name': info.primaryDomain ?? info.alias ?? '',
+        'algorithm': info.algorithm ?? '',
+        'servers': info.servers.map((server) => server.toJson()).toList(),
+      };
+    } catch (e) {
+      appLogger.e('Failed to get website stream for native: $e');
+      return <String, dynamic>{};
+    }
+  }
+
   /// 网站域名列表。参数：`{id: int}`。GET /websites/domains/{id}。
   static Future<dynamic> getWebsiteDomains(dynamic arguments) async {
     try {
