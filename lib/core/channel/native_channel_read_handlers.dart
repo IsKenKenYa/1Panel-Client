@@ -971,7 +971,8 @@ class NativeChannelReadHandlers {
     }
   }
 
-  /// Compose 项目日志：汇总项目内各容器日志。参数：`{name: String, tail?: String}`。
+  /// Compose 项目日志：指定容器时只取该容器日志，否则汇总项目内各容器日志。
+  /// 参数：`{name: String, tail?: String, container?: String}`。
   static Future<dynamic> getComposeLogs(dynamic arguments) async {
     try {
       final name = (arguments?['name'] as String? ?? '').trim();
@@ -979,6 +980,13 @@ class NativeChannelReadHandlers {
         return '';
       }
       final tail = (arguments?['tail'] as String? ?? '').trim();
+      final container = (arguments?['container'] as String? ?? '').trim();
+      if (container.isNotEmpty) {
+        return ContainerService().getContainerLogs(
+          container,
+          tail: tail.isEmpty ? null : tail,
+        );
+      }
       final containers = await getComposeContainers({'name': name});
       final buffer = StringBuffer();
       for (final raw in (containers as List).whereType<Map>()) {

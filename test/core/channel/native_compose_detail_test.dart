@@ -31,6 +31,20 @@ void main() {
       expect(result['error'], contains('content'));
     });
 
+    test('保存缺少内容时返回失败结构', () async {
+      final result = await NativeChannelWriteHandlers.updateCompose(
+        <String, dynamic>{
+          'name': 'web',
+          'path': '/opt/1panel/docker/compose/web/docker-compose.yml',
+          'detailPath':
+              '/opt/1panel/docker/compose/web/docker-compose.yml',
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('content'));
+    });
+
     test('清理日志缺少路径时返回失败结构', () async {
       final result = await NativeChannelWriteHandlers.cleanComposeLog(
         <String, dynamic>{'name': 'web'},

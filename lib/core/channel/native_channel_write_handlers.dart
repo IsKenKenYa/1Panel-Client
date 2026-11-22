@@ -2226,12 +2226,13 @@ class NativeChannelWriteHandlers {
   }
 
   /// 编辑 Compose 配置。参数：
-  /// `{name: String 必填, path: String 必填, content: String 必填}`
+  /// `{name: String 必填, path: String 必填, content: String 必填, detailPath?: String}`
   static Future<Map<String, dynamic>> updateCompose(dynamic arguments) async {
     try {
       final name = (arguments['name'] as String? ?? '').trim();
       final path = (arguments['path'] as String? ?? '').trim();
       final content = arguments['content'] as String? ?? '';
+      final detailPath = (arguments['detailPath'] as String? ?? '').trim();
       if (name.isEmpty || path.isEmpty || content.trim().isEmpty) {
         return {'success': false, 'error': 'name, path and content are required'};
       }
@@ -2240,6 +2241,7 @@ class NativeChannelWriteHandlers {
           name: name,
           path: path,
           content: content,
+          detailPath: detailPath.isEmpty ? null : detailPath,
           taskID: DateTime.now().millisecondsSinceEpoch.toString(),
         ),
       );
