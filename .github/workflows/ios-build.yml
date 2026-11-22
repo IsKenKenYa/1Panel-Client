@@ -6,11 +6,14 @@ on:
       - dev-v2
     paths:
       - "ios/**"
+      - ".github/workflows/ios-build.yml"
   pull_request:
     branches:
       - dev-v2
     paths:
       - "ios/**"
+      - ".github/workflows/ios-build.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ios-build-${{ github.ref }}
@@ -46,11 +49,16 @@ jobs:
       - name: Flutter Pub Get
         run: flutter pub get
 
+      - name: CocoaPods Install
+        run: pod install --project-directory=ios
+
+      # 只编译不绑定具体模拟器型号：机型名称随 Xcode 版本变化，
+      # 写死会在找不到该设备时直接退出。需要跑 UI 测试时才指定设备。
       - name: Build iOS
         run: |
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Debug \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination 'generic/platform=iOS Simulator' \
             build

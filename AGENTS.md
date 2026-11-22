@@ -295,6 +295,8 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
 
 - Windows 原生轨道：`dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`
 - Apple 原生轨道（CI/macOS）：`xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug -sdk iphonesimulator build` + `xcodebuild -workspace macos/Runner.xcworkspace -scheme Runner -configuration Debug build`
+- 只编译不绑定具体模拟器型号：build-only 任务必须用 `-destination 'generic/platform=iOS Simulator'`。模拟器机型名称随 Xcode 版本变化，写死 `name=iPhone 16` 这类型号会在找不到该设备时直接退出，构建根本没进入编译阶段。需要运行 UI 测试时才指定具体设备。
+- 改动 workflow 文件时，同一提交把 `.github/workflows/<自身文件>` 加进该 workflow 的 `paths`，否则只改 YAML 不会触发验证。
 - HarmonyOS：`hflutter build hap --release`（`hflutter` 是本机 shell 包装，等价完整路径 `<Flutter-OH>/bin/flutter build hap --release`；Flutter-OH 需自行安装并配置 `DEVECO_SDK_HOME`，详见 `docs/development/harmonyos_build_and_sideload.md`）
 
 ### 语义一致性检查清单（原生 UI 适配必检）
