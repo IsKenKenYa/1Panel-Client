@@ -127,4 +127,50 @@ void main() {
       expect(config.toJson().containsKey('additionalCredentials'), isFalse);
     });
   });
+
+  group('存储凭据解析', () {
+    test('正常保存的条目带 apiKey 与 fields', () {
+      final secrets = decodeStoredCredential(
+        jsonEncode({'apiKey': 'k', 'fields': {'appId': 'x'}}),
+      );
+
+      expect(secrets?.apiKey, 'k');
+      expect(secrets?.fields['appId'], 'x');
+    });
+
+    test('早期迁移只写入 apiKey 时仍可读，fields 为空', () {
+      final secrets = decodeStoredCredential(jsonEncode({'apiKey': 'k'}));
+
+      expect(secrets?.apiKey, 'k');
+      expect(secrets?.fields, isEmpty);
+    });
+
+    test('同一份只含 apiKey 的条目连续解析结果一致', () {
+      final raw = jsonEncode({'apiKey': 'k'});
+
+      expect(decodeStoredCredential(raw)?.apiKey, 'k');
+      expect(decodeStoredCredential(raw)?.apiKey, 'k');
+      expect(decodeStoredCredential(raw)?.fields, isEmpty);
+    });
+
+    test('内容不是 JSON 时返回 null', () {
+      expect(decodeStoredCredential('not-json'), isNull);
+      expect(decodeStoredCredential(''), isNull);
+      expect(decodeStoredCredential('12345'), isNull);
+    });
+
+    test('缺少 apiKey 时返回 null', () {
+      expect(decodeStoredCredential(jsonEncode({'fields': {}})), isNull);
+      expect(decodeStoredCredential(jsonEncode({'apiKey': 1})), isNull);
+    });
+
+    test('fields 不是对象时回落为空映射', () {
+      final secrets = decodeStoredCredential(
+        jsonEncode({'apiKey': 'k', 'fields': 'unexpected'}),
+      );
+
+      expect(secrets?.apiKey, 'k');
+      expect(secrets?.fields, isEmpty);
+    });
+  });
 }

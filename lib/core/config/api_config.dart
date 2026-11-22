@@ -229,24 +229,8 @@ abstract final class ApiConfigManager {
   /// 解析新格式凭据；内容不是 JSON 对象或有缺失字段时返回 null。
   static ({String apiKey, Map<String, String> fields})? _decodeSecrets(
     String raw,
-  ) {
-    final Object? decoded;
-    try {
-      decoded = jsonDecode(raw);
-    } on FormatException {
-      return null;
-    }
-    if (decoded is! Map) return null;
-    final apiKey = decoded['apiKey'];
-    if (apiKey is! String) return null;
-    final rawFields = decoded['fields'];
-    return (
-      apiKey: apiKey,
-      fields: rawFields is Map
-          ? Map<String, String>.from(rawFields)
-          : const <String, String>{},
-    );
-  }
+  ) =>
+      decodeStoredCredential(raw);
 
   /// 旧版本把明文 API Key 存在 `api_config_api_key_<serverId>`。
   /// 升级后首次读取时搬到新键，写入成功后才清理旧键；旧键不存在返回 null。
@@ -258,9 +242,13 @@ abstract final class ApiConfigManager {
     final legacy = await vault.read(key: legacyKey);
     if (legacy == null || legacy.isEmpty) return null;
     final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
+    // 与正常保存使用同一结构，避免后续读取走不同的解析分支。
     await vault.write(
       key: _secretKey(migrated),
-      value: jsonEncode({'apiKey': legacy}),
+      value: jsonEncode({
+        'apiKey': legacy,
+        'fields': migrated.additionalCredentials,
+      }),
     );
     await vault.delete(key: legacyKey);
     return migrated;
@@ -478,4 +466,29 @@ abstract final class ApiConfigManager {
         if (error != null) throw error;
         return directory;
       });
+}
+
+/// 解析存储中的凭据条目。
+///
+/// 早期迁移只写入了 `apiKey`，正常保存写入 `apiKey` 与 `fields`，
+/// 两种结构都必须能读出来；内容无法识别时返回 null。
+({String apiKey, Map<String, String> fields})? decodeStoredCredential(
+  String raw,
+) {
+  final Object? decoded;
+  try {
+    decoded = jsonDecode(raw);
+  } on FormatException {
+    return null;
+  }
+  if (decoded is! Map) return null;
+  final apiKey = decoded['apiKey'];
+  if (apiKey is! String) return null;
+  final rawFields = decoded['fields'];
+  return (
+    apiKey: apiKey,
+    fields: rawFields is Map
+        ? Map<String, String>.from(rawFields)
+        : const <String, String>{},
+  );
 }
