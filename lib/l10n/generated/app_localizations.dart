@@ -24234,6 +24234,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fill in the required fields.'**
   String get firewallV2RequiredFields;
+
+  /// No description provided for @websitesCacheTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy Cache'**
+  String get websitesCacheTitle;
+
+  /// No description provided for @websitesCacheEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable cache'**
+  String get websitesCacheEnableLabel;
+
+  /// No description provided for @websitesCacheLimitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache limit'**
+  String get websitesCacheLimitLabel;
+
+  /// No description provided for @websitesCacheShareLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared cache'**
+  String get websitesCacheShareLabel;
+
+  /// No description provided for @websitesCacheExpireLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache expiry'**
+  String get websitesCacheExpireLabel;
+
+  /// No description provided for @websitesCacheLimitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits apply to the proxy cache on the panel server.'**
+  String get websitesCacheLimitHint;
+
+  /// No description provided for @websitesCacheNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number between 0 and 9999.'**
+  String get websitesCacheNumberHint;
+
+  /// No description provided for @websitesRealIpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Real IP'**
+  String get websitesRealIpTitle;
+
+  /// No description provided for @websitesRealIpEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable real IP'**
+  String get websitesRealIpEnableLabel;
+
+  /// No description provided for @websitesRealIpFromLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted source addresses'**
+  String get websitesRealIpFromLabel;
+
+  /// No description provided for @websitesRealIpHeaderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP header'**
+  String get websitesRealIpHeaderLabel;
+
+  /// No description provided for @websitesRealIpOtherLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom header'**
+  String get websitesRealIpOtherLabel;
+
+  /// No description provided for @websitesRealIpFromHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One CIDR or address per line.'**
+  String get websitesRealIpFromHint;
+
+  /// No description provided for @websitesRealIpFromRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the trusted source addresses.'**
+  String get websitesRealIpFromRequired;
+
+  /// No description provided for @websitesRealIpOtherRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the custom header name.'**
+  String get websitesRealIpOtherRequired;
+
+  /// No description provided for @websitesStreamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TCP/UDP Forwarding'**
+  String get websitesStreamTitle;
+
+  /// No description provided for @websitesStreamPortsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarding ports'**
+  String get websitesStreamPortsLabel;
+
+  /// No description provided for @websitesStreamUdpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'UDP'**
+  String get websitesStreamUdpLabel;
+
+  /// No description provided for @websitesStreamServersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Upstream servers'**
+  String get websitesStreamServersLabel;
+
+  /// No description provided for @websitesStreamServersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No upstream servers; configure load balance first.'**
+  String get websitesStreamServersEmpty;
+
+  /// No description provided for @websitesStreamHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate multiple ports with commas.'**
+  String get websitesStreamHelper;
+
+  /// No description provided for @websitesStreamAlgorithmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Algorithm'**
+  String get websitesStreamAlgorithmLabel;
+
+  /// No description provided for @websitesStreamPortsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least one forwarding port.'**
+  String get websitesStreamPortsRequired;
 }
 
 class _AppLocalizationsDelegate

@@ -12859,4 +12859,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firewallV2RequiredFields => 'Fill in the required fields.';
+
+  @override
+  String get websitesCacheTitle => 'Proxy Cache';
+
+  @override
+  String get websitesCacheEnableLabel => 'Enable cache';
+
+  @override
+  String get websitesCacheLimitLabel => 'Cache limit';
+
+  @override
+  String get websitesCacheShareLabel => 'Shared cache';
+
+  @override
+  String get websitesCacheExpireLabel => 'Cache expiry';
+
+  @override
+  String get websitesCacheLimitHint =>
+      'Limits apply to the proxy cache on the panel server.';
+
+  @override
+  String get websitesCacheNumberHint => 'Enter a number between 0 and 9999.';
+
+  @override
+  String get websitesRealIpTitle => 'Real IP';
+
+  @override
+  String get websitesRealIpEnableLabel => 'Enable real IP';
+
+  @override
+  String get websitesRealIpFromLabel => 'Trusted source addresses';
+
+  @override
+  String get websitesRealIpHeaderLabel => 'IP header';
+
+  @override
+  String get websitesRealIpOtherLabel => 'Custom header';
+
+  @override
+  String get websitesRealIpFromHint => 'One CIDR or address per line.';
+
+  @override
+  String get websitesRealIpFromRequired =>
+      'Enter the trusted source addresses.';
+
+  @override
+  String get websitesRealIpOtherRequired => 'Enter the custom header name.';
+
+  @override
+  String get websitesStreamTitle => 'TCP/UDP Forwarding';
+
+  @override
+  String get websitesStreamPortsLabel => 'Forwarding ports';
+
+  @override
+  String get websitesStreamUdpLabel => 'UDP';
+
+  @override
+  String get websitesStreamServersLabel => 'Upstream servers';
+
+  @override
+  String get websitesStreamServersEmpty =>
+      'No upstream servers; configure load balance first.';
+
+  @override
+  String get websitesStreamHelper => 'Separate multiple ports with commas.';
+
+  @override
+  String get websitesStreamAlgorithmLabel => 'Algorithm';
+
+  @override
+  String get websitesStreamPortsRequired =>
+      'Enter at least one forwarding port.';
 }

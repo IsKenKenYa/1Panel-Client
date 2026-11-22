@@ -42,6 +42,27 @@ struct WebsiteConfigHubView: View {
                           systemImage: "hand.raised.slash")
                 }
             }
+            Section {
+                NavigationLink {
+                    WebsiteProxyCacheView(websiteId: websiteId)
+                } label: {
+                    Label(translations.get("websitesCacheTitle", fallback: "Proxy Cache"),
+                          systemImage: "externaldrive.badge.timemachine")
+                }
+                NavigationLink {
+                    WebsiteRealIPView(websiteId: websiteId)
+                } label: {
+                    Label(translations.get("websitesRealIpTitle", fallback: "Real IP"),
+                          systemImage: "network.badge.shield.half.filled")
+                }
+                NavigationLink {
+                    WebsiteStreamView(websiteId: websiteId)
+                } label: {
+                    Label(translations.get("websitesStreamTitle",
+                                           fallback: "TCP/UDP Forwarding"),
+                          systemImage: "arrow.left.arrow.right")
+                }
+            }
         }
         .listStyle(.insetGrouped)
     }

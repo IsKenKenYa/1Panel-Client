@@ -200,6 +200,12 @@ struct WebsiteDetailView: View {
                 WebsiteRewriteSection(websiteId: websiteId, siteName: detail.alias)
             case "cors":
                 WebsiteCorsSection(websiteId: websiteId)
+            case "cache":
+                WebsiteProxyCacheSection(websiteId: websiteId)
+            case "realip":
+                WebsiteRealIPSection(websiteId: websiteId)
+            case "stream":
+                WebsiteStreamSection(websiteId: websiteId)
             case "leech":
                 WebsiteLeechSection(websiteId: websiteId)
             case "auth":
@@ -749,6 +755,9 @@ struct WebsiteDetailView: View {
         case "redirects": return translations.get("websiteRedirectTitle", fallback: "Redirect")
         case "rewrite": return translations.get("websiteRewriteTitle", fallback: "Rewrite")
         case "cors": return translations.get("websiteCorsTitle", fallback: "CORS")
+        case "cache": return translations.get("websitesCacheTitle", fallback: "Proxy Cache")
+        case "realip": return translations.get("websitesRealIpTitle", fallback: "Real IP")
+        case "stream": return translations.get("websitesStreamTitle", fallback: "TCP/UDP Forwarding")
         case "leech": return translations.get("websiteLeechTitle", fallback: "Anti-Leech")
         case "auth": return translations.get("websiteAuthTitle", fallback: "Authentication")
         case "certificates": return translations.get("websiteCertificatesTitle", fallback: "Certificates")
@@ -764,6 +773,9 @@ struct WebsiteDetailView: View {
         ("redirects", ""),
         ("rewrite", ""),
         ("cors", ""),
+        ("cache", ""),
+        ("realip", ""),
+        ("stream", ""),
         ("leech", ""),
         ("auth", ""),
         ("certificates", ""),

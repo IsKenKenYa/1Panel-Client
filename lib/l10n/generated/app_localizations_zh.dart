@@ -12476,4 +12476,73 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firewallV2RequiredFields => '请填写必填字段。';
+
+  @override
+  String get websitesCacheTitle => '代理缓存';
+
+  @override
+  String get websitesCacheEnableLabel => '启用缓存';
+
+  @override
+  String get websitesCacheLimitLabel => '缓存容量';
+
+  @override
+  String get websitesCacheShareLabel => '共享缓存容量';
+
+  @override
+  String get websitesCacheExpireLabel => '缓存过期时间';
+
+  @override
+  String get websitesCacheLimitHint => '容量与过期时间作用于面板服务器上的代理缓存。';
+
+  @override
+  String get websitesCacheNumberHint => '请输入 0 到 9999 之间的数字。';
+
+  @override
+  String get websitesRealIpTitle => '真实 IP';
+
+  @override
+  String get websitesRealIpEnableLabel => '启用真实 IP';
+
+  @override
+  String get websitesRealIpFromLabel => '可信来源地址';
+
+  @override
+  String get websitesRealIpHeaderLabel => 'IP 请求头';
+
+  @override
+  String get websitesRealIpOtherLabel => '自定义请求头';
+
+  @override
+  String get websitesRealIpFromHint => '每行填写一个 CIDR 或地址。';
+
+  @override
+  String get websitesRealIpFromRequired => '请填写可信来源地址。';
+
+  @override
+  String get websitesRealIpOtherRequired => '请填写自定义请求头名称。';
+
+  @override
+  String get websitesStreamTitle => 'TCP/UDP 转发';
+
+  @override
+  String get websitesStreamPortsLabel => '转发端口';
+
+  @override
+  String get websitesStreamUdpLabel => 'UDP';
+
+  @override
+  String get websitesStreamServersLabel => '上游服务器';
+
+  @override
+  String get websitesStreamServersEmpty => '暂无上游服务器，请先配置负载均衡。';
+
+  @override
+  String get websitesStreamHelper => '多个端口使用逗号分隔。';
+
+  @override
+  String get websitesStreamAlgorithmLabel => '调度算法';
+
+  @override
+  String get websitesStreamPortsRequired => '请至少填写一个转发端口。';
 }
