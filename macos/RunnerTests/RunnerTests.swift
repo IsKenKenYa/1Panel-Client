@@ -369,7 +369,8 @@ class MacContainerDetailModelTests: XCTestCase {
       name: "web-1",
       image: "nginx:latest",
       state: "running",
-      status: "Up 2 hours"
+      status: "Up 2 hours",
+      ports: []
     )
 
     XCTAssertEqual(container.name, "web-1")

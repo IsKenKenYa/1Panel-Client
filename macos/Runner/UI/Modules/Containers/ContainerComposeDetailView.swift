@@ -114,7 +114,7 @@ struct ContainerComposeDetailView: View {
                                         : .gray
                                 )
                             }
-                            Text(container.image)
+                            Text(container.image.isEmpty ? container.status : container.image)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
@@ -232,6 +232,7 @@ struct ContainerComposeDetailView: View {
         do {
             if !project.path.isEmpty {
                 content = try await store.loadContent(
+                    name: project.name,
                     path: project.path.split(separator: ",").first.map(String.init)
                         ?? project.path
                 )

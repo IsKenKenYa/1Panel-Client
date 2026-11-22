@@ -23,6 +23,12 @@ struct ContainerComposeContainer: Identifiable, Equatable {
     let image: String
     let state: String
     let status: String
+    let ports: [String]
+
+    var detailText: String {
+        if !image.isEmpty { return image }
+        return ports.isEmpty ? status : ports.joined(separator: ", ")
+    }
 }
 
 @MainActor
@@ -108,10 +114,10 @@ final class ContainerComposeStore: ObservableObject {
         return error
     }
 
-    func loadContent(path: String) async throws -> String {
+    func loadContent(name: String, path: String) async throws -> String {
         let raw = try await ChannelManager.shared.invokeDataMethodAsync(
             "getComposeContent",
-            arguments: ["path": path]
+            arguments: ["name": name, "path": path]
         )
         return raw as? String ?? ""
     }
@@ -154,7 +160,8 @@ final class ContainerComposeStore: ObservableObject {
                 name: name,
                 image: item["image"] as? String ?? "",
                 state: item["state"] as? String ?? "",
-                status: item["status"] as? String ?? ""
+                status: item["status"] as? String ?? "",
+                ports: (item["ports"] as? [Any] ?? []).map { "\($0)" }
             )
         }
     }
