@@ -15,6 +15,8 @@ struct SidebarView: View {
     private let systemItems: [SidebarItem] = [
         SidebarItem(id: "dashboard", titleKey: "serverModuleDashboard", symbolName: "gauge.with.dots.needle.bottom.100percent"),
         SidebarItem(id: "monitoring", titleKey: "serverModuleMonitoring", symbolName: "chart.xyaxis.line"),
+        SidebarItem(id: "logs", titleKey: "operationsLogsTitle", symbolName: "doc.text.magnifyingglass"),
+        SidebarItem(id: "security", titleKey: "navSecurity", symbolName: "shield"),
     ]
 
     private let moduleItems: [SidebarItem] = [

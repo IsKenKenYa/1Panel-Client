@@ -89,6 +89,8 @@
 		AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */; };
 		AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */; };
 		AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */; };
+		AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */; };
+		AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660016 /* SecurityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -207,6 +209,8 @@
 		BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteRewriteSection.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteSecuritySections.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteAuthSection.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LogsModuleView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660016 /* SecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SecurityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +410,8 @@ children = (
 				CC33DD44EE55FF6600770001 /* VirtualMachines */,
 				CC33DD44EE55FF6600770002 /* Alerts */,
 				CC33DD44EE55FF6600770003 /* ModelDownloader */,
+				CC33DD44EE55FF6600770004 /* Logs */,
+				CC33DD44EE55FF6600770005 /* Security */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -532,6 +538,22 @@ children = (
 				BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */,
 			);
 			path = ModelDownloader;
+			sourceTree = "<group>";
+		};
+		CC33DD44EE55FF6600770004 /* Logs */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */,
+			);
+			path = Logs;
+			sourceTree = "<group>";
+		};
+		CC33DD44EE55FF6600770005 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE55FF660016 /* SecurityView.swift */,
+			);
+			path = Security;
 			sourceTree = "<group>";
 		};
 		D892C033D9AEA8AC158ACF26 /* Files */ = {
@@ -853,6 +875,8 @@ children = (
 				AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */,
 				AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */,
 				AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */,
+				AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -76,6 +76,10 @@ struct MainShellView: View {
                 AlertModuleView()
             case "modelDownloader":
                 ModelDownloaderView()
+            case "logs":
+                LogsModuleView()
+            case "security":
+                SecurityView()
             case "files":
                 FilesView()
             case "monitoring":
