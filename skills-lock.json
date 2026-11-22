@@ -88,6 +88,13 @@
       "skillPath": "device-ai/appfunctions/SKILL.md",
       "computedHash": "0f995faa33d1241fc8e880cfadf6d41bc39fa034e2fe875d8567f1d28608e946"
     },
+    "appkit-interop": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/appkit-interop/SKILL.md",
+      "computedHash": "9fb0dbb63d93078e77919fe7b381872a5f46642bd562de3be9c1db2e5dba07bb"
+    },
     "arkui-imperative-node": {
       "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
       "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
@@ -159,6 +166,13 @@
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
       "computedHash": "7ff2383b40fe9d8f3e753d267d964fb2b44d120a948fd2a57c3b26ddfc318370",
       "installMode": "copy"
+    },
+    "build-run-debug": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/build-run-debug/SKILL.md",
+      "computedHash": "b0916ed707228bfa66657c590f5106068b818c7cead664f37dc864df8e0d7b87"
     },
     "camerax": {
       "source": "android/skills",
@@ -1191,6 +1205,41 @@
       "skillPath": "jetpack-compose/ink/ink-custom-brush-builder/SKILL.md",
       "computedHash": "da12388b77540f79e11c310838aa49e7c541770132231d779a42366305d20942"
     },
+    "ios-app-intents": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/ios-app-intents/SKILL.md",
+      "computedHash": "e9f16aab5fe4ec8b4a6605626d03434a72aa7c7a373fc7dd1e3772dc8063e66b"
+    },
+    "ios-debugger-agent": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/ios-debugger-agent/SKILL.md",
+      "computedHash": "cb530508738a01e1c3746eeb159b286e12efb7d02482f0dec6df7683c9b3bc74"
+    },
+    "ios-ettrace-performance": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/ios-ettrace-performance/SKILL.md",
+      "computedHash": "6d2659d22d4f9f3b050c2e3192e00aa78f063cad5d908e9bff3a6d411c6b2ebb"
+    },
+    "ios-memgraph-leaks": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/ios-memgraph-leaks/SKILL.md",
+      "computedHash": "65a8744e42055184df9f10e4c2b4a7509d2c7d114f3a01d9d33318c39671aa04"
+    },
+    "ios-simulator-browser": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/ios-simulator-browser/SKILL.md",
+      "computedHash": "babafc8b73c16aa6e93bc8996feecedeef3557bba264ab3659b1a2bb1b832132"
+    },
     "ios-to-android": {
       "source": "android/skills",
       "commit": "c72942584fff970dac86ced78b367fce0c441e52",
@@ -1420,6 +1469,13 @@
       "skillPath": "tv/leanback-to-compose-tv-migration/SKILL.md",
       "computedHash": "726f57d45afa7deaa3d0066dc64e08ac028f0ea766a4017f2b0b4ee8f90cc3fb"
     },
+    "liquid-glass": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/liquid-glass/SKILL.md",
+      "computedHash": "215274d911ed92bc7ff645003b6a21a94ac49149ef784dd4f311bce0b77835cf"
+    },
     "litert-lm": {
       "source": "android/skills",
       "commit": "c72942584fff970dac86ced78b367fce0c441e52",
@@ -1596,6 +1652,13 @@
       "skillPath": "navigation/navigation-event/SKILL.md",
       "computedHash": "40c0d24c4d12f9bd4303830e2f28a46c51ffaf4748ea2b6585e44aa0cd22eea9"
     },
+    "packaging-notarization": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/packaging-notarization/SKILL.md",
+      "computedHash": "06c43a242c5fad10e1878bfe49d6f878a1c6e88b0f71fb5efd99fd0cdbf633a8"
+    },
     "play-billing-library-version-upgrade": {
       "source": "android/skills",
       "commit": "c72942584fff970dac86ced78b367fce0c441e52",
@@ -1709,6 +1772,13 @@
       "computedHash": "8a3136caaea8fa439521917a624496769eba40cf8c59f62b4113a0dc916288a3",
       "installMode": "copy"
     },
+    "signing-entitlements": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/signing-entitlements/SKILL.md",
+      "computedHash": "7f44f0bf5a788853567a5b2e3685d108e977659111dd9667609eec09dd60bfa2"
+    },
     "skill-creator": {
       "source": "sickn33/agentic-awesome-skills",
       "commit": "4a52ab5ef117bdce2c6ba8d87dd64df0c840dfea",
@@ -1748,12 +1818,54 @@
       "skillPath": "skills/swift-concurrency/SKILL.md",
       "computedHash": "7977e699ad9eae2cccdb8de7520b5fb7701ed01a6bde52d47263bc30dec09482"
     },
+    "swiftpm-macos": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/swiftpm-macos/SKILL.md",
+      "computedHash": "81f0bc0f18ab440959d0188efb816f57b866b969a5886be91e251b1144450c48"
+    },
+    "swiftui-liquid-glass": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/swiftui-liquid-glass/SKILL.md",
+      "computedHash": "999620897dabd32288983c4121cbaafb56a253605e1033fb19e4ad705ae13de7"
+    },
+    "swiftui-patterns": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/swiftui-patterns/SKILL.md",
+      "computedHash": "614038aef272a694afa925e06e0ae254b146a0fdae0fea9a7f039f6dc17b3f8a"
+    },
+    "swiftui-performance-audit": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/swiftui-performance-audit/SKILL.md",
+      "computedHash": "7c25f4ab33216b77b2473b0d47ad255beb6c49e2787ee951b25e32e6acf528f3"
+    },
     "swiftui-pro": {
       "source": "twostraws/SwiftUI-Agent-Skill",
       "commit": "f2920b63995263f57b3e198674e89a602efba6d2",
       "sourceType": "github",
       "skillPath": "swiftui-pro/SKILL.md",
       "computedHash": "5ae476da16f2b0af60385b856cdcb121a4f4675ddc06c27e81259f12e987aeb1"
+    },
+    "swiftui-ui-patterns": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/swiftui-ui-patterns/SKILL.md",
+      "computedHash": "87fe86ba9cecaa999ee0526e7abc40b034cecc3513d54f40d982e91d636a5938"
+    },
+    "swiftui-view-refactor": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-ios-apps/skills/swiftui-view-refactor/SKILL.md",
+      "computedHash": "631d4c9df70a263e2ee3b0bfcddc9caf5e204c4a6bff2604b0a43b9219bc5cee"
     },
     "tdd": {
       "source": "mattpocock/skills",
@@ -1770,6 +1882,20 @@
       "skillPath": "skills/productivity/teach/SKILL.md",
       "computedHash": "31bb3eed09dd2787e290e933def99fbf7d65044a29119c224af47c01404ab228",
       "installMode": "copy"
+    },
+    "telemetry": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/telemetry/SKILL.md",
+      "computedHash": "62eaa8a2d5d72b1ba3b264fea948e30edc08af0043ac818473299bb7c91f49f0"
+    },
+    "test-triage": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/test-triage/SKILL.md",
+      "computedHash": "9ac5e86695f0a985e9b955f4cb2344b72d14588047673c1157e0d81a39f214c2"
     },
     "testing-setup": {
       "source": "android/skills",
@@ -1850,6 +1976,13 @@
       "skillPath": "identity/verified-email/SKILL.md",
       "computedHash": "c504fb556f1814a38996e434405ede4d645cd50de73d8377154a11ce6f625c08"
     },
+    "view-refactor": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/view-refactor/SKILL.md",
+      "computedHash": "5ffaee7c3fe8897ac20a0a4fb8ba05204ec9f333083a71c56bc385dbb5f55826"
+    },
     "wait-what": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -1879,6 +2012,13 @@
       "sourceType": "github",
       "skillPath": "wear/wear-widgets/SKILL.md",
       "computedHash": "faa61cf21e4dc9f2ced35d889e8ac93b14e19df51763c9b9248d70b2ac816a3a"
+    },
+    "window-management": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": "plugins/build-macos-apps/skills/window-management/SKILL.md",
+      "computedHash": "68b6266074311f53f26c7546f390be6bd1241981ce7f22bfcc1b4308a23f702b"
     },
     "wizard": {
       "source": "mattpocock/skills",
