@@ -68,6 +68,7 @@
 		E85733F846FD10D04D72898C /* FirewallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B7E867C44FF0754F9C9776 /* FirewallViewModel.swift */; };
 		EA96488EAB55560EF40525A4 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC83C63F81101B46E06F93F /* AIView.swift */; };
 		F5F9F9B535584AC7EA6EC4D6 /* FirewallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41356E02CEE3D8C4BF62145 /* FirewallView.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +166,7 @@
 		F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NativeFormSubmission.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				D10S00010000000000000011 /* AppleSharedUI in Frameworks */,
 				AD9C34BDC7AC590E90D4E987 /* Pods_Runner.framework in Frameworks */,
 			);
@@ -296,6 +299,7 @@
 		33CEB47122A05771004F2AC0 /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */,
 				33CEB47222A05771004F2AC0 /* Flutter-Debug.xcconfig */,
 				33CEB47422A05771004F2AC0 /* Flutter-Release.xcconfig */,
@@ -508,6 +512,7 @@
 			);
 			name = Runner;
 			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
 				E10S00010000000000000011 /* AppleSharedUI */,
 			);
 			productName = Runner;
@@ -555,6 +560,7 @@
 			);
 			mainGroup = 33CC10E42044A3C60003C045;
 			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
 				A10S00010000000000000011 /* XCLocalSwiftPackageReference "shared/apple_ui" */,
 			);
 			productRefGroup = 33CC10EE2044A3C60003C045 /* Products */;
@@ -1108,12 +1114,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../shared/apple_ui";
 		};
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		E10S00010000000000000011 /* AppleSharedUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppleSharedUI;
+		};
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
