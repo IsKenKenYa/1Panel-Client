@@ -71,6 +71,180 @@ Map<String, String> firewallFlatPayload(Map<String, dynamic> data) {
   return result;
 }
 
+/// V2 转发分区：基础信息平铺并附结构化转发规则。
+Map<String, Object?> firewallForwardPayload(
+  Map<String, dynamic> base,
+  Map<String, dynamic> rules,
+) {
+  final items = (rules['items'] as List? ?? const <dynamic>[])
+      .whereType<Map>()
+      .map((item) => item.cast<String, dynamic>())
+      .toList(growable: false);
+  final ruleRows = items.indexed.map((entry) {
+    final (index, item) = entry;
+    final rawId = item['id'];
+    final hasId = rawId is num ||
+        (rawId is String && rawId.trim().isNotEmpty);
+    return <String, Object?>{
+      'id': hasId ? rawId : 'row-$index',
+      'num': '${item['num'] ?? ''}',
+      'family': '${item['family'] ?? ''}',
+      'chain': '${item['chain'] ?? ''}',
+      'protocol': '${item['protocol'] ?? ''}',
+      'port': '${item['port'] ?? ''}',
+      'address': '${item['address'] ?? ''}',
+      'targetIP': '${item['targetIP'] ?? ''}',
+      'targetPort': '${item['targetPort'] ?? ''}',
+      'interface': '${item['interface'] ?? ''}',
+      'strategy': '${item['strategy'] ?? ''}',
+      'description': '${item['description'] ?? ''}',
+      'usedStatus': '${item['usedStatus'] ?? ''}',
+      'syncStatus': '${item['syncStatus'] ?? ''}',
+      'isDesired': item['isDesired'] == true,
+      'isRuntime': item['isRuntime'] == true,
+    };
+  }).toList(growable: false);
+  final total = rules['total'];
+  return <String, Object?>{
+    ...firewallFlatPayload(base),
+    'rules': ruleRows,
+    'total': total is num ? total : ruleRows.length,
+  };
+}
+
+/// V2 Docker 分区：基础信息平铺并附策略与发布端口。
+Map<String, Object?> firewallDockerPayload(
+  Map<String, dynamic> ports,
+  List<dynamic> endpoints,
+) {
+  final containers = (ports['containers'] as List? ?? endpoints)
+      .whereType<Map>()
+      .map((item) => item.cast<String, dynamic>())
+      .toList(growable: false);
+  final policyRows = <Map<String, Object?>>[];
+  final publishedRows = <Map<String, Object?>>[];
+  final seenPolicies = <String>{};
+  final seenPublished = <String>{};
+
+  void collect(List<dynamic> source) {
+    for (final raw in source.whereType<Map>()) {
+      final endpoint = raw.cast<String, dynamic>();
+      final hostIP = '${endpoint['hostIP'] ?? ''}';
+      final hostPort = '${endpoint['hostPort'] ?? ''}';
+      final protocolName = '${endpoint['protocol'] ?? ''}';
+      final containerName = '${endpoint['containerName'] ?? ''}';
+      final publishedKey =
+          '$containerName|$hostIP|$hostPort|$protocolName|${endpoint['family'] ?? ''}';
+      if (seenPublished.add(publishedKey)) {
+        publishedRows.add(<String, Object?>{
+          'id': 'published-${publishedRows.length}',
+          'containerName': containerName,
+          'containerState': '${endpoint['containerState'] ?? ''}',
+          'application': '${endpoint['application'] ?? ''}',
+          'compose': '${endpoint['compose'] ?? ''}',
+          'family': '${endpoint['family'] ?? ''}',
+          'hostIP': hostIP,
+          'hostPort': hostPort,
+          'containerPort': '${endpoint['containerPort'] ?? ''}',
+          'protocol': protocolName,
+          'mode': '${endpoint['mode'] ?? ''}',
+          'effective': endpoint['effective'] == true,
+          'trafficPath': '${endpoint['trafficPath'] ?? ''}',
+        });
+      }
+      final policyUUID = '${endpoint['policyUUID'] ?? ''}'.trim();
+      if (policyUUID.isEmpty || !seenPolicies.add(policyUUID)) {
+        continue;
+      }
+      policyRows.add(<String, Object?>{
+        'id': policyUUID,
+        'hostIP': hostIP,
+        'hostPort': hostPort,
+        'family': '${endpoint['family'] ?? ''}',
+        'protocol': protocolName,
+        'mode': '${endpoint['mode'] ?? ''}',
+        'sources': [
+          for (final source in endpoint['sources'] as List? ?? const [])
+            '$source',
+        ],
+        'containerName': containerName,
+        'containerState': '${endpoint['containerState'] ?? ''}',
+        'application': '${endpoint['application'] ?? ''}',
+        'compose': '${endpoint['compose'] ?? ''}',
+        'trafficPath': '${endpoint['trafficPath'] ?? ''}',
+        'managementTarget': '${endpoint['managementTarget'] ?? ''}',
+        'effective': endpoint['effective'] == true,
+      });
+    }
+  }
+
+  for (final container in containers) {
+    collect(container['endpoints'] as List? ?? const <dynamic>[]);
+  }
+  collect(ports['orphanPolicies'] as List? ?? const <dynamic>[]);
+
+  final base = ports['base'];
+  return <String, Object?>{
+    ...firewallFlatPayload(
+      base is Map ? base.cast<String, dynamic>() : const <String, dynamic>{},
+    ),
+    'policies': policyRows,
+    'publishedPorts': publishedRows,
+  };
+}
+
+/// V2 设置分区：配置平铺并附端口白名单与后端分组。
+Map<String, Object?> firewallSettingsPayload(Map<String, dynamic> settings) {
+  final whitelist =
+      (settings['portWhiteList'] as List? ?? const <dynamic>[])
+          .whereType<Map>()
+          .map((row) => row.cast<String, dynamic>())
+          .indexed
+          .map((entry) {
+            final (index, rule) = entry;
+            return <String, Object?>{
+              'id': 'whitelist-$index',
+              'port': '${rule['port'] ?? ''}',
+              'protocol': '${rule['protocol'] ?? ''}',
+              'type': '${rule['type'] ?? ''}',
+              'sources': [
+                for (final source in rule['sources'] as List? ?? const [])
+                  '$source',
+              ],
+            };
+          })
+          .toList(growable: false);
+  final backends = <Map<String, Object?>>[];
+  for (final subsystem in const ['system', 'forwarding', 'docker']) {
+    final group = settings[subsystem];
+    if (group is! Map) continue;
+    final options = (group['options'] as List? ?? const <dynamic>[])
+        .whereType<Map>()
+        .map((option) => option.cast<String, dynamic>())
+        .map((option) => <String, Object?>{
+              'name': '${option['name'] ?? ''}',
+              'installed': option['installed'] == true,
+              'active': option['active'] == true,
+              'initialized': option['initialized'] == true,
+              'bound': option['bound'] == true,
+              'supported': option['supported'] == true,
+              'message': '${option['message'] ?? ''}',
+            })
+        .toList(growable: false);
+    backends.add(<String, Object?>{
+      'subsystem': subsystem,
+      'selected': '${group['selected'] ?? ''}',
+      'current': '${group['current'] ?? ''}',
+      'options': options,
+    });
+  }
+  return <String, Object?>{
+    ...firewallFlatPayload(settings),
+    'whitelist': whitelist,
+    'backends': backends,
+  };
+}
+
 /// 从规则通道字段组装端口规则更新请求。
 FirewallUpdatePortRequest firewallPortUpdateRequest(Map arguments) {
   return FirewallUpdatePortRequest(

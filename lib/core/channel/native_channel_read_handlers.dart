@@ -1056,29 +1056,26 @@ class NativeChannelReadHandlers {
     return firewallBasePayload(info);
   }
 
-  /// V2 转发分区：基础信息与转发规则合并后平铺。
+  /// V2 转发分区：基础信息与结构化转发规则。
   static Future<dynamic> getFirewallV2Forward(dynamic arguments) async {
     final service = FirewallV2Service();
     final base = await service.loadForwardBase();
     final rules = await service.searchForwardRules(pageSize: 100);
-    return firewallFlatPayload(<String, dynamic>{...base, ...rules});
+    return firewallForwardPayload(base, rules);
   }
 
-  /// V2 Docker 分区：端口映射与端点。
+  /// V2 Docker 分区：基础信息、策略与发布端口。
   static Future<dynamic> getFirewallV2Docker(dynamic arguments) async {
     final service = FirewallV2Service();
     final ports = await service.loadDockerPorts();
     final endpoints = await service.loadDockerEndpoints();
-    return firewallFlatPayload(<String, dynamic>{
-      ...ports,
-      'endpoints': endpoints,
-    });
+    return firewallDockerPayload(ports, endpoints);
   }
 
-  /// V2 设置分区。
+  /// V2 设置分区：配置、端口白名单与后端分组。
   static Future<dynamic> getFirewallV2Settings(dynamic arguments) async {
     final settings = await FirewallV2Service().loadSettings();
-    return firewallFlatPayload(settings);
+    return firewallSettingsPayload(settings);
   }
 
   /// 定时任务：返回任务列表（含下次执行时间预览）。
