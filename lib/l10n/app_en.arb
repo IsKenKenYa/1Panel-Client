@@ -5305,5 +5305,16 @@
   "logsOperationPathLabel": "Request path",
   "securitySshDetailTitle": "SSH Service Details",
   "securityPanelSslDetailTitle": "Panel SSL Details",
-  "securityPanelSslExpireDateLabel": "Expire date"
+  "securityPanelSslExpireDateLabel": "Expire date",
+  "firewallV2BatchDockerAction": "Batch modify",
+  "firewallV2DockerSelectPolicies": "Select policies",
+  "firewallV2DockerBatchApply": "Apply to selected",
+  "firewallV2DockerImportAction": "Import JSON",
+  "firewallV2DockerImportHint": "Paste a policy array or an object with a policies array.",
+  "firewallV2DockerImportInvalid": "Invalid JSON.",
+  "firewallV2NoSelection": "Select at least one policy.",
+  "firewallV2BackendActions": "Backend actions",
+  "firewallV2BackendInitializeAction": "Initialize backend",
+  "firewallV2BackendCleanupAction": "Cleanup backend",
+  "firewallV2BackendActionsHint": "Operations apply to the selected backend and can change firewall rules."
 }

@@ -1,22 +1,33 @@
+import Foundation
 import SwiftUI
 
 /// 转发规则创建表单，两端共用。
 public struct ForwardRuleFormView: View {
     @ObservedObject private var store: FirewallV2Store
+    private let editor: ForwardRuleEditor
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.translationsProvider) private var translations
 
-    @State private var protocolName = "tcp"
-    @State private var port = ""
-    @State private var targetIP = ""
-    @State private var targetPort = ""
-    @State private var interfaceName = ""
+    @State private var protocolName: String
+    @State private var port: String
+    @State private var targetIP: String
+    @State private var targetPort: String
+    @State private var interfaceName: String
     @State private var isSaving = false
     @State private var errorMessage: String?
 
-    public init(store: FirewallV2Store) {
+    public init(store: FirewallV2Store, editor: ForwardRuleEditor = ForwardRuleEditor()) {
         self.store = store
+        self.editor = editor
+        let rule = editor.rule
+        _protocolName = State(initialValue: rule.map {
+            $0.protocolName.isEmpty ? "tcp" : $0.protocolName
+        } ?? "tcp")
+        _port = State(initialValue: rule?.port ?? "")
+        _targetIP = State(initialValue: rule?.targetIP ?? "")
+        _targetPort = State(initialValue: rule?.targetPort ?? "")
+        _interfaceName = State(initialValue: rule?.interfaceName ?? "")
     }
 
     public var body: some View {
@@ -46,7 +57,9 @@ public struct ForwardRuleFormView: View {
                     }
                 }
             }
-            .navigationTitle(t("firewallV2Forward", "Port Forwarding"))
+            .navigationTitle(editor.rule == nil
+                ? t("firewallV2Forward", "Port Forwarding")
+                : t("commonEdit", "Edit"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(t("commonCancel", "Cancel")) { dismiss() }
@@ -70,13 +83,24 @@ public struct ForwardRuleFormView: View {
         }
         isSaving = true
         do {
-            try await store.addForwardRule(
-                port: trimmedPort,
-                protocolName: protocolName,
-                targetIP: targetIP.trimmingCharacters(in: .whitespaces),
-                targetPort: trimmedTargetPort,
-                interfaceName: interfaceName.trimmingCharacters(in: .whitespaces)
-            )
+            if let rule = editor.rule {
+                try await store.updateForwardRule(
+                    rule,
+                    port: trimmedPort,
+                    protocolName: protocolName,
+                    targetIP: targetIP.trimmingCharacters(in: .whitespaces),
+                    targetPort: trimmedTargetPort,
+                    interfaceName: interfaceName.trimmingCharacters(in: .whitespaces)
+                )
+            } else {
+                try await store.addForwardRule(
+                    port: trimmedPort,
+                    protocolName: protocolName,
+                    targetIP: targetIP.trimmingCharacters(in: .whitespaces),
+                    targetPort: trimmedTargetPort,
+                    interfaceName: interfaceName.trimmingCharacters(in: .whitespaces)
+                )
+            }
             dismiss()
         } catch {
             errorMessage = actionMessage(error)
@@ -100,21 +124,38 @@ public struct ForwardRuleFormView: View {
 /// Docker 端口防护策略创建表单，两端共用。
 public struct DockerPolicyFormView: View {
     @ObservedObject private var store: FirewallV2Store
+    private let editor: DockerPolicyEditor
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.translationsProvider) private var translations
 
-    @State private var family = "ipv4"
-    @State private var hostIP = "0.0.0.0"
-    @State private var hostPort = ""
-    @State private var protocolName = "tcp"
-    @State private var mode = "deny_sources"
-    @State private var sources = ""
+    @State private var family: String
+    @State private var hostIP: String
+    @State private var hostPort: String
+    @State private var protocolName: String
+    @State private var mode: String
+    @State private var sources: String
     @State private var isSaving = false
     @State private var errorMessage: String?
 
-    public init(store: FirewallV2Store) {
+    public init(store: FirewallV2Store, editor: DockerPolicyEditor = DockerPolicyEditor()) {
         self.store = store
+        self.editor = editor
+        let policy = editor.policy
+        _family = State(initialValue: policy.map {
+            $0.family.isEmpty ? "ipv4" : $0.family
+        } ?? "ipv4")
+        _hostIP = State(initialValue: policy.map {
+            $0.hostIP.isEmpty ? "0.0.0.0" : $0.hostIP
+        } ?? "0.0.0.0")
+        _hostPort = State(initialValue: policy?.hostPort ?? "")
+        _protocolName = State(initialValue: policy.map {
+            $0.protocolName.isEmpty ? "tcp" : $0.protocolName
+        } ?? "tcp")
+        _mode = State(initialValue: policy.map {
+            $0.mode.isEmpty ? "deny_sources" : $0.mode
+        } ?? "deny_sources")
+        _sources = State(initialValue: policy?.sources.joined(separator: ", ") ?? "")
     }
 
     public var body: some View {
@@ -151,7 +192,9 @@ public struct DockerPolicyFormView: View {
                     }
                 }
             }
-            .navigationTitle(t("firewallV2AddDockerPolicy", "Add Docker policy"))
+            .navigationTitle(editor.policy == nil
+                ? t("firewallV2AddDockerPolicy", "Add Docker policy")
+                : t("commonEdit", "Edit"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(t("commonCancel", "Cancel")) { dismiss() }
@@ -174,14 +217,22 @@ public struct DockerPolicyFormView: View {
         }
         isSaving = true
         do {
-            try await store.addDockerPolicy(
-                family: family,
-                hostIP: hostIP.trimmingCharacters(in: .whitespaces),
-                hostPort: portValue,
-                mode: mode,
-                protocolName: protocolName,
-                sources: Self.splitSources(sources)
-            )
+            if let policy = editor.policy {
+                try await store.updateDockerPolicy(
+                    policy,
+                    mode: mode,
+                    sources: Self.splitSources(sources)
+                )
+            } else {
+                try await store.addDockerPolicy(
+                    family: family,
+                    hostIP: hostIP.trimmingCharacters(in: .whitespaces),
+                    hostPort: portValue,
+                    mode: mode,
+                    protocolName: protocolName,
+                    sources: Self.splitSources(sources)
+                )
+            }
             dismiss()
         } catch {
             errorMessage = actionMessage(error)
@@ -226,6 +277,200 @@ public struct DockerPolicyFormView: View {
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
     }
+
+    private func t(_ key: String, _ fallback: String) -> String {
+        translations?.get(key, fallback: fallback) ?? fallback
+    }
+}
+
+/// Docker 端口策略批量修改与 JSON 导入，两端共用。
+public struct DockerPolicyBatchFormView: View {
+    @ObservedObject private var store: FirewallV2Store
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.translationsProvider) private var translations
+
+    @State private var selectedIDs: Set<String> = []
+    @State private var mode = "deny_sources"
+    @State private var sources = ""
+    @State private var importText = ""
+    @State private var isSaving = false
+    @State private var errorMessage: String?
+
+    public init(store: FirewallV2Store) {
+        self.store = store
+    }
+
+    public var body: some View {
+        NavigationStack {
+            Form {
+                Section(t("firewallV2DockerSelectPolicies", "Select policies")) {
+                    if store.dockerPolicies.isEmpty {
+                        Text(t("firewallV2Empty", "No records"))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(store.dockerPolicies) { policy in
+                            Button {
+                                toggle(policy.id)
+                            } label: {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(policy.hostText)
+                                        Text(policy.mode)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if selectedIDs.contains(policy.id) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                    } else {
+                                        Image(systemName: "circle")
+                                    }
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                Section {
+                    Picker(t("firewallV2PolicyModeLabel", "Policy mode"), selection: $mode) {
+                        ForEach(Self.modes, id: \.self) { value in
+                            Text(modeTitle(value)).tag(value)
+                        }
+                    }
+                    TextField(t("firewallV2SourcesLabel", "Sources"), text: $sources)
+                    Button {
+                        Task { await applySelection() }
+                    } label: {
+                        Text(t("firewallV2DockerBatchApply", "Apply to selected"))
+                    }
+                    .disabled(isSaving || selectedIDs.isEmpty)
+                } footer: {
+                    Text(t("firewallV2SourcesHint",
+                           "Separate multiple addresses with commas."))
+                }
+                Section {
+                    TextEditor(text: $importText)
+                        .font(.system(.footnote, design: .monospaced))
+                        .frame(minHeight: 120)
+                    Button {
+                        Task { await importPolicies() }
+                    } label: {
+                        Text(t("firewallV2DockerImportAction", "Import JSON"))
+                    }
+                    .disabled(isSaving)
+                } header: {
+                    Text(t("firewallV2DockerImportAction", "Import JSON"))
+                } footer: {
+                    Text(t("firewallV2DockerImportHint",
+                           "Paste a policy array or an object with a policies array."))
+                }
+                if let errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .navigationTitle(t("firewallV2BatchDockerAction", "Batch modify"))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(t("commonCancel", "Cancel")) { dismiss() }
+                }
+            }
+        }
+    }
+
+    private func toggle(_ id: String) {
+        if selectedIDs.contains(id) {
+            selectedIDs.remove(id)
+        } else {
+            selectedIDs.insert(id)
+        }
+    }
+
+    private func applySelection() async {
+        let policies = store.dockerPolicies.filter { selectedIDs.contains($0.id) }
+        guard !policies.isEmpty else {
+            errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
+            return
+        }
+        isSaving = true
+        do {
+            try await store.updateDockerPolicies(
+                policies,
+                mode: mode,
+                sources: DockerPolicyFormView.splitSources(sources)
+            )
+            dismiss()
+        } catch {
+            errorMessage = actionMessage(error)
+        }
+        isSaving = false
+    }
+
+    private func importPolicies() async {
+        let text = importText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else {
+            errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
+            return
+        }
+        let data = Data(text.utf8)
+        let object = try? JSONSerialization.jsonObject(with: data)
+        let policies: [[String: Any]]
+        if let array = object as? [[String: Any]] {
+            policies = array
+        } else if let dict = object as? [String: Any],
+                  let list = dict["policies"] as? [[String: Any]] {
+            policies = list
+        } else {
+            errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
+            return
+        }
+        guard !policies.isEmpty else {
+            errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
+            return
+        }
+        isSaving = true
+        do {
+            try await store.importDockerPolicies(policies)
+            dismiss()
+        } catch {
+            errorMessage = actionMessage(error)
+        }
+        isSaving = false
+    }
+
+    private func modeTitle(_ value: String) -> String {
+        switch value {
+        case "allow_sources":
+            return t("firewallV2ModeAllowSources", "Allow listed sources")
+        case "deny_all":
+            return t("firewallV2ModeDenyAll", "Deny all")
+        case "accept_sources":
+            return t("firewallV2ModeAcceptSources", "Accept listed sources")
+        case "accept_all":
+            return t("firewallV2ModeAcceptAll", "Accept all")
+        default:
+            return t("firewallV2ModeDenySources", "Deny listed sources")
+        }
+    }
+
+    private func actionMessage(_ error: Error) -> String {
+        if let message = (error as? FirewallV2ActionError)?.errorDescription,
+           !message.isEmpty {
+            return message
+        }
+        return t("commonOperationFailed", "Operation failed")
+    }
+
+    private static let modes = [
+        "deny_sources",
+        "allow_sources",
+        "deny_all",
+        "accept_sources",
+        "accept_all",
+    ]
 
     private func t(_ key: String, _ fallback: String) -> String {
         translations?.get(key, fallback: fallback) ?? fallback
@@ -359,6 +604,7 @@ public struct FirewallBackendFormView: View {
 
     @State private var subsystem = "system"
     @State private var pendingBackend: String?
+    @State private var pendingOperation: String?
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -381,21 +627,29 @@ public struct FirewallBackendFormView: View {
                         Button {
                             pendingBackend = option.name
                         } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(option.name)
-                                    Text(statusText(option))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                if option.name == selected {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
+                            backendRow(option)
                         }
                         .disabled(isSaving || !option.supported)
                     }
+                }
+                Section {
+                    Button {
+                        pendingOperation = "initialize"
+                    } label: {
+                        Text(t("firewallV2BackendInitializeAction", "Initialize backend"))
+                    }
+                    .disabled(isSaving || selected.isEmpty)
+                    Button {
+                        pendingOperation = "cleanup"
+                    } label: {
+                        Text(t("firewallV2BackendCleanupAction", "Cleanup backend"))
+                    }
+                    .disabled(isSaving || selected.isEmpty)
+                } header: {
+                    Text(t("firewallV2BackendActions", "Backend actions"))
+                } footer: {
+                    Text(t("firewallV2BackendActionsHint",
+                           "Operations apply to the selected backend and can change firewall rules."))
                 }
                 if let errorMessage {
                     Section {
@@ -427,6 +681,23 @@ public struct FirewallBackendFormView: View {
             } message: {
                 Text(t("firewallV2ConfirmTitle", "Confirm the firewall change"))
             }
+            .confirmationDialog(
+                operationConfirmTitle,
+                isPresented: Binding(
+                    get: { pendingOperation != nil },
+                    set: { if !$0 { pendingOperation = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button(operationConfirmTitle) {
+                    Task { await runBackendOperation() }
+                }
+                Button(t("commonCancel", "Cancel"), role: .cancel) {
+                    pendingOperation = nil
+                }
+            } message: {
+                Text(t("firewallV2ConfirmTitle", "Confirm the firewall change"))
+            }
         }
     }
 
@@ -447,6 +718,14 @@ public struct FirewallBackendFormView: View {
         return "\(subsystemTitle(subsystem)): \(pendingBackend)"
     }
 
+    private var operationConfirmTitle: String {
+        guard let pendingOperation else { return "" }
+        let label = pendingOperation == "initialize"
+            ? t("firewallV2BackendInitializeAction", "Initialize backend")
+            : t("firewallV2BackendCleanupAction", "Cleanup backend")
+        return "\(subsystemTitle(subsystem)): \(label)"
+    }
+
     private func submit() async {
         guard let backend = pendingBackend else { return }
         pendingBackend = nil
@@ -458,6 +737,42 @@ public struct FirewallBackendFormView: View {
             errorMessage = actionMessage(error)
         }
         isSaving = false
+    }
+
+    private func runBackendOperation() async {
+        guard let operation = pendingOperation else { return }
+        pendingOperation = nil
+        guard !selected.isEmpty else {
+            errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
+            return
+        }
+        isSaving = true
+        do {
+            try await store.operateBackend(
+                subsystem: subsystem,
+                backend: selected,
+                operation: operation
+            )
+            dismiss()
+        } catch {
+            errorMessage = actionMessage(error)
+        }
+        isSaving = false
+    }
+
+    private func backendRow(_ option: FirewallBackendOption) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(option.name)
+                Text(statusText(option))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if option.name == selected {
+                Image(systemName: "checkmark")
+            }
+        }
     }
 
     private func subsystemTitle(_ value: String) -> String {

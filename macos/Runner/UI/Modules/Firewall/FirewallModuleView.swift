@@ -76,8 +76,9 @@ struct FirewallModuleView: View {
     @State private var pendingForwardDelete: FirewallForwardRule?
     @State private var pendingDockerDelete: FirewallDockerPolicy?
     @State private var pendingWhitelistDelete: FirewallWhitelistRule?
-    @State private var showForwardForm = false
-    @State private var showDockerForm = false
+    @State private var forwardEditor: ForwardRuleEditor?
+    @State private var dockerEditor: DockerPolicyEditor?
+    @State private var showDockerBatch = false
     @State private var whitelistEditor: WhitelistRuleEditor?
     @State private var showBackendForm = false
     @State private var actionError: String?
@@ -123,7 +124,7 @@ struct FirewallModuleView: View {
                     }
                 } else if section == "forward" {
                     Button {
-                        showForwardForm = true
+                        forwardEditor = ForwardRuleEditor()
                     } label: {
                         Label(translations.get("firewallV2AddForwardRule",
                                                fallback: "Add forward rule"),
@@ -131,11 +132,24 @@ struct FirewallModuleView: View {
                     }
                 } else if section == "docker" {
                     Button {
-                        showDockerForm = true
+                        dockerEditor = DockerPolicyEditor()
                     } label: {
                         Label(translations.get("firewallV2AddDockerPolicy",
                                                fallback: "Add Docker policy"),
                               systemImage: "plus")
+                    }
+                    Menu {
+                        Button {
+                            showDockerBatch = true
+                        } label: {
+                            Label(translations.get("firewallV2BatchDockerAction",
+                                                   fallback: "Batch modify"),
+                                  systemImage: "square.stack.3d.up")
+                        }
+                    } label: {
+                        Label(translations.get("firewallV2BatchDockerAction",
+                                               fallback: "Batch modify"),
+                              systemImage: "ellipsis.circle")
                     }
                 } else if section == "settings" {
                     Button {
@@ -169,11 +183,14 @@ struct FirewallModuleView: View {
                 rules.fetchRules(kind: item.kind)
             }
         }
-        .sheet(isPresented: $showForwardForm) {
-            ForwardRuleFormView(store: v2)
+        .sheet(item: $forwardEditor) { item in
+            ForwardRuleFormView(store: v2, editor: item)
         }
-        .sheet(isPresented: $showDockerForm) {
-            DockerPolicyFormView(store: v2)
+        .sheet(item: $dockerEditor) { item in
+            DockerPolicyFormView(store: v2, editor: item)
+        }
+        .sheet(isPresented: $showDockerBatch) {
+            DockerPolicyBatchFormView(store: v2)
         }
         .sheet(item: $whitelistEditor) { item in
             WhitelistRuleFormView(store: v2, editor: item)
@@ -482,6 +499,12 @@ struct FirewallModuleView: View {
                                 }
                                 Spacer()
                                 Menu {
+                                    Button {
+                                        forwardEditor = ForwardRuleEditor(rule: rule)
+                                    } label: {
+                                        Label(translations.get("commonEdit", fallback: "Edit"),
+                                              systemImage: "pencil")
+                                    }
                                     Button(role: .destructive) {
                                         pendingForwardDelete = rule
                                     } label: {
@@ -570,6 +593,12 @@ struct FirewallModuleView: View {
                                 }
                                 Spacer()
                                 Menu {
+                                    Button {
+                                        dockerEditor = DockerPolicyEditor(policy: policy)
+                                    } label: {
+                                        Label(translations.get("commonEdit", fallback: "Edit"),
+                                              systemImage: "pencil")
+                                    }
                                     Button(role: .destructive) {
                                         pendingDockerDelete = policy
                                     } label: {

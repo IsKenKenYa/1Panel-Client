@@ -24456,6 +24456,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expire date'**
   String get securityPanelSslExpireDateLabel;
+
+  /// No description provided for @firewallV2BatchDockerAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch modify'**
+  String get firewallV2BatchDockerAction;
+
+  /// No description provided for @firewallV2DockerSelectPolicies.
+  ///
+  /// In en, this message translates to:
+  /// **'Select policies'**
+  String get firewallV2DockerSelectPolicies;
+
+  /// No description provided for @firewallV2DockerBatchApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply to selected'**
+  String get firewallV2DockerBatchApply;
+
+  /// No description provided for @firewallV2DockerImportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import JSON'**
+  String get firewallV2DockerImportAction;
+
+  /// No description provided for @firewallV2DockerImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a policy array or an object with a policies array.'**
+  String get firewallV2DockerImportHint;
+
+  /// No description provided for @firewallV2DockerImportInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid JSON.'**
+  String get firewallV2DockerImportInvalid;
+
+  /// No description provided for @firewallV2NoSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one policy.'**
+  String get firewallV2NoSelection;
+
+  /// No description provided for @firewallV2BackendActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend actions'**
+  String get firewallV2BackendActions;
+
+  /// No description provided for @firewallV2BackendInitializeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialize backend'**
+  String get firewallV2BackendInitializeAction;
+
+  /// No description provided for @firewallV2BackendCleanupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleanup backend'**
+  String get firewallV2BackendCleanupAction;
+
+  /// No description provided for @firewallV2BackendActionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations apply to the selected backend and can change firewall rules.'**
+  String get firewallV2BackendActionsHint;
 }
 
 class _AppLocalizationsDelegate

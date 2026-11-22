@@ -12974,4 +12974,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityPanelSslExpireDateLabel => 'Expire date';
+
+  @override
+  String get firewallV2BatchDockerAction => 'Batch modify';
+
+  @override
+  String get firewallV2DockerSelectPolicies => 'Select policies';
+
+  @override
+  String get firewallV2DockerBatchApply => 'Apply to selected';
+
+  @override
+  String get firewallV2DockerImportAction => 'Import JSON';
+
+  @override
+  String get firewallV2DockerImportHint =>
+      'Paste a policy array or an object with a policies array.';
+
+  @override
+  String get firewallV2DockerImportInvalid => 'Invalid JSON.';
+
+  @override
+  String get firewallV2NoSelection => 'Select at least one policy.';
+
+  @override
+  String get firewallV2BackendActions => 'Backend actions';
+
+  @override
+  String get firewallV2BackendInitializeAction => 'Initialize backend';
+
+  @override
+  String get firewallV2BackendCleanupAction => 'Cleanup backend';
+
+  @override
+  String get firewallV2BackendActionsHint =>
+      'Operations apply to the selected backend and can change firewall rules.';
 }

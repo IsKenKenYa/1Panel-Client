@@ -567,3 +567,119 @@ class LogAndSecurityDetailModelTests: XCTestCase {
         }
     }
 }
+
+private final class RecordingFirewallChannel: DataChannel {
+    private(set) var calls: [(method: String, arguments: [String: Any]?)] = []
+
+    func invoke(_ method: String, arguments: Any?) async throws -> Any? {
+        calls.append((method, arguments as? [String: Any]))
+        return ["success": true]
+    }
+}
+
+@MainActor
+final class FirewallV2StoreMutationTests: XCTestCase {
+    func testUpdateForwardRuleSendsRemoveAndAdd() async throws {
+        let channel = RecordingFirewallChannel()
+        let store = FirewallV2Store(channel: channel)
+        let rule = try XCTUnwrap(FirewallForwardRule(payload: [
+            "id": 1,
+            "port": "8080",
+            "protocol": "tcp",
+            "targetIP": "10.0.0.2",
+            "targetPort": "80",
+            "strategy": "accept",
+        ]))
+
+        try await store.updateForwardRule(
+            rule,
+            port: "9090",
+            protocolName: "udp",
+            targetIP: "10.0.0.3",
+            targetPort: "90",
+            interfaceName: "eth0"
+        )
+
+        let call = try XCTUnwrap(channel.calls.first)
+        XCTAssertEqual(call.method, "operateFirewallForwardRules")
+        let rules = try XCTUnwrap(call.arguments?["rules"] as? [[String: Any]])
+        XCTAssertEqual(rules.count, 2)
+        XCTAssertEqual(rules.first?["operation"] as? String, "remove")
+        XCTAssertEqual(rules.first?["port"] as? String, "8080")
+        XCTAssertEqual(rules.last?["operation"] as? String, "add")
+        XCTAssertEqual(rules.last?["port"] as? String, "9090")
+        XCTAssertEqual(rules.last?["targetIP"] as? String, "10.0.0.3")
+        XCTAssertEqual(rules.last?["interface"] as? String, "eth0")
+    }
+
+    func testBatchDockerPoliciesApplyModeToAll() async throws {
+        let channel = RecordingFirewallChannel()
+        let store = FirewallV2Store(channel: channel)
+        let first = try XCTUnwrap(FirewallDockerPolicy(payload: [
+            "id": "policy-a",
+            "hostIP": "0.0.0.0",
+            "hostPort": "8080",
+            "family": "ipv4",
+            "protocol": "tcp",
+            "mode": "deny_sources",
+        ]))
+        let second = try XCTUnwrap(FirewallDockerPolicy(payload: [
+            "id": "policy-b",
+            "hostIP": "::",
+            "hostPort": "8443",
+            "family": "ipv6",
+            "protocol": "tcp",
+            "mode": "deny_all",
+        ]))
+
+        try await store.updateDockerPolicies(
+            [first, second],
+            mode: "allow_sources",
+            sources: ["10.0.0.0/8"]
+        )
+
+        let call = try XCTUnwrap(channel.calls.first)
+        XCTAssertEqual(call.method, "upsertFirewallDockerPolicies")
+        let policies = try XCTUnwrap(call.arguments?["policies"] as? [[String: Any]])
+        XCTAssertEqual(policies.count, 2)
+        XCTAssertTrue(policies.allSatisfy { $0["mode"] as? String == "allow_sources" })
+        XCTAssertTrue(policies.allSatisfy {
+            ($0["sources"] as? [String]) == ["10.0.0.0/8"]
+        })
+        XCTAssertEqual(policies.first?["hostPort"] as? Int, 8080)
+        XCTAssertEqual(policies.last?["hostPort"] as? Int, 8443)
+    }
+
+    func testBackendOperationSendsInitialize() async throws {
+        let channel = RecordingFirewallChannel()
+        let store = FirewallV2Store(channel: channel)
+
+        try await store.operateBackend(
+            subsystem: "system",
+            backend: "nftables",
+            operation: "initialize"
+        )
+
+        let call = try XCTUnwrap(channel.calls.first)
+        XCTAssertEqual(call.method, "operateFirewallBackend")
+        XCTAssertEqual(call.arguments?["subsystem"] as? String, "system")
+        XCTAssertEqual(call.arguments?["backend"] as? String, "nftables")
+        XCTAssertEqual(call.arguments?["operation"] as? String, "initialize")
+    }
+
+    func testBackendOperationRejectsUnknownOperation() async {
+        let channel = RecordingFirewallChannel()
+        let store = FirewallV2Store(channel: channel)
+
+        do {
+            try await store.operateBackend(
+                subsystem: "system",
+                backend: "nftables",
+                operation: "restart"
+            )
+            XCTFail("Expected unsupported operation to throw")
+        } catch {
+            XCTAssertTrue(channel.calls.isEmpty)
+        }
+    }
+}

@@ -5007,5 +5007,16 @@
   "logsOperationPathLabel": "请求路径",
   "securitySshDetailTitle": "SSH 服务详情",
   "securityPanelSslDetailTitle": "面板 SSL 详情",
-  "securityPanelSslExpireDateLabel": "到期时间"
+  "securityPanelSslExpireDateLabel": "到期时间",
+  "firewallV2BatchDockerAction": "批量修改",
+  "firewallV2DockerSelectPolicies": "选择策略",
+  "firewallV2DockerBatchApply": "应用到所选策略",
+  "firewallV2DockerImportAction": "导入 JSON",
+  "firewallV2DockerImportHint": "粘贴策略数组或包含 policies 数组的对象。",
+  "firewallV2DockerImportInvalid": "JSON 无效。",
+  "firewallV2NoSelection": "请至少选择一条策略。",
+  "firewallV2BackendActions": "后端操作",
+  "firewallV2BackendInitializeAction": "初始化后端",
+  "firewallV2BackendCleanupAction": "清理后端",
+  "firewallV2BackendActionsHint": "操作作用于当前选中的后端，可能改变防火墙规则。"
 }

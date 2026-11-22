@@ -242,6 +242,24 @@ public struct WhitelistRuleEditor: Identifiable {
     }
 }
 
+public struct ForwardRuleEditor: Identifiable {
+    public let id = UUID()
+    public let rule: FirewallForwardRule?
+
+    public init(rule: FirewallForwardRule? = nil) {
+        self.rule = rule
+    }
+}
+
+public struct DockerPolicyEditor: Identifiable {
+    public let id = UUID()
+    public let policy: FirewallDockerPolicy?
+
+    public init(policy: FirewallDockerPolicy? = nil) {
+        self.policy = policy
+    }
+}
+
 /// 通道写入失败信息，供平台层映射为本地化提示。
 public enum FirewallV2ActionError: LocalizedError {
     case failed(String?)

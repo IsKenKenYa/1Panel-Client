@@ -123,6 +123,40 @@ open class FirewallV2Store: ObservableObject {
         await loadForward()
     }
 
+    public func updateForwardRule(
+        _ rule: FirewallForwardRule,
+        port: String,
+        protocolName: String,
+        targetIP: String,
+        targetPort: String,
+        interfaceName: String
+    ) async throws {
+        var remove: [String: Any] = [
+            "operation": "remove",
+            "port": rule.port,
+            "protocol": rule.protocolName,
+            "targetPort": rule.targetPort,
+        ]
+        if !rule.targetIP.isEmpty { remove["targetIP"] = rule.targetIP }
+        if !rule.interfaceName.isEmpty { remove["interface"] = rule.interfaceName }
+        if !rule.family.isEmpty { remove["family"] = rule.family }
+        if !rule.num.isEmpty { remove["num"] = rule.num }
+        var add: [String: Any] = [
+            "operation": "add",
+            "port": port,
+            "protocol": protocolName,
+            "targetPort": targetPort,
+        ]
+        if !targetIP.isEmpty { add["targetIP"] = targetIP }
+        if !interfaceName.isEmpty { add["interface"] = interfaceName }
+        if !rule.family.isEmpty { add["family"] = rule.family }
+        try await perform(
+            "operateFirewallForwardRules",
+            arguments: ["rules": [remove, add]]
+        )
+        await loadForward()
+    }
+
     public func addDockerPolicy(
         family: String,
         hostIP: String,
@@ -142,6 +176,53 @@ open class FirewallV2Store: ObservableObject {
         try await perform(
             "upsertFirewallDockerPolicies",
             arguments: ["policies": [policy]]
+        )
+        await loadDocker()
+    }
+
+    public func updateDockerPolicy(
+        _ policy: FirewallDockerPolicy,
+        mode: String,
+        sources: [String]
+    ) async throws {
+        var payload = dockerPolicyPayload(policy)
+        payload["mode"] = mode
+        payload["sources"] = sources
+        try await perform(
+            "upsertFirewallDockerPolicies",
+            arguments: ["policies": [payload]]
+        )
+        await loadDocker()
+    }
+
+    public func updateDockerPolicies(
+        _ policies: [FirewallDockerPolicy],
+        mode: String,
+        sources: [String]
+    ) async throws {
+        guard !policies.isEmpty else {
+            throw FirewallV2ActionError.failed("policies are required")
+        }
+        let payloads = policies.map { policy -> [String: Any] in
+            var payload = dockerPolicyPayload(policy)
+            payload["mode"] = mode
+            payload["sources"] = sources
+            return payload
+        }
+        try await perform(
+            "upsertFirewallDockerPolicies",
+            arguments: ["policies": payloads]
+        )
+        await loadDocker()
+    }
+
+    public func importDockerPolicies(_ policies: [[String: Any]]) async throws {
+        guard !policies.isEmpty else {
+            throw FirewallV2ActionError.failed("policies are required")
+        }
+        try await perform(
+            "upsertFirewallDockerPolicies",
+            arguments: ["import": true, "policies": policies]
         )
         await loadDocker()
     }
@@ -213,15 +294,44 @@ open class FirewallV2Store: ObservableObject {
     }
 
     public func selectBackend(subsystem: String, backend: String) async throws {
+        try await operateBackend(
+            subsystem: subsystem,
+            backend: backend,
+            operation: "select"
+        )
+    }
+
+    public func operateBackend(
+        subsystem: String,
+        backend: String,
+        operation: String
+    ) async throws {
+        guard ["select", "initialize", "cleanup"].contains(operation) else {
+            throw FirewallV2ActionError.failed("Unsupported operation: \(operation)")
+        }
         try await perform(
             "operateFirewallBackend",
             arguments: [
                 "subsystem": subsystem,
                 "backend": backend,
-                "operation": "select",
+                "operation": operation,
             ]
         )
         await loadSettings()
+    }
+
+    private func dockerPolicyPayload(_ policy: FirewallDockerPolicy) -> [String: Any] {
+        var payload: [String: Any] = [
+            "family": policy.family,
+            "hostIP": policy.hostIP,
+            "hostPort": Int(policy.hostPort) ?? 0,
+            "protocol": policy.protocolName,
+            "mode": policy.mode,
+            "sources": policy.sources,
+        ]
+        if payload["family"] as? String == "" { payload["family"] = "ipv4" }
+        if payload["protocol"] as? String == "" { payload["protocol"] = "tcp" }
+        return payload
     }
 
     private func whitelistPayload(

@@ -12587,4 +12587,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get securityPanelSslExpireDateLabel => '到期时间';
+
+  @override
+  String get firewallV2BatchDockerAction => '批量修改';
+
+  @override
+  String get firewallV2DockerSelectPolicies => '选择策略';
+
+  @override
+  String get firewallV2DockerBatchApply => '应用到所选策略';
+
+  @override
+  String get firewallV2DockerImportAction => '导入 JSON';
+
+  @override
+  String get firewallV2DockerImportHint => '粘贴策略数组或包含 policies 数组的对象。';
+
+  @override
+  String get firewallV2DockerImportInvalid => 'JSON 无效。';
+
+  @override
+  String get firewallV2NoSelection => '请至少选择一条策略。';
+
+  @override
+  String get firewallV2BackendActions => '后端操作';
+
+  @override
+  String get firewallV2BackendInitializeAction => '初始化后端';
+
+  @override
+  String get firewallV2BackendCleanupAction => '清理后端';
+
+  @override
+  String get firewallV2BackendActionsHint => '操作作用于当前选中的后端，可能改变防火墙规则。';
 }
