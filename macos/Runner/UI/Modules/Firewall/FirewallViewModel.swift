@@ -9,10 +9,10 @@ struct FirewallRuleModel: Identifiable {
     let description: String
     let family: String
     let chain: String
-    private let supportsLegacyChanges: Bool
-    private let serverId: String?
-    private let inventoryId: String?
-    private let canDelete: Bool?
+    let supportsLegacyChanges: Bool
+    let serverId: String?
+    let inventoryId: String?
+    let canDelete: Bool?
 
     var id: String { originalId }
 
@@ -45,19 +45,27 @@ struct FirewallRuleModel: Identifiable {
     }
 }
 
+enum FirewallRuleKind: String {
+    case port
+    case ip
+}
+
 class FirewallViewModel: ObservableObject {
     @Published var rules: [FirewallRuleModel] = []
     @Published var isLoading = false
     @Published private(set) var isProcessing = false
     @Published var errorMessage: String?
     @Published var hasLoadError = false
+    private(set) var kind: FirewallRuleKind = .port
 
-    func fetchRules() {
+    func fetchRules(kind: FirewallRuleKind = .port) {
         guard !isLoading, !isProcessing else { return }
+        self.kind = kind
         isLoading = true
         errorMessage = nil
         hasLoadError = false
-        ChannelManager.shared.invokeDataMethod("getFirewallRules") { [weak self] result in
+        let method = kind == .port ? "getFirewallRules" : "getFirewallIpRules"
+        ChannelManager.shared.invokeDataMethod(method) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 guard let dictArray = result as? [[String: Any]] else {
@@ -85,7 +93,7 @@ class FirewallViewModel: ObservableObject {
         ]
         let outcome = await ChannelManager.shared.invokeMutation("addFirewallRule", arguments: args)
         if outcome == .succeeded {
-            fetchRules()
+            fetchRules(kind: kind)
         }
         return outcome
     }
@@ -99,7 +107,7 @@ class FirewallViewModel: ObservableObject {
         isProcessing = false
         switch outcome {
         case .succeeded:
-            fetchRules()
+            fetchRules(kind: kind)
         case .failed(let message):
             errorMessage = message ?? TranslationsManager.shared.get("commonDeleteFailed", fallback: "Delete failed")
         }

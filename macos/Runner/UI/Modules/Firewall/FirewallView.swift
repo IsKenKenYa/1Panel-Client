@@ -16,7 +16,7 @@ struct FirewallView: View {
             } else if viewModel.hasLoadError && viewModel.rules.isEmpty {
                 ErrorView(
                     message: translations.get("commonLoadFailedTitle", fallback: "Failed to load firewall rules"),
-                    onRetry: viewModel.fetchRules
+                    onRetry: { viewModel.fetchRules() }
                 )
             } else if viewModel.rules.isEmpty {
                 EmptyStateView(

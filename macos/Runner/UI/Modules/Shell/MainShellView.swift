@@ -85,7 +85,7 @@ struct MainShellView: View {
             case "monitoring":
                 MonitoringView()
             case "firewall":
-                FirewallView()
+                FirewallModuleView()
             case "cronjobs":
                 CronJobsView()
             case "backups":
