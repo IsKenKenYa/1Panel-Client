@@ -80,6 +80,8 @@
 		B10S0001000000000000004C /* VMSnapshotSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004C /* VMSnapshotSheet.swift */; };
 		B10S0001000000000000004D /* VMHealthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004D /* VMHealthSheet.swift */; };
 		B10S0001000000000000004E /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004E /* VMInstanceMonitorView.swift */; };
+		B10S0001000000000000004F /* AlertModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004F /* AlertModuleView.swift */; };
+		B10S00010000000000000050 /* AlertRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000050 /* AlertRows.swift */; };
 		D10S00010000000000000001 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000001 /* AppleSharedUI */; };
 		D10S00010000000000000002 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000002 /* AppleSharedUI */; };
 		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
@@ -197,6 +199,8 @@
 		F10S0001000000000000004C /* VMSnapshotSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMSnapshotSheet.swift; sourceTree = "<group>"; };
 		F10S0001000000000000004D /* VMHealthSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMHealthSheet.swift; sourceTree = "<group>"; };
 		F10S0001000000000000004E /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004F /* AlertModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModuleView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000050 /* AlertRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertRows.swift; sourceTree = "<group>"; };
 		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -353,6 +357,7 @@
 				G10S00010000000000000012 /* AI */,
 				G10S00010000000000000013 /* Logs */,
 				G10S00010000000000000014 /* VirtualMachines */,
+				G10S00010000000000000015 /* Alerts */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -525,6 +530,15 @@
 				F10S0001000000000000004E /* VMInstanceMonitorView.swift */,
 			);
 			path = VirtualMachines;
+			sourceTree = "<group>";
+		};
+		G10S00010000000000000015 /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				F10S0001000000000000004F /* AlertModuleView.swift */,
+				F10S00010000000000000050 /* AlertRows.swift */,
+			);
+			path = Alerts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -835,6 +849,8 @@
 				B10S0001000000000000004C /* VMSnapshotSheet.swift in Sources */,
 				B10S0001000000000000004D /* VMHealthSheet.swift in Sources */,
 				B10S0001000000000000004E /* VMInstanceMonitorView.swift in Sources */,
+				B10S0001000000000000004F /* AlertModuleView.swift in Sources */,
+				B10S00010000000000000050 /* AlertRows.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

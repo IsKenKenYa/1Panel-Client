@@ -213,3 +213,100 @@ class VirtualMachineModelTests: XCTestCase {
         XCTAssertEqual(ModuleRoute(rawValue: "virtualMachines"), .virtualMachines)
     }
 }
+
+class AlertModelTests: XCTestCase {
+    func testRulePayloadDecodesStatusAndMethods() {
+        let rule = AlertRuleModel(payload: [
+            "id": 3,
+            "type": "cpu",
+            "title": "CPU alert",
+            "status": "Enable",
+            "statusTone": "positive",
+            "enabled": true,
+            "cycle": 30,
+            "count": 80,
+            "interval": 5,
+            "sendCount": 2,
+            "sendMethod": ["mail", "hook"],
+            "alertTriggerMode": "failed",
+        ])
+
+        XCTAssertEqual(rule.ruleId, 3)
+        XCTAssertEqual(rule.title, "CPU alert")
+        XCTAssertTrue(rule.enabled)
+        XCTAssertEqual(rule.statusTone, "positive")
+        XCTAssertEqual(rule.sendMethod, ["mail", "hook"])
+        XCTAssertEqual(rule.interval, 5)
+    }
+
+    func testLogPayloadDecodesFlattenedFields() {
+        let log = AlertLogModel(payload: [
+            "id": 9,
+            "alertId": 3,
+            "title": "Disk warning",
+            "type": "disk",
+            "message": "Usage above threshold",
+            "status": "Error",
+            "statusTone": "negative",
+            "method": "mail",
+            "count": 4,
+            "createdAt": "2026-11-23 00:00:00",
+        ])
+
+        XCTAssertEqual(log.title, "Disk warning")
+        XCTAssertEqual(log.statusTone, "negative")
+        XCTAssertEqual(log.count, 4)
+        XCTAssertEqual(log.message, "Usage above threshold")
+    }
+
+    func testChannelPayloadDecodesCapabilityFlags() {
+        let channel = AlertChannelModel(payload: [
+            "id": 5,
+            "type": "custom",
+            "title": "Hook",
+            "config": "{\"url\":\"https://example.test\"}",
+            "configSummary": "{\"url\":\"https://example.test\"}",
+            "status": "Enable",
+            "enabled": true,
+            "statusTone": "positive",
+            "isEmail": false,
+            "isWebhook": true,
+            "supportsTest": true,
+        ])
+
+        XCTAssertEqual(channel.channelId, 5)
+        XCTAssertTrue(channel.enabled)
+        XCTAssertTrue(channel.isWebhook)
+        XCTAssertTrue(channel.supportsTest)
+        XCTAssertFalse(channel.isEmail)
+        XCTAssertEqual(channel.formInput["type"] as? String, "custom")
+    }
+
+    func testOptionsDecodeRuleAndChannelTypes() {
+        let options = AlertOptions(payload: [
+            "ruleTypes": [
+                ["type": "cpu", "needsThreshold": true, "needsInterval": true],
+                ["type": "ssl", "needsCycleDays": true, "needsCertificate": true],
+            ],
+            "channelTypes": [
+                ["type": "email", "isEmail": true, "supportsTest": true],
+                ["type": "custom", "isWebhook": true, "isCustom": true, "supportsTest": true],
+            ],
+            "encryptions": ["NONE", "SSL", "TLS"],
+            "webhookPresets": [
+                ["key": "genericJson", "template": "{\"title\":\"{{title}}\"}"],
+            ],
+        ])
+
+        XCTAssertTrue(options.ruleType("cpu")?.needsThreshold == true)
+        XCTAssertTrue(options.ruleType("ssl")?.needsCertificate == true)
+        XCTAssertTrue(options.channelType("email")?.isEmail == true)
+        XCTAssertTrue(options.channelType("custom")?.isCustom == true)
+        XCTAssertEqual(options.preset("genericJson")?.template, "{\"title\":\"{{title}}\"}")
+    }
+
+    func testModuleRouteExposesAlertsEntry() {
+        XCTAssertTrue(ModuleRoute.allCases.contains(.alerts))
+        XCTAssertEqual(ModuleRoute(rawValue: "alerts"), .alerts)
+    }
+}
