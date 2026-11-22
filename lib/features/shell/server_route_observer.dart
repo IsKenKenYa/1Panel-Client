@@ -70,33 +70,18 @@ class ServerRouteObserver extends NavigatorObserver {
         .map((entry) => entry.key)
         .toList(growable: false);
     if (stale.isEmpty) return;
+    final staleSet = stale.toSet();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (final route in stale.reversed) {
-        if (!_routes.containsKey(route)) continue;
-        // 优先用入栈时记录的导航器；观察者自身的 navigator
-        // 在此回调时机可能尚未就绪。
-        final owner = _owners[route] ?? navigator;
-        if (owner == null) continue;
-        if (!route.isFirst) {
-          owner.removeRoute(route);
-        } else if (isAppNavigator) {
-          final name = route.settings.name;
-          final module = name == null ? null : shellModuleForRoute(name);
-          final home = RouteSettings(
-            name: AppRoutes.home,
-            arguments: module?.storageId,
-          );
-          if (route.isCurrent) {
-            owner.pushReplacement(AppRouter.generateRoute(home));
-          } else {
-            owner.replace(
-              oldRoute: route,
-              newRoute: AppRouter.generateRoute(home),
-            );
-          }
-        }
+      final owners = <NavigatorState>{
+        ..._owners.values,
+        if (navigator != null) navigator!,
+      };
+      for (final owner in owners) {
+        if (!owner.mounted) continue;
+        owner.popUntil((route) => !staleSet.contains(route));
       }
     });
+    WidgetsBinding.instance.scheduleFrame();
   }
 
   bool _dependsOnServer(Route<dynamic> route, Route<dynamic>? source) {
