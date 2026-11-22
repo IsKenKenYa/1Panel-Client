@@ -70,6 +70,8 @@ struct MainShellView: View {
                 ContainersView()
             case "apps":
                 AppsView()
+            case "virtualMachines":
+                VirtualMachinesView()
             case "files":
                 FilesView()
             case "monitoring":

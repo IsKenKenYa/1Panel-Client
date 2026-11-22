@@ -69,6 +69,11 @@
 		EA96488EAB55560EF40525A4 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC83C63F81101B46E06F93F /* AIView.swift */; };
 		F5F9F9B535584AC7EA6EC4D6 /* FirewallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41356E02CEE3D8C4BF62145 /* FirewallView.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		AA11BB22CC33DD44EE55FF01 /* VirtualMachinesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660001 /* VirtualMachinesView.swift */; };
+		AA11BB22CC33DD44EE55FF02 /* VMInstanceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660002 /* VMInstanceDetailView.swift */; };
+		AA11BB22CC33DD44EE55FF03 /* VMSnapshotSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660003 /* VMSnapshotSheet.swift */; };
+		AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */; };
+		AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +172,11 @@
 		1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NativeFormSubmission.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660001 /* VirtualMachinesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VirtualMachinesView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660002 /* VMInstanceDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMInstanceDetailView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660003 /* VMSnapshotSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMSnapshotSheet.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMHealthSheet.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,6 +368,7 @@
 				29BE9ACCC31E8BB6095E0F54 /* CronJobs */,
 				2F04AF5CEFAD0621B386F9ED /* Backups */,
 				5829D420822819963EF13FFF /* AI */,
+				CC33DD44EE55FF6600770001 /* VirtualMachines */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -449,6 +460,18 @@
 				1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		CC33DD44EE55FF6600770001 /* VirtualMachines */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE55FF660001 /* VirtualMachinesView.swift */,
+				BB22CC33DD44EE55FF660002 /* VMInstanceDetailView.swift */,
+				BB22CC33DD44EE55FF660003 /* VMSnapshotSheet.swift */,
+				BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */,
+				BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */,
+			);
+			path = VirtualMachines;
 			sourceTree = "<group>";
 		};
 		D892C033D9AEA8AC158ACF26 /* Files */ = {
@@ -749,6 +772,11 @@
 				3F69FA042C58502CC174FF80 /* BackupsView.swift in Sources */,
 				D8FE37A8818B1D24E4EB8CAD /* AIViewModel.swift in Sources */,
 				EA96488EAB55560EF40525A4 /* AIView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF01 /* VirtualMachinesView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF02 /* VMInstanceDetailView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF03 /* VMSnapshotSheet.swift in Sources */,
+				AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */,
+				AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

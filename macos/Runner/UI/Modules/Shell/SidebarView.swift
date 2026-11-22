@@ -23,6 +23,7 @@ struct SidebarView: View {
         SidebarItem(id: "databases", titleKey: "serverModuleDatabases", symbolName: "externaldrive.connected.to.line.below"),
         SidebarItem(id: "containers", titleKey: "serverModuleContainers", symbolName: "square.stack.3d.up"),
         SidebarItem(id: "apps", titleKey: "serverModuleApps", symbolName: "app.badge"),
+        SidebarItem(id: "virtualMachines", titleKey: "serverModuleVm", symbolName: "desktopcomputer"),
         SidebarItem(id: "files", titleKey: "navFiles", symbolName: "folder"),
     ]
 
