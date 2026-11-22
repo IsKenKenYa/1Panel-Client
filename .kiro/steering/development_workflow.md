@@ -8,6 +8,7 @@ inclusion: auto
 >
 > - 默认在当前分支直接修改与提交，新建分支必须得到用户明确同意；提交消息遵循 Conventional Commits 且必须包含 `scope`，按模块或类别分别提交。详见 `AGENTS.md`「分支、发布与 CI」与「提交与合并请求规范」。
 > - 每次改动完成后自动执行完整测试闭环（理解需求 → 测试用例设计 → 自动化测试基线准备 → 功能开发 → 单元测试 → 集成测试 → 文档与基线回写 → 提交），迭代到门禁全部通过后按模块提交，未提交视同闭环未完成。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
+> - 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（`dart-*`、`flutter-*`）优先；Dart & Flutter MCP server 配置在 `.mcp.json`。详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
 
 ## 实时功能规划（强制）
 
@@ -225,6 +226,8 @@ hflutter build hap --release
 ## HarmonyOS / OHOS 开发规则
 
 - HarmonyOS 是一等目标平台，平台缺口通过 Dart facade + ArkTS bridge 补齐。
+- HarmonyOS 构建需要单独的 Flutter-OH SDK，当前基线 `3.44.9+ohos-1.0.0`；官方 Flutter 为 `3.44.9`。环境准备、版本线、参考文档见 `docs/development/harmonyos_build_and_sideload.md`。
+- 参与 HarmonyOS 开发必须自行安装 Flutter-OH 与 DevEco Studio 26.0.0，并配置 `DEVECO_SDK_HOME` 与 `hvigorw`、`ohpm`、`node`、`hdc` 路径；两套 SDK 不能共用同一份 `.dart_tool`。
 - Flutter 侧优先使用 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade，禁止在 UI/业务层直接使用 `MethodChannel`。
 - ArkTS bridge 位于 `ohos/entry/src/main/ets/plugins/`，通道名为 `onepanel/ohos_platform`。
 - Windows 用户使用 Flutter-OH 的 `flutter.bat` 完整路径，不要求配置 `hflutter` shell 函数。

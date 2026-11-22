@@ -42,6 +42,11 @@ flutter build ios --release                  # iOS（仅 macOS）
 - 提交消息遵循 Conventional Commits 且必须包含 `scope`，一次任务涉及多个模块时按模块或类别分别提交。
 - 每次改动完成后自动执行完整测试闭环并迭代到门禁全部通过，详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
 
+## 技能与 MCP
+
+- 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（`dart-*`、`flutter-*`）优先；详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
+- Dart & Flutter MCP server 配置在 `.mcp.json`（`dart mcp-server`），analyzer 诊断、测试执行、热重载与运行时内省优先走 MCP 工具。
+
 ## 实时功能规划
 
 - 当前功能批次的唯一计划入口是 `docs/development/modules/阶段总计划.md`。

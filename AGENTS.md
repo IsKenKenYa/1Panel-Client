@@ -21,6 +21,15 @@
 | 原生 UI（iOS/macOS/Windows/HarmonyOS）改动 | 本文「跨平台 UI 治理」「原生 UI 双轨门禁」；HarmonyOS 构建另见 `docs/development/harmonyos_build_and_sideload.md` |
 | 文件过大或职责混杂 | 本文「文件规模与分文件规则」 |
 | 排查不熟悉的模块 | `docs/development/modules/阶段总计划.md` 与既有实现 |
+| 使用技能或 MCP 工具 | 本文「技能与 MCP 工具（强制）」 |
+
+## 技能与 MCP 工具（强制）
+
+- 开工前先检索可用技能：`.agents/skills/` 是唯一分发位置（顶层 `skills/` 是安装源）。与本次任务相关的技能必须使用，官方技能（`dart-*`、`flutter-*`）优先；一个技能都不用直接动手视为违反闭环要求。
+- Dart & Flutter MCP server 已在 `.mcp.json` 配置（`dart mcp-server`，Dart SDK 内置）：analyzer 诊断修复、测试执行、热重载、运行时内省、pub 依赖管理优先走 MCP 工具，禁止另开子进程重复跑 `flutter analyze` 与 `flutter test`。
+- 编辑 `lib/` 下 `.dart` 文件后，按官方热重载规则经 MCP 工具连接运行中的应用：UI 组件与简单方法改动用 `hot_reload`；涉及 `initState`、全局或静态状态、`main()` 的改动用 `hot_restart`；仅注释与空白改动不触发。MCP 未接入的会话按既有方式重启应用验证。
+- 引入新的 pub.dev 依赖时运行 `dart run skills@ get` 检查随包发布的技能，存在即安装并使用。
+- 无障碍走查按技能 `flutter-a11y-audit` 的三类检查执行，条目同步登记在「语义一致性检查清单（原生 UI 适配必检）」。
 
 ## 最高优先级执行规则（强制）
 
@@ -285,7 +294,7 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
 
 - Windows 原生轨道：`dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`
 - Apple 原生轨道（CI/macOS）：`xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug -sdk iphonesimulator build` + `xcodebuild -workspace macos/Runner.xcworkspace -scheme Runner -configuration Debug build`
-- HarmonyOS：`hflutter build hap --release`（详见 `docs/development/harmonyos_build_and_sideload.md`）
+- HarmonyOS：`hflutter build hap --release`（`hflutter` 是本机 shell 包装，等价完整路径 `<Flutter-OH>/bin/flutter build hap --release`；Flutter-OH 需自行安装并配置 `DEVECO_SDK_HOME`，详见 `docs/development/harmonyos_build_and_sideload.md`）
 
 ### 语义一致性检查清单（原生 UI 适配必检）
 
@@ -295,6 +304,7 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
 - [ ] 权限与危险操作一致（二次确认与权限提示一致）
 - [ ] 国际化一致（中英文文案来源一致）
 - [ ] 无跨层调用（原生 UI 不得直连 API）
+- [ ] 无障碍三类检查（技能 `flutter-a11y-audit`）：交互组件语义标签、触控目标 ≥ 48x48 逻辑像素、对比度与焦点指示器
 
 ### 持续适配机制
 
@@ -333,7 +343,7 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
   - iOS/iPadOS/macOS：强制建设 SwiftUI 原生轨道，视觉方向适配 Liquid Glass 风格
   - Android：Dart MDUI3 为默认实现方式；原生实现仅允许经评审批准后引入
   - Linux：当前阶段以 Dart MDUI3 交付为主，原生容器能力按社区扩展路线规划
-  - HarmonyOS：作为一等目标平台推进，当前以 Dart 共享业务核心 + ArkTS Platform Bridge 补齐系统能力，文件、下载、日志、媒体、认证等缺口优先走项目自有 facade 与 ArkTS 桥接
+  - HarmonyOS：作为一等目标平台推进，当前以 Dart 共享业务核心 + ArkTS Platform Bridge 补齐系统能力，文件、下载、日志、媒体、认证等缺口优先走项目自有 facade 与 ArkTS 桥接。构建需要单独安装 Flutter-OH 与 DevEco Studio，环境准备与本机验证基线见 `docs/development/harmonyos_build_and_sideload.md`
 - 无论使用何种 UI 体系，共享业务逻辑都必须复用同一套 Dart State/Service/Repository/API，不得分叉为多套业务实现。
 - 原生 UI 同样必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得跨层直接访问 API。
 - HarmonyOS 原生层只承载平台能力，不得复制 1Panel 业务逻辑；Flutter 侧必须通过 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade 访问平台能力，禁止业务代码直接使用 `MethodChannel`。
@@ -388,7 +398,7 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
 - 涉及 UI 改动时，必须运行 `dart run test/scripts/test_runner.dart ui`。
 - 涉及 Windows 原生 UI 轨道改动时，必须运行 `dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`。
 - 涉及 Apple 原生 UI 轨道改动时，必须在 macOS/CI 环境运行 `xcodebuild`（iOS + macOS）构建门禁并附结果。
-- 涉及 HarmonyOS/OHOS 平台能力、依赖、存储、文件、下载、日志、媒体或构建配置时，必须运行 `hflutter build hap --release` 或等效完整 Flutter-OH 路径命令，并附 HAP 输出路径。
+- 涉及 HarmonyOS/OHOS 平台能力、依赖、存储、文件、下载、日志、媒体或构建配置时，必须运行 `hflutter build hap --release` 或等效完整 Flutter-OH 路径命令，并附 HAP 输出路径；未安装 Flutter-OH 的协作者按 `docs/development/harmonyos_build_and_sideload.md` 准备环境后再执行。
 - 原生 UI 适配门禁失败必须阻断推进，不允许"带失败继续"。
 - 回归基线使用 `dart run test/scripts/test_runner.dart all`。
 
