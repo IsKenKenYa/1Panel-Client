@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -54,12 +55,12 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
         hasCachedData: provider.users.isNotEmpty || base.status != null,
         onRetry: () => context.read<ToolboxFtpProvider>().load(),
         child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: [
           if (provider.isLoading) const LinearProgressIndicator(),
           SectionCard(
             title: l10n.toolboxCommonOverviewTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               children: [
                 ToolboxInfoRowWidget(
@@ -80,7 +81,7 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxFtpUsersTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               children: [
                 Row(

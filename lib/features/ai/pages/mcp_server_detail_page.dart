@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/ai/mcp_server_service.dart';
@@ -93,7 +94,7 @@ class _McpServerDetailPageState extends State<McpServerDetailPage> {
               : _detail == null
                   ?  Center(child: Text(context.l10n.commonEmpty))
                   : ListView(
-                      padding: const EdgeInsets.all(16),
+                      padding: AppDesignTokens.cardPadding,
                       children: [
                         Card(
                           child: Column(

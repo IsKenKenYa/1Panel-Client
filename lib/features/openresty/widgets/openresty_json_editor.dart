@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class OpenRestyJsonEditor extends StatefulWidget {
   final String initialText;
@@ -54,7 +55,7 @@ class _OpenRestyJsonEditorState extends State<OpenRestyJsonEditor> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: [
           Row(

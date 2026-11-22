@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/data/models/database_models.dart';
@@ -82,7 +83,7 @@ class _DatabaseDetailPageView extends StatelessWidget {
 
                       if (!isWide) {
                         return ListView(
-                          padding: const EdgeInsets.all(16),
+                          padding: AppDesignTokens.cardPadding,
                           children: [
                             content,
                             management,
@@ -93,7 +94,7 @@ class _DatabaseDetailPageView extends StatelessWidget {
 
                       return SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(16),
+                        padding: AppDesignTokens.cardPadding,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -200,7 +201,7 @@ class _DatabaseHeaderCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return SectionCard(
       title: title,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Wrap(
         spacing: 12,
         runSpacing: 12,

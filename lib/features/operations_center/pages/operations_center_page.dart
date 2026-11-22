@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
@@ -119,11 +120,11 @@ class OperationsCenterPage extends StatelessWidget {
     return ServerAwarePageScaffold(
       title: l10n.operationsCenterPageTitle,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: [
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: Text(
                 l10n.operationsCenterIntro,
                 style: Theme.of(context).textTheme.bodyMedium,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_snapshot_list.dart';
 import 'package:onepanel_client/data/models/host_tool_models.dart';
@@ -48,7 +49,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
         children: <Widget>[
           SectionCard(
             title: l10n.toolboxHostToolServiceSectionTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -119,7 +120,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxHostToolConfigSectionTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -142,7 +143,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxHostToolProcessSectionTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class BackupFilesSheetWidget extends StatelessWidget {
   const BackupFilesSheetWidget({
@@ -14,7 +15,7 @@ class BackupFilesSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

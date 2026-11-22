@@ -335,7 +335,7 @@ class _WorkbenchSidebar extends StatelessWidget {
         if (provider.sessions.isEmpty)
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: Text(l10n.terminalWorkbenchNoSessions),
             ),
           )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/runtimes/models/runtime_manage_args.dart';
 import 'package:onepanel_client/features/runtimes/providers/node_scripts_provider.dart';
@@ -62,7 +63,7 @@ class _NodeScriptsPageState extends State<NodeScriptsPage> {
                 ? l10n.runtimeFormCodeDirRequired
                 : l10n.runtimeEmptyDescription,
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               children: <Widget>[
                 if (provider.codeDir.isNotEmpty)
                   Text('${l10n.runtimeFieldCodeDir}: ${provider.codeDir}'),

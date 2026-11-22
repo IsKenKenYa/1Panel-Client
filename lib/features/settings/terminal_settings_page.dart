@@ -444,7 +444,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
           builder: (context, setSheetState) {
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -553,7 +553,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
             final divisions = ((max - min) / step).round();
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -935,7 +935,7 @@ class _PreviewCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         color: terminalTheme.background,
         child: DefaultTextStyle(
           style: textStyle,

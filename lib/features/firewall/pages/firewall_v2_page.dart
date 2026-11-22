@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
@@ -15,7 +16,7 @@ class FirewallV2Page extends StatelessWidget {
       title: l10n.firewallV2Title,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           children: [
             SectionEntryList(
               title: l10n.firewallV2SectionTitle,

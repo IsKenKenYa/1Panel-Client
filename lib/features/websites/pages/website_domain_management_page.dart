@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -85,7 +86,7 @@ class _WebsiteDomainBody extends StatelessWidget {
             label: Text(l10n.commonAdd),
           ),
           body: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             children: [
               if (provider.domains.isEmpty)
                 WebsiteEmptyCard(title: l10n.websitesDomainEmpty)

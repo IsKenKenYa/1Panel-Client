@@ -706,13 +706,13 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: language != null
             ? HighlightView(
                 _content!,
                 language: language,
                 theme: githubTheme,
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 textStyle: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 14,

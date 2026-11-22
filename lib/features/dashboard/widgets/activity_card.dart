@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_design_tokens.dart';
 import '../../../core/i18n/l10n_x.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../dashboard_provider.dart';
@@ -20,7 +21,7 @@ class ActivityCard extends StatelessWidget {
       child: activities.isEmpty
           ? Center(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Text(l10n.dashboardActivityEmpty),
               ),
             )

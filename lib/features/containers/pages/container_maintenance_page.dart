@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
@@ -75,11 +76,11 @@ class _ContainerMaintenancePageState extends State<ContainerMaintenancePage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(title:  Text(context.l10n.containerMaintenanceTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: [
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -128,7 +129,7 @@ class _ContainerMaintenancePageState extends State<ContainerMaintenancePage> {
           const SizedBox(height: 16),
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

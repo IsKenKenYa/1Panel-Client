@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/providers/logs_provider.dart';
@@ -25,7 +26,7 @@ class LogsLoginTabWidget extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Column(
             children: <Widget>[
               ModuleSearchField(

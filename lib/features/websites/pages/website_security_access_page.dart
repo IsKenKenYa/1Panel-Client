@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
@@ -25,7 +26,7 @@ class WebsiteSecurityAccessPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(title: Text(title)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: [
           SectionEntryList(
             items: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/api/v2/container_v2.dart';
@@ -92,7 +93,7 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
   Widget _buildConfigTab() {
     final config = _inspectData?['Config'] as Map? ?? {};
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       children: [
         Card(child: ListTile(title:  Text(context.l10n.commonImage), subtitle: Text(config[context.l10n.commonImage]?.toString() ?? ''))),
         Card(child: ListTile(title:  Text(context.l10n.commonCommand), subtitle: Text(config['Cmd']?.toString() ?? ''))),
@@ -106,7 +107,7 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
     final networkSettings = _inspectData?['NetworkSettings'] as Map? ?? {};
     final networks = networkSettings['Networks'] as Map? ?? {};
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       children: networks.keys.map((name) {
         final net = networks[name] as Map? ?? {};
         return Card(
@@ -121,7 +122,7 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
 
   Widget _buildRawTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: SelectableText(
         _inspectData.toString(),
         style: const TextStyle(fontFamily: 'monospace', fontSize: 12),

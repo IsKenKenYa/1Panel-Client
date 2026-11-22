@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
@@ -93,7 +94,7 @@ class _WebsiteTemplateFormPageState extends State<WebsiteTemplateFormPage> {
       onSave: _save,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Form(
             key: _formKey,
             child: Column(
@@ -101,7 +102,7 @@ class _WebsiteTemplateFormPageState extends State<WebsiteTemplateFormPage> {
                 SectionCard(
                   title: l10n.websitesTemplateTitle,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     child: Column(
                       children: [
                         TextFormField(

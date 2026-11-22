@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
@@ -37,7 +38,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage>
       title: l10n.toolboxDeviceTitle,
       onServerChanged: () => context.read<ToolboxDeviceProvider>().load(),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: [
           if (provider.isLoading) const LinearProgressIndicator(),
           if (provider.error != null)
@@ -50,7 +51,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage>
             ),
           SectionCard(
             title: l10n.toolboxDeviceOverviewTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               children: [
                 ToolboxDeviceInfoRowWidget(
@@ -76,7 +77,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage>
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxDeviceConfigTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -115,7 +116,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage>
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxDeviceUsersTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: provider.users.isEmpty
                 ? Text(l10n.commonEmpty)
                 : Wrap(
@@ -130,7 +131,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage>
           const SizedBox(height: 12),
           SectionCard(
             title: l10n.toolboxDeviceZoneOptionsTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: provider.zoneOptions.isEmpty
                 ? Text(l10n.commonEmpty)
                 : Wrap(

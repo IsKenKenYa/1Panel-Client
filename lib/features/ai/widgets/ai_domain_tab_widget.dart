@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_domain_tab_actions.dart';
@@ -39,7 +40,7 @@ class _AIDomainTabWidgetState extends State<AIDomainTabWidget> {
         return Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(16) +
+            padding: AppDesignTokens.cardPadding +
                 shellListBottomPadding(context),
             children: [
               Text(
@@ -158,7 +159,7 @@ class _AIDomainTabWidgetState extends State<AIDomainTabWidget> {
                 const SizedBox(height: 16),
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

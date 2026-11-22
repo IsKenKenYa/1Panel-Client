@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/backups/models/backup_record_list_item.dart';
 import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
@@ -23,7 +24,7 @@ class BackupRecordCardWidget extends StatelessWidget {
     final record = item.record;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

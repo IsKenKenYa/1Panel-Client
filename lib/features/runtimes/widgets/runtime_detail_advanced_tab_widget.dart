@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
@@ -24,11 +25,11 @@ class RuntimeDetailAdvancedTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       children: <Widget>[
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

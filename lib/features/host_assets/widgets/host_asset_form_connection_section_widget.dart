@@ -35,7 +35,7 @@ class HostAssetFormConnectionSectionWidget extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),

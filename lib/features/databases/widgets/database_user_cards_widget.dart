@@ -18,7 +18,7 @@ class DatabaseUserCurrentCardWidget extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.databaseUserCurrentLabel,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Text(
         currentUsername?.isNotEmpty == true
             ? currentUsername!
@@ -53,7 +53,7 @@ class DatabaseBindUserCardWidget extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.databaseBindUserAction,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: [
           TextField(
@@ -113,7 +113,7 @@ class DatabasePrivilegeCardWidget extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.databaseUserPrivilegesAction,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: currentUsername?.isNotEmpty == true
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +157,7 @@ class DatabaseUserListCardWidget extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.databaseUserListTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: users.isEmpty
           ? Text(l10n.commonEmpty)
           : Column(

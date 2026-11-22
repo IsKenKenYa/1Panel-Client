@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/models/task_log_detail_args.dart';
@@ -80,7 +81,7 @@ class _TaskLogDetailPageState extends State<TaskLogDetailPage> {
           body: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: _MetadataCard(args: widget.args),
               ),
               Expanded(child: _buildBody(provider, l10n)),
@@ -133,7 +134,7 @@ class _MetadataCard extends StatelessWidget {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

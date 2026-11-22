@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
@@ -34,7 +35,7 @@ class ToolboxSnapshotList extends StatelessWidget {
         errorMessage: hasSnapshot ? null : error,
         onRetry: onRetry,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           children: [
             if (isLoading) const LinearProgressIndicator(),
             ...children,

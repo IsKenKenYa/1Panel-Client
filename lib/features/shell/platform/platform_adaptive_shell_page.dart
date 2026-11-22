@@ -298,7 +298,7 @@ class _MacosShellView extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: blurSigma <= _kMacosZeroBlurEpsilon
@@ -531,7 +531,7 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
               decoration: BoxDecoration(color: scheme.surfaceContainerLowest),
               child: SafeArea(
                 child: ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppDesignTokens.cardPadding,
                   children: [
                     Text(
                       l10n.appName,

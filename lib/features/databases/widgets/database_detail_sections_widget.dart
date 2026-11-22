@@ -25,7 +25,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
       children: [
         SectionCard(
           title: l10n.databaseOverviewTitle,
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Wrap(
             spacing: AppDesignTokens.spacingSm,
             runSpacing: AppDesignTokens.spacingSm,
@@ -71,7 +71,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: l10n.databaseConfigTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
@@ -93,7 +93,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: l10n.databaseBaseInfoTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Wrap(
               spacing: AppDesignTokens.spacingSm,
               runSpacing: AppDesignTokens.spacingSm,
@@ -124,7 +124,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: l10n.databaseStatusTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: _RedisStatusGrid(data: detailData!.status!),
           ),
         ],
@@ -132,7 +132,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: '${l10n.databaseConfigTitle} · Redis',
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: _MapValueList(
               data: detailData!.redisConfig!,
               dense: false,
@@ -143,7 +143,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: '${l10n.databaseStatusTitle} · Redis Persistence',
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: _MapValueList(
               data: detailData!.redisPersistence!,
               dense: false,
@@ -154,7 +154,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: l10n.databaseStatusTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: _MapValueList(data: detail!.status!),
           ),
         ],
@@ -162,7 +162,7 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionCard(
             title: l10n.databaseVariablesTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: _MapValueList(data: detail!.variables!),
           ),
         ],

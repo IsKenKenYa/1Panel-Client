@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_snapshot_list.dart';
 import 'package:onepanel_client/data/models/disk_management_models.dart';
@@ -48,7 +49,7 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
         children: <Widget>[
           SectionCard(
             title: l10n.toolboxDiskOverviewTitle,
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -321,7 +322,7 @@ class _DiskSection extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       title: title,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: items.map((DiskInfo disk) {
           final rows = disk.partitions.isNotEmpty

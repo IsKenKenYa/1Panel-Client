@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/process_detail_models.dart';
 import 'package:onepanel_client/features/processes/providers/process_detail_provider.dart';
@@ -67,7 +68,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
             child: detail == null
                 ? const SizedBox.shrink()
                 : ListView(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     children: <Widget>[
                       _overviewSection(context, detail),
                       const SizedBox(height: 12),
@@ -90,7 +91,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.processDetailOverviewSectionTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: <Widget>[
           _detailRow('PID', detail.pid.toString()),
@@ -114,7 +115,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.processDetailMemorySectionTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: <Widget>[
           _detailRow('RSS', detail.rss),
@@ -138,7 +139,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.processDetailOpenFilesSectionTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: detail.openFiles.isEmpty
           ? Text(l10n.processDetailNoOpenFiles)
           : Column(
@@ -153,7 +154,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.processDetailConnectionsSectionTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: detail.connections.isEmpty
           ? Text(l10n.processDetailNoConnections)
           : Column(
@@ -172,7 +173,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
     final l10n = context.l10n;
     return SectionCard(
       title: l10n.processDetailEnvironmentSectionTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: detail.envs.isEmpty
           ? Text(l10n.processDetailNoEnvironment)
           : SelectableText(

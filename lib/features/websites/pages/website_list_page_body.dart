@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/config/app_router.dart';
@@ -177,7 +178,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
             child: RefreshIndicator(
             onRefresh: provider.refresh,
             child: ListView.separated(
-              padding: const EdgeInsets.all(16) +
+              padding: AppDesignTokens.cardPadding +
                   shellListBottomPadding(context),
               itemCount: data.websites.isEmpty ? 3 : data.websites.length + 2,
               separatorBuilder: (_, __) => const SizedBox(height: 12),

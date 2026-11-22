@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
@@ -71,7 +72,7 @@ class _FilePermissionPageState extends State<FilePermissionPage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(title: Text(context.l10n.filePermissionTitleWith(widget.paths.length))),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

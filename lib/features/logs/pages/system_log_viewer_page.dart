@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart';
@@ -99,7 +100,7 @@ class _SystemLogViewerPageState extends State<SystemLogViewerPage> {
           body: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   children: <Widget>[
                     SystemLogSourceFilter(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
@@ -35,7 +36,7 @@ class _AIGpuTabWidgetState extends State<AIGpuTabWidget> {
         return RefreshIndicator(
           onRefresh: provider.loadGpuInfo,
           child: ListView(
-            padding: const EdgeInsets.all(16) +
+            padding: AppDesignTokens.cardPadding +
                 shellListBottomPadding(context),
             children: [
               Align(

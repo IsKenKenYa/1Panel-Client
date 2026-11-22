@@ -76,7 +76,7 @@ class _ContainerCreatePageState extends State<ContainerCreatePage> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           children: [
             SectionCard(
               padding: const EdgeInsets.all(AppDesignTokens.spacingLg),

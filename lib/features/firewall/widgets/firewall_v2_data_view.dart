@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
@@ -22,7 +23,7 @@ class FirewallV2DataView extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async => onRetry(),
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         itemCount: entries.length,
         separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (context, index) {

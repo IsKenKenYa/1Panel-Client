@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_save_button.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/cronjobs/models/cronjob_form_args.dart';
@@ -66,7 +67,7 @@ class _CronjobFormPageState extends State<CronjobFormPage> {
             errorMessage: localizeCronjobFormError(l10n, provider.errorMessage),
             onRetry: () => provider.initialize(widget.args),
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               children: <Widget>[
                 Text(
                   l10n.cronjobFormBasicSectionTitle,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/keyboard_utils.dart';
@@ -316,7 +317,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.all(16),
+                contentPadding: AppDesignTokens.cardPadding,
                 hintText: l10n.filesEmptyTitle,
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/backups/models/backup_record_list_item.dart';
@@ -69,7 +70,7 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
             child: RefreshIndicator(
               onRefresh: provider.load,
               child: ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 itemCount: provider.items.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {

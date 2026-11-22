@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
@@ -88,7 +89,7 @@ class _ToolboxSupervisorPageState extends State<ToolboxSupervisorPage> {
                   children: [
                     if (_status != null)
                       Card(
-                        margin: const EdgeInsets.all(16),
+                        margin: AppDesignTokens.cardPadding,
                         child: ListTile(
                           title:  Text(context.l10n.toolboxSupervisorStatusTitle),
                           subtitle: Text('${context.l10n.commonStatus}: ${_status?.config.init ?? false ? context.l10n.appStatusRunning : context.l10n.toolboxSupervisorNotInit}'),

@@ -36,7 +36,7 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
         const SizedBox(height: AppDesignTokens.spacingMd),
         SectionCard(
           title: l10n.commonMore,
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Column(
             children: [
               _ActionTile(

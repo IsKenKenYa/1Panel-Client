@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/api/v2/file_v2.dart';
@@ -58,7 +59,7 @@ class _RecycleBinStatusPageState extends State<RecycleBinStatusPage> {
               : _status == null
                   ?  Center(child: Text(context.l10n.commonEmpty))
                   : ListView(
-                      padding: const EdgeInsets.all(16),
+                      padding: AppDesignTokens.cardPadding,
                       children: [
                         Card(
                           child: ListTile(

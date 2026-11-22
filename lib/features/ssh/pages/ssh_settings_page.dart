@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/ssh_settings_models.dart';
@@ -75,7 +76,7 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
                   emptyTitle: l10n.commonEmpty,
                   emptyDescription: l10n.commonLoadFailedTitle,
                   child: ListView(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     children: <Widget>[
                       if (info != null)
                         SshSettingsStatusCardWidget(
@@ -111,7 +112,7 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

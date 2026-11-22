@@ -14,7 +14,7 @@ class CommandPreviewBoxWidget extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),

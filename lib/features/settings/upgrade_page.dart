@@ -111,14 +111,14 @@ class _UpgradePageState extends State<UpgradePage> {
                     if (releasesSnapshot.connectionState ==
                         ConnectionState.waiting) {
                       return const Padding(
-                        padding: EdgeInsets.all(16),
+                        padding: AppDesignTokens.cardPadding,
                         child: Center(child: CircularProgressIndicator()),
                       );
                     }
 
                     if (releasesSnapshot.hasError) {
                       return Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: AppDesignTokens.cardPadding,
                         child: Center(
                           child: Column(
                             children: [
@@ -135,7 +135,7 @@ class _UpgradePageState extends State<UpgradePage> {
                     final releases = releasesSnapshot.data;
                     if (releases == null || releases.isEmpty) {
                       return Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: AppDesignTokens.cardPadding,
                         child: Center(
                           child: Column(
                             children: [

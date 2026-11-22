@@ -29,7 +29,7 @@ class DatabaseDetailManagementWidget extends StatelessWidget {
         const SizedBox(height: AppDesignTokens.spacingMd),
         SectionCard(
           title: l10n.databaseManageTitle,
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Column(
             children: [
               if (supportsBackups)

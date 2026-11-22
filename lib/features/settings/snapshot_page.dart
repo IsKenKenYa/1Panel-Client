@@ -205,7 +205,7 @@ class _SnapshotPageState extends State<SnapshotPage> {
               children: [
                 if (_backupAccounts == null || _backupAccounts!.isEmpty)
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     child: Text(l10n.snapshotNoBackupAccountHint),
                   )
                 else ...[

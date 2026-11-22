@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
@@ -67,7 +68,7 @@ class _WebsiteCorsPageState extends State<WebsiteCorsPage> {
         child: _config == null
             ?  Center(child: Text(context.l10n.commonEmpty))
             : ListView(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 children: [
                   Card(
                     child: SwitchListTile(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:intl/intl.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/script_library_models.dart';
@@ -30,7 +31,7 @@ class ScriptLibraryCardWidget extends StatelessWidget {
     final groups = item.groupBelong.isEmpty ? '-' : item.groupBelong.join(', ');
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

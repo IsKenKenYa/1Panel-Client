@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/api/v2/ai_v2.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
@@ -194,7 +195,7 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
                   ),
                 )
               : ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppDesignTokens.cardPadding,
                   children: [
                     Text(l10n.aiAgentInstalledPlugins,
                         style: Theme.of(context).textTheme.titleMedium),

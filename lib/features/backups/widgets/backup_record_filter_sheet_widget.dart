@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 
@@ -46,7 +47,7 @@ class _BackupRecordFilterSheetWidgetState
     final l10n = context.l10n;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

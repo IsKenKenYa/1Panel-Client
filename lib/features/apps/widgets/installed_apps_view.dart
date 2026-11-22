@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -132,7 +133,7 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           child: RefreshIndicator(
           onRefresh: _handleRefresh,
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             itemCount: provider.installedApps.length,
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {

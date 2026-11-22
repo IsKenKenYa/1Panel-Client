@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -63,7 +64,7 @@ class _WebsiteLifecycleBody extends StatelessWidget {
             error: state.isLoading ? null : _messageFor(context, state.error),
             onRetry: provider.load,
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               children: [
                 if (!isEditMode) ...[
                   WebsiteLifecycleTextFieldCard(

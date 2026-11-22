@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -94,7 +95,7 @@ class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             children: [
               _ConfigEditorCard(
                 controller: _configController,
@@ -149,7 +150,7 @@ class _ConfigEditorCard extends StatelessWidget {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -208,7 +209,7 @@ class _ScopeCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -341,7 +342,7 @@ class _PhpVersionCard extends StatelessWidget {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

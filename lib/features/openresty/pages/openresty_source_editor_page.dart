@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
@@ -73,7 +74,7 @@ class _OpenRestySourceEditorPageState extends State<OpenRestySourceEditorPage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           children: [
             if (isSaving) const LinearProgressIndicator(),

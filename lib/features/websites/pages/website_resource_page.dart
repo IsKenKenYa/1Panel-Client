@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
 import 'package:onepanel_client/features/websites/widgets/website_async_state_view.dart';
@@ -58,7 +59,7 @@ class _WebsiteResourcePageState extends State<WebsiteResourcePage> {
         child: _resource == null
             ?  Center(child: Text(context.l10n.commonEmpty))
             : ListView(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 children: [
                   _buildStatCard('CPU', _resource?['cpu'], '%'),
                   _buildStatCard('Memory', _resource?['memory'], 'MB'),

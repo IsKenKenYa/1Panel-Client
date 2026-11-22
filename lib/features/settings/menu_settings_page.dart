@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
@@ -44,11 +45,11 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
         ),
       ],
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         children: <Widget>[
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               child: Text(l10n.menuSettingsDescription),
             ),
           ),

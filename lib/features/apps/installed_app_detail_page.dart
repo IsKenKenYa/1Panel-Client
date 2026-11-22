@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -491,7 +492,7 @@ class _InfoTab extends StatelessWidget {
       errorMessage: storeDetailError ?? servicesError,
       hasCachedData: true,
       child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignTokens.cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -592,7 +593,7 @@ class _ConfigTab extends StatelessWidget {
       hasCachedData: appConfig != null,
       onRetry: onRetry,
       child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -654,7 +655,7 @@ class _BottomBar extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

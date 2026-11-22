@@ -51,7 +51,7 @@ class _AboutPageState extends State<AboutPage> {
               const SizedBox(height: AppDesignTokens.spacingLg),
               SectionCard(
                 title: l10n.aboutBuildSectionTitle,
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   children: [
                     _InfoRow(
@@ -127,7 +127,7 @@ class _AboutPageState extends State<AboutPage> {
               const SizedBox(height: AppDesignTokens.spacingLg),
               SectionCard(
                 title: l10n.aboutProjectSectionTitle,
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -159,7 +159,7 @@ class _AboutPageState extends State<AboutPage> {
               const SizedBox(height: AppDesignTokens.spacingLg),
               SectionCard(
                 title: l10n.aboutRepositorySectionTitle,
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignTokens.cardPadding,
                 child: Column(
                   children: [
                     _LinkRow(

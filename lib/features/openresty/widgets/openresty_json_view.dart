@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class OpenRestyJsonView extends StatelessWidget {
   final String text;
@@ -14,7 +15,7 @@ class OpenRestyJsonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = text.trim().isEmpty ? (emptyText ?? '-') : text;
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: SingleChildScrollView(
         child: SelectableText(content),
       ),

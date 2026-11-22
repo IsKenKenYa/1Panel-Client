@@ -223,7 +223,7 @@ class _RedisOverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: 'Redis',
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Wrap(
         spacing: AppDesignTokens.spacingSm,
         runSpacing: AppDesignTokens.spacingSm,
@@ -272,7 +272,7 @@ class _RedisStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: context.l10n.databaseStatusTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: status == null || status!.isEmpty
           ? const Text('-')
           : Wrap(
@@ -365,7 +365,7 @@ class _RedisConfigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: context.l10n.databaseRedisConfigTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -414,7 +414,7 @@ class _RedisPersistenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: context.l10n.databaseRedisPersistenceTitle,
-      padding: const EdgeInsets.all(16),
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

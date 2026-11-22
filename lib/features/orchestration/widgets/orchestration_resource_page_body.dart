@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
@@ -73,7 +74,7 @@ class OrchestrationResourcePageBody<T> extends StatelessWidget {
         RefreshIndicator(
           onRefresh: onRefresh,
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             itemCount: displayItems.length + (isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (isLoading && index == 0) {

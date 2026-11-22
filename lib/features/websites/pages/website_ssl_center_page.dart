@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -76,11 +77,11 @@ class _WebsiteSslCenterBody extends StatelessWidget {
             error: provider.error,
             onRetry: () => provider.load(),
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignTokens.cardPadding,
               children: [
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignTokens.cardPadding,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

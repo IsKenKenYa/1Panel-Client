@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
@@ -76,7 +77,7 @@ class _WebsiteSslBody extends StatelessWidget {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: AppDesignTokens.cardPadding,
             children: [
               _HttpsCard(
                 config: provider.httpsConfig,
@@ -585,7 +586,7 @@ class _HttpsCard extends StatelessWidget {
     final enable = config?.enable ?? false;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -622,7 +623,7 @@ class _WebsiteSslCard extends StatelessWidget {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -673,7 +674,7 @@ class _CertificateList extends StatelessWidget {
     final l10n = context.l10n;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignTokens.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
