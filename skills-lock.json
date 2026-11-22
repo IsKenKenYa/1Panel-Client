@@ -25,12 +25,6 @@
       "computedHash": "7ff2383b40fe9d8f3e753d267d964fb2b44d120a948fd2a57c3b26ddfc318370",
       "installMode": "copy"
     },
-    "caveman": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/productivity/caveman/SKILL.md",
-      "computedHash": "24801f1e2f064bf0c54f63adb2aba44bef0b9be80b95c79582c33f4b1dbf4157"
-    },
     "claude-handoff": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -55,11 +49,110 @@
       "computedHash": "d40f025dc1b0f2020663260f38f2bcb8d6ed3523afb11e5fda624b01238677e8",
       "installMode": "copy"
     },
-    "diagnose": {
-      "source": "mattpocock/skills",
+    "dart-add-unit-test": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
       "sourceType": "github",
-      "skillPath": "skills/engineering/diagnose/SKILL.md",
-      "computedHash": "4097d9d5a188c39c22e93675f937b7a1cf8c0e2dd5bed0b6833f268c151b11ac"
+      "skillPath": "skills/dart-add-unit-test/SKILL.md",
+      "computedHash": "3679f62a634142d81a9f5754eae20356d5fc471e5957e35e18239801bf7a471c"
+    },
+    "dart-build-cli-app": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-build-cli-app/SKILL.md",
+      "computedHash": "ee4104b5cbc46dc60189df9b5109a7357f06ee85c322a76637f5c6d1040a52cd"
+    },
+    "dart-collect-coverage": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-collect-coverage/SKILL.md",
+      "computedHash": "eb267ddc4ae062e7b6f480a6c7d8208cc3a7c77ba4fde28d63e85d355cf0697d"
+    },
+    "dart-fix-runtime-errors": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-fix-runtime-errors/SKILL.md",
+      "computedHash": "af09db2bf2d066537020a45bb5211fb3aa9359106197d9ad1e17831fbc6f2a71"
+    },
+    "dart-generate-test-mocks": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-generate-test-mocks/SKILL.md",
+      "computedHash": "d05e998208c3ce6cb266474d27fc27368428b3d4d633512321f903bfad56f948"
+    },
+    "dart-migrate-to-checks-package": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-migrate-to-checks-package/SKILL.md",
+      "computedHash": "a4033e45c7d8b7ba21a7b2390ee11c9ff98363620ce4a7d1d57c478b233952ec"
+    },
+    "dart-resolve-package-conflicts": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-resolve-package-conflicts/SKILL.md",
+      "computedHash": "0bdf74d7a0d3dfcd1b1f8a7d3014d65ad957c19adb3c2724387e3b7c75464725"
+    },
+    "dart-run-static-analysis": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-run-static-analysis/SKILL.md",
+      "computedHash": "fa93216b2e985fe86cffbc7f9734361205cbe6c7c8d46b21a87beea19bea2066"
+    },
+    "dart-setup-ffi-assets": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-setup-ffi-assets/SKILL.md",
+      "computedHash": "396a0abd000388a06d3547b315743b6d416fb86c074700a790f9f8989c8a32ce"
+    },
+    "dart-use-doc-examples": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-use-doc-examples/SKILL.md",
+      "computedHash": "daf66a018a121fcaf72da87c9bced219c7dc89f1322fb3177eda7fb87da323af"
+    },
+    "dart-use-ffigen": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-use-ffigen/SKILL.md",
+      "computedHash": "6cf19414e11951db1c0bfdf80ca5fa1de235454196a10c50103d734ffe15100b"
+    },
+    "dart-use-path-package": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-use-path-package/SKILL.md",
+      "computedHash": "c6c37a71cd66b8180a625b42facf73679afb0842f8a8b77a6d3f972279178b4d"
+    },
+    "dart-use-pattern-matching": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-use-pattern-matching/SKILL.md",
+      "computedHash": "f04e10a491637ab3ffaa4fa49964090d03e8521c9eff7410f7bd37c7eb3d40a7"
+    },
+    "dart-use-primary-constructors": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-use-primary-constructors/SKILL.md",
+      "computedHash": "c3f9417434d97b846d1b7e02575af550c4656984cdb8d949821be7af4e57440b"
+    },
+    "dart-write-documentation": {
+      "source": "dart-lang/skills",
+      "commit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "sourceType": "github",
+      "skillPath": "skills/dart-write-documentation/SKILL.md",
+      "computedHash": "672d8e9e5dc290c11eaf58da617a1d07349d0b728f0440cfcf22bf644a50dba6"
     },
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
@@ -269,12 +362,6 @@
       "computedHash": "7662666af51f8b1672ed7d88360d4b82656da21bb7b11c49e956eeb3036b85d5",
       "installMode": "copy"
     },
-    "resolving-merge-conflicts": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/resolving-merge-conflicts/SKILL.md",
-      "computedHash": "d92926f681907a75982f280875dfd1f06610a39680a00f361ae08a88bf2233cc"
-    },
     "retro": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -363,18 +450,6 @@
       "computedHash": "31bb3eed09dd2787e290e933def99fbf7d65044a29119c224af47c01404ab228",
       "installMode": "copy"
     },
-    "to-issues": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/to-issues/SKILL.md",
-      "computedHash": "48ccec1d6c28a77b03988b169b3c323a768665f73ab1d28f23d91fac43f31dc1"
-    },
-    "to-prd": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/to-prd/SKILL.md",
-      "computedHash": "f2c87a41e6ccf15013d8e47441c4661a6986d8a154928eec1785b88c83a33907"
-    },
     "to-questionnaire": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -426,10 +501,10 @@
     "ui-ux-pro-max": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "ref": "main",
-      "commit": "2de1134dc4d1cfe112934611ae5803ae17a1bd7e",
+      "commit": "6ec2bb58334ca3014573c4cbd4834ee3a40afd9d",
       "sourceType": "github",
       "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
-      "computedHash": "605686282fb6812d8e3f4b1a06c9fb8ba7be4d7395090f41f221a9ba5a3dbe6b",
+      "computedHash": "ecbf45740eab6a35db93506396f68969ad80e2615f24e3c767a4decc9430751c",
       "installMode": "copy"
     },
     "ui-visual-validator": {
@@ -464,12 +539,6 @@
       "computedHash": "806f7f7461824054ffaf3344e1e56e5e8a42344e22bdf8d22c6a8117eb9b1c38",
       "installMode": "copy"
     },
-    "write-a-skill": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/productivity/write-a-skill/SKILL.md",
-      "computedHash": "44d9a92c43c083a2f05b2c407f2217226fe1252aae82292c0e1b72150a6dccff"
-    },
     "writing-beats": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -501,12 +570,6 @@
       "skillPath": "skills/in-progress/writing-shape/SKILL.md",
       "computedHash": "7e06f4ca8a96c83b5b9a540c0279e998ba449e74586c77d44f9b8183c1bd8ef8",
       "installMode": "copy"
-    },
-    "zoom-out": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/zoom-out/SKILL.md",
-      "computedHash": "43d4c5044e94ffde05e6a78861b7b0b0023f5ba46146d470630a6986b5a72c39"
     }
   }
 }
