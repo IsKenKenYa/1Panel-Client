@@ -46,8 +46,10 @@ CLIENT_ROUTE_PATTERNS = [
         re.IGNORECASE | re.MULTILINE | re.DOTALL,
     ),
     # _client.post(ApiConstants.buildApiPath('/path/$var'))
+    # 模板串内可能嵌字符串字面量（如 ${opt ?? 'default'}），
+    # 因此以「右引号紧跟右括号」判定结尾，路径字符集排除右括号。
     re.compile(
-        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*ApiConstants\.buildApiPath\(\s*['\"]([^'\"]*\$[^'\"]*)['\"]\s*\)",
+        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*ApiConstants\.buildApiPath\(\s*['\"]([^)\n]*?\$[^)\n]*?)['\"]\s*\)",
         re.IGNORECASE | re.MULTILINE | re.DOTALL,
     ),
     # _client.post(_withNode('/path', ...))
@@ -303,6 +305,54 @@ PATH_PARAM_COLON_PATTERN = re.compile(r'/:([A-Za-z_][A-Za-z0-9_]*)')
 PATH_PARAM_DOLLAR_PATTERN = re.compile(r'/\$\{[^/]+\}|/\$[A-Za-z_][A-Za-z0-9_]*')
 
 
+def _iter_build_api_path_positions(content):
+    """逐处取出 buildApiPath(...) 的字符串实参及其在文本中的位置。
+
+    模板串里可能出现嵌套字符串字面量（如 ${opt ?? 'default'}），
+    正则会在内层引号处截断，因此改为按括号与引号配对扫描。
+    """
+    marker = 'buildApiPath('
+    index = 0
+    while True:
+        start = content.find(marker, index)
+        if start == -1:
+            return
+        index = start + len(marker)
+        pos = index
+        while pos < len(content) and content[pos] in ' \t\n\r':
+            pos += 1
+        if pos >= len(content) or content[pos] not in '\'"':
+            continue
+        quote = content[pos]
+        pos += 1
+        buffer = []
+        interp_depth = 0
+        while pos < len(content):
+            char = content[pos]
+            if char == '\\' and pos + 1 < len(content):
+                buffer.append(content[pos:pos + 2])
+                pos += 2
+                continue
+            if char == '$' and pos + 1 < len(content) and content[pos + 1] == '{':
+                interp_depth += 1
+                buffer.append('${')
+                pos += 2
+                continue
+            if interp_depth > 0:
+                if char == '{':
+                    interp_depth += 1
+                elif char == '}':
+                    interp_depth -= 1
+                buffer.append(char)
+                pos += 1
+                continue
+            if char == quote:
+                break
+            buffer.append(char)
+            pos += 1
+        yield start, ''.join(buffer)
+
+
 def _normalize_path(path):
     normalized = path.split('?', 1)[0]
     normalized = PATH_PARAM_DOLLAR_PATTERN.sub('/{var}', normalized)
@@ -384,7 +434,35 @@ def _load_client_signatures(file_paths):
             if legacy:
                 signatures.add(('POST', _normalize_path(legacy)))
 
+        # 模板串含嵌套引号时正则无法完整提取，按括号配对补充扫描。
+        for method_upper, path in _scan_template_routes(content):
+            signatures.add((method_upper, _normalize_path(path)))
+
     return signatures, missing_files
+
+
+_TEMPLATE_METHOD_PATTERN = re.compile(
+    r"\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(",
+    re.IGNORECASE,
+)
+
+
+def _scan_template_routes(content):
+    """从 buildApiPath(...) 的字符串实参提取路由，并回看调用的方法名。
+
+    每个实参位置的归属由调用点决定：取该位置之前最近的
+    `_client.get/post/...` 匹配。
+    """
+    marker = 'buildApiPath('
+    for position, arg in _iter_build_api_path_positions(content):
+        if not arg.startswith('/'):
+            continue
+        head = content[max(0, position - 160):position]
+        method = None
+        for candidate in _TEMPLATE_METHOD_PATTERN.finditer(head):
+            method = candidate.group(1).upper()
+        if method in METHOD_SET:
+            yield method, arg
 
 
 def _build_result(keyword, openapi_data):
