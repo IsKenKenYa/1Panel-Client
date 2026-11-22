@@ -16,7 +16,9 @@ class _RecordingServerRepository extends ServerRepository {
   final List<String> requestedIds = <String>[];
 
   @override
-  Future<List<ServerCardViewModel>> loadServerCards() async => cards;
+  Future<List<ServerCardViewModel>> loadServerCards({
+    bool withMetrics = false,
+  }) async => cards;
 
   @override
   Future<ServerMetricsSnapshot> loadMetricsForConfig(ApiConfig config) async {

@@ -307,7 +307,9 @@ class _NoopServerRepository extends ServerRepository {
   const _NoopServerRepository();
 
   @override
-  Future<List<ServerCardViewModel>> loadServerCards() async =>
+  Future<List<ServerCardViewModel>> loadServerCards({
+    bool withMetrics = false,
+  }) async =>
       const <ServerCardViewModel>[];
 
   @override

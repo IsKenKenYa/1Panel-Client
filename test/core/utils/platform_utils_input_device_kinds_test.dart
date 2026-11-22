@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 
+const Key _probeKey = Key('platform-utils-input-device-probe');
+
 void main() {
   setUp(() {
     // Reset the platform capabilities override so each test starts from
@@ -30,12 +32,12 @@ void main() {
 
         await tester.pumpWidget(
           const MaterialApp(
-            home: Scaffold(body: SizedBox.shrink()),
+            home: Scaffold(body: SizedBox.shrink(key: _probeKey)),
           ),
         );
 
         final BuildContext context =
-            tester.element(find.byType(SizedBox));
+            tester.element(find.byKey(_probeKey));
         expect(
           PlatformUtils.inputDeviceKinds(context),
           InputDeviceKind.pointer,
@@ -58,12 +60,12 @@ void main() {
 
         await tester.pumpWidget(
           const MaterialApp(
-            home: Scaffold(body: SizedBox.shrink()),
+            home: Scaffold(body: SizedBox.shrink(key: _probeKey)),
           ),
         );
 
         final BuildContext context =
-            tester.element(find.byType(SizedBox));
+            tester.element(find.byKey(_probeKey));
         expect(
           PlatformUtils.inputDeviceKinds(context),
           InputDeviceKind.touch,
@@ -81,12 +83,12 @@ void main() {
 
         await tester.pumpWidget(
           const MaterialApp(
-            home: Scaffold(body: SizedBox.shrink()),
+            home: Scaffold(body: SizedBox.shrink(key: _probeKey)),
           ),
         );
 
         final BuildContext context =
-            tester.element(find.byType(SizedBox));
+            tester.element(find.byKey(_probeKey));
         expect(
           PlatformUtils.inputDeviceKinds(context),
           InputDeviceKind.pointer,
@@ -104,12 +106,12 @@ void main() {
 
         await tester.pumpWidget(
           const MaterialApp(
-            home: Scaffold(body: SizedBox.shrink()),
+            home: Scaffold(body: SizedBox.shrink(key: _probeKey)),
           ),
         );
 
         final BuildContext context =
-            tester.element(find.byType(SizedBox));
+            tester.element(find.byKey(_probeKey));
         expect(
           PlatformUtils.inputDeviceKinds(context),
           InputDeviceKind.touch,
