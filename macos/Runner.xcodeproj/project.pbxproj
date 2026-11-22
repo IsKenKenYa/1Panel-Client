@@ -81,6 +81,7 @@
 		AA11BB22CC33DD44EE55FF0A /* ContainerFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */; };
 		AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */; };
 		AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */; };
+		AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -191,6 +192,7 @@
 		BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerFilesView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerTerminalView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TerminalSessionModel.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DatabaseDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,10 +232,11 @@
 		};
 		0B5C0C2D3827CBCEB14DDB2A /* Databases */ = {
 			isa = PBXGroup;
-			children = (
-				C43B4CD5DDB68E15585E7031 /* DatabasesViewModel.swift */,
-				94F2D1A9936C5BA321B7E1E6 /* DatabasesView.swift */,
-			);
+children = (
+					C43B4CD5DDB68E15585E7031 /* DatabasesViewModel.swift */,
+					94F2D1A9936C5BA321B7E1E6 /* DatabasesView.swift */,
+					BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */,
+				);
 			path = Databases;
 			sourceTree = "<group>";
 		};
@@ -821,6 +824,7 @@
 				AA11BB22CC33DD44EE55FF0A /* ContainerFilesView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

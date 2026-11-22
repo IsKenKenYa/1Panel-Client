@@ -7,6 +7,7 @@ struct DatabasesView: View {
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var selection: DatabaseModel.ID?
+    @State private var detailDatabase: DatabaseModel?
 
     private var selectedDatabase: DatabaseModel? {
         viewModel.databases.first { $0.id == selection }
@@ -28,8 +29,17 @@ struct DatabasesView: View {
                             Image(systemName: "externaldrive.connected.to.line.below")
                                 .foregroundColor(.blue)
                             Text(db.name)
+                            .onTapGesture(count: 2) {
+                                detailDatabase = db
+                            }
                         }
                         .contextMenu {
+                            Button {
+                                detailDatabase = db
+                            } label: {
+                                Label(translations.get("containerDetailTitle", fallback: "Details"),
+                                      systemImage: "info.circle")
+                            }
                             if db.unbindArguments != nil {
                                 Button(role: .destructive) {
                                     Task { await viewModel.unbind(db, confirmed: false) }
@@ -107,5 +117,10 @@ struct DatabasesView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchDatabases() }
+        .sheet(item: $detailDatabase) { database in
+            DatabaseDetailView(database: database)
+                .frame(minWidth: 720, minHeight: 580)
+                .id(database.id)
+        }
     }
 }

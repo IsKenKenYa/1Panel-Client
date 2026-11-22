@@ -186,7 +186,8 @@ class DatabaseUnbindTests: XCTestCase {
 
   private func database(scope: String, recordId: Int, serverId: String) -> DatabaseModel {
     DatabaseModel(recordId: recordId, serverId: serverId, scope: scope, name: "connection",
-                  type: "redis", version: "", status: "", description: "")
+                  lookupName: "connection", source: "", type: "redis", engine: "redis",
+                  version: "", status: "", description: "")
   }
 }
 

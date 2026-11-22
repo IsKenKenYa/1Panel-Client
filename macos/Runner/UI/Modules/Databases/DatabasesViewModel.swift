@@ -5,7 +5,10 @@ struct DatabaseModel: Identifiable {
     let serverId: String
     let scope: String
     let name: String
+    let lookupName: String
+    let source: String
     let type: String
+    let engine: String
     let version: String
     let status: String
     let description: String
@@ -44,7 +47,10 @@ class DatabasesViewModel: ObservableObject {
                         serverId: dict["serverId"] as? String ?? "",
                         scope: scope,
                         name: name,
+                        lookupName: dict["lookupName"] as? String ?? name,
+                        source: dict["source"] as? String ?? "",
                         type: dict["engine"] as? String ?? scope,
+                        engine: dict["engine"] as? String ?? "",
                         version: dict["version"] as? String ?? "",
                         status: dict["status"] as? String ?? "",
                         description: dict["description"] as? String ?? ""
