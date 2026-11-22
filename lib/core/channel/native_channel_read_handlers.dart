@@ -39,6 +39,7 @@ import '../../features/websites/services/website_certificate_service.dart';
 import '../../features/ssh/services/ssh_service.dart';
 import '../../features/toolbox/services/toolbox_device_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
+import 'native_monitoring_payloads.dart';
 import '../../features/alert/alert_service.dart';
 import 'native_alert_payloads.dart';
 import '../../features/ai/model_downloader_service.dart';
@@ -1879,6 +1880,42 @@ class NativeChannelReadHandlers {
   /// 下载器固定选项：来源、排序、下载内容与任务状态。
   static Future<dynamic> getModelDownloaderOptions(dynamic arguments) async {
     return modelDownloaderOptionsPayload();
+  }
+
+  // ── 监控中心 ────────────────────────────────────────────────────────────
+
+  /// 监控历史曲线。参数：`{hours?: int}`，默认 1 小时，上限 168 小时。
+  static Future<dynamic> getMonitoringHistory(dynamic arguments) async {
+    final requested = int.tryParse('${arguments?['hours'] ?? 1}') ?? 1;
+    final hours = requested.clamp(1, 168);
+    final package = await MonitoringService().getMonitorData(
+      duration: Duration(hours: hours),
+    );
+    return monitoringHistoryPayload(package);
+  }
+
+  /// 监控设置。GET /hosts/monitor/setting。
+  static Future<dynamic> getMonitoringSettings(dynamic arguments) async {
+    final setting = await MonitoringService().getSetting();
+    return monitoringSettingsPayload(setting);
+  }
+
+  /// 监控可用网卡与磁盘设备。用于设置的默认网卡与默认磁盘。
+  static Future<dynamic> getMonitoringOptions(dynamic arguments) async {
+    final service = MonitoringService();
+    var networks = const <String>[];
+    var ios = const <String>[];
+    try {
+      networks = await service.getNetworkOptions();
+    } catch (e) {
+      appLogger.w('getMonitoringOptions networks failed: $e');
+    }
+    try {
+      ios = await service.getIOOptions();
+    } catch (e) {
+      appLogger.w('getMonitoringOptions io failed: $e');
+    }
+    return monitoringOptionsPayload(networks: networks, ios: ios);
   }
 }
 

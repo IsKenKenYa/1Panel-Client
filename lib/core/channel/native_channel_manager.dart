@@ -207,6 +207,14 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getModelDownloaderSettings(arguments);
       case 'getModelDownloaderOptions':
         return NativeChannelReadHandlers.getModelDownloaderOptions(arguments);
+
+      // ── Read: 监控中心 ──────────────────────────────────────────────────
+      case 'getMonitoringHistory':
+        return NativeChannelReadHandlers.getMonitoringHistory(arguments);
+      case 'getMonitoringSettings':
+        return NativeChannelReadHandlers.getMonitoringSettings(arguments);
+      case 'getMonitoringOptions':
+        return NativeChannelReadHandlers.getMonitoringOptions(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -542,6 +550,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.deleteLocalModel(arguments);
       case 'updateModelDownloaderSettings':
         return NativeChannelWriteHandlers.updateModelDownloaderSettings(arguments);
+
+      // ── Write: 监控中心 ────────────────────────────────────────────────
+      case 'updateMonitoringSettings':
+        return NativeChannelWriteHandlers.updateMonitoringSettings(arguments);
+      case 'cleanMonitoringData':
+        return NativeChannelWriteHandlers.cleanMonitoringData(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import '../../features/alert/alert_service.dart';
 import '../../features/alert/alert_types.dart';
+import '../../features/monitoring/monitoring_service.dart';
 import '../../features/ai/model_downloader_service.dart';
 import '../../data/models/setting_models.dart';
 import '../../data/models/alert_models.dart';
@@ -3538,6 +3539,64 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('updateModelDownloaderSettings failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 监控中心 ────────────────────────────────────────────────────────────
+
+  /// 保存监控设置。参数：
+  /// `{enabled: bool, interval: int, retention: int, defaultNetwork?: String, defaultIO?: String}`
+  static Future<Map<String, dynamic>> updateMonitoringSettings(
+      dynamic arguments) async {
+    try {
+      final interval = int.tryParse('${arguments?['interval'] ?? ''}');
+      final retention = int.tryParse('${arguments?['retention'] ?? ''}');
+      if (interval == null || interval <= 0 || retention == null || retention <= 0) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'interval and retention must be positive',
+        };
+      }
+      final updated = await MonitoringService().updateSetting(
+        interval: interval,
+        retention: retention,
+        enabled: arguments?['enabled'] as bool? ?? false,
+        defaultNetwork:
+            (arguments?['defaultNetwork'] as String? ?? '').trim().isEmpty
+                ? null
+                : (arguments?['defaultNetwork'] as String).trim(),
+        defaultIO: (arguments?['defaultIO'] as String? ?? '').trim().isEmpty
+            ? null
+            : (arguments?['defaultIO'] as String).trim(),
+      );
+      if (!updated) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'monitor settings were not saved',
+        };
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateMonitoringSettings failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 清理监控历史数据。参数：`{}`。
+  static Future<Map<String, dynamic>> cleanMonitoringData(
+      dynamic arguments) async {
+    try {
+      final cleaned = await MonitoringService().cleanData();
+      if (!cleaned) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'monitor data was not cleaned',
+        };
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('cleanMonitoringData failed: $e');
       return _err(e);
     }
   }
