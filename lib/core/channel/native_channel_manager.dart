@@ -215,6 +215,18 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getMonitoringSettings(arguments);
       case 'getMonitoringOptions':
         return NativeChannelReadHandlers.getMonitoringOptions(arguments);
+
+      // ── Read: 防火墙深度 ────────────────────────────────────────────────
+      case 'getFirewallIpRules':
+        return NativeChannelReadHandlers.getFirewallIpRules(arguments);
+      case 'getFirewallBaseInfo':
+        return NativeChannelReadHandlers.getFirewallBaseInfo(arguments);
+      case 'getFirewallV2Forward':
+        return NativeChannelReadHandlers.getFirewallV2Forward(arguments);
+      case 'getFirewallV2Docker':
+        return NativeChannelReadHandlers.getFirewallV2Docker(arguments);
+      case 'getFirewallV2Settings':
+        return NativeChannelReadHandlers.getFirewallV2Settings(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -556,6 +568,16 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateMonitoringSettings(arguments);
       case 'cleanMonitoringData':
         return NativeChannelWriteHandlers.cleanMonitoringData(arguments);
+
+      // ── Write: 防火墙深度 ──────────────────────────────────────────────
+      case 'operateFirewall':
+        return NativeChannelWriteHandlers.operateFirewall(arguments);
+      case 'updateFirewallPortRule':
+        return NativeChannelWriteHandlers.updateFirewallPortRule(arguments);
+      case 'updateFirewallIpRule':
+        return NativeChannelWriteHandlers.updateFirewallIpRule(arguments);
+      case 'updateFirewallRuleDescription':
+        return NativeChannelWriteHandlers.updateFirewallRuleDescription(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

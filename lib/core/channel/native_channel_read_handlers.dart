@@ -26,6 +26,8 @@ import '../../features/dashboard/services/dashboard_service.dart';
 import '../../features/databases/databases_service.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
+import '../../features/firewall/firewall_v2_service.dart';
+import 'native_firewall_payloads.dart';
 import '../../features/logs/services/logs_service.dart';
 import '../../data/models/logs_models.dart';
 import '../../data/models/process_models.dart';
@@ -1028,34 +1030,51 @@ class NativeChannelReadHandlers {
       type: 'port',
       expectedServerId: config.id,
     );
-    final inventoryCounts = <String, int>{};
-    for (final rule in page.items) {
-      final id = rule.inventoryId;
-      if (id != null) {
-        inventoryCounts.update(id, (count) => count + 1, ifAbsent: () => 1);
-      }
-    }
-    final usedIds = <String>{};
-    return page.items.indexed.map((entry) {
-      final (index, rule) = entry;
-      final Object? id = rule.inventoryId ?? (rule.id == 0 ? null : rule.id);
-      return {
-        'id': id != null && usedIds.add(id.toString()) ? id : 'row-$index',
-        'inventoryId': rule.inventoryId,
-        'serverId': config.id,
-        'canDelete': rule.canDelete &&
-            (rule.supportsLegacyChanges ||
-                inventoryCounts[rule.inventoryId] == 1),
-        'family': rule.family ?? '',
-        'chain': rule.chain ?? '',
-        'protocol': rule.protocol ?? '',
-        'port': rule.port ?? '',
-        'address': rule.address ?? '',
-        'strategy': rule.strategy ?? '',
-        'description': rule.description ?? '',
-        'supportsLegacyChanges': rule.supportsLegacyChanges,
-      };
-    }).toList();
+    return firewallRulePayloads(page.items, serverId: config.id);
+  }
+
+  /// 防火墙 IP 规则。POST /hosts/firewall/search type=ip。
+  static Future<dynamic> getFirewallIpRules(dynamic arguments) async {
+    final config = await ApiConfigManager.getCurrentConfig();
+    if (config == null) return [];
+    final page = await FirewallService().searchRules(
+      page: 1,
+      pageSize: 200,
+      type: 'ip',
+      expectedServerId: config.id,
+    );
+    return firewallRulePayloads(page.items, serverId: config.id);
+  }
+
+  /// 防火墙基础状态。GET /hosts/firewall/base。
+  static Future<dynamic> getFirewallBaseInfo(dynamic arguments) async {
+    final info = await FirewallService().loadBaseInfo();
+    return firewallBasePayload(info);
+  }
+
+  /// V2 转发分区：基础信息与转发规则合并后平铺。
+  static Future<dynamic> getFirewallV2Forward(dynamic arguments) async {
+    final service = FirewallV2Service();
+    final base = await service.loadForwardBase();
+    final rules = await service.searchForwardRules(pageSize: 100);
+    return firewallFlatPayload(<String, dynamic>{...base, ...rules});
+  }
+
+  /// V2 Docker 分区：端口映射与端点。
+  static Future<dynamic> getFirewallV2Docker(dynamic arguments) async {
+    final service = FirewallV2Service();
+    final ports = await service.loadDockerPorts();
+    final endpoints = await service.loadDockerEndpoints();
+    return firewallFlatPayload(<String, dynamic>{
+      ...ports,
+      'endpoints': endpoints,
+    });
+  }
+
+  /// V2 设置分区。
+  static Future<dynamic> getFirewallV2Settings(dynamic arguments) async {
+    final settings = await FirewallV2Service().loadSettings();
+    return firewallFlatPayload(settings);
   }
 
   /// 定时任务：返回任务列表（含下次执行时间预览）。

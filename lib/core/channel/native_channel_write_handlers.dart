@@ -44,6 +44,7 @@ import '../../data/models/file_models.dart';
 import '../../data/models/process_models.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
+import 'native_firewall_payloads.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
 import '../../data/models/website_models.dart';
@@ -2288,6 +2289,7 @@ class NativeChannelWriteHandlers {
       final protocol = arguments['protocol'] as String? ?? 'tcp';
       final address = (arguments['address'] as String? ?? '').trim();
       final strategy = arguments['strategy'] as String? ?? 'accept';
+      final description = (arguments['description'] as String? ?? '').trim();
       final service = FirewallService();
       if (port.isNotEmpty) {
         await service.createPortRule(FirewallPortRulePayload(
@@ -2297,12 +2299,14 @@ class NativeChannelWriteHandlers {
           source: address.isEmpty ? 'anyWhere' : 'address',
           protocol: protocol,
           strategy: strategy,
+          description: description.isEmpty ? null : description,
         ));
       } else if (address.isNotEmpty) {
         await service.createIpRule(FirewallIpRulePayload(
           operation: 'add',
           address: address,
           strategy: strategy,
+          description: description.isEmpty ? null : description,
         ));
       } else {
         throw const FormatException('Enter a port or source address.');
@@ -3597,6 +3601,75 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('cleanMonitoringData failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 防火墙深度操作 ──────────────────────────────────────────────────────
+
+  /// 防火墙启停重启。参数：`{operation: start|stop|restart, withDockerRestart?: bool}`
+  static Future<Map<String, dynamic>> operateFirewall(dynamic arguments) async {
+    try {
+      final operation = (arguments?['operation'] as String? ?? '').trim();
+      const allowed = <String>{'start', 'stop', 'restart'};
+      if (!allowed.contains(operation)) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'Unsupported operation: $operation',
+        };
+      }
+      await FirewallService().operateFirewall(
+        operation: FirewallOperation(
+          operation: operation,
+          withDockerRestart: arguments?['withDockerRestart'] as bool? ?? false,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateFirewall failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新端口规则。参数：`{oldRule: Map, newRule: Map}`。
+  static Future<Map<String, dynamic>> updateFirewallPortRule(
+      dynamic arguments) async {
+    try {
+      await FirewallService().updatePortRule(
+        firewallPortUpdateRequest(arguments as Map),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateFirewallPortRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新 IP 规则。参数：`{oldRule: Map, newRule: Map}`。
+  static Future<Map<String, dynamic>> updateFirewallIpRule(
+      dynamic arguments) async {
+    try {
+      await FirewallService().updateIpRule(
+        firewallIpUpdateRequest(arguments as Map),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateFirewallIpRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新规则描述。参数：
+  /// `{type: port|ip, description, chain?, srcIP?, dstIP?, srcPort?, dstPort?, protocol?, strategy?}`
+  static Future<Map<String, dynamic>> updateFirewallRuleDescription(
+      dynamic arguments) async {
+    try {
+      await FirewallService().updateDescription(
+        firewallDescriptionUpdate(arguments as Map),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateFirewallRuleDescription failed: $e');
       return _err(e);
     }
   }
