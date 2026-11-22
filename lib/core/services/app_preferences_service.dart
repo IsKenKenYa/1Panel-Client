@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,8 @@ class AppPreferencesService {
       'app_use_file_picker_for_file_operations';
   static const String _fileSaveSubDirectoryNameKey =
       'app_file_save_sub_directory_name';
+  // 各服务器上次浏览的目录，按 serverId 存成 JSON 映射。
+  static const String _fileLastPathKey = 'app_file_last_path_by_server';
   static const String defaultFileSaveSubDirectoryName = 'KenPanel';
 
   Future<void> _write(
@@ -193,5 +196,31 @@ class AppPreferencesService {
   Future<void> saveFileSaveSubDirectoryName(String name) => _write(
         _fileSaveSubDirectoryNameKey,
         (prefs) => prefs.setString(_fileSaveSubDirectoryNameKey, name),
+      );
+
+  /// 读取各服务器上次浏览的目录映射。
+  ///
+  /// 内容损坏时返回空映射：目录记忆属于体验优化，退回根目录即可，
+  /// 不应让整个文件页无法使用。
+  Future<Map<String, String>> loadFileLastPaths() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_fileLastPathKey);
+    if (raw == null || raw.isEmpty) return const <String, String>{};
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } on FormatException {
+      return const <String, String>{};
+    }
+    if (decoded is! Map) return const <String, String>{};
+    return {
+      for (final entry in decoded.entries)
+        if (entry.value is String) entry.key as String: entry.value as String,
+    };
+  }
+
+  Future<void> saveFileLastPaths(Map<String, String> paths) => _write(
+        _fileLastPathKey,
+        (prefs) => prefs.setString(_fileLastPathKey, jsonEncode(paths)),
       );
 }

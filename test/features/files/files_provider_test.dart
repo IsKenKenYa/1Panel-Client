@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onepanel_client/features/files/files_service.dart';
 
 @GenerateMocks([FilesService])
@@ -16,6 +17,7 @@ void main() {
   late MockFilesService mockService;
 
   setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
     mockService = MockFilesService();
     provider = FilesProvider(service: mockService);
   });
@@ -160,14 +162,13 @@ void main() {
           .thenAnswer((_) async => const <FileInfo>[]);
 
       await provider.navigateTo('/var/www');
-      provider.onServerChangedWithIds(
+      await provider.onServerChangedWithIds(
         previousServerId: 'server-a',
         nextServerId: 'server-b',
       );
-      await Future<void>.delayed(Duration.zero);
 
       await provider.navigateTo('/opt/apps');
-      provider.onServerChangedWithIds(
+      await provider.onServerChangedWithIds(
         previousServerId: 'server-b',
         nextServerId: 'server-a',
       );

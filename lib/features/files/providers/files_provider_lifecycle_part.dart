@@ -3,6 +3,9 @@ part of '../files_provider.dart';
 extension FilesProviderLifecycleMixin on FilesProvider {
   Future<void> initialize() async {
     if (isDisposed) return;
+    // 首次进入还没有服务器标识，先取当前服务器再决定起始目录。
+    await _ensurePathMemoryLoaded();
+    if (isDisposed) return;
     final targetPath = _normalizePath(_data.currentPath);
     appLogger.dWithPackage(
       'files_provider',
@@ -12,26 +15,26 @@ extension FilesProviderLifecycleMixin on FilesProvider {
     _emitChange();
 
     try {
-      final results = await Future.wait<dynamic>([
-        _service.getCurrentServer(),
-        _service.getFiles(
-          path: targetPath,
-          search: _data.searchQuery,
-        ),
-      ]);
-      final server = results[0] as ApiConfig?;
-      final files = results[1] as List<FileInfo>;
+      final server = await _service.getCurrentServer();
+      if (isDisposed) return;
+      // 首次进入时 currentPath 仍是默认根目录，按服务器记忆还原上次浏览位置。
+      final path = targetPath == '/' ? _restorePathForServer(server?.id) : targetPath;
+      final files = await _service.getFiles(
+        path: path,
+        search: _data.searchQuery,
+      );
+      if (isDisposed) return;
       _data = _data.copyWith(
         currentServer: server,
         files: files,
-        currentPath: targetPath,
+        currentPath: path,
         isLoading: false,
         selectedFiles: <String>{},
       );
-      _rememberPathForServer(server?.id, targetPath);
+      _rememberPathForServer(server?.id, path);
       appLogger.iWithPackage(
         'files_provider',
-        'initialize: 初始化完成, files=${files.length}, serverId=${server?.id}',
+        'initialize: 初始化完成, files=${files.length}, serverId=${server?.id}, path=$path',
       );
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -154,14 +157,27 @@ extension FilesProviderLifecycleMixin on FilesProvider {
     onServerChangedWithIds();
   }
 
-  void onServerChangedWithIds({
+  /// 切换服务器：保存旧服务器的目录并恢复新服务器的目录。
+  ///
+  /// 返回 Future 便于调用方与测试等待恢复完成。
+  Future<void> onServerChangedWithIds({
     String? previousServerId,
     String? nextServerId,
-  }) {
+  }) async {
     if (isDisposed) return;
     if (previousServerId != null && previousServerId.isNotEmpty) {
       _rememberPathForServer(previousServerId, _data.currentPath);
     }
+    await _applyServerChange(previousServerId, nextServerId);
+  }
+
+  /// 先读入持久化的目录记忆再恢复路径，避免重启后退回根目录。
+  Future<void> _applyServerChange(
+    String? previousServerId,
+    String? nextServerId,
+  ) async {
+    await _ensurePathMemoryLoaded();
+    if (isDisposed) return;
     final restoredPath = _restorePathForServer(nextServerId);
     appLogger.dWithPackage(
       'files_provider',
