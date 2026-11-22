@@ -3,7 +3,6 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 
 import '../providers/website_routing_rules_provider.dart';
-import 'website_routing_rules_single_actions.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 
 enum RoutingBatchAction {

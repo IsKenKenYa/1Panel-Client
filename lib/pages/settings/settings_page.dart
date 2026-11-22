@@ -171,8 +171,9 @@ class _SettingsPageState extends State<SettingsPage> {
         context.select((ThemeController? theme) => theme?.themeMode);
     final panelName = context.select((CurrentServerController? controller) {
       final server = controller?.currentServer;
-      if (server == null || server.panelType != ApiConfig.onePanelType)
+      if (server == null || server.panelType != ApiConfig.onePanelType) {
         return null;
+      }
       return server.name;
     });
 

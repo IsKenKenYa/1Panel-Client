@@ -81,7 +81,7 @@ class _ConfigTabState extends State<ConfigTab> {
                 onPressed: () async {
                   final success =
                       await provider.updateDaemonJson(_controller.text);
-                  if (!mounted) return;
+                  if (!mounted || !context.mounted) return;
                   if (success) {
                     SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
                   }

@@ -326,14 +326,12 @@ class _LinkRow extends StatelessWidget {
     required this.value,
     this.onOpen,
     this.onCopy,
-    this.openActionLabel,
   });
 
   final String label;
   final String value;
   final VoidCallback? onOpen;
   final VoidCallback? onCopy;
-  final String? openActionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +351,7 @@ class _LinkRow extends StatelessWidget {
                 onPressed: onOpen,
                 icon: const Icon(Icons.open_in_new),
                 label: Text(
-                  openActionLabel ?? context.l10n.aboutRepositoryOpenAction,
+                  context.l10n.aboutRepositoryOpenAction,
                 ),
               ),
             if (onCopy != null)

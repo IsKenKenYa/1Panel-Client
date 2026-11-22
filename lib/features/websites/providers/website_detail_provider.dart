@@ -33,7 +33,7 @@ class WebsiteDetailProvider extends ChangeNotifier with SafeChangeNotifier {
       // When a WebsiteDetailStore is available (SSOT), read from it to
       // avoid redundant API calls across sibling providers.
       website = _store != null
-          ? await _store!.load()
+          ? await _store.load()
           : await _repository.getWebsiteDetail(websiteId);
       // Guard against notifying a disposed listener after the async gap.
       if (isDisposed) return;

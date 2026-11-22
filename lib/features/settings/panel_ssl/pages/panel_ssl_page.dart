@@ -10,7 +10,6 @@ import 'package:onepanel_client/features/shell/controllers/current_server_contro
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 import 'package:onepanel_client/shared/widgets/app_widgets.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 import 'package:provider/provider.dart';
 
 class PanelSslPage extends StatelessWidget {

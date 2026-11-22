@@ -44,7 +44,7 @@ class WebsiteConfigCenterProvider extends ChangeNotifier
     try {
       await _ensureService();
       final detailFuture = _store != null
-          ? _store!.load()
+          ? _store.load()
           : _websiteRepository!.getWebsiteDetail(websiteId);
       final results = await Future.wait<dynamic>([
         detailFuture,

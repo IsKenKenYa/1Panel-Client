@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/core/layout/adaptive_layout.dart';
-import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_theme_editor.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';

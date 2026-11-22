@@ -283,13 +283,12 @@ class _AppStoreViewState extends State<AppStoreView> {
 
   Future<void> _showInstallDialog(BuildContext context, AppItem app) async {
     final provider = this.context.read<AppStoreProvider>();
-    final colorScheme = Theme.of(this.context).colorScheme;
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AppInstallDialog(app: app),
     );
 
-    if (!mounted) return;
+    if (!mounted || !context.mounted) return;
 
     if (provider.error != null) {
       SnackBarUtils.showError(context, provider.error!);

@@ -4,7 +4,6 @@ import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'settings_data.dart';
 import 'settings_service.dart';
-import '../../data/models/setting_models.dart';
 import '../../core/services/logger/logger_service.dart';
 
 const String _settingsProviderPackage = 'features.settings.settings_provider';

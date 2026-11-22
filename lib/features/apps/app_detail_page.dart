@@ -40,7 +40,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
       // This is more reliable than getAppDetail for display purposes
       try {
         final appByKey = await appService.getAppByKey(_app.key ?? '');
-        if (mounted && appByKey != null) {
+        if (mounted) {
           setState(() {
             _app = appByKey;
             _readme = appByKey.readMe;

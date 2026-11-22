@@ -71,11 +71,11 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
                 try {
                   await provider.uninstallApp(app.id.toString());
                   if (mounted) {
-                    SnackBarUtils.showSuccess(context, l10n.appOperateSuccess);
+                    SnackBarUtils.showSuccess(this.context, l10n.appOperateSuccess);
                   }
                 } catch (e) {
                   if (mounted) {
-                    SnackBarUtils.showError(context, l10n.appOperateFailed(e.toString()),
+                    SnackBarUtils.showError(this.context, l10n.appOperateFailed(e.toString()),
                     );
                   }
                 }

@@ -11,7 +11,6 @@ import 'package:onepanel_client/features/commands/widgets/command_card_widget.da
 import 'package:onepanel_client/features/commands/widgets/command_import_preview_sheet_widget.dart';
 import 'package:onepanel_client/features/commands/widgets/commands_page_header_widget.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
-import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/shared/mixins/server_aware_page_mixin.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';

@@ -86,8 +86,9 @@ class PanelAccountSettingsEntry extends StatelessWidget {
     try {
       final entrance =
           BrowserConnectionPolicy.panelWebEntrance(url, securityEntrance);
-      if (await launchUrl(entrance, mode: LaunchMode.externalApplication))
+      if (await launchUrl(entrance, mode: LaunchMode.externalApplication)) {
         return;
+      }
     } on Exception {
       // 平台无法启动浏览器时显示操作反馈。
     } on ArgumentError {

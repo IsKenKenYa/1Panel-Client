@@ -46,8 +46,9 @@ class _CacheSettingsPageState extends State<CacheSettingsPage> {
     if (confirmed != true || !mounted) return;
     await _apply(() async {
       await FilePreviewCacheManager().clearAllCache();
-      if (mounted)
+      if (mounted) {
         SnackBarUtils.showSuccess(context, l10n.settingsCacheCleared);
+      }
     });
   }
 
@@ -95,10 +96,11 @@ class _CacheSettingsPageState extends State<CacheSettingsPage> {
                         onChanged: _busy
                             ? null
                             : (value) {
-                                if (value != null)
+                                if (value != null) {
                                   _apply(
                                     () => settings.updateCacheStrategy(value),
                                   );
+                                }
                               },
                       ),
                     ),
@@ -124,10 +126,11 @@ class _CacheSettingsPageState extends State<CacheSettingsPage> {
                         onChanged: _busy
                             ? null
                             : (value) {
-                                if (value != null)
+                                if (value != null) {
                                   _apply(
                                     () => settings.updateCacheMaxSizeMB(value),
                                   );
+                                }
                               },
                       ),
                     ),

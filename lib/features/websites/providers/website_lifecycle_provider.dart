@@ -147,7 +147,7 @@ class WebsiteLifecycleProvider extends ChangeNotifier with SafeChangeNotifier {
 
       if (isEditMode && websiteId != null) {
         final WebsiteInfo website = _store != null
-            ? (await _store!.load()) ??
+            ? (await _store.load()) ??
                 (await _repository.getWebsiteDetail(websiteId!))
             : await _repository.getWebsiteDetail(websiteId!);
         nextState = nextState.copyWith(

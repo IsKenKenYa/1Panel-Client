@@ -81,7 +81,7 @@ class WebsiteConfigProvider extends ChangeNotifier with SafeChangeNotifier {
 
   Future<void> loadPhpVersionContext() async {
     final detailFuture = _store != null
-        ? _store!.load()
+        ? _store.load()
         : _websiteRepository.getWebsiteDetail(websiteId);
     final result = await Future.wait<dynamic>([
       detailFuture,

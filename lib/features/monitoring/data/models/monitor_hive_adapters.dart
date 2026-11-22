@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import '../../../../data/repositories/monitor_repository.dart';
 import '../../../../data/models/monitor_models.dart';
 
 class MonitorDataPointAdapter extends TypeAdapter<MonitorDataPoint> {

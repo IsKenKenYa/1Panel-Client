@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_route_constants.dart';
-import 'package:onepanel_client/config/app_router.dart' show AppRouter;
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart'
