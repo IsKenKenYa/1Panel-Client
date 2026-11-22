@@ -1662,6 +1662,13 @@
       "skillPath": "identity/restore-credentials/SKILL.md",
       "computedHash": "a107a5b59c1e4fab5952916dc74b0f2456a532bc1f158107679727cdbb032bf6"
     },
+    "retrieving-developer-knowledge": {
+      "source": "google/skills",
+      "commit": "4bb21ebfa085f6307d5d62bc21765e1d3433f11d",
+      "sourceType": "github",
+      "skillPath": "skills/developers/retrieving-developer-knowledge/SKILL.md",
+      "computedHash": "66b5eb52bacc6b60efd80034ff58fb0e22977ea9db685628e1681301490d82ca"
+    },
     "retro": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
