@@ -434,3 +434,22 @@ class MonitorHistoryModelTests: XCTestCase {
         XCTAssertEqual(settings.defaultNetwork, "eth0")
     }
 }
+
+class OperationsRouteTests: XCTestCase {
+    func testModuleRouteExposesOperationsEntries() {
+        let routes: [ModuleRoute] = [
+            .runtime, .toolbox, .processes, .ssh, .disk, .openresty, .group, .hostAssets,
+        ]
+        for route in routes {
+            XCTAssertTrue(ModuleRoute.allCases.contains(route))
+            XCTAssertEqual(ModuleRoute(rawValue: route.rawValue), route)
+        }
+    }
+
+    func testModuleRouteTitleKeysResolve() {
+        let translations = TranslationsManager.shared
+        for route in ModuleRoute.allCases {
+            XCTAssertFalse(route.title(translations).isEmpty)
+        }
+    }
+}

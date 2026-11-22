@@ -10945,6 +10945,60 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverModuleVm => '虚拟机';
 
   @override
+  String get serverModuleRuntime => '运行环境';
+
+  @override
+  String get serverModuleSsh => 'SSH 服务';
+
+  @override
+  String get serverModuleGroup => '主机分组';
+
+  @override
+  String get serverModuleHostAssets => '主机资源';
+
+  @override
+  String get toolboxDeviceDnsCheckTitle => 'DNS 校验';
+
+  @override
+  String get toolboxDeviceDnsLabel => 'DNS 服务器';
+
+  @override
+  String get toolboxDeviceDnsCheckAction => '校验 DNS';
+
+  @override
+  String get toolboxDeviceDnsReachable => 'DNS 可达';
+
+  @override
+  String get toolboxDeviceDnsUnreachable => 'DNS 不可达';
+
+  @override
+  String get toolboxDiskEmptyTitle => '暂无磁盘';
+
+  @override
+  String get toolboxDiskTotalLabel => '磁盘总数';
+
+  @override
+  String get toolboxDiskCapacityLabel => '总容量';
+
+  @override
+  String get toolboxDiskUnmountedLabel => '未挂载';
+
+  @override
+  String get groupEmptyTitle => '暂无分组';
+
+  @override
+  String get sshNotInstalled => 'SSH 服务未安装';
+
+  @override
+  String get sshOperationConfirm => '确认执行此 SSH 服务操作？';
+
+  @override
+  String get openrestyModulesTitle => '模块';
+
+  @override
+  String get openrestyConfigTitle => '配置';
+
+  @override
   String get vmPageTitle => '虚拟机';
 
   @override

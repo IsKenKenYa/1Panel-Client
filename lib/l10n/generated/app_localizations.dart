@@ -21253,6 +21253,114 @@ abstract class AppLocalizations {
   /// **'Virtual Machines'**
   String get serverModuleVm;
 
+  /// No description provided for @serverModuleRuntime.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get serverModuleRuntime;
+
+  /// No description provided for @serverModuleSsh.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH Service'**
+  String get serverModuleSsh;
+
+  /// No description provided for @serverModuleGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Groups'**
+  String get serverModuleGroup;
+
+  /// No description provided for @serverModuleHostAssets.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Assets'**
+  String get serverModuleHostAssets;
+
+  /// No description provided for @toolboxDeviceDnsCheckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS Check'**
+  String get toolboxDeviceDnsCheckTitle;
+
+  /// No description provided for @toolboxDeviceDnsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS server'**
+  String get toolboxDeviceDnsLabel;
+
+  /// No description provided for @toolboxDeviceDnsCheckAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify DNS'**
+  String get toolboxDeviceDnsCheckAction;
+
+  /// No description provided for @toolboxDeviceDnsReachable.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS reachable'**
+  String get toolboxDeviceDnsReachable;
+
+  /// No description provided for @toolboxDeviceDnsUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS is unreachable'**
+  String get toolboxDeviceDnsUnreachable;
+
+  /// No description provided for @toolboxDiskEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No disks'**
+  String get toolboxDiskEmptyTitle;
+
+  /// No description provided for @toolboxDiskTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total disks'**
+  String get toolboxDiskTotalLabel;
+
+  /// No description provided for @toolboxDiskCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total capacity'**
+  String get toolboxDiskCapacityLabel;
+
+  /// No description provided for @toolboxDiskUnmountedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not mounted'**
+  String get toolboxDiskUnmountedLabel;
+
+  /// No description provided for @groupEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups'**
+  String get groupEmptyTitle;
+
+  /// No description provided for @sshNotInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH service is not installed'**
+  String get sshNotInstalled;
+
+  /// No description provided for @sshOperationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply this SSH service operation?'**
+  String get sshOperationConfirm;
+
+  /// No description provided for @openrestyModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules'**
+  String get openrestyModulesTitle;
+
+  /// No description provided for @openrestyConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration'**
+  String get openrestyConfigTitle;
+
   /// No description provided for @vmPageTitle.
   ///
   /// In en, this message translates to:

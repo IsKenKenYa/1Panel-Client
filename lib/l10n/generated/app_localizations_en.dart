@@ -11298,6 +11298,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverModuleVm => 'Virtual Machines';
 
   @override
+  String get serverModuleRuntime => 'Runtime';
+
+  @override
+  String get serverModuleSsh => 'SSH Service';
+
+  @override
+  String get serverModuleGroup => 'Host Groups';
+
+  @override
+  String get serverModuleHostAssets => 'Host Assets';
+
+  @override
+  String get toolboxDeviceDnsCheckTitle => 'DNS Check';
+
+  @override
+  String get toolboxDeviceDnsLabel => 'DNS server';
+
+  @override
+  String get toolboxDeviceDnsCheckAction => 'Verify DNS';
+
+  @override
+  String get toolboxDeviceDnsReachable => 'DNS reachable';
+
+  @override
+  String get toolboxDeviceDnsUnreachable => 'DNS is unreachable';
+
+  @override
+  String get toolboxDiskEmptyTitle => 'No disks';
+
+  @override
+  String get toolboxDiskTotalLabel => 'Total disks';
+
+  @override
+  String get toolboxDiskCapacityLabel => 'Total capacity';
+
+  @override
+  String get toolboxDiskUnmountedLabel => 'Not mounted';
+
+  @override
+  String get groupEmptyTitle => 'No groups';
+
+  @override
+  String get sshNotInstalled => 'SSH service is not installed';
+
+  @override
+  String get sshOperationConfirm => 'Apply this SSH service operation?';
+
+  @override
+  String get openrestyModulesTitle => 'Modules';
+
+  @override
+  String get openrestyConfigTitle => 'Configuration';
+
+  @override
   String get vmPageTitle => 'Virtual Machines';
 
   @override

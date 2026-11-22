@@ -64,6 +64,14 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
     case virtualMachines
     case alerts
     case modelDownloader
+    case runtime
+    case toolbox
+    case processes
+    case ssh
+    case disk
+    case openresty
+    case group
+    case hostAssets
 
     var id: String { rawValue }
 
@@ -100,6 +108,22 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
             return translations.get("alertPageTitle", fallback: "Alert Center")
         case .modelDownloader:
             return translations.get("modelDownloaderTabLabel", fallback: "Model Download")
+        case .runtime:
+            return translations.get("serverModuleRuntime", fallback: "Runtime")
+        case .toolbox:
+            return translations.get("toolboxCenterTitle", fallback: "Toolbox")
+        case .processes:
+            return translations.get("operationsProcessesTitle", fallback: "Processes")
+        case .ssh:
+            return translations.get("serverModuleSsh", fallback: "SSH Service")
+        case .disk:
+            return translations.get("toolboxDiskTitle", fallback: "Disk Management")
+        case .openresty:
+            return translations.get("openrestyPageTitle", fallback: "OpenResty")
+        case .group:
+            return translations.get("serverModuleGroup", fallback: "Host Groups")
+        case .hostAssets:
+            return translations.get("serverModuleHostAssets", fallback: "Host Assets")
         }
     }
 
@@ -118,6 +142,14 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .virtualMachines: return "desktopcomputer"
         case .alerts: return "bell.badge"
         case .modelDownloader: return "arrow.down.circle"
+        case .runtime: return "shippingbox"
+        case .toolbox: return "wrench.and.screwdriver"
+        case .processes: return "list.bullet"
+        case .ssh: return "terminal"
+        case .disk: return "internaldrive"
+        case .openresty: return "network"
+        case .group: return "folder.badge.gearshape"
+        case .hostAssets: return "server.rack"
         }
     }
 
@@ -137,6 +169,14 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .virtualMachines: VirtualMachinesModuleView()
         case .alerts: AlertModuleView()
         case .modelDownloader: ModelDownloaderModuleView()
+        case .runtime: RuntimesView()
+        case .toolbox: ToolboxView()
+        case .processes: ProcessesView()
+        case .ssh: SSHModuleView()
+        case .disk: DiskManagementView()
+        case .openresty: OpenrestyView()
+        case .group: GroupsView()
+        case .hostAssets: HostAssetsView()
         }
     }
 }
