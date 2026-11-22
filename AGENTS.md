@@ -28,7 +28,7 @@
 - 开工前先检索可用技能：`.agents/skills/` 是唯一分发位置（顶层 `skills/` 是安装源）。与本次任务相关的技能必须使用，官方技能优先——Flutter/Dart（`flutter/agent-plugins`，含 `dart-*`/`flutter-*`）、Android（`android/skills`）、HarmonyOS（`hmos-*`/`kits-*`，gitcode 官方源）、Apple（Xcode `xcrun agent skills export` 导出集）与 mattpocock 工程流程集；一个技能都不用直接动手视为违反闭环要求。
 - Dart & Flutter MCP server 已在 `.mcp.json` 配置（`dart mcp-server`，Dart SDK 内置）：analyzer 诊断修复、测试执行、热重载、运行时内省、pub 依赖管理优先走 MCP 工具，禁止另开子进程重复跑 `flutter analyze` 与 `flutter test`。
 - 编辑 `lib/` 下 `.dart` 文件后，按官方热重载规则经 MCP 工具连接运行中的应用：UI 组件与简单方法改动用 `hot_reload`；涉及 `initState`、全局或静态状态、`main()` 的改动用 `hot_restart`；仅注释与空白改动不触发。MCP 未接入的会话按既有方式重启应用验证。
-- 引入新的 pub.dev 依赖时运行 `dart run skills@ get` 检查随包发布的技能，存在即安装并使用。
+- 引入新的 pub.dev 依赖时运行 `dart run skills@ get` 检查随包发布的技能，存在即安装并使用；liquid_glass_widgets 上游自带官方指南，因技能名不合规范被工具跳过，已按规范名 `liquid-glass-widgets-usage` 引入（玻璃是浮层不做列表卡、禁止折射玻璃嵌套等官方架构规则）。
 - 无障碍走查按技能 `flutter-a11y-audit` 的三类检查执行，条目同步登记在「语义一致性检查清单（原生 UI 适配必检）」。
 
 ## 最高优先级执行规则（强制）
