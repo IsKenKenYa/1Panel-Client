@@ -84,6 +84,11 @@
 		AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */; };
 		AA11BB22CC33DD44EE55FF0E /* FileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000E /* FileContentView.swift */; };
 		AA11BB22CC33DD44EE55FF0F /* AppStoreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000F /* AppStoreSheet.swift */; };
+		AA11BB22CC33DD44EE55FF10 /* WebsiteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660010 /* WebsiteDetailView.swift */; };
+		AA11BB22CC33DD44EE55FF11 /* WebsiteRedirectsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660011 /* WebsiteRedirectsSection.swift */; };
+		AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */; };
+		AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */; };
+		AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +202,11 @@
 		BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DatabaseDetailView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000E /* FileContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileContentView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000F /* AppStoreSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStoreSheet.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660010 /* WebsiteDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteDetailView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660011 /* WebsiteRedirectsSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteRedirectsSection.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteRewriteSection.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteSecuritySections.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteAuthSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -459,6 +469,11 @@ children = (
 			children = (
 				80C069787796F00C193F33ED /* WebsitesViewModel.swift */,
 				8718D639F653E6D627FB8A70 /* WebsitesView.swift */,
+				BB22CC33DD44EE55FF660010 /* WebsiteDetailView.swift */,
+				BB22CC33DD44EE55FF660011 /* WebsiteRedirectsSection.swift */,
+				BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */,
+				BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */,
+				BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */,
 			);
 			path = Websites;
 			sourceTree = "<group>";
@@ -833,6 +848,11 @@ children = (
 				AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0E /* FileContentView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0F /* AppStoreSheet.swift in Sources */,
+				AA11BB22CC33DD44EE55FF10 /* WebsiteDetailView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF11 /* WebsiteRedirectsSection.swift in Sources */,
+				AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */,
+				AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */,
+				AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

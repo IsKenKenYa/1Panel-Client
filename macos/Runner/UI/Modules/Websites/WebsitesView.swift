@@ -8,6 +8,7 @@ struct WebsitesView: View {
 
     @State private var websiteToDelete: WebsiteModel?
     @State private var showDeleteConfirm = false
+    @State private var detailWebsite: WebsiteModel?
 
     var body: some View {
         Group {
@@ -25,8 +26,17 @@ struct WebsitesView: View {
                             Image(systemName: "globe")
                                 .foregroundColor(.blue)
                             Text(website.primaryDomain)
+                                .onTapGesture(count: 2) {
+                                    detailWebsite = website
+                                }
                         }
                         .contextMenu {
+                            Button {
+                                detailWebsite = website
+                            } label: {
+                                Label(translations.get("websitesDetailTitle", fallback: "Site details"),
+                                      systemImage: "info.circle")
+                            }
                             let isRunning = website.status.lowercased() == "running"
                             Button {
                                 Task { await viewModel.toggleWebsiteStatus(id: website.originalId, currentStatus: website.status) }
@@ -98,5 +108,10 @@ struct WebsitesView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchWebsites() }
+        .sheet(item: $detailWebsite) { website in
+            WebsiteDetailView(website: website)
+                .frame(minWidth: 880, minHeight: 640)
+                .id(website.id)
+        }
     }
 }
