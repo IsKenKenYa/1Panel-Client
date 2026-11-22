@@ -12566,4 +12566,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get cronjobsCommandLabel => '命令';
+
+  @override
+  String get logsOperationDetailTitle => '操作日志详情';
+
+  @override
+  String get logsLoginDetailTitle => '登录日志详情';
+
+  @override
+  String get logsDetailMessageLabel => '消息';
+
+  @override
+  String get logsOperationPathLabel => '请求路径';
+
+  @override
+  String get securitySshDetailTitle => 'SSH 服务详情';
+
+  @override
+  String get securityPanelSslDetailTitle => '面板 SSL 详情';
+
+  @override
+  String get securityPanelSslExpireDateLabel => '到期时间';
 }

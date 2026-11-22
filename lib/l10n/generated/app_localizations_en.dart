@@ -12953,4 +12953,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cronjobsCommandLabel => 'Command';
+
+  @override
+  String get logsOperationDetailTitle => 'Operation Log Details';
+
+  @override
+  String get logsLoginDetailTitle => 'Login Log Details';
+
+  @override
+  String get logsDetailMessageLabel => 'Message';
+
+  @override
+  String get logsOperationPathLabel => 'Request path';
+
+  @override
+  String get securitySshDetailTitle => 'SSH Service Details';
+
+  @override
+  String get securityPanelSslDetailTitle => 'Panel SSL Details';
+
+  @override
+  String get securityPanelSslExpireDateLabel => 'Expire date';
 }

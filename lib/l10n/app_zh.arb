@@ -5000,5 +5000,12 @@
   "backupRecordsAccountLabel": "下载账号",
   "cronjobsDetailTitle": "任务详情",
   "cronjobsGroupLabel": "分组",
-  "cronjobsCommandLabel": "命令"
+  "cronjobsCommandLabel": "命令",
+  "logsOperationDetailTitle": "操作日志详情",
+  "logsLoginDetailTitle": "登录日志详情",
+  "logsDetailMessageLabel": "消息",
+  "logsOperationPathLabel": "请求路径",
+  "securitySshDetailTitle": "SSH 服务详情",
+  "securityPanelSslDetailTitle": "面板 SSL 详情",
+  "securityPanelSslExpireDateLabel": "到期时间"
 }

@@ -5298,5 +5298,12 @@
   "backupRecordsAccountLabel": "Download account",
   "cronjobsDetailTitle": "Cronjob Details",
   "cronjobsGroupLabel": "Group",
-  "cronjobsCommandLabel": "Command"
+  "cronjobsCommandLabel": "Command",
+  "logsOperationDetailTitle": "Operation Log Details",
+  "logsLoginDetailTitle": "Login Log Details",
+  "logsDetailMessageLabel": "Message",
+  "logsOperationPathLabel": "Request path",
+  "securitySshDetailTitle": "SSH Service Details",
+  "securityPanelSslDetailTitle": "Panel SSL Details",
+  "securityPanelSslExpireDateLabel": "Expire date"
 }

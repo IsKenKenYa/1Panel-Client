@@ -24414,6 +24414,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Command'**
   String get cronjobsCommandLabel;
+
+  /// No description provided for @logsOperationDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation Log Details'**
+  String get logsOperationDetailTitle;
+
+  /// No description provided for @logsLoginDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Log Details'**
+  String get logsLoginDetailTitle;
+
+  /// No description provided for @logsDetailMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get logsDetailMessageLabel;
+
+  /// No description provided for @logsOperationPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Request path'**
+  String get logsOperationPathLabel;
+
+  /// No description provided for @securitySshDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH Service Details'**
+  String get securitySshDetailTitle;
+
+  /// No description provided for @securityPanelSslDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel SSL Details'**
+  String get securityPanelSslDetailTitle;
+
+  /// No description provided for @securityPanelSslExpireDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expire date'**
+  String get securityPanelSslExpireDateLabel;
 }
 
 class _AppLocalizationsDelegate

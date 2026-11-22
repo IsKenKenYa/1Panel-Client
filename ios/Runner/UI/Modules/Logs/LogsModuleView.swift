@@ -48,6 +48,7 @@ struct OperationLogRow: Identifiable {
     let path: String
     let method: String
     let status: String
+    let message: String
 }
 
 struct OperationLogsView: View {
@@ -55,6 +56,7 @@ struct OperationLogsView: View {
 
     @State private var logs: [OperationLogRow] = []
     @State private var isLoading = false
+    @State private var selectedLog: OperationLogRow?
 
     var body: some View {
         Group {
@@ -94,6 +96,10 @@ struct OperationLogsView: View {
                             .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 2)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedLog = log
+                        }
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -111,6 +117,10 @@ struct OperationLogsView: View {
                 }
                 .disabled(isLoading)
             }
+        }
+        .sheet(item: $selectedLog) { log in
+            OperationLogDetailView(log: log)
+                .environmentObject(translations)
         }
         .onAppear {
             if logs.isEmpty {
@@ -136,7 +146,8 @@ struct OperationLogsView: View {
                         ip: item["ip"] as? String ?? "",
                         path: item["path"] as? String ?? "",
                         method: item["method"] as? String ?? "",
-                        status: item["status"] as? String ?? ""
+                        status: item["status"] as? String ?? "",
+                        message: item["message"] as? String ?? ""
                     )
                 }
             }
@@ -150,6 +161,7 @@ struct LoginLogRow: Identifiable {
     let address: String
     let status: String
     let createdAt: String
+    let message: String
 }
 
 struct LoginLogsView: View {
@@ -157,6 +169,7 @@ struct LoginLogsView: View {
 
     @State private var logs: [LoginLogRow] = []
     @State private var isLoading = false
+    @State private var selectedLoginLog: LoginLogRow?
 
     var body: some View {
         Group {
@@ -194,6 +207,10 @@ struct LoginLogsView: View {
                             .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 2)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedLoginLog = log
+                        }
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -211,6 +228,10 @@ struct LoginLogsView: View {
                 }
                 .disabled(isLoading)
             }
+        }
+        .sheet(item: $selectedLoginLog) { log in
+            LoginLogDetailView(log: log)
+                .environmentObject(translations)
         }
         .onAppear {
             if logs.isEmpty {
@@ -235,7 +256,8 @@ struct LoginLogsView: View {
                         ip: item["ip"] as? String ?? "",
                         address: item["address"] as? String ?? "",
                         status: item["status"] as? String ?? "",
-                        createdAt: item["createdAt"] as? String ?? ""
+                        createdAt: item["createdAt"] as? String ?? "",
+                        message: item["message"] as? String ?? ""
                     )
                 }
             }
@@ -425,13 +447,43 @@ struct TaskLogContentView: View {
                         message: translations.get("commonEmpty", fallback: "No data")
                     )
                 } else {
-                    ScrollView {
-                        Text(lines.joined(separator: "\n"))
-                            .font(.system(.caption2, design: .monospaced))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
+                    List {
+                        Section(translations.get("logsTaskOpenDetailAction",
+                                                 fallback: "View log")) {
+                            InfoLine(
+                                label: translations.get("logsTaskDetailIdLabel",
+                                                        fallback: "Task ID"),
+                                value: log.id
+                            )
+                            if !log.type.isEmpty {
+                                InfoLine(
+                                    label: translations.get("logsTaskDetailTypeLabel",
+                                                            fallback: "Type"),
+                                    value: log.type
+                                )
+                            }
+                            InfoLine(
+                                label: translations.get("logsTaskDetailStatusLabel",
+                                                        fallback: "Status"),
+                                value: taskStatus.isEmpty ? log.status : taskStatus
+                            )
+                            if !log.createdAt.isEmpty {
+                                InfoLine(
+                                    label: translations.get("logsTaskDetailCreatedAtLabel",
+                                                            fallback: "Created"),
+                                    value: TimestampFormat.display(log.createdAt)
+                                )
+                            }
+                        }
+                        Section(translations.get("cronjobRecordsTitle",
+                                                 fallback: "Records")) {
+                            Text(verbatim: lines.joined(separator: "\n"))
+                                .font(.system(.caption2, design: .monospaced))
+                                .textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
+                    .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle(log.name.isEmpty ? log.id : log.name)

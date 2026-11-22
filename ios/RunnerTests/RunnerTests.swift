@@ -522,3 +522,48 @@ class OperationsDetailModelTests: XCTestCase {
         }
     }
 }
+
+class LogAndSecurityDetailModelTests: XCTestCase {
+    func testOperationLogRowCarriesMessageForDetail() {
+        let row = OperationLogRow(
+            id: 1,
+            source: "1Panel",
+            ip: "192.0.2.10",
+            path: "/api/v2/hosts",
+            method: "GET",
+            status: "200",
+            message: "request completed"
+        )
+
+        XCTAssertEqual(row.path, "/api/v2/hosts")
+        XCTAssertEqual(row.method, "GET")
+        XCTAssertEqual(row.message, "request completed")
+    }
+
+    func testLoginLogRowCarriesMessageForDetail() {
+        let row = LoginLogRow(
+            id: 2,
+            ip: "192.0.2.11",
+            address: "Fuzhou",
+            status: "Success",
+            createdAt: "2026-11-23 00:00:00",
+            message: "login succeeded"
+        )
+
+        XCTAssertEqual(row.ip, "192.0.2.11")
+        XCTAssertEqual(row.address, "Fuzhou")
+        XCTAssertEqual(row.message, "login succeeded")
+    }
+
+    func testLogAndSecurityDetailLabelsResolve() {
+        let translations = TranslationsManager.shared
+        for key in [
+            "logsOperationDetailTitle", "logsLoginDetailTitle",
+            "logsDetailMessageLabel", "logsOperationPathLabel",
+            "securitySshDetailTitle", "securityPanelSslDetailTitle",
+            "securityPanelSslExpireDateLabel",
+        ] {
+            XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+        }
+    }
+}

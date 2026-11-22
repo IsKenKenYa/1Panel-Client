@@ -111,6 +111,14 @@ struct SecurityView: View {
                                            fallback: "Config File (/etc/ssh/sshd_config)"),
                           systemImage: "doc.text")
                 }
+                NavigationLink {
+                    SSHServiceDetailView()
+                        .environmentObject(translations)
+                } label: {
+                    Label(translations.get("securitySshDetailTitle",
+                                           fallback: "SSH Service Details"),
+                          systemImage: "server.rack")
+                }
             } else if serverViewModel.isLoading {
                 ProgressView()
             } else if serverViewModel.sshLoadFailed {
@@ -146,6 +154,14 @@ struct SecurityView: View {
                          value: ssl.hasCertificate
                             ? translations.get("systemSettingsEnabled", fallback: "Enabled")
                             : translations.get("systemSettingsDisabled", fallback: "Disabled"))
+                NavigationLink {
+                    PanelSslDetailView()
+                        .environmentObject(translations)
+                } label: {
+                    Label(translations.get("securityPanelSslDetailTitle",
+                                           fallback: "Panel SSL Details"),
+                          systemImage: "lock.shield")
+                }
             } else if serverViewModel.isLoading {
                 ProgressView()
             } else {

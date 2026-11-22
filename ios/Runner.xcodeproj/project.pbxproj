@@ -94,6 +94,8 @@
 		B10S0001000000000000005A /* WebsiteDeepConfigViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005A /* WebsiteDeepConfigViews.swift */; };
 		B10S0001000000000000005B /* BackupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005B /* BackupDetailView.swift */; };
 		B10S0001000000000000005C /* CronjobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005C /* CronjobDetailView.swift */; };
+		B10S0001000000000000005D /* LogDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005D /* LogDetailViews.swift */; };
+		B10S0001000000000000005E /* SecurityDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005E /* SecurityDetailViews.swift */; };
 		D10S00010000000000000001 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000001 /* AppleSharedUI */; };
 		D10S00010000000000000002 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000002 /* AppleSharedUI */; };
 		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
@@ -225,6 +227,8 @@
 		F10S0001000000000000005A /* WebsiteDeepConfigViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDeepConfigViews.swift; sourceTree = "<group>"; };
 		F10S0001000000000000005B /* BackupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDetailView.swift; sourceTree = "<group>"; };
 		F10S0001000000000000005C /* CronjobDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CronjobDetailView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000005D /* LogDetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailViews.swift; sourceTree = "<group>"; };
+		F10S0001000000000000005E /* SecurityDetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityDetailViews.swift; sourceTree = "<group>"; };
 		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -491,6 +495,7 @@
 			children = (
 				F10S00010000000000000018 /* SecurityViewModel.swift */,
 				F10S00010000000000000019 /* SecurityView.swift */,
+				F10S0001000000000000005E /* SecurityDetailViews.swift */,
 			);
 			path = Security;
 			sourceTree = "<group>";
@@ -538,6 +543,7 @@
 			isa = PBXGroup;
 			children = (
 				F10S00010000000000000033 /* LogsModuleView.swift */,
+				F10S0001000000000000005D /* LogDetailViews.swift */,
 			);
 			path = Logs;
 			sourceTree = "<group>";
@@ -857,6 +863,8 @@
 				B10S0001000000000000005A /* WebsiteDeepConfigViews.swift in Sources */,
 				B10S0001000000000000005B /* BackupDetailView.swift in Sources */,
 				B10S0001000000000000005C /* CronjobDetailView.swift in Sources */,
+				B10S0001000000000000005D /* LogDetailViews.swift in Sources */,
+				B10S0001000000000000005E /* SecurityDetailViews.swift in Sources */,
 				B10S00010000000000000039 /* WebsiteCertificatesView.swift in Sources */,
 				B10S00010000000000000011 /* MonitoringViewModel.swift in Sources */,
 				B10S00010000000000000012 /* MonitoringView.swift in Sources */,
