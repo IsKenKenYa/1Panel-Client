@@ -301,7 +301,7 @@ flutter pub upgrade
 
 ### 13.3 HarmonyOS / OHOS 构建
 
-HarmonyOS 使用 Flutter-OH，不与官方 Flutter 共用 SDK。macOS 可直接使用完整路径：
+HarmonyOS 使用 Flutter-OH，不与官方 Flutter 共用 SDK。参与 HarmonyOS 开发需要单独安装 Flutter-OH 与 DevEco Studio 26.0.0，并配置 `DEVECO_SDK_HOME` 与 `hvigorw`、`ohpm`、`node`、`hdc` 路径。macOS 可直接使用完整路径：
 
 ```bash
 /Volumes/FanXiangMac/DevTools/Flutter_HMOS/flutter_flutter/bin/flutter --version
@@ -315,7 +315,9 @@ D:\Huawei\Flutter\flutter_flutter\bin\flutter.bat --version
 D:\Huawei\Flutter\flutter_flutter\bin\flutter.bat build hap --release
 ```
 
-当前已验证 Flutter-OH：`3.35.8-ohos-0.0.3`，framework revision `8957a7cf95`。构建产物位于 `build/ohos/hap/entry-default-signed.hap`。
+当前已验证 Flutter-OH：`3.44.9+ohos-1.0.0`，framework revision `fda3a43c32`，Dart 3.12.2，engine `5a2a6a42`。构建产物位于 `build/ohos/hap/entry-default-signed.hap`。官方 Flutter 同步使用 `3.44.9`。
+
+Flutter SIG 版本线与配套要求（`3.41.9+ohos-1.0.2` 与 `3.44.9+ohos-1.0.0` 共用 DevEco 26.0.0 与 SDK 26.0.0 环境）、Flutter-OH 的获取与配置步骤、参考文档索引见 `docs/development/harmonyos_build_and_sideload.md` 的「Flutter SIG 版本线」与「参与开发的 HarmonyOS 环境准备」两节。
 
 如果出现 `TargetPlatform.ohos` switch exhaustiveness 错误，先确认是否使用仓库 lock 和已验证 Flutter-OH revision；项目代码应增加 OHOS/default 分支，第三方包优先 pin 回已验证版本或通过项目自有 platform facade 绕开。
 

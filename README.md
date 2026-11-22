@@ -105,7 +105,7 @@ This release is still part of the `debug` channel and should be validated on the
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Flutter 3.22+ with Material Design 3
+- **Framework**: Flutter 3.44.9 with Material Design 3 (Flutter-OH 3.44.9+ohos-1.0.0 for HarmonyOS)
 - **Networking**: Dio HTTP Client with comprehensive error handling and retry mechanism
 - **State Management**: Provider pattern
 - **Authentication**: MD5 token-based authentication (1Panel-specific)
@@ -293,9 +293,12 @@ After comprehensive analysis and implementation of the 1Panel V2 API, this proje
 
 ## 📋 Prerequisites
 
-- Flutter 3.22+ or later
-- Dart 3.6+
+- Flutter 3.44.9 for Android, iOS, macOS, Windows, Linux and the browser track
+- Flutter-OH 3.44.9+ohos-1.0.0 plus DevEco Studio 26.0.0 for HarmonyOS builds (separate SDK checkout, do not share `.dart_tool` with the official Flutter)
+- Dart 3.12.2 (installed with the Flutter SDKs above)
 - Access to a 1Panel server with API access enabled
+
+HarmonyOS environment setup and the Flutter SIG version line are documented in `docs/development/harmonyos_build_and_sideload.md`.
 
 ## 🚀 Getting Started
 
@@ -484,6 +487,27 @@ The project uses Retrofit for type-safe API clients. After modifying API definit
 ```bash
 flutter packages pub run build_runner build
 ```
+
+### HarmonyOS Build
+
+HarmonyOS builds use a separate Flutter-OH SDK (current baseline `3.44.9+ohos-1.0.0`) alongside the official Flutter `3.44.9`. Contributors need Flutter-OH 3.44.9 and DevEco Studio 26.0.0 Release, with `DEVECO_SDK_HOME` and the `hvigorw`, `ohpm`, `node`, `hdc` paths configured. Full steps are in `docs/development/harmonyos_build_and_sideload.md` (section "参与开发的 HarmonyOS 环境准备").
+
+- Keep the official `flutter` for Android, iOS, macOS, Windows, Linux and web; use the Flutter-OH binary for HarmonyOS builds, runs and troubleshooting. `hflutter` is a local shell wrapper equivalent to `<Flutter-OH>/bin/flutter`.
+- After the first build or any SDK version switch:
+
+```bash
+export DEVECO_SDK_HOME="<DevEco>/Contents/sdk"
+export PATH="<DevEco>/Contents/tools/hvigor/bin:<DevEco>/Contents/tools/ohpm/bin:<DevEco>/Contents/tools/node/bin:<DevEco>/Contents/sdk/default/openharmony/toolchains:$PATH"
+hflutter precache --ohos
+hflutter pub get
+hflutter build hap --debug --no-codesign
+```
+
+- Run `hflutter pub get` before every HarmonyOS build. The two SDKs overwrite each other's `package_config.json` and `.dart_tool`, and mixing them points the framework at the other SDK.
+- `ohos/local.properties` must point `flutter.sdk`, `hwsdk.dir` and `nodejs.dir` at local paths; the file is local-only and not distributed with the repository.
+- If the Flutter-OH remote has no release tag for the checked-out commit, `flutter --version` derives a version from the nearest tag. Create a matching local tag on the SDK HEAD, delete `bin/cache/flutter.version.json` and the repository-root `version` file, then let the tool regenerate them.
+- `pubspec_overrides.yaml` pins `wakelock_plus: 1.4.0` and routes `device_info_plus`, `chewie`, `xterm` and `url_launcher_ohos` to the cross-SDK compatible copies under `third_party/patched_packages`.
+- Flutter SIG version line and reference documents: `docs/development/harmonyos_build_and_sideload.md`, plus the sample and documentation repository `https://gitcode.com/CPF-Flutter/flutter_samples`.
 
 ### Logging
 

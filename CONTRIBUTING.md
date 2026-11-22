@@ -27,6 +27,8 @@ This guide helps contributors understand how to propose changes, prepare code, a
 ## Development Setup
 
 - Install Flutter and project dependencies with `flutter pub get`.
+- The official Flutter baseline is `3.44.9`; Dart `3.12.2` ships with it.
+- HarmonyOS work additionally needs Flutter-OH `3.44.9+ohos-1.0.0` and DevEco Studio 26.0.0 Release in a separate SDK checkout. Configure `DEVECO_SDK_HOME` plus the `hvigorw`, `ohpm`, `node` and `hdc` paths, and run `pub get` with that SDK before every HAP build. Do not share `.dart_tool` between the two SDKs. See `docs/development/harmonyos_build_and_sideload.md`.
 - Use Java 17 for Android builds.
 - Keep local secrets out of the repository.
 - If your change depends on generated localization or model files, regenerate them before submitting.
@@ -48,6 +50,7 @@ Run the minimum required checks before opening a pull request:
 - `dart run test/scripts/test_runner.dart unit`
 - `dart run test/scripts/test_runner.dart integration` when touching API, network, or data-write behavior
 - `dart run test/scripts/test_runner.dart ui` when touching UI
+- `hflutter build hap --release` with Flutter-OH when touching HarmonyOS platform capabilities, dependencies, or build configuration, and report the HAP output path
 
 If you cannot run a required test, explain why in the pull request.
 
@@ -100,6 +103,8 @@ By contributing, you agree that your contributions are licensed under GPL-3.0 to
 ## 开发环境
 
 - 使用 `flutter pub get` 安装依赖。
+- 官方 Flutter 基线为 `3.44.9`，Dart `3.12.2` 随该 SDK 安装。
+- HarmonyOS 开发额外需要独立的 Flutter-OH `3.44.9+ohos-1.0.0` 与 DevEco Studio 26.0.0 Release。配置 `DEVECO_SDK_HOME` 以及 `hvigorw`、`ohpm`、`node`、`hdc` 路径，并在每次 HAP 构建前用该 SDK 执行 `pub get`。两套 SDK 不共用 `.dart_tool`。详见 `docs/development/harmonyos_build_and_sideload.md`。
 - Android 构建使用 Java 17。
 - 本地 secrets 不得进入仓库。
 - 如果改动依赖生成文件（如本地化或模型生成），请在提交前重新生成。
@@ -121,6 +126,7 @@ By contributing, you agree that your contributions are licensed under GPL-3.0 to
 - `dart run test/scripts/test_runner.dart unit`
 - 涉及 API、网络或数据写入时执行 `dart run test/scripts/test_runner.dart integration`
 - 涉及 UI 时执行 `dart run test/scripts/test_runner.dart ui`
+- 涉及 HarmonyOS 平台能力、依赖或构建配置时，使用 Flutter-OH 执行 `hflutter build hap --release`，并附 HAP 输出路径
 
 如果无法执行某项必需测试，请在 Pull Request 中明确说明原因。
 

@@ -1,6 +1,6 @@
 # HarmonyOS 构建与侧载指南
 
-> 最后验证：2026-05-24
+> 最后验证：2026-11-22
 
 本文用于 HarmonyOS / OHOS HAP 构建、侧载分发与常见问题排障。HarmonyOS 在本项目中按一等平台处理：共享业务逻辑仍在 Dart 层，平台缺口优先通过 ArkTS Platform Bridge 补齐，不为 HarmonyOS 复制业务实现。
 
@@ -21,9 +21,9 @@ hflutter build hap --release
 已验证 Flutter-OH：
 
 ```text
-Flutter 3.35.8-ohos-0.0.3
-Framework revision 8957a7cf95
-Dart 3.9.2
+Flutter 3.44.9+ohos-1.0.0
+Framework revision fda3a43c32
+Dart 3.12.2
 ```
 
 输出产物：
@@ -32,7 +32,88 @@ Dart 3.9.2
 build/ohos/hap/entry-default-signed.hap
 ```
 
+构建前设置 DevEco 工具链：
+
+```bash
+export DEVECO_SDK_HOME="/Volumes/FanXiangMac/Applications/DevEco-Studio.app/Contents/sdk"
+export PATH="/Volumes/FanXiangMac/Applications/DevEco-Studio.app/Contents/tools/hvigor/bin:/Volumes/FanXiangMac/Applications/DevEco-Studio.app/Contents/tools/ohpm/bin:/Volumes/FanXiangMac/Applications/DevEco-Studio.app/Contents/tools/node/bin:/Volumes/FanXiangMac/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/toolchains:$PATH"
+```
+
+`hvigorw` 与 `ohpm` 必须出现在 `PATH`；`DEVECO_SDK_HOME` 指向 DevEco 的 `sdk` 目录。
+
+3.44.9 构建依赖以下项目内兼容件：
+
+- `third_party/patched_packages/chewie`、`xterm`：补充 `TargetPlatform.ohos` 的默认分支，官方 Flutter 与 Flutter-OH 共用。
+- `third_party/patched_packages/device_info_plus`：OHOS 适配版 12.3.0，OHOS 判定改为 `Platform.operatingSystem == 'ohos'`。
+- `third_party/patched_packages/url_launcher_ohos`：从 `@ohos/flutter_ohos` 公开入口导入。
+- `syncfusion_flutter_pdfviewer` 使用 Flutter-OH 适配仓库的 35.1.37 分支。
+
+本机 SDK 补丁（不在仓库内）：
+
+- `packages/flutter_tools/hvigor/src/util/file-util.ts` 的 `relativePath` 解析符号链接，避免 pub cache 跨卷时 hvigor 报 `Path not found`。
+- DevEco 公开 SDK 的 `@ohos.app.ability.autoFillManager.d.ts` 补齐 3.44 嵌入层使用的系统 API 声明。
+
 如果最新 Flutter-OH 出现第三方包或 SDK 兼容问题，优先回退到已验证 revision，再对比差异。
+
+## Flutter SIG 版本线（2026-11-22 核对）
+
+上层组织为 Flutter SIG，SDK 仓库在 `gitcode.com/CPF-Flutter/flutter_flutter`，本地 SDK 的 `origin` 仍写 `openharmony-tpc/flutter_flutter`，两者解析到相同提交。参考文档与示例在 `gitcode.com/CPF-Flutter/flutter_samples`。
+
+| 上游基线 | Flutter-OH 版本 | 标签 | 发布日期 | 说明 |
+| --- | --- | --- | --- | --- |
+| 3.35.7 | 3.35.8-ohos-1.0.7 | `3.35.8-ohos-1.0.7` | 2026-11-13 | 维护线 |
+| 3.41.9 | 3.41.9+ohos-1.0.2 | `3.41.9+ohos-1.0.2` | 2026-09-24 | 采用 `+ohos` build metadata 版本格式 |
+| 3.41.9 | 3.41.9+ohos-1.0.4 | 只有 `1.0.4-beta` 标签 | 2026-10-24（beta） | 分支 `oh-3.41.9-release` 的 CHANGELOG 已记录 1.0.4 |
+| 3.44.9 | 3.44.9+ohos-1.0.0 | `3.44.9+ohos-1.0.0` | 2026-11-13 | 本项目当前基线 |
+| 3.47.7 | 3.47.7+ohos-0.0.1-pre | 只有预览标签 | — | 预览状态 |
+
+`1.0.2` 的版本配套要求：DevEco Studio 26.0.0 Release、Command Line Tools 26.0.0 Release、引擎构建最低 SDK 26.0.0、应用编译最低 SDK 26.0.0、应用运行最低 SDK 5.0.5(17)。这些要求与 3.44.9+ohos-1.0.0 一致，因此两套版本线共用同一套 DevEco 环境。
+
+`1.0.2` 的主要变更包括动态 DPI 溢出策略与 PlatformView 坐标修复、`+ohos` 标签格式解析、GPU 资源回收日志、白屏渲染 DFX 日志、LTPO 默认开启、密码保险箱、引擎异步创建与销毁、页面不可见暂停、DMA 零拷贝图像解码，以及 `StandardMessageCodec` 子类覆写、递归数据通道、Ability 重建后插件状态恢复等修复。这些能力在 3.44.9+ohos-1.0.0 的嵌入层源码中均已存在（`OhosAutoFillHelper`、`spawnAsync`/`destroyAsync`、`onVisibleAreaChange`、`ohos_image_generator` 的 DMA 路径、hdc 启动参数中的 `route`）。
+
+版本标签以远端标签为准，不要依赖分支 tip 推算。3.41.9 与 3.44.9 两条线的最后正式版本都在 2026-11-13；`1.0.2` 属于更早的中间版本。
+
+## 参与开发的 HarmonyOS 环境准备
+
+HarmonyOS 构建需要单独的 Flutter-OH SDK，与官方 Flutter 并存，不能共用同一份 checkout 与同一份 `.dart_tool`。
+
+1. 安装 DevEco Studio 26.0.0 Release 与 Command Line Tools 26.0.0 Release。
+2. 获取 Flutter-OH SDK：
+
+```bash
+git clone -b oh-3.44.9-release https://gitcode.com/CPF-Flutter/flutter_flutter.git
+cd flutter_flutter
+./bin/flutter --version
+```
+
+3. 配置构建环境（macOS 示例，Windows 换成 DevEco 的对应目录并追加到系统环境变量）：
+
+```bash
+export DEVECO_SDK_HOME="<DevEco>/Contents/sdk"
+export PATH="<DevEco>/Contents/tools/hvigor/bin:<DevEco>/Contents/tools/ohpm/bin:<DevEco>/Contents/tools/node/bin:<DevEco>/Contents/sdk/default/openharmony/toolchains:$PATH"
+```
+
+4. 首次使用与切换版本后：
+
+```bash
+./bin/flutter precache --ohos
+./bin/flutter pub get
+./bin/flutter build hap --release
+```
+
+5. 检查 `ohos/local.properties` 的 `flutter.sdk`、`hwsdk.dir`、`nodejs.dir` 指向本机实际路径。该文件为本地配置，不随仓库分发。
+
+6. 每次换 SDK 构建前重新执行 `pub get`，并在切换版本时清理 `flutter clean`、`.dart_tool/flutter_build`、`build/ohos`、`ohos/.hvigor`、`ohos/entry/build`。两套 SDK 的 `package_config.json` 互相覆盖，混用会让 framework 指向另一套 SDK。
+
+版本标签缺失时，`flutter --version` 会按距离最近的标签推算版本号，显示结果与目标版本不一致。这种情况下在本机 SDK 仓库的 HEAD 建同名标签，再删除 `bin/cache/flutter.version.json` 与仓库根目录的 `version` 文件重新生成。
+
+## 参考文档
+
+- Flutter OH 环境搭建：`docs/ohos/getting-started/flutter-oh-env-setup.md`
+- Flutter OH 版本升级指导：`docs/ohos/version/flutter-oh-upgrade-guide.md`，其中明确 Flutter-OH 未适配 `flutter upgrade`，切换版本必须用 `git checkout`
+- Flutter OH 应用构建指导：`docs/ohos/app-development/flutter-oh-app-build-guide.md`
+- 三方库适配情况：`ThirdpartyLibrarites.md`（`OpenHarmony-Flutter/docs` 仓库）
+- 版本发布说明：SDK 仓库 `release-notes/` 目录下的 `Flutter <版本>+ohos <OHOS 版本> ReleaseNote.md`
 
 ## macOS 与官方 Flutter 并存
 

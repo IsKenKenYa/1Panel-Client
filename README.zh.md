@@ -105,7 +105,7 @@
 
 ## 🛠️ 技术栈
 
-- **框架**: Flutter 3.22+ 配合 Material Design 3
+- **框架**: Flutter 3.44.9 配合 Material Design 3（HarmonyOS 使用 Flutter-OH 3.44.9+ohos-1.0.0）
 - **网络**: Dio HTTP客户端，具备全面错误处理和重试机制
 - **状态管理**: Provider模式
 - **认证**: 基于MD5 token的身份验证（1Panel专用）
@@ -248,9 +248,12 @@
 
 ## 📋 前置条件
 
-- Flutter 3.22+ 或更高版本
-- Dart 3.6+
+- 官方 Flutter 3.44.9（Android、iOS、macOS、Windows、Linux 与浏览器轨道）
+- Flutter-OH 3.44.9+ohos-1.0.0 与 DevEco Studio 26.0.0（HarmonyOS 构建，独立 SDK checkout，不与官方 Flutter 共用 `.dart_tool`）
+- Dart 3.12.2（随上述 Flutter SDK 安装）
 - 具有API访问权限的1Panel服务器
+
+HarmonyOS 环境准备与 Flutter SIG 版本线见 `docs/development/harmonyos_build_and_sideload.md`。
 
 ## 🚀 快速开始
 
@@ -442,16 +445,21 @@ flutter packages pub run build_runner build
 
 ### HarmonyOS 专属构建
 
-- 非 HarmonyOS 平台继续使用官方 `flutter`；HarmonyOS 构建、运行与排障统一使用 HMOS 专属 `hflutter`，避免混用缓存。
+HarmonyOS 构建使用独立的 Flutter-OH SDK（当前基线 `3.44.9+ohos-1.0.0`），与官方 Flutter `3.44.9` 并存。参与 HarmonyOS 开发需要自行安装 Flutter-OH 3.44.9、DevEco Studio 26.0.0 Release，并配置 `DEVECO_SDK_HOME` 与 `hvigorw`、`ohpm`、`node`、`hdc` 路径，完整步骤见 `docs/development/harmonyos_build_and_sideload.md` 的「参与开发的 HarmonyOS 环境准备」。
+
+- 非 HarmonyOS 平台继续使用官方 `flutter`；HarmonyOS 构建、运行与排障统一使用 HMOS 专属 `hflutter`，避免混用缓存。`hflutter` 是 shell 包装，等价完整路径 `<Flutter-OH>/bin/flutter`。
 - 首次编译、切换 HMOS Flutter 分支/版本后，先执行：
 
 ```bash
-hflutter precache --force --ohos
+export DEVECO_SDK_HOME="<DevEco>/Contents/sdk"
+export PATH="<DevEco>/Contents/tools/hvigor/bin:<DevEco>/Contents/tools/ohpm/bin:<DevEco>/Contents/tools/node/bin:<DevEco>/Contents/sdk/default/openharmony/toolchains:$PATH"
+hflutter precache --ohos
 hflutter pub get
 hflutter build hap --debug --no-codesign
 ```
 
-- `ohos/local.properties` 需要正确指向 `flutter.sdk`、`hwsdk.dir`、`nodejs.dir`，由项目内配置统一管理。
+- 每次换 SDK 构建前重新执行 `hflutter pub get`；两套 SDK 的 `package_config.json` 与 `.dart_tool` 互相覆盖，混用会让 framework 指向另一套 SDK。
+- `ohos/local.properties` 需要正确指向 `flutter.sdk`、`hwsdk.dir`、`nodejs.dir`，该文件为本地配置，不随仓库分发。
 - `ohos/entry/src/main/ets/plugins/OhosCompatibilityPluginRegistrant.ets` 负责补齐当前 HMOS Flutter 分支缺失的启动关键插件通道（`shared_preferences`、`package_info_plus`、`path_provider`、`flutter_secure_storage`）；若设备日志再次出现 `No registered handler for message`，优先检查这里是否被遗漏或被生成流程覆盖。
 - 若 `hflutter run` 卡在 `waiting for a debug connection`，且设备日志出现 `Wrong full snapshot version`，优先按下列顺序清理并重拉 HMOS artifacts：
 
@@ -463,9 +471,11 @@ hflutter pub get
 hflutter build hap --debug --no-codesign
 ```
 
-- 当前项目通过 `pubspec_overrides.yaml` 锁定 `wakelock_plus: 1.4.0`，用于兼容 HMOS Flutter 当前 Dart SDK 约束。
+- 若 Flutter-OH 远端缺少对应版本的正式 tag，`flutter --version` 会按最近标签推算版本号。在本机 SDK 仓库 HEAD 建同名标签后删除 `bin/cache/flutter.version.json` 与仓库根目录 `version` 文件重新生成即可。
+- 当前项目通过 `pubspec_overrides.yaml` 锁定 `wakelock_plus: 1.4.0`，并把 `device_info_plus`、`chewie`、`xterm`、`url_launcher_ohos` 指向 `third_party/patched_packages` 下的跨 SDK 兼容件，同时兼容官方 Flutter 与 Flutter-OH。
 - 当前 HMOS 兼容层走“Dart 共享业务 + OHOS 本地插件补齐缺失通道”路线，禁止为 HarmonyOS 单独分叉一套业务逻辑。
 - 只有在确认没有 Flutter / Git 进程占用时，才处理 HMOS Flutter SDK 的 `.upgrade_lock` 或仓库内 `.git/index.lock`。
+- Flutter SIG 版本线与参考文档：`docs/development/harmonyos_build_and_sideload.md`；示例与文档仓库 `https://gitcode.com/CPF-Flutter/flutter_samples`。
 
 ### 日志记录
 
