@@ -76,6 +76,11 @@
 		AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */; };
 		AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */; };
 		AA11BB22CC33DD44EE55FF07 /* ModelDownloaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */; };
+		AA11BB22CC33DD44EE55FF08 /* TerminalSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660008 /* TerminalSessionBridge.swift */; };
+		AA11BB22CC33DD44EE55FF09 /* ContainerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660009 /* ContainerDetailView.swift */; };
+		AA11BB22CC33DD44EE55FF0A /* ContainerFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */; };
+		AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */; };
+		AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -181,6 +186,11 @@
 		BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlertModuleView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ModelDownloaderView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660008 /* TerminalSessionBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TerminalSessionBridge.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660009 /* ContainerDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerDetailView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerFilesView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerTerminalView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TerminalSessionModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,6 +220,10 @@
 			children = (
 				106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */,
 				177F320876FF80E1571539BD /* ContainersView.swift */,
+				BB22CC33DD44EE55FF660009 /* ContainerDetailView.swift */,
+				BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */,
+				BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */,
+				BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -403,6 +417,7 @@
 			children = (
 				489FCD7EAEB41D2B634D8711 /* ChannelManager.swift */,
 				1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */,
+					BB22CC33DD44EE55FF660008 /* TerminalSessionBridge.swift */,
 				13C6BF85241F60E51282F495 /* TranslationsManager.swift */,
 				A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */,
 				B06A7AA990C66B443341AF71 /* ThemeManager.swift */,
@@ -801,6 +816,11 @@
 				AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF07 /* ModelDownloaderView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF08 /* TerminalSessionBridge.swift in Sources */,
+				AA11BB22CC33DD44EE55FF09 /* ContainerDetailView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0A /* ContainerFilesView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

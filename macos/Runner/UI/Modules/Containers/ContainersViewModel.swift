@@ -35,6 +35,22 @@ final class ContainersViewModel: ObservableObject {
         try await loader.loadLogs(name: name, tail: tail)
     }
 
+    /// 容器 inspect（getContainerInspect 通道，格式化 JSON 文本）。
+    func fetchInspect(name: String) async throws -> String {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getContainerInspect",
+            arguments: ["name": name]
+        )
+        guard let text = raw as? String else {
+            throw NSError(
+                domain: "ContainersViewModel",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Unexpected inspect response"]
+            )
+        }
+        return text
+    }
+
     func fetchContainers() async {
         await loader.fetchContainers(loadFailedFallback: fallback("commonLoadFailedTitle"))
     }

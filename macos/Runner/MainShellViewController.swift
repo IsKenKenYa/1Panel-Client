@@ -14,6 +14,7 @@ final class MainShellViewController: NSHostingController<MainShellView> {
         self.navigation = navigation
         self.appLock = appLock
         ChannelManager.shared.setup(binaryMessenger: flutterViewController.engine.binaryMessenger)
+        TerminalSessionBridge.shared.setup(binaryMessenger: flutterViewController.engine.binaryMessenger)
         super.init(rootView: MainShellView(
             navigation: navigation,
             appLock: appLock,

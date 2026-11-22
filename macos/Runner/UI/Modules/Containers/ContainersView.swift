@@ -7,6 +7,7 @@ struct ContainersView: View {
 
     @State private var containerToDelete: ContainerModel?
     @State private var logsContainer: ContainerModel?
+    @State private var detailContainer: ContainerModel?
 
     var body: some View {
         Group {
@@ -24,9 +25,18 @@ struct ContainersView: View {
                             Image(systemName: "square.stack.3d.up")
                                 .foregroundColor(.blue)
                             Text(container.name)
+                            .onTapGesture(count: 2) {
+                                detailContainer = container
+                            }
                         }
                         .contextMenu {
                             let isRunning = container.state.lowercased() == "running"
+                            Button {
+                                detailContainer = container
+                            } label: {
+                                Label(translations.get("containerDetailTitle", fallback: "Container Details"),
+                                      systemImage: "info.circle")
+                            }
                             Button {
                                 Task { await viewModel.toggleContainerState(id: container.originalId, currentState: container.state) }
                             } label: {
@@ -126,6 +136,11 @@ struct ContainersView: View {
                 try await viewModel.fetchLogs(name: container.name)
             }
             .id(container.id)
+        }
+        .sheet(item: $detailContainer) { container in
+            ContainerDetailView(viewModel: viewModel, container: container)
+                .frame(minWidth: 820, minHeight: 620)
+                .id("detail-\(container.id)")
         }
         .task { await viewModel.fetchContainers() }
     }
