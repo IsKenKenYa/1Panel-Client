@@ -124,6 +124,7 @@ struct AppShellView: View {
                     case .appInstall(let id): AppInstallDetailView(installId: id)
                     case .appCatalog(let key): AppCatalogDetailView(appKey: key)
                     case .database(let ref): DatabaseDetailView(reference: ref)
+                    case .vmInstance(let name): VMInstanceDetailView(instanceName: name)
                     }
                 }
         }

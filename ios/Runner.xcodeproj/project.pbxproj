@@ -73,6 +73,14 @@
 		B10S00010000000000000037 /* WebsiteConfigViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000037 /* WebsiteConfigViews.swift */; };
 		B10S00010000000000000038 /* WebsiteSecurityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000038 /* WebsiteSecurityViews.swift */; };
 		B10S00010000000000000039 /* WebsiteCertificatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000039 /* WebsiteCertificatesView.swift */; };
+		B10S00010000000000000047 /* VMChannelModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000047 /* VMChannelModels.swift */; };
+		B10S00010000000000000048 /* VirtualMachinesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000048 /* VirtualMachinesViewModel.swift */; };
+		B10S00010000000000000049 /* VirtualMachinesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000049 /* VirtualMachinesModuleView.swift */; };
+		B10S0001000000000000004A /* VMResourceSectionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004A /* VMResourceSectionViews.swift */; };
+		B10S0001000000000000004B /* VMInstanceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004B /* VMInstanceDetailView.swift */; };
+		B10S0001000000000000004C /* VMSnapshotSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004C /* VMSnapshotSheet.swift */; };
+		B10S0001000000000000004D /* VMHealthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004D /* VMHealthSheet.swift */; };
+		B10S0001000000000000004E /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004E /* VMInstanceMonitorView.swift */; };
 		D10S00010000000000000001 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000001 /* AppleSharedUI */; };
 		D10S00010000000000000002 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000002 /* AppleSharedUI */; };
 		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
@@ -183,6 +191,14 @@
 		F10S00010000000000000039 /* WebsiteCertificatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteCertificatesView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000045 /* OperationNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationNotice.swift; sourceTree = "<group>"; };
 		F10S00010000000000000046 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
+		F10S00010000000000000047 /* VMChannelModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMChannelModels.swift; sourceTree = "<group>"; };
+		F10S00010000000000000048 /* VirtualMachinesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachinesViewModel.swift; sourceTree = "<group>"; };
+		F10S00010000000000000049 /* VirtualMachinesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachinesModuleView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004A /* VMResourceSectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMResourceSectionViews.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004B /* VMInstanceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMInstanceDetailView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004C /* VMSnapshotSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMSnapshotSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004D /* VMHealthSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMHealthSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000004E /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
 		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -338,6 +354,7 @@
 				G10S00010000000000000011 /* Backups */,
 				G10S00010000000000000012 /* AI */,
 				G10S00010000000000000013 /* Logs */,
+				G10S00010000000000000014 /* VirtualMachines */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -496,6 +513,21 @@
 				F10S00010000000000000040 /* AICreateSheets.swift */,
 			);
 			path = AI;
+			sourceTree = "<group>";
+		};
+		G10S00010000000000000014 /* VirtualMachines */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000047 /* VMChannelModels.swift */,
+				F10S00010000000000000048 /* VirtualMachinesViewModel.swift */,
+				F10S00010000000000000049 /* VirtualMachinesModuleView.swift */,
+				F10S0001000000000000004A /* VMResourceSectionViews.swift */,
+				F10S0001000000000000004B /* VMInstanceDetailView.swift */,
+				F10S0001000000000000004C /* VMSnapshotSheet.swift */,
+				F10S0001000000000000004D /* VMHealthSheet.swift */,
+				F10S0001000000000000004E /* VMInstanceMonitorView.swift */,
+			);
+			path = VirtualMachines;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -799,6 +831,14 @@
 				B10S00010000000000000042 /* ContainerImageOpsSheets.swift in Sources */,
 				B10S00010000000000000043 /* ContainerRepoViews.swift in Sources */,
 				B10S00010000000000000044 /* ContainerFilesView.swift in Sources */,
+				B10S00010000000000000047 /* VMChannelModels.swift in Sources */,
+				B10S00010000000000000048 /* VirtualMachinesViewModel.swift in Sources */,
+				B10S00010000000000000049 /* VirtualMachinesModuleView.swift in Sources */,
+				B10S0001000000000000004A /* VMResourceSectionViews.swift in Sources */,
+				B10S0001000000000000004B /* VMInstanceDetailView.swift in Sources */,
+				B10S0001000000000000004C /* VMSnapshotSheet.swift in Sources */,
+				B10S0001000000000000004D /* VMHealthSheet.swift in Sources */,
+				B10S0001000000000000004E /* VMInstanceMonitorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

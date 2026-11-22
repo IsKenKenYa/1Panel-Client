@@ -8,6 +8,7 @@ enum ServerRoute: Hashable {
     case appInstall(id: Int)
     case appCatalog(key: String)
     case database(DatabaseRef)
+    case vmInstance(name: String)
 }
 
 /// 数据库详情路由载荷：列表行已持有全部字段，详情页无需再次搜索。
@@ -60,6 +61,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
     case backups
     case ai
     case logs
+    case virtualMachines
 
     var id: String { rawValue }
 
@@ -90,6 +92,8 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
             return translations.get("serverModuleAi", fallback: "AI")
         case .logs:
             return translations.get("operationsLogsTitle", fallback: "Logs")
+        case .virtualMachines:
+            return translations.get("serverModuleVm", fallback: "Virtual Machines")
         }
     }
 
@@ -105,6 +109,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .backups: return "externaldrive"
         case .ai: return "brain"
         case .logs: return "doc.text.magnifyingglass"
+        case .virtualMachines: return "desktopcomputer"
         }
     }
 
@@ -121,6 +126,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .backups: BackupsView()
         case .ai: AIModuleView()
         case .logs: LogsModuleView()
+        case .virtualMachines: VirtualMachinesModuleView()
         }
     }
 }

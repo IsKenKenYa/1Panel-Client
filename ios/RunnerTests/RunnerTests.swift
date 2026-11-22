@@ -113,3 +113,102 @@ class RunnerTests: XCTestCase {
         XCTAssertEqual(withoutIcon.icon, "")
     }
 }
+
+class VirtualMachineModelTests: XCTestCase {
+    func testSummaryPayloadDecodesCapabilitiesAndStatusTone() {
+        let payload: [String: Any] = [
+            "id": 7,
+            "name": "demo",
+            "status": "shut off",
+            "statusKey": "shut off",
+            "statusTone": "neutral",
+            "cpu": 2,
+            "memoryMiB": 2048,
+            "diskSize": 1073741824,
+            "network": "default",
+            "autoStart": true,
+            "capabilities": [
+                "canStart": true,
+                "canShutdown": false,
+                "canCreateSnapshot": true,
+                "canMonitor": false,
+            ],
+        ]
+
+        let model = VMInstanceModel(payload: payload)
+
+        XCTAssertEqual(model.name, "demo")
+        XCTAssertEqual(model.serverId, 7)
+        XCTAssertEqual(model.statusTone, "neutral")
+        XCTAssertTrue(model.capabilities.canStart)
+        XCTAssertFalse(model.capabilities.canShutdown)
+        XCTAssertTrue(model.capabilities.canCreateSnapshot)
+        XCTAssertFalse(model.capabilities.canMonitor)
+    }
+
+    func testDetailPayloadDecodesDisksInterfacesAndGraphics() {
+        let payload: [String: Any] = [
+            "name": "detail",
+            "status": "running",
+            "statusTone": "positive",
+            "uuid": "uuid-1",
+            "bootOrder": "cdrom,hd",
+            "isoPaths": ["/iso/a.iso"],
+            "disks": [
+                ["target": "vda", "capacity": 20, "bus": "virtio", "format": "qcow2"],
+            ],
+            "interfaces": [
+                ["source": "default", "mac": "52:54:00:00:00:01", "ip": "192.168.1.10"],
+            ],
+            "graphics": ["type": "vnc", "port": "5900", "listen": "127.0.0.1"],
+            "capabilities": ["canMonitor": true, "canOpenConsole": true],
+        ]
+
+        let model = VMInstanceModel(payload: payload)
+
+        XCTAssertEqual(model.uuid, "uuid-1")
+        XCTAssertEqual(model.isoPaths, ["/iso/a.iso"])
+        XCTAssertEqual(model.disks.first?.target, "vda")
+        XCTAssertEqual(model.disks.first?.bus, "virtio")
+        XCTAssertEqual(model.interfaces.first?.ip, "192.168.1.10")
+        XCTAssertEqual(model.graphics?.port, "5900")
+        XCTAssertTrue(model.capabilities.canMonitor)
+        XCTAssertTrue(model.capabilities.canOpenConsole)
+    }
+
+    func testSnapshotPayloadUsesMillisecondsAndRecoverFlag() {
+        let snapshot = VMSnapshotModel(payload: [
+            "name": "snap-1",
+            "createdAtMillis": 1730000000000,
+            "current": true,
+            "canRecover": false,
+            "size": 4096,
+        ])
+
+        XCTAssertEqual(snapshot.name, "snap-1")
+        XCTAssertEqual(snapshot.createdAtMillis, 1730000000000)
+        XCTAssertTrue(snapshot.current)
+        XCTAssertFalse(snapshot.canRecover)
+    }
+
+    func testStatsSampleDecodesComputedPercentages() {
+        let sample = VMStatsSample(payload: [
+            "cpuPercent": 42.5,
+            "memoryPercent": 61.0,
+            "diskBytesPerSecond": 2048.0,
+            "networkBytesPerSecond": 512.0,
+            "hasDelta": true,
+            "isRunning": true,
+        ])
+
+        XCTAssertEqual(sample.cpuPercent, 42.5)
+        XCTAssertEqual(sample.memoryPercent, 61.0)
+        XCTAssertTrue(sample.hasDelta)
+        XCTAssertTrue(sample.isRunning)
+    }
+
+    func testModuleRouteExposesVirtualMachinesEntry() {
+        XCTAssertTrue(ModuleRoute.allCases.contains(.virtualMachines))
+        XCTAssertEqual(ModuleRoute(rawValue: "virtualMachines"), .virtualMachines)
+    }
+}
