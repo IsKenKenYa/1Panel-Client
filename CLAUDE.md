@@ -48,6 +48,7 @@ Flutter 版本：官方 `3.44.9`；HarmonyOS 构建使用独立的 Flutter-OH `3
 
 - 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（Flutter/Dart、Android、HarmonyOS、Apple 官方集）优先；详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
 - Dart & Flutter MCP server 配置在 `.mcp.json`（`dart mcp-server`），analyzer 诊断、测试执行、热重载与运行时内省优先走 MCP 工具。
+- Developer Knowledge MCP（Google 官方文档检索）已登记，查官方 API 用法优先 `search_documents`/`answer_query`；登录与排障见 `docs/development/developer_knowledge_mcp.md`。
 
 ## 实时功能规划
 

@@ -3,6 +3,9 @@
     "dart": {
       "command": "dart",
       "args": ["mcp-server"]
+    },
+    "google-developer-knowledge": {
+      "url": "https://developerknowledge.googleapis.com/mcp"
     }
   }
 }
