@@ -3,7 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/shared/widgets/metric_card.dart';
 import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
@@ -197,8 +197,9 @@ class _GpuCard extends StatelessWidget {
     if (gpuInfo.isEmpty) return const SizedBox.shrink();
     final l10n = context.l10n;
 
-    return AppCard(
+    return SectionCard(
       title: l10n.monitorGPU,
+      padding: AppDesignTokens.cardPadding,
       child: Column(
         children: gpuInfo.map((gpu) => _buildGPUItem(context, gpu)).toList(),
       ),
@@ -271,8 +272,9 @@ class _CurrentMetrics extends StatelessWidget {
     final l10n = context.l10n;
     if (metrics == null) return const SizedBox.shrink();
 
-    return AppCard(
+    return SectionCard(
       title: l10n.monitorMetricCurrent,
+      padding: AppDesignTokens.cardPadding,
       child: MetricOverviewGrid(
         cpuPercent: metrics.cpuPercent,
         memoryPercent: metrics.memoryPercent,

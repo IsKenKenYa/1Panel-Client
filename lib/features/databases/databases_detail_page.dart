@@ -8,7 +8,7 @@ import 'databases_service.dart';
 import 'widgets/database_detail_actions_widget.dart';
 import 'widgets/database_detail_management_widget.dart';
 import 'widgets/database_detail_sections_widget.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
@@ -198,8 +198,9 @@ class _DatabaseHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return AppCard(
+    return SectionCard(
       title: title,
+      padding: const EdgeInsets.all(16),
       child: Wrap(
         spacing: 12,
         runSpacing: 12,

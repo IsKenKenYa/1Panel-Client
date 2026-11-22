@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class DatabaseUserCurrentCardWidget extends StatelessWidget {
   const DatabaseUserCurrentCardWidget({
@@ -16,8 +16,9 @@ class DatabaseUserCurrentCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppCard(
+    return SectionCard(
       title: l10n.databaseUserCurrentLabel,
+      padding: const EdgeInsets.all(16),
       child: Text(
         currentUsername?.isNotEmpty == true
             ? currentUsername!
@@ -50,8 +51,9 @@ class DatabaseBindUserCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppCard(
+    return SectionCard(
       title: l10n.databaseBindUserAction,
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           TextField(
@@ -109,8 +111,9 @@ class DatabasePrivilegeCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppCard(
+    return SectionCard(
       title: l10n.databaseUserPrivilegesAction,
+      padding: const EdgeInsets.all(16),
       child: currentUsername?.isNotEmpty == true
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,8 +155,9 @@ class DatabaseUserListCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppCard(
+    return SectionCard(
       title: l10n.databaseUserListTitle,
+      padding: const EdgeInsets.all(16),
       child: users.isEmpty
           ? Text(l10n.commonEmpty)
           : Column(

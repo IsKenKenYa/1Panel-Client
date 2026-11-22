@@ -87,76 +87,52 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
         ? '${timeSeries.data.last.value.toStringAsFixed(1)}${widget.unit}'
         : null;
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      color: colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
-        side: BorderSide(color: colorScheme.outlineVariant),
+    return SectionCard(
+      title: widget.title,
+      action: IconButton.filledTonal(
+        onPressed: () {
+          setState(() {
+            _isExpanded = !_isExpanded;
+            PageStorage.maybeOf(context)?.writeState(context, _isExpanded);
+          });
+        },
+        icon: AnimatedRotation(
+          turns: _isExpanded ? 0.5 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: const Icon(Icons.keyboard_arrow_down_rounded),
+        ),
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppDesignTokens.spacingMd,
-              AppDesignTokens.spacingMd,
-              AppDesignTokens.spacingMd,
-              AppDesignTokens.spacingSm,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.title,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: AppDesignTokens.spacingXs),
-                          // 无数据时由卡片主体的空态承载说明，标题区不再重复
-                          // 渲染 headline 级「暂无数据」。
-                          if (currentValue != null)
-                            Text(
-                              currentValue,
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    IconButton.filledTonal(
-                      onPressed: () {
-                        setState(() {
-                          _isExpanded = !_isExpanded;
-                          PageStorage.maybeOf(context)
-                              ?.writeState(context, _isExpanded);
-                        });
-                      },
-                      icon: AnimatedRotation(
-                        turns: _isExpanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: const Icon(Icons.keyboard_arrow_down_rounded),
-                      ),
-                    ),
-                  ],
+          if (currentValue != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppDesignTokens.spacingMd,
+                AppDesignTokens.spacingSm,
+                AppDesignTokens.spacingMd,
+                0,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  currentValue,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
-                if (widget.selector != null) ...[
-                  const SizedBox(height: AppDesignTokens.spacingSm),
-                  widget.selector!,
-                ],
-              ],
+              ),
             ),
-          ),
+          if (widget.selector != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppDesignTokens.spacingMd,
+                AppDesignTokens.spacingSm,
+                AppDesignTokens.spacingMd,
+                0,
+              ),
+              child: widget.selector!,
+            ),
           AnimatedSize(
             alignment: Alignment.topCenter,
             duration: const Duration(milliseconds: 200),

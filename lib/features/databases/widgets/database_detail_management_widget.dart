@@ -5,7 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/database_support.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class DatabaseDetailManagementWidget extends StatelessWidget {
   const DatabaseDetailManagementWidget({
@@ -27,8 +27,9 @@ class DatabaseDetailManagementWidget extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: AppDesignTokens.spacingMd),
-        AppCard(
+        SectionCard(
           title: l10n.databaseManageTitle,
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               if (supportsBackups)

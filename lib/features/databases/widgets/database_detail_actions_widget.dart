@@ -6,7 +6,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/databases_provider.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
 class DatabaseDetailActionsWidget extends StatelessWidget {
@@ -34,8 +34,9 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: AppDesignTokens.spacingMd),
-        AppCard(
+        SectionCard(
           title: l10n.commonMore,
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               _ActionTile(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'database_tile_content.dart';
 
 class DatabaseDetailSectionsWidget extends StatelessWidget {
@@ -23,8 +23,9 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Column(
       children: [
-        AppCard(
+        SectionCard(
           title: l10n.databaseOverviewTitle,
+          padding: const EdgeInsets.all(16),
           child: Wrap(
             spacing: AppDesignTokens.spacingSm,
             runSpacing: AppDesignTokens.spacingSm,
@@ -68,8 +69,9 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
         ),
         if (detailData?.rawConfigFile?.isNotEmpty == true) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: l10n.databaseConfigTitle,
+            padding: const EdgeInsets.all(16),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
@@ -89,8 +91,9 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
         ],
         if (detail?.baseInfo != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: l10n.databaseBaseInfoTitle,
+            padding: const EdgeInsets.all(16),
             child: Wrap(
               spacing: AppDesignTokens.spacingSm,
               runSpacing: AppDesignTokens.spacingSm,
@@ -119,15 +122,17 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
         if (item.scope == DatabaseScope.redis &&
             detailData?.status != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: l10n.databaseStatusTitle,
+            padding: const EdgeInsets.all(16),
             child: _RedisStatusGrid(data: detailData!.status!),
           ),
         ],
         if (detailData?.redisConfig != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: '${l10n.databaseConfigTitle} · Redis',
+            padding: const EdgeInsets.all(16),
             child: _MapValueList(
               data: detailData!.redisConfig!,
               dense: false,
@@ -136,8 +141,9 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
         ],
         if (detailData?.redisPersistence != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: '${l10n.databaseStatusTitle} · Redis Persistence',
+            padding: const EdgeInsets.all(16),
             child: _MapValueList(
               data: detailData!.redisPersistence!,
               dense: false,
@@ -146,15 +152,17 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
         ],
         if (item.scope != DatabaseScope.redis && detail?.status != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: l10n.databaseStatusTitle,
+            padding: const EdgeInsets.all(16),
             child: _MapValueList(data: detail!.status!),
           ),
         ],
         if (detail?.variables != null) ...[
           const SizedBox(height: AppDesignTokens.spacingMd),
-          AppCard(
+          SectionCard(
             title: l10n.databaseVariablesTitle,
+            padding: const EdgeInsets.all(16),
             child: _MapValueList(data: detail!.variables!),
           ),
         ],

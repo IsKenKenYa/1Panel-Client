@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
@@ -221,8 +221,9 @@ class _RedisOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return SectionCard(
       title: 'Redis',
+      padding: const EdgeInsets.all(16),
       child: Wrap(
         spacing: AppDesignTokens.spacingSm,
         runSpacing: AppDesignTokens.spacingSm,
@@ -269,8 +270,9 @@ class _RedisStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return SectionCard(
       title: context.l10n.databaseStatusTitle,
+      padding: const EdgeInsets.all(16),
       child: status == null || status!.isEmpty
           ? const Text('-')
           : Wrap(
@@ -361,8 +363,9 @@ class _RedisConfigCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return SectionCard(
       title: context.l10n.databaseRedisConfigTitle,
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -409,8 +412,9 @@ class _RedisPersistenceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return SectionCard(
       title: context.l10n.databaseRedisPersistenceTitle,
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
