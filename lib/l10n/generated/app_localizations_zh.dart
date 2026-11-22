@@ -1643,6 +1643,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get firewallCreateIpRuleAction => '创建 IP 规则';
 
   @override
+  String get firewallCreateRuleAction => '创建规则';
+
+  @override
+  String get firewallRuleKindLabel => '规则类型';
+
+  @override
+  String get firewallDescriptionLabel => '描述';
+
+  @override
   String get firewallRuleSectionTitle => '规则配置';
 
   @override

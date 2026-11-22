@@ -85,6 +85,8 @@
 		B10S00010000000000000051 /* ModelDownloaderModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000051 /* ModelDownloaderModuleView.swift */; };
 		B10S00010000000000000052 /* ModelDownloaderRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000052 /* ModelDownloaderRows.swift */; };
 		B10S00010000000000000053 /* MonitorHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000053 /* MonitorHistoryView.swift */; };
+		B10S00010000000000000054 /* FirewallModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000054 /* FirewallModuleView.swift */; };
+		B10S00010000000000000055 /* FirewallRuleFormSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000055 /* FirewallRuleFormSheet.swift */; };
 		D10S00010000000000000001 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000001 /* AppleSharedUI */; };
 		D10S00010000000000000002 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000002 /* AppleSharedUI */; };
 		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
@@ -207,6 +209,8 @@
 		F10S00010000000000000051 /* ModelDownloaderModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloaderModuleView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000052 /* ModelDownloaderRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloaderRows.swift; sourceTree = "<group>"; };
 		F10S00010000000000000053 /* MonitorHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorHistoryView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000054 /* FirewallModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallModuleView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000055 /* FirewallRuleFormSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallRuleFormSheet.swift; sourceTree = "<group>"; };
 		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -496,6 +500,8 @@
 			children = (
 				F10S00010000000000000026 /* FirewallView.swift */,
 				F10S00010000000000000029 /* FirewallAddSheet.swift */,
+				F10S00010000000000000054 /* FirewallModuleView.swift */,
+				F10S00010000000000000055 /* FirewallRuleFormSheet.swift */,
 			);
 			path = Firewall;
 			sourceTree = "<group>";
@@ -871,6 +877,8 @@
 				B10S00010000000000000051 /* ModelDownloaderModuleView.swift in Sources */,
 				B10S00010000000000000052 /* ModelDownloaderRows.swift in Sources */,
 				B10S00010000000000000053 /* MonitorHistoryView.swift in Sources */,
+				B10S00010000000000000054 /* FirewallModuleView.swift in Sources */,
+				B10S00010000000000000055 /* FirewallRuleFormSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

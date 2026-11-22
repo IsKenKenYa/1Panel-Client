@@ -1686,6 +1686,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firewallCreateIpRuleAction => 'Create IP Rule';
 
   @override
+  String get firewallCreateRuleAction => 'Create Rule';
+
+  @override
+  String get firewallRuleKindLabel => 'Rule type';
+
+  @override
+  String get firewallDescriptionLabel => 'Description';
+
+  @override
   String get firewallRuleSectionTitle => 'Rule Configuration';
 
   @override

@@ -10,10 +10,10 @@ struct FirewallRuleModel: Identifiable {
     let description: String
     let family: String
     let chain: String
-    private let supportsLegacyChanges: Bool
-    private let serverId: String?
-    private let inventoryId: String?
-    private let canDelete: Bool?
+    let supportsLegacyChanges: Bool
+    let serverId: String?
+    let inventoryId: String?
+    let canDelete: Bool?
 
     init?(payload: [String: Any]) {
         let rawId = payload["id"]

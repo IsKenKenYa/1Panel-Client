@@ -3242,6 +3242,24 @@ abstract class AppLocalizations {
   /// **'Create IP Rule'**
   String get firewallCreateIpRuleAction;
 
+  /// No description provided for @firewallCreateRuleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Rule'**
+  String get firewallCreateRuleAction;
+
+  /// No description provided for @firewallRuleKindLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule type'**
+  String get firewallRuleKindLabel;
+
+  /// No description provided for @firewallDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get firewallDescriptionLabel;
+
   /// No description provided for @firewallRuleSectionTitle.
   ///
   /// In en, this message translates to:

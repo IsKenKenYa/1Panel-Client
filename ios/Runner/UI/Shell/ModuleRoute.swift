@@ -130,7 +130,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .monitoring: MonitoringView()
         case .databases: DatabasesView()
         case .cronjobs: CronjobsView()
-        case .firewall: FirewallView()
+        case .firewall: FirewallModuleView()
         case .backups: BackupsView()
         case .ai: AIModuleView()
         case .logs: LogsModuleView()
