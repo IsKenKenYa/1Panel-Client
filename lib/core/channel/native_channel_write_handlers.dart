@@ -1,5 +1,11 @@
 import 'package:mime/mime.dart';
 import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
+import 'dart:convert';
+
+import '../../features/alert/alert_service.dart';
+import '../../features/alert/alert_types.dart';
+import '../../data/models/alert_models.dart';
+import 'native_alert_payloads.dart';
 
 import '../../features/ai/ai_repository.dart';
 import '../../api/v2/file_v2.dart';
@@ -3144,6 +3150,230 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  // ── 告警中心 ────────────────────────────────────────────────────────────
+
+  /// 创建告警任务。参数：
+  /// `{type, title, methods: [String], cycle?, count?, interval?, sendCount?, advancedParams?}`
+  static Future<Map<String, dynamic>> createAlertRule(dynamic arguments) async {
+    try {
+      final fields = _alertRuleFields(arguments, requireId: false);
+      if (fields is Map<String, dynamic>) return fields;
+      final input = fields as _AlertRuleInput;
+      await AlertService().createAlert(AlertCreate(
+        type: input.type,
+        method: input.method,
+        cycle: input.cycle,
+        count: input.count,
+        interval: input.interval,
+        status: 'Enable',
+        title: input.title,
+        sendCount: input.sendCount,
+        advancedParams: input.advancedParams,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('createAlertRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新告警任务。参数在创建参数基础上增加 `{id: int, status?: String}`。
+  static Future<Map<String, dynamic>> updateAlertRule(dynamic arguments) async {
+    try {
+      final fields = _alertRuleFields(arguments, requireId: true);
+      if (fields is Map<String, dynamic>) return fields;
+      final input = fields as _AlertRuleInput;
+      await AlertService().updateAlert(AlertUpdate(
+        id: input.id!,
+        type: input.type,
+        method: input.method,
+        cycle: input.cycle,
+        count: input.count,
+        interval: input.interval,
+        title: input.title,
+        sendCount: input.sendCount,
+        advancedParams: input.advancedParams,
+        status: (arguments['status'] as String? ?? '').trim().isEmpty
+            ? null
+            : (arguments['status'] as String).trim(),
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateAlertRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除告警任务。参数：`{id: int}`。
+  static Future<Map<String, dynamic>> deleteAlertRule(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      await AlertService().deleteAlert(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteAlertRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 启用或停用告警任务。参数：`{id: int, enable: bool}`。
+  static Future<Map<String, dynamic>> toggleAlertRule(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      final enable = arguments?['enable'] as bool? ?? false;
+      await AlertService().updateAlertStatus(id, enable ? 'Enable' : 'Disable');
+      return _ok();
+    } catch (e) {
+      appLogger.e('toggleAlertRule failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 清空告警日志。参数：`{}`。
+  static Future<Map<String, dynamic>> cleanAlertLogs(dynamic arguments) async {
+    try {
+      await AlertService().cleanLogs();
+      return _ok();
+    } catch (e) {
+      appLogger.e('cleanAlertLogs failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 保存通知渠道。参数：
+  /// `{id?, type, title, status?, sender?, userName?, password?, passwordAction?,
+  ///   host?, port?, encryption?, recipient?, webhookUrl?, preset?, bodyType?,
+  ///   template?, headers?: [{key,value}], formPairs?: [{key,value}]}`
+  static Future<Map<String, dynamic>> saveAlertChannel(
+      dynamic arguments) async {
+    try {
+      final type = (arguments?['type'] as String? ?? '').trim();
+      final title = (arguments?['title'] as String? ?? '').trim();
+      if (type.isEmpty || title.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'type and title are required',
+        };
+      }
+      final id = int.tryParse('${arguments?['id'] ?? 0}') ?? 0;
+      final config = alertChannelConfig(arguments as Map);
+      await AlertService().saveConfig(AlertConfigUpdate(
+        id: id,
+        type: type,
+        title: title,
+        config: jsonEncode(config),
+        status: (arguments['status'] as String? ?? 'Enable').trim(),
+        displayName: title,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('saveAlertChannel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除通知渠道。参数：`{id: int}`。
+  static Future<Map<String, dynamic>> deleteAlertChannel(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      await AlertService().deleteConfig(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteAlertChannel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 启用或停用通知渠道。参数：`{id: int, enable: bool}`。
+  static Future<Map<String, dynamic>> toggleAlertChannel(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      final enable = arguments?['enable'] as bool? ?? false;
+      await AlertService().updateConfigStatus(id, enable ? 'Enable' : 'Disable');
+      return _ok();
+    } catch (e) {
+      appLogger.e('toggleAlertChannel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 测试通知渠道。参数与保存渠道相同。
+  ///
+  /// 返回 `success` 表示测试是否通过，`message` 与 `response` 为服务端结果。
+  static Future<Map<String, dynamic>> testAlertChannel(
+      dynamic arguments) async {
+    try {
+      final type = (arguments?['type'] as String? ?? '').trim();
+      if (type.isEmpty) {
+        return <String, dynamic>{'success': false, 'error': 'type is required'};
+      }
+      final request = alertChannelTestRequest(arguments as Map);
+      final result = await AlertService().testConfig(request);
+      return alertConfigTestResultPayload(result);
+    } catch (e) {
+      appLogger.e('testAlertChannel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 校验并解析告警任务表单字段。
+  ///
+  /// 返回记录时字段顺序为：type、method、cycle、count、interval、title、
+  /// sendCount、advancedParams、id；校验失败时直接返回失败结构。
+  static Object _alertRuleFields(
+    dynamic arguments, {
+    required bool requireId,
+  }) {
+    final type = (arguments?['type'] as String? ?? '').trim();
+    final title = (arguments?['title'] as String? ?? '').trim();
+    final methods = (arguments?['methods'] as List?)
+            ?.map((method) => '$method'.trim())
+            .where((method) => method.isNotEmpty)
+            .toList(growable: false) ??
+        const <String>[];
+    final id = int.tryParse('${arguments?['id'] ?? ''}');
+    if (type.isEmpty || title.isEmpty || methods.isEmpty) {
+      return <String, dynamic>{
+        'success': false,
+        'error': 'type, title and methods are required',
+      };
+    }
+    if (requireId && (id == null || id <= 0)) {
+      return <String, dynamic>{'success': false, 'error': 'id is required'};
+    }
+    final cycle = int.tryParse('${arguments?['cycle'] ?? ''}');
+    final count = int.tryParse('${arguments?['count'] ?? ''}');
+    final interval = int.tryParse('${arguments?['interval'] ?? ''}');
+    final sendCount = int.tryParse('${arguments?['sendCount'] ?? ''}');
+    final advancedParams =
+        (arguments?['advancedParams'] as String? ?? '').trim();
+    return _AlertRuleInput(
+      type: type,
+      method: methods.join(','),
+      cycle: AlertRuleTypes.needsCycleDays(type) ? cycle : null,
+      count: AlertRuleTypes.needsThreshold(type) ? count : null,
+      interval: AlertRuleTypes.needsInterval(type) ? interval : null,
+      title: title,
+      sendCount: sendCount ?? 1,
+      advancedParams: advancedParams.isEmpty ? null : advancedParams,
+      id: id,
+    );
+  }
+
   // ── 内部工具 ──────────────────────────────────────────────────────────────
 
   /// 将 dynamic 类型的 id 安全转换为 int（支持 int 和 String 输入）。
@@ -3152,4 +3382,29 @@ class NativeChannelWriteHandlers {
     if (value is String) return int.parse(value);
     return int.parse(value.toString());
   }
+}
+
+/// 告警任务表单校验后的字段集合。
+class _AlertRuleInput {
+  const _AlertRuleInput({
+    required this.type,
+    required this.method,
+    required this.title,
+    required this.sendCount,
+    this.cycle,
+    this.count,
+    this.interval,
+    this.advancedParams,
+    this.id,
+  });
+
+  final String type;
+  final String method;
+  final String title;
+  final int sendCount;
+  final int? cycle;
+  final int? count;
+  final int? interval;
+  final String? advancedParams;
+  final int? id;
 }

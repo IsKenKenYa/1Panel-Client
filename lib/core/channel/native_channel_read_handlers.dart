@@ -11,6 +11,7 @@ import '../network/api_client_manager.dart';
 import '../../api/v2/api_response_parser.dart';
 import '../../api/v2/website_v2.dart';
 import '../../data/models/ai/agent_account_model_pool_models.dart';
+import '../../data/models/alert_models.dart';
 import '../../data/models/ai/agent_account_models.dart';
 import '../../data/models/ai/agent_core_models.dart';
 import '../../data/models/common_models.dart';
@@ -38,6 +39,8 @@ import '../../features/websites/services/website_certificate_service.dart';
 import '../../features/ssh/services/ssh_service.dart';
 import '../../features/toolbox/services/toolbox_device_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
+import '../../features/alert/alert_service.dart';
+import 'native_alert_payloads.dart';
 import '../../features/vm/vm_service.dart';
 import 'native_vm_payloads.dart';
 import '../../features/server/server_repository.dart';
@@ -1723,6 +1726,67 @@ class NativeChannelReadHandlers {
   static Future<dynamic> getVmStorages(dynamic arguments) async {
     final storages = await VMService().listStorages();
     return storages.map(vmStoragePayload).toList(growable: false);
+  }
+
+  // ── 告警中心 ────────────────────────────────────────────────────────────
+
+  /// 告警任务列表。参数：`{page?, pageSize?, type?, status?}`。POST /alert/search。
+  static Future<dynamic> getAlertRules(dynamic arguments) async {
+    final page = int.tryParse('${arguments?['page'] ?? 1}') ?? 1;
+    final pageSize = int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50;
+    final type = (arguments?['type'] as String? ?? '').trim();
+    final status = (arguments?['status'] as String? ?? '').trim();
+    final result = await AlertService().searchAlerts(
+      page: page,
+      pageSize: pageSize,
+      type: type.isEmpty ? null : type,
+      status: status.isEmpty ? null : status,
+    );
+    return <String, dynamic>{
+      'items': result.items.map(alertRulePayload).toList(growable: false),
+      'total': result.total,
+      'page': result.page,
+      'pageSize': result.pageSize,
+    };
+  }
+
+  /// 告警日志列表。参数：`{page?, pageSize?, status?}`。POST /alert/logs/search。
+  static Future<dynamic> getAlertLogs(dynamic arguments) async {
+    final page = int.tryParse('${arguments?['page'] ?? 1}') ?? 1;
+    final pageSize = int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50;
+    final status = (arguments?['status'] as String? ?? '').trim();
+    final result = await AlertService().searchLogs(
+      page: page,
+      pageSize: pageSize,
+      status: status.isEmpty ? null : status,
+    );
+    return <String, dynamic>{
+      'items': result.items.map(alertLogPayload).toList(growable: false),
+      'total': result.total,
+      'page': result.page,
+      'pageSize': result.pageSize,
+    };
+  }
+
+  /// 通知渠道列表。GET /alert/config/info。
+  static Future<dynamic> getAlertChannels(dynamic arguments) async {
+    final channels = await AlertService().listConfigs();
+    return channels.map(alertChannelPayload).toList(growable: false);
+  }
+
+  /// 告警表单选项：磁盘、病毒扫描任务、计划任务、类型与预设。
+  static Future<dynamic> getAlertOptions(dynamic arguments) async {
+    final service = AlertService();
+    final results = await Future.wait(<Future<Object>>[
+      service.listDisks(),
+      service.listClams(),
+      service.listCronJobs(),
+    ]);
+    return alertOptionsPayload(
+      disks: results[0] as List<AlertDisk>,
+      clams: results[1] as List<AlertClam>,
+      cronJobs: results[2] as List<AlertCronJob>,
+    );
   }
 }
 

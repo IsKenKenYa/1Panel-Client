@@ -344,30 +344,3 @@ class _VariableChip extends StatelessWidget {
     );
   }
 }
-
-/// 各预设的 Body 模板。
-class AlertWebhookPresets {
-  const AlertWebhookPresets._();
-
-  static String? template(String preset) {
-    switch (preset) {
-      case 'genericJson':
-        return '{\n  "title": "{{title}}",\n  "message": "{{message}}",\n'
-            '  "type": "{{type}}",\n  "node": "{{nodeName}}",\n'
-            '  "timestamp": "{{timestamp}}"\n}';
-      case 'slack':
-        return '{\n  "text": "{{title}}\\n{{message}}"\n}';
-      case 'discord':
-        return '{\n  "content": "{{title}}\\n{{message}}"\n}';
-      case 'teams':
-        return '{\n  "type": "message",\n  "attachments": [\n    {\n'
-            '      "contentType": "application/vnd.microsoft.card.adaptive",\n'
-            '      "content": {\n        "type": "AdaptiveCard",\n'
-            '        "body": [\n          { "type": "TextBlock", '
-            '"text": "{{title}}" },\n          { "type": "TextBlock", '
-            '"text": "{{message}}" }\n        ]\n      }\n    }\n  ]\n}';
-      default:
-        return null;
-    }
-  }
-}

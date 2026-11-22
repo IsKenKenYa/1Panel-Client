@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/features/alert/alert_types.dart';
 import 'package:onepanel_client/features/alert/widgets/alert_configuration_row.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -99,10 +100,10 @@ class _ChannelRow extends StatelessWidget {
     final title = channel.title.isEmpty ? channel.type : channel.title;
 
     return AlertConfigurationRow(
-      icon: AlertChannelTypes.icon(channel.type),
+      icon: AlertChannelUI.icon(channel.type),
       title: title,
       titleLines: 1,
-      subtitle: AlertChannelTypes.label(l10n, channel.type),
+      subtitle: AlertChannelUI.label(l10n, channel.type),
       description: channel.config.isEmpty ? null : _summary(channel.config),
       enabled: enabled,
       isMutating: provider.isMutating,
@@ -154,39 +155,23 @@ class _ChannelRow extends StatelessWidget {
   }
 }
 
-/// 渠道类型枚举与标签。
-class AlertChannelTypes {
-  const AlertChannelTypes._();
-
-  static const String email = 'email';
-  static const String bark = 'bark';
-  static const String weCom = 'weCom';
-  static const String dingTalk = 'dingTalk';
-  static const String feiShu = 'feiShu';
-  static const String custom = 'custom';
-
-  static const List<String> values = <String>[
-    email,
-    bark,
-    weCom,
-    dingTalk,
-    feiShu,
-    custom,
-  ];
+/// 渠道类型的界面标签与图标。
+class AlertChannelUI {
+  const AlertChannelUI._();
 
   static String label(AppLocalizations l10n, String type) {
     switch (type) {
-      case email:
+      case AlertChannelTypes.email:
         return l10n.alertChannelTypeEmail;
-      case bark:
+      case AlertChannelTypes.bark:
         return l10n.alertChannelTypeBark;
-      case weCom:
+      case AlertChannelTypes.weCom:
         return l10n.alertChannelTypeWeCom;
-      case dingTalk:
+      case AlertChannelTypes.dingTalk:
         return l10n.alertChannelTypeDingTalk;
-      case feiShu:
+      case AlertChannelTypes.feiShu:
         return l10n.alertChannelTypeFeiShu;
-      case custom:
+      case AlertChannelTypes.custom:
         return l10n.alertChannelTypeCustom;
       default:
         return type;
@@ -195,29 +180,18 @@ class AlertChannelTypes {
 
   static IconData icon(String type) {
     switch (type) {
-      case email:
+      case AlertChannelTypes.email:
         return Icons.mail_outline;
-      case bark:
+      case AlertChannelTypes.bark:
         return Icons.notifications_active_outlined;
-      case weCom:
-      case dingTalk:
-      case feiShu:
+      case AlertChannelTypes.weCom:
+      case AlertChannelTypes.dingTalk:
+      case AlertChannelTypes.feiShu:
         return Icons.chat_bubble_outline;
-      case custom:
+      case AlertChannelTypes.custom:
         return Icons.webhook_outlined;
       default:
         return Icons.campaign_outlined;
     }
   }
-
-  /// 邮箱渠道需要 SMTP 字段。
-  static bool isEmail(String type) => type == email;
-
-  /// Webhook 类渠道（自定义与各 IM 平台）共用地址字段。
-  static bool isWebhook(String type) =>
-      const <String>[custom, weCom, dingTalk, feiShu, bark].contains(type);
-
-  /// 只有邮箱与自定义 Webhook 支持服务端测试端点。
-  static bool supportsTest(String type) =>
-      const <String>[email, custom].contains(type);
 }

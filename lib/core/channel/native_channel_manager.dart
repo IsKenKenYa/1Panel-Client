@@ -183,6 +183,16 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getVmNetworkOptions(arguments);
       case 'getVmStorages':
         return NativeChannelReadHandlers.getVmStorages(arguments);
+
+      // ── Read: 告警中心 ──────────────────────────────────────────────────
+      case 'getAlertRules':
+        return NativeChannelReadHandlers.getAlertRules(arguments);
+      case 'getAlertLogs':
+        return NativeChannelReadHandlers.getAlertLogs(arguments);
+      case 'getAlertChannels':
+        return NativeChannelReadHandlers.getAlertChannels(arguments);
+      case 'getAlertOptions':
+        return NativeChannelReadHandlers.getAlertOptions(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -480,6 +490,26 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.recoverVmSnapshot(arguments);
       case 'deleteVmSnapshot':
         return NativeChannelWriteHandlers.deleteVmSnapshot(arguments);
+
+      // ── Write: 告警中心 ─────────────────────────────────────────────────
+      case 'createAlertRule':
+        return NativeChannelWriteHandlers.createAlertRule(arguments);
+      case 'updateAlertRule':
+        return NativeChannelWriteHandlers.updateAlertRule(arguments);
+      case 'deleteAlertRule':
+        return NativeChannelWriteHandlers.deleteAlertRule(arguments);
+      case 'toggleAlertRule':
+        return NativeChannelWriteHandlers.toggleAlertRule(arguments);
+      case 'cleanAlertLogs':
+        return NativeChannelWriteHandlers.cleanAlertLogs(arguments);
+      case 'saveAlertChannel':
+        return NativeChannelWriteHandlers.saveAlertChannel(arguments);
+      case 'deleteAlertChannel':
+        return NativeChannelWriteHandlers.deleteAlertChannel(arguments);
+      case 'toggleAlertChannel':
+        return NativeChannelWriteHandlers.toggleAlertChannel(arguments);
+      case 'testAlertChannel':
+        return NativeChannelWriteHandlers.testAlertChannel(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

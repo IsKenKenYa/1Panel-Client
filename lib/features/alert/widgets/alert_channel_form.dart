@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/alert_models.dart';
+import 'package:onepanel_client/features/alert/alert_types.dart';
 import 'package:onepanel_client/features/alert/providers/alert_provider.dart';
 import 'package:onepanel_client/features/alert/tabs/alert_channel_tab.dart';
 import 'package:onepanel_client/features/alert/widgets/alert_custom_webhook_editor.dart';
@@ -111,7 +112,7 @@ class _AlertChannelFormState extends State<AlertChannelForm> {
                 for (final type in AlertChannelTypes.values)
                   DropdownMenuItem(
                     value: type,
-                    child: Text(AlertChannelTypes.label(l10n, type)),
+                    child: Text(AlertChannelUI.label(l10n, type)),
                   ),
               ],
               onChanged: (value) => setState(() {

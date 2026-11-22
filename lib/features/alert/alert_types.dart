@@ -163,3 +163,72 @@ class AlertRuleFormatter {
     }
   }
 }
+
+/// 通知渠道类型与能力标记。
+///
+/// 原生表单与通道共用这里的判定，界面不再重复判断渠道类型字符串。
+class AlertChannelTypes {
+  const AlertChannelTypes._();
+
+  static const String email = 'email';
+  static const String bark = 'bark';
+  static const String weCom = 'weCom';
+  static const String dingTalk = 'dingTalk';
+  static const String feiShu = 'feiShu';
+  static const String custom = 'custom';
+
+  static const List<String> values = <String>[
+    email,
+    bark,
+    weCom,
+    dingTalk,
+    feiShu,
+    custom,
+  ];
+
+  /// 邮箱渠道需要 SMTP 字段。
+  static bool isEmail(String type) => type == email;
+
+  /// Webhook 类渠道（自定义与各 IM 平台）共用地址字段。
+  static bool isWebhook(String type) =>
+      const <String>[custom, weCom, dingTalk, feiShu, bark].contains(type);
+
+  /// 只有邮箱与自定义 Webhook 支持服务端测试端点。
+  static bool supportsTest(String type) =>
+      const <String>[email, custom].contains(type);
+}
+
+/// 自定义 Webhook 预设模板。
+class AlertWebhookPresets {
+  const AlertWebhookPresets._();
+
+  static const List<String> values = <String>[
+    'genericJson',
+    'slack',
+    'discord',
+    'teams',
+    'custom',
+  ];
+
+  static String? template(String preset) {
+    switch (preset) {
+      case 'genericJson':
+        return '{\n  "title": "{{title}}",\n  "message": "{{message}}",\n'
+            '  "type": "{{type}}",\n  "node": "{{nodeName}}",\n'
+            '  "timestamp": "{{timestamp}}"\n}';
+      case 'slack':
+        return '{\n  "text": "{{title}}\\n{{message}}"\n}';
+      case 'discord':
+        return '{\n  "content": "{{title}}\\n{{message}}"\n}';
+      case 'teams':
+        return '{\n  "type": "message",\n  "attachments": [\n    {\n'
+            '      "contentType": "application/vnd.microsoft.card.adaptive",\n'
+            '      "content": {\n        "type": "AdaptiveCard",\n'
+            '        "body": [\n          { "type": "TextBlock", '
+            '"text": "{{title}}" },\n          { "type": "TextBlock", '
+            '"text": "{{message}}" }\n        ]\n      }\n    }\n  ]\n}';
+      default:
+        return null;
+    }
+  }
+}
