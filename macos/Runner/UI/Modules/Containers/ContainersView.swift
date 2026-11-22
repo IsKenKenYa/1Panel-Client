@@ -1,15 +1,118 @@
 import SwiftUI
 import AppleSharedUI
 
+enum ContainerSection: String, CaseIterable, Identifiable {
+    case containers
+    case compose
+    case networks
+    case volumes
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .containers: return "containerTabContainers"
+        case .compose: return "orchestrationCompose"
+        case .networks: return "containerTabNetworks"
+        case .volumes: return "containerTabVolumes"
+        }
+    }
+}
+
 struct ContainersView: View {
     @StateObject private var viewModel = ContainersViewModel()
     @EnvironmentObject private var translations: TranslationsManager
 
+    @State private var section = ContainerSection(
+        rawValue: ProcessInfo.processInfo.environment["ONEPANEL_CONTAINER_TAB"] ?? ""
+    ) ?? .containers
     @State private var containerToDelete: ContainerModel?
     @State private var logsContainer: ContainerModel?
     @State private var detailContainer: ContainerModel?
 
     var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $section) {
+                ForEach(ContainerSection.allCases) { item in
+                    Text(translations.get(item.titleKey,
+                                          fallback: fallbackTitle(item)))
+                        .tag(item)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            Divider()
+            Group {
+                switch section {
+                case .containers:
+                    containersContent
+                case .compose:
+                    ContainerComposeSectionView()
+                case .networks:
+                    ContainerNetworksSectionView()
+                case .volumes:
+                    ContainerVolumesSectionView()
+                }
+            }
+        }
+        .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
+        .toolbar {
+            if section == .containers {
+                ToolbarItem(placement: .automatic) {
+                    if viewModel.isBusy {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Button {
+                            Task { await viewModel.fetchContainers() }
+                        } label: {
+                            Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
+                        }
+                        .help(translations.get("commonRefresh", fallback: "Refresh"))
+                    }
+                }
+            }
+        }
+        .confirmationDialog(
+            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
+            isPresented: Binding(
+                get: { containerToDelete != nil },
+                set: { if !$0 { containerToDelete = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: containerToDelete
+        ) { container in
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
+                Task { await viewModel.deleteContainer(id: container.originalId) }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
+        } message: { container in
+            Text("\(container.name)\n\(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))")
+        }
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .sheet(item: $logsContainer) { container in
+            ContainerLogsSheet(containerName: container.name) {
+                try await viewModel.fetchLogs(name: container.name)
+            }
+            .id(container.id)
+        }
+        .sheet(item: $detailContainer) { container in
+            ContainerDetailView(viewModel: viewModel, container: container)
+                .frame(minWidth: 820, minHeight: 620)
+                .id("detail-\(container.id)")
+        }
+        .task { await viewModel.fetchContainers() }
+    }
+
+    private var containersContent: some View {
         Group {
             if viewModel.isLoading && viewModel.containers.isEmpty {
                 LoadingView()
@@ -25,9 +128,9 @@ struct ContainersView: View {
                             Image(systemName: "square.stack.3d.up")
                                 .foregroundColor(.blue)
                             Text(container.name)
-                            .onTapGesture(count: 2) {
-                                detailContainer = container
-                            }
+                                .onTapGesture(count: 2) {
+                                    detailContainer = container
+                                }
                         }
                         .contextMenu {
                             let isRunning = container.state.lowercased() == "running"
@@ -92,57 +195,15 @@ struct ContainersView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                if viewModel.isBusy {
-                    ProgressView().controlSize(.small)
-                } else {
-                    Button {
-                        Task { await viewModel.fetchContainers() }
-                    } label: {
-                        Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
-                    }
-                    .help(translations.get("commonRefresh", fallback: "Refresh"))
-                }
-            }
+    }
+
+    private func fallbackTitle(_ section: ContainerSection) -> String {
+        switch section {
+        case .containers: return "Containers"
+        case .compose: return "Compose"
+        case .networks: return "Networks"
+        case .volumes: return "Volumes"
         }
-        .confirmationDialog(
-            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
-            isPresented: Binding(
-                get: { containerToDelete != nil },
-                set: { if !$0 { containerToDelete = nil } }
-            ),
-            titleVisibility: .visible,
-            presenting: containerToDelete
-        ) { container in
-            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
-                Task { await viewModel.deleteContainer(id: container.originalId) }
-            }
-            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
-        } message: { container in
-            Text("\(container.name)\n\(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))")
-        }
-        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
-            get: { viewModel.errorMessage != nil },
-            set: { if !$0 { viewModel.errorMessage = nil } }
-        )) {
-            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
-        } message: {
-            Text(viewModel.errorMessage ?? "")
-        }
-        .sheet(item: $logsContainer) { container in
-            ContainerLogsSheet(containerName: container.name) {
-                try await viewModel.fetchLogs(name: container.name)
-            }
-            .id(container.id)
-        }
-        .sheet(item: $detailContainer) { container in
-            ContainerDetailView(viewModel: viewModel, container: container)
-                .frame(minWidth: 820, minHeight: 620)
-                .id("detail-\(container.id)")
-        }
-        .task { await viewModel.fetchContainers() }
     }
 }
 

@@ -89,6 +89,8 @@
 		AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */; };
 		AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */; };
 		AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */; };
+		AA11BB22CC33DD44EE55FF19 /* ContainerComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660019 /* ContainerComposeView.swift */; };
+		AA11BB22CC33DD44EE55FF1A /* ContainerNetworkVolumeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66001A /* ContainerNetworkVolumeViews.swift */; };
 		AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */; };
 		AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660016 /* SecurityView.swift */; };
 		AA11BB22CC33DD44EE55FF17 /* FirewallModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660017 /* FirewallModuleView.swift */; };
@@ -211,6 +213,8 @@
 		BB22CC33DD44EE55FF660012 /* WebsiteRewriteSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteRewriteSection.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660013 /* WebsiteSecuritySections.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteSecuritySections.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660014 /* WebsiteAuthSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsiteAuthSection.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660019 /* ContainerComposeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerComposeView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66001A /* ContainerNetworkVolumeViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerNetworkVolumeViews.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660015 /* LogsModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LogsModuleView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660016 /* SecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SecurityView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660017 /* FirewallModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FirewallModuleView.swift; sourceTree = "<group>"; };
@@ -248,6 +252,8 @@
 				BB22CC33DD44EE55FF66000A /* ContainerFilesView.swift */,
 				BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */,
 				BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */,
+				BB22CC33DD44EE55FF660019 /* ContainerComposeView.swift */,
+				BB22CC33DD44EE55FF66001A /* ContainerNetworkVolumeViews.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -881,6 +887,8 @@ children = (
 				AA11BB22CC33DD44EE55FF12 /* WebsiteRewriteSection.swift in Sources */,
 				AA11BB22CC33DD44EE55FF13 /* WebsiteSecuritySections.swift in Sources */,
 				AA11BB22CC33DD44EE55FF14 /* WebsiteAuthSection.swift in Sources */,
+				AA11BB22CC33DD44EE55FF19 /* ContainerComposeView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF1A /* ContainerNetworkVolumeViews.swift in Sources */,
 				AA11BB22CC33DD44EE55FF15 /* LogsModuleView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF16 /* SecurityView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF17 /* FirewallModuleView.swift in Sources */,

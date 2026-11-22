@@ -300,3 +300,44 @@ class NativeFormSubmissionTests: XCTestCase {
     XCTAssertEqual(submission, .failed(nil))
   }
 }
+
+class ContainerSectionModelTests: XCTestCase {
+  func testComposeProjectUsesRunningContainerCount() {
+    let project = ContainerComposeProject(
+      id: "web", name: "web", path: "/opt/web/docker-compose.yml",
+      status: "exited", createTime: "", containerCount: 3, runningCount: 1
+    )
+
+    XCTAssertTrue(project.isRunning)
+  }
+
+  func testComposeProjectFallsBackToStatusKeyword() {
+    let running = ContainerComposeProject(
+      id: "api", name: "api", path: "", status: "running", createTime: "",
+      containerCount: 0, runningCount: 0
+    )
+    let stopped = ContainerComposeProject(
+      id: "job", name: "job", path: "", status: "exited", createTime: "",
+      containerCount: 0, runningCount: 0
+    )
+
+    XCTAssertTrue(running.isRunning)
+    XCTAssertFalse(stopped.isRunning)
+  }
+
+  func testNetworkSystemClassification() {
+    XCTAssertTrue(ContainerNetworkItem(
+      id: "bridge", name: "bridge", driver: "bridge", subnet: "", gateway: ""
+    ).isSystem)
+    XCTAssertFalse(ContainerNetworkItem(
+      id: "custom", name: "custom", driver: "bridge", subnet: "", gateway: ""
+    ).isSystem)
+  }
+
+  func testContainerSectionTitlesMapToExistingKeys() {
+    XCTAssertEqual(ContainerSection.containers.titleKey, "containerTabContainers")
+    XCTAssertEqual(ContainerSection.compose.titleKey, "orchestrationCompose")
+    XCTAssertEqual(ContainerSection.networks.titleKey, "containerTabNetworks")
+    XCTAssertEqual(ContainerSection.volumes.titleKey, "containerTabVolumes")
+  }
+}
