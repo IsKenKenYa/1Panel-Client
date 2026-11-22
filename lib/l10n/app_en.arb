@@ -5322,6 +5322,7 @@
   "containerComposeDetailTitle": "Compose details",
   "containerComposeFileTitle": "Compose file",
   "containerComposeValidateSuccess": "Compose validation passed",
+  "containerComposeAllContainers": "All containers",
   "containerNetworkDetailTitle": "Network details",
   "containerResourceCreatedAtLabel": "Created",
   "containerVolumeDetailTitle": "Volume details",

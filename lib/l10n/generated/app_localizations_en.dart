@@ -13026,6 +13026,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerComposeValidateSuccess => 'Compose validation passed';
 
   @override
+  String get containerComposeAllContainers => 'All containers';
+
+  @override
   String get containerNetworkDetailTitle => 'Network details';
 
   @override

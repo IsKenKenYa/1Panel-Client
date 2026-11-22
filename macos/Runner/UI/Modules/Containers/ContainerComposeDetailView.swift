@@ -19,6 +19,10 @@ struct ContainerComposeDetailView: View {
     @State private var isSaving = false
     @State private var statusMessage: String?
     @State private var errorMessage: String?
+    @State private var composePaths: [String] = []
+    @State private var selectedPath = ""
+    @State private var selectedLogContainer = ""
+    @State private var followLogs = false
 
     var body: some View {
         NavigationStack {
@@ -55,6 +59,15 @@ struct ContainerComposeDetailView: View {
             }
             .task {
                 await loadAll()
+            }
+            .task(id: followLogs) {
+                guard followLogs else { return }
+                while !Task.isCancelled {
+                    if section == "logs" {
+                        await refreshLogs()
+                    }
+                    try? await Task.sleep(nanoseconds: 2_000_000_000)
+                }
             }
             .alert(
                 t("commonError", "Error"),
@@ -136,6 +149,30 @@ struct ContainerComposeDetailView: View {
 
     private var fileContent: some View {
         VStack(alignment: .leading, spacing: 0) {
+            if composePaths.count > 1 {
+                VStack(alignment: .leading, spacing: 4) {
+                    Picker(
+                        t("containerComposeFileTitle", "Compose file"),
+                        selection: Binding(
+                            get: { selectedPath },
+                            set: { newValue in
+                                selectedPath = newValue
+                                Task { await loadSelectedContent() }
+                            }
+                        )
+                    ) {
+                        ForEach(composePaths, id: \.self) { path in
+                            Text(fileName(path)).tag(path)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    Text(selectedPath)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 12)
+                .padding(.top, 8)
+            }
             TextEditor(text: $content)
                 .font(.system(.body, design: .monospaced))
                 .padding(8)
@@ -179,6 +216,27 @@ struct ContainerComposeDetailView: View {
     private var logsContent: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
+                Picker(
+                    "",
+                    selection: Binding(
+                        get: { selectedLogContainer },
+                        set: { newValue in
+                            selectedLogContainer = newValue
+                            Task { await loadLogs() }
+                        }
+                    )
+                ) {
+                    Text(t("containerComposeAllContainers", "All containers"))
+                        .tag("")
+                    ForEach(containers) { container in
+                        Text(container.name).tag(container.name)
+                    }
+                }
+                .labelsHidden()
+                .frame(maxWidth: 260)
+                Toggle(t("containerLogsAutoRefresh", "Auto Refresh"),
+                       isOn: $followLogs)
+                    .toggleStyle(.switch)
                 if isLoadingLogs {
                     ProgressView().controlSize(.small)
                 }
@@ -229,16 +287,46 @@ struct ContainerComposeDetailView: View {
 
     private func loadAll() async {
         isLoading = true
+        composePaths = project.path
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        if selectedPath.isEmpty || !composePaths.contains(selectedPath) {
+            selectedPath = composePaths.first ?? ""
+        }
         do {
-            if !project.path.isEmpty {
+            if !selectedPath.isEmpty {
                 content = try await store.loadContent(
                     name: project.name,
-                    path: project.path.split(separator: ",").first.map(String.init)
-                        ?? project.path
+                    path: selectedPath
                 )
                 originalContent = content
             }
             containers = try await store.loadContainers(name: project.name)
+            if !selectedLogContainer.isEmpty &&
+                !containers.contains(where: { $0.name == selectedLogContainer }) {
+                selectedLogContainer = ""
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    private func loadSelectedContent() async {
+        guard !selectedPath.isEmpty else {
+            content = ""
+            originalContent = ""
+            return
+        }
+        isLoading = true
+        do {
+            content = try await store.loadContent(
+                name: project.name,
+                path: selectedPath
+            )
+            originalContent = content
+            statusMessage = nil
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -260,6 +348,7 @@ struct ContainerComposeDetailView: View {
         if let error = await store.updateContent(
             name: project.name,
             path: project.path,
+            detailPath: selectedPath,
             content: content
         ) {
             errorMessage = fallback(error)
@@ -295,12 +384,31 @@ struct ContainerComposeDetailView: View {
     private func loadLogs() async {
         isLoadingLogs = true
         do {
-            logs = try await store.loadLogs(name: project.name)
+            logs = try await store.loadLogs(
+                name: project.name,
+                container: selectedLogContainer
+            )
             errorMessage = nil
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoadingLogs = false
+    }
+
+    private func refreshLogs() async {
+        do {
+            logs = try await store.loadLogs(
+                name: project.name,
+                container: selectedLogContainer
+            )
+        } catch {
+            followLogs = false
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func fileName(_ path: String) -> String {
+        (path as NSString).lastPathComponent
     }
 
     private func fallback(_ error: String) -> String {

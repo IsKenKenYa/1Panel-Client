@@ -12637,6 +12637,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerComposeValidateSuccess => 'Compose 校验通过';
 
   @override
+  String get containerComposeAllContainers => '全部容器';
+
+  @override
   String get containerNetworkDetailTitle => '网络详情';
 
   @override

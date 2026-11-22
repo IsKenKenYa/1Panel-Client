@@ -5024,6 +5024,7 @@
   "containerComposeDetailTitle": "Compose 详情",
   "containerComposeFileTitle": "Compose 文件",
   "containerComposeValidateSuccess": "Compose 校验通过",
+  "containerComposeAllContainers": "全部容器",
   "containerNetworkDetailTitle": "网络详情",
   "containerResourceCreatedAtLabel": "创建时间",
   "containerVolumeDetailTitle": "存储卷详情",

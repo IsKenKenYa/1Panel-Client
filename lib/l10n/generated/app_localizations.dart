@@ -24553,6 +24553,12 @@ abstract class AppLocalizations {
   /// **'Compose validation passed'**
   String get containerComposeValidateSuccess;
 
+  /// No description provided for @containerComposeAllContainers.
+  ///
+  /// In en, this message translates to:
+  /// **'All containers'**
+  String get containerComposeAllContainers;
+
   /// No description provided for @containerNetworkDetailTitle.
   ///
   /// In en, this message translates to:

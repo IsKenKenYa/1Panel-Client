@@ -125,11 +125,17 @@ final class ContainerComposeStore: ObservableObject {
     func updateContent(
         name: String,
         path: String,
+        detailPath: String,
         content: String
     ) async -> String? {
         await perform(
             "updateCompose",
-            ["name": name, "path": path, "content": content]
+            [
+                "name": name,
+                "path": path,
+                "detailPath": detailPath,
+                "content": content,
+            ]
         )
     }
 
@@ -166,10 +172,14 @@ final class ContainerComposeStore: ObservableObject {
         }
     }
 
-    func loadLogs(name: String, tail: String = "500") async throws -> String {
+    func loadLogs(
+        name: String,
+        container: String = "",
+        tail: String = "500"
+    ) async throws -> String {
         let raw = try await ChannelManager.shared.invokeDataMethodAsync(
             "getComposeLogs",
-            arguments: ["name": name, "tail": tail]
+            arguments: ["name": name, "container": container, "tail": tail]
         )
         return raw as? String ?? ""
     }
