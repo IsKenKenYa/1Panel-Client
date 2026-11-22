@@ -512,7 +512,8 @@ class FirewallRuleDeleteRequest extends Equatable {
 
 class FirewallRuleUpdateRequest extends Equatable {
   final String instanceKey;
-  final String scope;
+  // 服务端 filter.Scope 是嵌套对象，不是字符串。
+  final Map<String, dynamic> scope;
   final String? description;
   final int? orderIndex;
   final int? priority;
