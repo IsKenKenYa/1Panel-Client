@@ -45,6 +45,8 @@ import '../../data/models/file_models.dart';
 import '../../data/models/process_models.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
+import '../../api/v2/firewall_v2.dart';
+import '../../data/models/firewall_v2_models.dart';
 import 'native_firewall_payloads.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
@@ -3698,6 +3700,237 @@ class NativeChannelWriteHandlers {
       appLogger.e('operateRuntime failed: $e');
       return _err(e);
     }
+  }
+
+  // ── 防火墙 V2 写入 ──────────────────────────────────────────────────────
+
+  /// 启用转发。参数：`{taskID?, backupFile?}`
+  static Future<Map<String, dynamic>> enableFirewallForward(
+      dynamic arguments) async {
+    try {
+      await (await _firewallV2Api()).enableFirewallForwarding(
+        FirewallForwardEnableRequest(
+          taskID: (arguments?['taskID'] as String? ?? '').trim().isEmpty
+              ? null
+              : arguments?['taskID'] as String,
+          backupFile: (arguments?['backupFile'] as String? ?? '').trim().isEmpty
+              ? null
+              : arguments?['backupFile'] as String,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('enableFirewallForward failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 转发规则操作。参数：`{rules: [Map], import?: bool}`
+  static Future<Map<String, dynamic>> operateFirewallForwardRules(
+      dynamic arguments) async {
+    try {
+      final rules = (arguments?['rules'] as List?)
+              ?.whereType<Map>()
+              .map((rule) => rule.cast<String, dynamic>())
+              .toList(growable: false) ??
+          const <Map<String, dynamic>>[];
+      if (rules.isEmpty) {
+        return <String, dynamic>{'success': false, 'error': 'rules are required'};
+      }
+      await (await _firewallV2Api()).operateFirewallForwardRules(
+        FirewallForwardOperateV2Request(
+          rules: rules,
+          import: arguments?['import'] as bool?,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateFirewallForwardRules failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// Docker 端口守卫操作。参数：`{operation: initialize|bind|unbind, taskID?, backupFile?}`
+  static Future<Map<String, dynamic>> operateFirewallDockerGuard(
+      dynamic arguments) async {
+    try {
+      final operation = (arguments?['operation'] as String? ?? '').trim();
+      const allowed = <String>{'initialize', 'bind', 'unbind'};
+      if (!allowed.contains(operation)) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'Unsupported operation: $operation',
+        };
+      }
+      await (await _firewallV2Api()).operateFirewallDockerGuard(
+        FirewallDockerOperation(
+          operation: operation,
+          taskID: (arguments?['taskID'] as String? ?? '').trim().isEmpty
+              ? null
+              : arguments?['taskID'] as String,
+          backupFile: (arguments?['backupFile'] as String? ?? '').trim().isEmpty
+              ? null
+              : arguments?['backupFile'] as String,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateFirewallDockerGuard failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// Docker 端口策略批量写入。参数：`{policies: [Map], import?: bool}`
+  static Future<Map<String, dynamic>> upsertFirewallDockerPolicies(
+      dynamic arguments) async {
+    try {
+      final policies = (arguments?['policies'] as List?)
+              ?.whereType<Map>()
+              .map((policy) => policy.cast<String, dynamic>())
+              .toList(growable: false) ??
+          const <Map<String, dynamic>>[];
+      if (policies.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'policies are required',
+        };
+      }
+      await (await _firewallV2Api()).batchUpsertFirewallDockerPolicies(
+        FirewallDockerPolicyBatch(
+          policies: policies,
+          import: arguments?['import'] as bool?,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('upsertFirewallDockerPolicies failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// Docker 端口策略批量删除。参数：`{uuids: [String]}`
+  static Future<Map<String, dynamic>> deleteFirewallDockerPolicies(
+      dynamic arguments) async {
+    try {
+      final uuids = (arguments?['uuids'] as List?)
+              ?.map((uuid) => '$uuid'.trim())
+              .where((uuid) => uuid.isNotEmpty)
+              .toList(growable: false) ??
+          const <String>[];
+      if (uuids.isEmpty) {
+        return <String, dynamic>{'success': false, 'error': 'uuids are required'};
+      }
+      await (await _firewallV2Api()).batchDeleteFirewallDockerPolicies(
+        FirewallDockerPolicyBatchDelete(uuids: uuids),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteFirewallDockerPolicies failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// IPv6 防火墙开关。参数：`{enabled: bool}`
+  static Future<Map<String, dynamic>> updateFirewallIPv6(
+      dynamic arguments) async {
+    try {
+      final enabled = arguments?['enabled'] as bool? ?? false;
+      await (await _firewallV2Api()).updateFirewallIPv6(
+        FirewallIPv6Operation(status: enabled ? 'Enable' : 'Disable'),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateFirewallIPv6 failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 防火墙后端操作。参数：`{backend, operation, subsystem}`
+  static Future<Map<String, dynamic>> operateFirewallBackend(
+      dynamic arguments) async {
+    try {
+      final backend = (arguments?['backend'] as String? ?? '').trim();
+      final operation = (arguments?['operation'] as String? ?? '').trim();
+      final subsystem = (arguments?['subsystem'] as String? ?? '').trim();
+      if (backend.isEmpty || operation.isEmpty || subsystem.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'backend, operation and subsystem are required',
+        };
+      }
+      await (await _firewallV2Api()).operateFirewallBackend(
+        FirewallBackendOperation(
+          backend: backend,
+          operation: operation,
+          subsystem: subsystem,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateFirewallBackend failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建端口白名单。参数：`{rule: Map}`
+  static Future<Map<String, dynamic>> createFirewallWhitelist(
+      dynamic arguments) async {
+    try {
+      final rule = _whitelistRule(arguments?['rule']);
+      await (await _firewallV2Api()).createFirewallPortWhitelist(
+        FirewallPortWhitelistOperation(rule: rule),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createFirewallWhitelist failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新端口白名单。参数：`{oldRule: Map, rule: Map}`
+  static Future<Map<String, dynamic>> updateFirewallWhitelist(
+      dynamic arguments) async {
+    try {
+      await (await _firewallV2Api()).updateFirewallPortWhitelist(
+        FirewallPortWhitelistUpdate(
+          oldRule: _whitelistRule(arguments?['oldRule']),
+          rule: _whitelistRule(arguments?['rule']),
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateFirewallWhitelist failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除端口白名单。参数：`{rule: Map}`
+  static Future<Map<String, dynamic>> deleteFirewallWhitelist(
+      dynamic arguments) async {
+    try {
+      await (await _firewallV2Api()).deleteFirewallPortWhitelist(
+        FirewallPortWhitelistOperation(rule: _whitelistRule(arguments?['rule'])),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteFirewallWhitelist failed: $e');
+      return _err(e);
+    }
+  }
+
+  static Future<FirewallV2Api> _firewallV2Api() async =>
+      FirewallV2Api(await ApiClientManager.instance.getCurrentClient());
+
+  static FirewallPortWhitelistRule _whitelistRule(Object? value) {
+    final map = value is Map ? value : const <String, dynamic>{};
+    return FirewallPortWhitelistRule(
+      port: '${map['port'] ?? ''}',
+      protocol: '${map['protocol'] ?? 'tcp'}',
+      type: '${map['type'] ?? ''}'.isEmpty ? null : '${map['type']}',
+      sources: (map['sources'] as List?)
+          ?.map((source) => '$source')
+          .toList(growable: false),
+    );
   }
 
   // ── 内部工具 ──────────────────────────────────────────────────────────────

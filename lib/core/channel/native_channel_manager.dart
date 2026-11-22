@@ -586,6 +586,26 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateFirewallIpRule(arguments);
       case 'updateFirewallRuleDescription':
         return NativeChannelWriteHandlers.updateFirewallRuleDescription(arguments);
+      case 'enableFirewallForward':
+        return NativeChannelWriteHandlers.enableFirewallForward(arguments);
+      case 'operateFirewallForwardRules':
+        return NativeChannelWriteHandlers.operateFirewallForwardRules(arguments);
+      case 'operateFirewallDockerGuard':
+        return NativeChannelWriteHandlers.operateFirewallDockerGuard(arguments);
+      case 'upsertFirewallDockerPolicies':
+        return NativeChannelWriteHandlers.upsertFirewallDockerPolicies(arguments);
+      case 'deleteFirewallDockerPolicies':
+        return NativeChannelWriteHandlers.deleteFirewallDockerPolicies(arguments);
+      case 'updateFirewallIPv6':
+        return NativeChannelWriteHandlers.updateFirewallIPv6(arguments);
+      case 'operateFirewallBackend':
+        return NativeChannelWriteHandlers.operateFirewallBackend(arguments);
+      case 'createFirewallWhitelist':
+        return NativeChannelWriteHandlers.createFirewallWhitelist(arguments);
+      case 'updateFirewallWhitelist':
+        return NativeChannelWriteHandlers.updateFirewallWhitelist(arguments);
+      case 'deleteFirewallWhitelist':
+        return NativeChannelWriteHandlers.deleteFirewallWhitelist(arguments);
 
       // ── Write: 运维入口 ────────────────────────────────────────────────
       case 'operateRuntime':
