@@ -8,7 +8,7 @@ inclusion: auto
 >
 > - 默认在当前分支直接修改与提交，新建分支必须得到用户明确同意；提交消息遵循 Conventional Commits 且必须包含 `scope`，按模块或类别分别提交。详见 `AGENTS.md`「分支、发布与 CI」与「提交与合并请求规范」。
 > - 每次改动完成后自动执行完整测试闭环（理解需求 → 测试用例设计 → 自动化测试基线准备 → 功能开发 → 单元测试 → 集成测试 → 文档与基线回写 → 提交），迭代到门禁全部通过后按模块提交，未提交视同闭环未完成。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
-> - 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（Flutter/Dart、Android、HarmonyOS、Apple 官方集）优先；Dart & Flutter MCP server 配置在 `.mcp.json`，Developer Knowledge MCP（Google 官方文档检索）查 API 用法优先，登录见 `docs/development/developer_knowledge_mcp.md`。详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
+> - 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（Flutter/Dart、Android、HarmonyOS、Apple 官方集）优先；MCP server（dart 本地 + Google 文档检索，定义见 `.mcp.json`）按需接入、不强制安装，已接入时优先使用，登录见 `docs/development/developer_knowledge_mcp.md`。详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
 
 ## 实时功能规划（强制）
 
