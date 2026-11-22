@@ -8708,6 +8708,12 @@ abstract class AppLocalizations {
   /// **'App Store'**
   String get appStoreTitle;
 
+  /// No description provided for @appStoreInstalledBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get appStoreInstalledBadge;
+
   /// No description provided for @appsPageTitle.
   ///
   /// In en, this message translates to:

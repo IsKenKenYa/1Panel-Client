@@ -1970,6 +1970,7 @@
   "commonCreateSuccess": "Created successfully",
   "commonCopySuccess": "Copied successfully",
   "appStoreTitle": "App Store",
+  "appStoreInstalledBadge": "Installed",
   "appsPageTitle": "App Management",
   "appsInstalledEmptyDescription": "No apps installed yet. Visit the App Store to install one.",
   "appStoreInstall": "Install",

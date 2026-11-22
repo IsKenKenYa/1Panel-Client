@@ -4650,6 +4650,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appStoreTitle => 'App Store';
 
   @override
+  String get appStoreInstalledBadge => 'Installed';
+
+  @override
   String get appsPageTitle => 'App Management';
 
   @override

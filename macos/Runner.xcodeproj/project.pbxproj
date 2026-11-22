@@ -82,6 +82,8 @@
 		AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */; };
 		AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */; };
 		AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */; };
+		AA11BB22CC33DD44EE55FF0E /* FileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000E /* FileContentView.swift */; };
+		AA11BB22CC33DD44EE55FF0F /* AppStoreSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66000F /* AppStoreSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,6 +195,8 @@
 		BB22CC33DD44EE55FF66000B /* ContainerTerminalView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainerTerminalView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000C /* TerminalSessionModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TerminalSessionModel.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66000D /* DatabaseDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DatabaseDetailView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000E /* FileContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileContentView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66000F /* AppStoreSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppStoreSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -470,10 +474,11 @@ children = (
 		};
 		D146B38DE8B37F484EC1BB4C /* Apps */ = {
 			isa = PBXGroup;
-			children = (
-				E6A87537D32DB529B5D3D70F /* AppsViewModel.swift */,
-				4037E30682A0357CB82BC9FD /* AppsView.swift */,
-			);
+children = (
+					E6A87537D32DB529B5D3D70F /* AppsViewModel.swift */,
+					4037E30682A0357CB82BC9FD /* AppsView.swift */,
+					BB22CC33DD44EE55FF66000F /* AppStoreSheet.swift */,
+				);
 			path = Apps;
 			sourceTree = "<group>";
 		};
@@ -516,10 +521,11 @@ children = (
 		};
 		D892C033D9AEA8AC158ACF26 /* Files */ = {
 			isa = PBXGroup;
-			children = (
-				EAF568DDFC4334EA2C19376B /* FilesViewModel.swift */,
-				D695296FE7F4CF8AAD51CC39 /* FilesView.swift */,
-			);
+children = (
+					EAF568DDFC4334EA2C19376B /* FilesViewModel.swift */,
+					D695296FE7F4CF8AAD51CC39 /* FilesView.swift */,
+					BB22CC33DD44EE55FF66000E /* FileContentView.swift */,
+				);
 			path = Files;
 			sourceTree = "<group>";
 		};
@@ -825,6 +831,8 @@ children = (
 				AA11BB22CC33DD44EE55FF0B /* ContainerTerminalView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0C /* TerminalSessionModel.swift in Sources */,
 				AA11BB22CC33DD44EE55FF0D /* DatabaseDetailView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0E /* FileContentView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF0F /* AppStoreSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

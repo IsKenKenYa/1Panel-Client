@@ -11,6 +11,7 @@ struct FilesView: View {
     @State private var renamingFile: FileModel?
     @State private var renameDraft = ""
     @State private var fileToDelete: FileModel?
+    @State private var previewFile: FileModel?
 
     var body: some View {
         Group {
@@ -133,6 +134,13 @@ struct FilesView: View {
                 close: { renamingFile = nil }
             )
         }
+        .sheet(item: $previewFile) { file in
+            NavigationStack {
+                FileContentView(path: file.path)
+            }
+            .frame(minWidth: 760, minHeight: 540)
+            .id(file.id)
+        }
     }
 
     private func fileTable(_ files: [FileModel]) -> some View {
@@ -153,8 +161,12 @@ struct FilesView: View {
                 fileActions(file)
             }
         } primaryAction: { selection in
-            if let id = selection.first, let file = files.first(where: { $0.id == id && $0.isDir }) {
-                Task { await viewModel.fetchFiles(path: file.path) }
+            if let id = selection.first, let file = files.first(where: { $0.id == id }) {
+                if file.isDir {
+                    Task { await viewModel.fetchFiles(path: file.path) }
+                } else {
+                    previewFile = file
+                }
             }
         }
     }
@@ -166,6 +178,14 @@ struct FilesView: View {
                 Task { await viewModel.fetchFiles(path: file.path) }
             } label: {
                 Label(translations.get("filesActionOpen", fallback: "Open"), systemImage: "folder")
+            }
+            .disabled(viewModel.isBusy)
+            Divider()
+        } else {
+            Button {
+                previewFile = file
+            } label: {
+                Label(translations.get("filesActionOpen", fallback: "Open"), systemImage: "doc.text")
             }
             .disabled(viewModel.isBusy)
             Divider()

@@ -8,6 +8,7 @@ struct AppsView: View {
 
     @State private var appToUninstall: AppModel?
     @State private var showUninstallConfirm = false
+    @State private var showAppStore = false
 
     var body: some View {
         Group {
@@ -67,6 +68,15 @@ struct AppsView: View {
         .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
+                Button {
+                    showAppStore = true
+                } label: {
+                    Label(translations.get("appStoreTitle", fallback: "App Store"),
+                          systemImage: "bag")
+                }
+                .help(translations.get("appStoreTitle", fallback: "App Store"))
+            }
+            ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
                     ProgressView().scaleEffect(0.6)
                 } else {
@@ -89,6 +99,11 @@ struct AppsView: View {
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: { app in
             Text("\(app.name)\n\(translations.get("uninstallCannotUndo", fallback: "This action cannot be undone."))")
+        }
+        .sheet(isPresented: $showAppStore) {
+            AppStoreSheet {
+                Task { await viewModel.fetchApps() }
+            }
         }
         .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },

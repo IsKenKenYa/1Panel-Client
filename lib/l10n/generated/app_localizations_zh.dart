@@ -4486,6 +4486,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appStoreTitle => '应用商店';
 
   @override
+  String get appStoreInstalledBadge => '已安装';
+
+  @override
   String get appsPageTitle => '应用管理';
 
   @override
