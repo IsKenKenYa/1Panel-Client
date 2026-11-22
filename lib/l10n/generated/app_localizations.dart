@@ -24048,6 +24048,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The model downloader may be unavailable on community panels; server responses decide the outcome'**
   String get modelDownloaderRequiresProHint;
+
+  /// No description provided for @firewallV2ForwardRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarding rules'**
+  String get firewallV2ForwardRules;
+
+  /// No description provided for @firewallV2AddForwardRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add forward rule'**
+  String get firewallV2AddForwardRule;
+
+  /// No description provided for @firewallV2DockerPolicies.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker policies'**
+  String get firewallV2DockerPolicies;
+
+  /// No description provided for @firewallV2AddDockerPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Docker policy'**
+  String get firewallV2AddDockerPolicy;
+
+  /// No description provided for @firewallV2PublishedPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Published ports'**
+  String get firewallV2PublishedPorts;
+
+  /// No description provided for @firewallV2PolicyModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy mode'**
+  String get firewallV2PolicyModeLabel;
+
+  /// No description provided for @firewallV2ModeDenySources.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny listed sources'**
+  String get firewallV2ModeDenySources;
+
+  /// No description provided for @firewallV2ModeAllowSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow listed sources'**
+  String get firewallV2ModeAllowSources;
+
+  /// No description provided for @firewallV2ModeDenyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny all'**
+  String get firewallV2ModeDenyAll;
+
+  /// No description provided for @firewallV2ModeAcceptSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept listed sources'**
+  String get firewallV2ModeAcceptSources;
+
+  /// No description provided for @firewallV2ModeAcceptAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept all'**
+  String get firewallV2ModeAcceptAll;
+
+  /// No description provided for @firewallV2HostIPLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Host IP'**
+  String get firewallV2HostIPLabel;
+
+  /// No description provided for @firewallV2SourcesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get firewallV2SourcesLabel;
+
+  /// No description provided for @firewallV2SourcesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate multiple addresses with commas.'**
+  String get firewallV2SourcesHint;
+
+  /// No description provided for @firewallV2AddWhitelist.
+  ///
+  /// In en, this message translates to:
+  /// **'Add whitelist rule'**
+  String get firewallV2AddWhitelist;
+
+  /// No description provided for @firewallV2EditWhitelist.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit whitelist rule'**
+  String get firewallV2EditWhitelist;
+
+  /// No description provided for @firewallV2WhitelistTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get firewallV2WhitelistTypeLabel;
+
+  /// No description provided for @firewallV2WhitelistTypeNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get firewallV2WhitelistTypeNone;
+
+  /// No description provided for @firewallV2WhitelistTypePanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel'**
+  String get firewallV2WhitelistTypePanel;
+
+  /// No description provided for @firewallV2WhitelistTypeSSH.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get firewallV2WhitelistTypeSSH;
+
+  /// No description provided for @firewallV2SwitchBackend.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch backend'**
+  String get firewallV2SwitchBackend;
+
+  /// No description provided for @firewallV2SubsystemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subsystem'**
+  String get firewallV2SubsystemLabel;
+
+  /// No description provided for @firewallV2BackendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend'**
+  String get firewallV2BackendLabel;
+
+  /// No description provided for @firewallV2SubsystemSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get firewallV2SubsystemSystem;
+
+  /// No description provided for @firewallV2SubsystemForwarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarding'**
+  String get firewallV2SubsystemForwarding;
+
+  /// No description provided for @firewallV2SubsystemDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker'**
+  String get firewallV2SubsystemDocker;
+
+  /// No description provided for @firewallV2ConfirmBackend.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch backend'**
+  String get firewallV2ConfirmBackend;
+
+  /// No description provided for @firewallV2BackendInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get firewallV2BackendInstalled;
+
+  /// No description provided for @firewallV2BackendUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported'**
+  String get firewallV2BackendUnsupported;
+
+  /// No description provided for @firewallV2BackendActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get firewallV2BackendActive;
+
+  /// No description provided for @firewallV2RequiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the required fields.'**
+  String get firewallV2RequiredFields;
 }
 
 class _AppLocalizationsDelegate

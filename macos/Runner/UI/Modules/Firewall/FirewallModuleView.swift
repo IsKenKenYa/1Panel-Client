@@ -57,44 +57,13 @@ final class FirewallBaseStore: ObservableObject {
     }
 }
 
-struct FirewallFlatRow: Identifiable {
-    let label: String
-    let value: String
-
-    var id: String { label }
-}
-
-@MainActor
-final class FirewallFlatStore: ObservableObject {
-    @Published var rows: [FirewallFlatRow] = []
-    @Published var ipv6Enabled = false
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-
-    func fetch(method: String) async {
-        isLoading = true
-        do {
-            let raw = try await ChannelManager.shared.invokeDataMethodAsync(method)
-            let payload = raw as? [String: Any] ?? [:]
-            ipv6Enabled = payload["ipv6Enabled"] as? Bool ?? false
-            rows = payload
-                .map { FirewallFlatRow(label: $0.key, value: "\($0.value)") }
-                .sorted { $0.label < $1.label }
-            errorMessage = nil
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-        isLoading = false
-    }
-}
-
 /// macOS 防火墙：状态、端口规则、IP 规则、转发、Docker 与设置。
 struct FirewallModuleView: View {
     @StateObject private var rules = FirewallViewModel()
     @StateObject private var base = FirewallBaseStore()
-    @StateObject private var forward = FirewallFlatStore()
-    @StateObject private var docker = FirewallFlatStore()
-    @StateObject private var settings = FirewallFlatStore()
+    @StateObject private var v2 = FirewallV2Store(
+        channel: MacOSDataChannel(channelManager: .shared)
+    )
 
     @EnvironmentObject private var translations: TranslationsManager
 
@@ -104,6 +73,13 @@ struct FirewallModuleView: View {
     @State private var pendingDelete: FirewallRuleModel?
     @State private var pendingOperation: String?
     @State private var pendingFlatAction: String?
+    @State private var pendingForwardDelete: FirewallForwardRule?
+    @State private var pendingDockerDelete: FirewallDockerPolicy?
+    @State private var pendingWhitelistDelete: FirewallWhitelistRule?
+    @State private var showForwardForm = false
+    @State private var showDockerForm = false
+    @State private var whitelistEditor: WhitelistRuleEditor?
+    @State private var showBackendForm = false
     @State private var actionError: String?
 
     var body: some View {
@@ -114,11 +90,11 @@ struct FirewallModuleView: View {
             case "ips":
                 ruleContent(kind: .ip)
             case "forward":
-                flatContent(forward)
+                forwardContent
             case "docker":
-                flatContent(docker)
+                dockerContent
             case "settings":
-                flatContent(settings)
+                settingsContent
             default:
                 statusContent
             }
@@ -145,6 +121,30 @@ struct FirewallModuleView: View {
                         Label(translations.get("commonAdd", fallback: "Add"),
                               systemImage: "plus")
                     }
+                } else if section == "forward" {
+                    Button {
+                        showForwardForm = true
+                    } label: {
+                        Label(translations.get("firewallV2AddForwardRule",
+                                               fallback: "Add forward rule"),
+                              systemImage: "plus")
+                    }
+                } else if section == "docker" {
+                    Button {
+                        showDockerForm = true
+                    } label: {
+                        Label(translations.get("firewallV2AddDockerPolicy",
+                                               fallback: "Add Docker policy"),
+                              systemImage: "plus")
+                    }
+                } else if section == "settings" {
+                    Button {
+                        whitelistEditor = WhitelistRuleEditor()
+                    } label: {
+                        Label(translations.get("firewallV2AddWhitelist",
+                                               fallback: "Add whitelist rule"),
+                              systemImage: "plus")
+                    }
                 }
             }
             ToolbarItem(placement: .automatic) {
@@ -169,6 +169,18 @@ struct FirewallModuleView: View {
                 rules.fetchRules(kind: item.kind)
             }
         }
+        .sheet(isPresented: $showForwardForm) {
+            ForwardRuleFormView(store: v2)
+        }
+        .sheet(isPresented: $showDockerForm) {
+            DockerPolicyFormView(store: v2)
+        }
+        .sheet(item: $whitelistEditor) { item in
+            WhitelistRuleFormView(store: v2, editor: item)
+        }
+        .sheet(isPresented: $showBackendForm) {
+            FirewallBackendFormView(store: v2)
+        }
         .confirmationDialog(
             pendingDelete?.originalId ?? "",
             isPresented: Binding(
@@ -185,6 +197,60 @@ struct FirewallModuleView: View {
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
                 pendingDelete = nil
+            }
+        } message: {
+            Text(translations.get("deleteCannotUndoMessage",
+                                  fallback: "This action cannot be undone."))
+        }
+        .confirmationDialog(
+            forwardDeleteTitle,
+            isPresented: Binding(
+                get: { pendingForwardDelete != nil },
+                set: { if !$0 { pendingForwardDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
+                Task { await deletePendingForward() }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
+                pendingForwardDelete = nil
+            }
+        } message: {
+            Text(translations.get("deleteCannotUndoMessage",
+                                  fallback: "This action cannot be undone."))
+        }
+        .confirmationDialog(
+            dockerDeleteTitle,
+            isPresented: Binding(
+                get: { pendingDockerDelete != nil },
+                set: { if !$0 { pendingDockerDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
+                Task { await deletePendingDocker() }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
+                pendingDockerDelete = nil
+            }
+        } message: {
+            Text(translations.get("deleteCannotUndoMessage",
+                                  fallback: "This action cannot be undone."))
+        }
+        .confirmationDialog(
+            whitelistDeleteTitle,
+            isPresented: Binding(
+                get: { pendingWhitelistDelete != nil },
+                set: { if !$0 { pendingWhitelistDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
+                Task { await deletePendingWhitelist() }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
+                pendingWhitelistDelete = nil
             }
         } message: {
             Text(translations.get("deleteCannotUndoMessage",
@@ -365,70 +431,68 @@ struct FirewallModuleView: View {
         }
     }
 
-    private func flatContent(_ store: FirewallFlatStore) -> some View {
+    private var forwardContent: some View {
         Group {
-            if store.isLoading && store.rows.isEmpty {
+            if v2.isLoading && v2.forwardInfo.isEmpty && v2.forwardRules.isEmpty {
                 LoadingView()
-            } else if let error = store.errorMessage, store.rows.isEmpty {
+            } else if let error = v2.loadError,
+                      v2.forwardInfo.isEmpty, v2.forwardRules.isEmpty {
                 ErrorView(message: error) {
-                    Task { await loadSection() }
+                    Task { await v2.loadForward() }
                 }
-            } else if store.rows.isEmpty {
-                EmptyStateView(
-                    icon: "doc.text",
-                    message: translations.get("firewallV2Empty", fallback: "No data")
-                )
             } else {
                 List {
                     Section(sectionTitle(section)) {
-                        if section == "settings" {
-                            Toggle(
-                                translations.get("firewallV2IPv6Enable", fallback: "Enable IPv6"),
-                                isOn: Binding(
-                                    get: { store.ipv6Enabled },
-                                    set: { value in
-                                        pendingFlatAction = value ? "ipv6:true" : "ipv6:false"
+                        Button {
+                            pendingFlatAction = "forward"
+                        } label: {
+                            Label(translations.get("firewallV2EnableForwardAction",
+                                                   fallback: "Enable forwarding"),
+                                  systemImage: "arrow.left.arrow.right")
+                        }
+                        ForEach(v2.forwardInfo) { row in
+                            infoRow(row)
+                        }
+                    }
+                    Section(translations.get("firewallV2ForwardRules",
+                                             fallback: "Forwarding rules")) {
+                        if v2.forwardRules.isEmpty {
+                            Text(translations.get("firewallV2Empty", fallback: "No records"))
+                                .foregroundStyle(.secondary)
+                        }
+                        ForEach(v2.forwardRules) { rule in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack(spacing: 6) {
+                                        Text(rule.sourceText)
+                                            .font(.subheadline.weight(.medium))
+                                        StatusBadge(
+                                            text: rule.strategy.isEmpty ? "--" : rule.strategy,
+                                            color: rule.strategy == "accept" ? .green : .red
+                                        )
                                     }
-                                )
-                            )
-                        }
-                        if section == "forward" {
-                            Button {
-                                pendingFlatAction = "forward"
-                            } label: {
-                                Label(translations.get("firewallV2EnableForwardAction",
-                                                       fallback: "Enable forwarding"),
-                                      systemImage: "arrow.left.arrow.right")
-                            }
-                        }
-                        if section == "docker" {
-                            Menu {
-                                Button(translations.get("firewallV2DockerInitializeAction",
-                                                        fallback: "Initialize")) {
-                                    pendingFlatAction = "docker:initialize"
+                                    Text("→ \(rule.targetText)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    if !rule.description.isEmpty {
+                                        Text(rule.description)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
-                                Button(translations.get("firewallV2DockerBindAction",
-                                                        fallback: "Bind")) {
-                                    pendingFlatAction = "docker:bind"
+                                Spacer()
+                                Menu {
+                                    Button(role: .destructive) {
+                                        pendingForwardDelete = rule
+                                    } label: {
+                                        Label(translations.get("commonDelete", fallback: "Delete"),
+                                              systemImage: "trash")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle")
                                 }
-                                Button(translations.get("firewallV2DockerUnbindAction",
-                                                        fallback: "Unbind")) {
-                                    pendingFlatAction = "docker:unbind"
-                                }
-                            } label: {
-                                Label(translations.get("firewallV2DockerActionLabel",
-                                                       fallback: "Docker guard action"),
-                                      systemImage: "shield.lefthalf.filled")
-                            }
-                        }
-                        ForEach(store.rows) { row in
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(row.label)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(row.value)
-                                    .font(.subheadline)
-                                    .textSelection(.enabled)
+                                .menuStyle(.borderlessButton)
+                                .frame(width: 24)
                             }
                             .padding(.vertical, 2)
                         }
@@ -436,10 +500,211 @@ struct FirewallModuleView: View {
                 }
                 .listStyle(.inset)
                 .refreshable {
-                    await loadSection()
+                    await v2.loadForward()
                 }
             }
         }
+    }
+
+    private var dockerContent: some View {
+        Group {
+            if v2.isLoading && v2.dockerInfo.isEmpty && v2.dockerPolicies.isEmpty {
+                LoadingView()
+            } else if let error = v2.loadError,
+                      v2.dockerInfo.isEmpty, v2.dockerPolicies.isEmpty {
+                ErrorView(message: error) {
+                    Task { await v2.loadDocker() }
+                }
+            } else {
+                List {
+                    Section(sectionTitle(section)) {
+                        Menu {
+                            Button(translations.get("firewallV2DockerInitializeAction",
+                                                    fallback: "Initialize")) {
+                                pendingFlatAction = "docker:initialize"
+                            }
+                            Button(translations.get("firewallV2DockerBindAction",
+                                                    fallback: "Bind")) {
+                                pendingFlatAction = "docker:bind"
+                            }
+                            Button(translations.get("firewallV2DockerUnbindAction",
+                                                    fallback: "Unbind")) {
+                                pendingFlatAction = "docker:unbind"
+                            }
+                        } label: {
+                            Label(translations.get("firewallV2DockerActionLabel",
+                                                   fallback: "Docker guard action"),
+                                  systemImage: "shield.lefthalf.filled")
+                        }
+                        ForEach(v2.dockerInfo) { row in
+                            infoRow(row)
+                        }
+                    }
+                    Section(translations.get("firewallV2DockerPolicies",
+                                             fallback: "Docker policies")) {
+                        if v2.dockerPolicies.isEmpty {
+                            Text(translations.get("firewallV2Empty", fallback: "No records"))
+                                .foregroundStyle(.secondary)
+                        }
+                        ForEach(v2.dockerPolicies) { policy in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack(spacing: 6) {
+                                        Text(policy.hostText)
+                                            .font(.subheadline.weight(.medium))
+                                        StatusBadge(
+                                            text: policy.mode.isEmpty ? "--" : policy.mode,
+                                            color: policy.mode.contains("deny") ? .red : .green
+                                        )
+                                    }
+                                    if !policy.containerName.isEmpty {
+                                        Text(policy.containerName)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if !policy.sources.isEmpty {
+                                        Text(policy.sources.joined(separator: ", "))
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                Menu {
+                                    Button(role: .destructive) {
+                                        pendingDockerDelete = policy
+                                    } label: {
+                                        Label(translations.get("commonDelete", fallback: "Delete"),
+                                              systemImage: "trash")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle")
+                                }
+                                .menuStyle(.borderlessButton)
+                                .frame(width: 24)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                    if !v2.publishedPorts.isEmpty {
+                        Section(translations.get("firewallV2PublishedPorts",
+                                                 fallback: "Published ports")) {
+                            ForEach(v2.publishedPorts) { port in
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(port.portText)
+                                        .font(.subheadline)
+                                    Text(port.containerName.isEmpty
+                                         ? port.containerState
+                                         : "\(port.containerName) · \(port.containerState)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.vertical, 2)
+                            }
+                        }
+                    }
+                }
+                .listStyle(.inset)
+                .refreshable {
+                    await v2.loadDocker()
+                }
+            }
+        }
+    }
+
+    private var settingsContent: some View {
+        Group {
+            if v2.isLoading && v2.settingsInfo.isEmpty && v2.whitelist.isEmpty {
+                LoadingView()
+            } else if let error = v2.loadError,
+                      v2.settingsInfo.isEmpty, v2.whitelist.isEmpty {
+                ErrorView(message: error) {
+                    Task { await v2.loadSettings() }
+                }
+            } else {
+                List {
+                    Section(sectionTitle(section)) {
+                        Toggle(
+                            translations.get("firewallV2IPv6Enable", fallback: "Enable IPv6"),
+                            isOn: Binding(
+                                get: { v2.ipv6Enabled },
+                                set: { value in
+                                    pendingFlatAction = value ? "ipv6:true" : "ipv6:false"
+                                }
+                            )
+                        )
+                        Button {
+                            showBackendForm = true
+                        } label: {
+                            Label(translations.get("firewallV2SwitchBackend",
+                                                   fallback: "Switch backend"),
+                                  systemImage: "arrow.triangle.2.circlepath")
+                        }
+                        ForEach(v2.settingsInfo) { row in
+                            infoRow(row)
+                        }
+                    }
+                    Section(translations.get("firewallV2Whitelist",
+                                             fallback: "Port whitelist")) {
+                        if v2.whitelist.isEmpty {
+                            Text(translations.get("firewallV2Empty", fallback: "No records"))
+                                .foregroundStyle(.secondary)
+                        }
+                        ForEach(v2.whitelist) { rule in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("\(rule.port)/\(rule.protocolName)")
+                                        .font(.subheadline.weight(.medium))
+                                    if !rule.type.isEmpty {
+                                        Text(rule.type)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Text(rule.sourcesText)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Menu {
+                                    Button {
+                                        whitelistEditor = WhitelistRuleEditor(rule: rule)
+                                    } label: {
+                                        Label(translations.get("commonEdit", fallback: "Edit"),
+                                              systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        pendingWhitelistDelete = rule
+                                    } label: {
+                                        Label(translations.get("commonDelete", fallback: "Delete"),
+                                              systemImage: "trash")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle")
+                                }
+                                .menuStyle(.borderlessButton)
+                                .frame(width: 24)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                }
+                .listStyle(.inset)
+                .refreshable {
+                    await v2.loadSettings()
+                }
+            }
+        }
+    }
+
+    private func infoRow(_ row: FirewallInfoRow) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(row.label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(row.value)
+                .font(.subheadline)
+                .textSelection(.enabled)
+        }
+        .padding(.vertical, 2)
     }
 
     private var flatActionTitle: String {
@@ -463,6 +728,61 @@ struct FirewallModuleView: View {
             }
         }
         return action
+    }
+
+    private var forwardDeleteTitle: String {
+        guard let rule = pendingForwardDelete else { return "" }
+        return "\(rule.sourceText) → \(rule.targetText)"
+    }
+
+    private var dockerDeleteTitle: String {
+        guard let policy = pendingDockerDelete else { return "" }
+        return policy.containerName.isEmpty
+            ? policy.hostText
+            : "\(policy.containerName) · \(policy.hostText)"
+    }
+
+    private var whitelistDeleteTitle: String {
+        guard let rule = pendingWhitelistDelete else { return "" }
+        return "\(rule.port)/\(rule.protocolName)"
+    }
+
+    private func deletePendingForward() async {
+        guard let rule = pendingForwardDelete else { return }
+        pendingForwardDelete = nil
+        do {
+            try await v2.removeForwardRule(rule)
+        } catch {
+            actionError = actionMessage(error)
+        }
+    }
+
+    private func deletePendingDocker() async {
+        guard let policy = pendingDockerDelete else { return }
+        pendingDockerDelete = nil
+        do {
+            try await v2.deleteDockerPolicy(policy)
+        } catch {
+            actionError = actionMessage(error)
+        }
+    }
+
+    private func deletePendingWhitelist() async {
+        guard let rule = pendingWhitelistDelete else { return }
+        pendingWhitelistDelete = nil
+        do {
+            try await v2.deleteWhitelist(rule)
+        } catch {
+            actionError = actionMessage(error)
+        }
+    }
+
+    private func actionMessage(_ error: Error) -> String {
+        if let message = (error as? FirewallV2ActionError)?.errorDescription,
+           !message.isEmpty {
+            return message
+        }
+        return translations.get("commonOperationFailed", fallback: "Operation failed")
     }
 
     private func runFlatAction(_ action: String) async {
@@ -503,11 +823,11 @@ struct FirewallModuleView: View {
         case "ips":
             rules.fetchRules(kind: .ip)
         case "forward":
-            await forward.fetch(method: "getFirewallV2Forward")
+            await v2.loadForward()
         case "docker":
-            await docker.fetch(method: "getFirewallV2Docker")
+            await v2.loadDocker()
         case "settings":
-            await settings.fetch(method: "getFirewallV2Settings")
+            await v2.loadSettings()
         default:
             await base.fetch()
         }

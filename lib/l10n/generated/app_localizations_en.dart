@@ -12765,4 +12765,98 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get modelDownloaderRequiresProHint =>
       'The model downloader may be unavailable on community panels; server responses decide the outcome';
+
+  @override
+  String get firewallV2ForwardRules => 'Forwarding rules';
+
+  @override
+  String get firewallV2AddForwardRule => 'Add forward rule';
+
+  @override
+  String get firewallV2DockerPolicies => 'Docker policies';
+
+  @override
+  String get firewallV2AddDockerPolicy => 'Add Docker policy';
+
+  @override
+  String get firewallV2PublishedPorts => 'Published ports';
+
+  @override
+  String get firewallV2PolicyModeLabel => 'Policy mode';
+
+  @override
+  String get firewallV2ModeDenySources => 'Deny listed sources';
+
+  @override
+  String get firewallV2ModeAllowSources => 'Allow listed sources';
+
+  @override
+  String get firewallV2ModeDenyAll => 'Deny all';
+
+  @override
+  String get firewallV2ModeAcceptSources => 'Accept listed sources';
+
+  @override
+  String get firewallV2ModeAcceptAll => 'Accept all';
+
+  @override
+  String get firewallV2HostIPLabel => 'Host IP';
+
+  @override
+  String get firewallV2SourcesLabel => 'Sources';
+
+  @override
+  String get firewallV2SourcesHint =>
+      'Separate multiple addresses with commas.';
+
+  @override
+  String get firewallV2AddWhitelist => 'Add whitelist rule';
+
+  @override
+  String get firewallV2EditWhitelist => 'Edit whitelist rule';
+
+  @override
+  String get firewallV2WhitelistTypeLabel => 'Type';
+
+  @override
+  String get firewallV2WhitelistTypeNone => 'None';
+
+  @override
+  String get firewallV2WhitelistTypePanel => 'Panel';
+
+  @override
+  String get firewallV2WhitelistTypeSSH => 'SSH';
+
+  @override
+  String get firewallV2SwitchBackend => 'Switch backend';
+
+  @override
+  String get firewallV2SubsystemLabel => 'Subsystem';
+
+  @override
+  String get firewallV2BackendLabel => 'Backend';
+
+  @override
+  String get firewallV2SubsystemSystem => 'System';
+
+  @override
+  String get firewallV2SubsystemForwarding => 'Forwarding';
+
+  @override
+  String get firewallV2SubsystemDocker => 'Docker';
+
+  @override
+  String get firewallV2ConfirmBackend => 'Switch backend';
+
+  @override
+  String get firewallV2BackendInstalled => 'Installed';
+
+  @override
+  String get firewallV2BackendUnsupported => 'Unsupported';
+
+  @override
+  String get firewallV2BackendActive => 'Active';
+
+  @override
+  String get firewallV2RequiredFields => 'Fill in the required fields.';
 }

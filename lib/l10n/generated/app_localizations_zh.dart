@@ -12383,4 +12383,97 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get modelDownloaderRequiresProHint =>
       '模型下载器在社区版面板上可能不可用，保存失败时以服务端返回为准';
+
+  @override
+  String get firewallV2ForwardRules => '转发规则';
+
+  @override
+  String get firewallV2AddForwardRule => '新增转发规则';
+
+  @override
+  String get firewallV2DockerPolicies => 'Docker 策略';
+
+  @override
+  String get firewallV2AddDockerPolicy => '新增 Docker 策略';
+
+  @override
+  String get firewallV2PublishedPorts => '发布端口';
+
+  @override
+  String get firewallV2PolicyModeLabel => '策略模式';
+
+  @override
+  String get firewallV2ModeDenySources => '拒绝指定来源';
+
+  @override
+  String get firewallV2ModeAllowSources => '放行指定来源';
+
+  @override
+  String get firewallV2ModeDenyAll => '拒绝全部';
+
+  @override
+  String get firewallV2ModeAcceptSources => '接受指定来源';
+
+  @override
+  String get firewallV2ModeAcceptAll => '接受全部';
+
+  @override
+  String get firewallV2HostIPLabel => '主机 IP';
+
+  @override
+  String get firewallV2SourcesLabel => '来源';
+
+  @override
+  String get firewallV2SourcesHint => '多个地址使用逗号分隔。';
+
+  @override
+  String get firewallV2AddWhitelist => '新增白名单规则';
+
+  @override
+  String get firewallV2EditWhitelist => '编辑白名单规则';
+
+  @override
+  String get firewallV2WhitelistTypeLabel => '类型';
+
+  @override
+  String get firewallV2WhitelistTypeNone => '无';
+
+  @override
+  String get firewallV2WhitelistTypePanel => '面板';
+
+  @override
+  String get firewallV2WhitelistTypeSSH => 'SSH';
+
+  @override
+  String get firewallV2SwitchBackend => '切换后端';
+
+  @override
+  String get firewallV2SubsystemLabel => '子系统';
+
+  @override
+  String get firewallV2BackendLabel => '后端';
+
+  @override
+  String get firewallV2SubsystemSystem => '系统';
+
+  @override
+  String get firewallV2SubsystemForwarding => '转发';
+
+  @override
+  String get firewallV2SubsystemDocker => 'Docker';
+
+  @override
+  String get firewallV2ConfirmBackend => '切换后端';
+
+  @override
+  String get firewallV2BackendInstalled => '已安装';
+
+  @override
+  String get firewallV2BackendUnsupported => '不支持';
+
+  @override
+  String get firewallV2BackendActive => '运行中';
+
+  @override
+  String get firewallV2RequiredFields => '请填写必填字段。';
 }
