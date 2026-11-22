@@ -1,4 +1,5 @@
 import XCTest
+import AppleSharedUI
 @testable import Runner
 
 class FirewallRuleModelTests: XCTestCase {

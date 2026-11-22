@@ -3,22 +3,22 @@ import Foundation
 /// 虚拟机通道返回值的解码结构。
 ///
 /// 状态语义、操作可用性与监控百分比由 Dart 侧通道计算，本层只负责把字段
-/// 转成界面可直接消费的值类型。
+/// 转成界面可直接消费的值类型。iOS 与 macOS 共用同一套结构。
 
-struct VMCapabilities: Hashable {
-    let canStart: Bool
-    let canShutdown: Bool
-    let canReboot: Bool
-    let canSuspend: Bool
-    let canResume: Bool
-    let canDestroy: Bool
-    let canMonitor: Bool
-    let canOpenConsole: Bool
-    let canCreateSnapshot: Bool
-    let canHealthCheck: Bool
-    let canResizeDisk: Bool
+public struct VMCapabilities: Hashable {
+    public let canStart: Bool
+    public let canShutdown: Bool
+    public let canReboot: Bool
+    public let canSuspend: Bool
+    public let canResume: Bool
+    public let canDestroy: Bool
+    public let canMonitor: Bool
+    public let canOpenConsole: Bool
+    public let canCreateSnapshot: Bool
+    public let canHealthCheck: Bool
+    public let canResizeDisk: Bool
 
-    static let none = VMCapabilities(
+    public static let none = VMCapabilities(
         canStart: false,
         canShutdown: false,
         canReboot: false,
@@ -32,7 +32,7 @@ struct VMCapabilities: Hashable {
         canResizeDisk: false
     )
 
-    init(
+    public init(
         canStart: Bool,
         canShutdown: Bool,
         canReboot: Bool,
@@ -58,7 +58,7 @@ struct VMCapabilities: Hashable {
         self.canResizeDisk = canResizeDisk
     }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         self.init(
             canStart: VMValue.bool(payload["canStart"]),
             canShutdown: VMValue.bool(payload["canShutdown"]),
@@ -75,18 +75,18 @@ struct VMCapabilities: Hashable {
     }
 }
 
-struct VMDiskModel: Identifiable, Hashable {
-    let target: String
-    let device: String
-    let capacity: Int
-    let format: String
-    let bus: String
-    let source: String
-    let readOnly: Bool
+public struct VMDiskModel: Identifiable, Hashable {
+    public let target: String
+    public let device: String
+    public let capacity: Int
+    public let format: String
+    public let bus: String
+    public let source: String
+    public let readOnly: Bool
 
-    var id: String { "\(target)-\(device)-\(source)" }
+    public var id: String { "\(target)-\(device)-\(source)" }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         target = VMValue.string(payload["target"])
         device = VMValue.string(payload["device"])
         capacity = VMValue.int(payload["capacity"])
@@ -97,16 +97,16 @@ struct VMDiskModel: Identifiable, Hashable {
     }
 }
 
-struct VMInterfaceModel: Identifiable, Hashable {
-    let type: String
-    let source: String
-    let model: String
-    let mac: String
-    let ip: String
+public struct VMInterfaceModel: Identifiable, Hashable {
+    public let type: String
+    public let source: String
+    public let model: String
+    public let mac: String
+    public let ip: String
 
-    var id: String { "\(mac)-\(source)-\(ip)" }
+    public var id: String { "\(mac)-\(source)-\(ip)" }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         type = VMValue.string(payload["type"])
         source = VMValue.string(payload["source"])
         model = VMValue.string(payload["model"])
@@ -115,45 +115,45 @@ struct VMInterfaceModel: Identifiable, Hashable {
     }
 }
 
-struct VMGraphicsModel: Hashable {
-    let type: String
-    let port: String
-    let listen: String
+public struct VMGraphicsModel: Hashable {
+    public let type: String
+    public let port: String
+    public let listen: String
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         type = VMValue.string(payload["type"])
         port = VMValue.string(payload["port"])
         listen = VMValue.string(payload["listen"])
     }
 }
 
-struct VMInstanceModel: Identifiable, Hashable {
-    let name: String
-    let serverId: Int
-    let uuid: String
-    let status: String
-    let statusKey: String
-    let statusTone: String
-    let cpu: Int
-    let memoryMiB: Int
-    let diskSize: Int
-    let diskBus: String
-    let diskPath: String
-    let storagePool: String
-    let network: String
-    let bootOrder: String
-    let autoStart: Bool
-    let description: String
-    let graphicsType: String
-    let capabilities: VMCapabilities
-    let disks: [VMDiskModel]
-    let interfaces: [VMInterfaceModel]
-    let isoPaths: [String]
-    let graphics: VMGraphicsModel?
+public struct VMInstanceModel: Identifiable, Hashable {
+    public let name: String
+    public let serverId: Int
+    public let uuid: String
+    public let status: String
+    public let statusKey: String
+    public let statusTone: String
+    public let cpu: Int
+    public let memoryMiB: Int
+    public let diskSize: Int
+    public let diskBus: String
+    public let diskPath: String
+    public let storagePool: String
+    public let network: String
+    public let bootOrder: String
+    public let autoStart: Bool
+    public let description: String
+    public let graphicsType: String
+    public let capabilities: VMCapabilities
+    public let disks: [VMDiskModel]
+    public let interfaces: [VMInterfaceModel]
+    public let isoPaths: [String]
+    public let graphics: VMGraphicsModel?
 
-    var id: String { name }
+    public var id: String { name }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         name = VMValue.string(payload["name"])
         serverId = VMValue.int(payload["id"])
         uuid = VMValue.string(payload["uuid"])
@@ -183,21 +183,21 @@ struct VMInstanceModel: Identifiable, Hashable {
     }
 }
 
-struct VMEnvironmentModel {
-    let arch: String
-    let archSupported: Bool
-    let ready: Bool
-    let helperExist: Bool
-    let helperMessage: String
-    let kvmExist: Bool
-    let kvmMessage: String
-    let libvirtExist: Bool
-    let libvirtActive: Bool
-    let libvirtMessage: String
-    let storageExist: Bool
-    let storageMessage: String
+public struct VMEnvironmentModel {
+    public let arch: String
+    public let archSupported: Bool
+    public let ready: Bool
+    public let helperExist: Bool
+    public let helperMessage: String
+    public let kvmExist: Bool
+    public let kvmMessage: String
+    public let libvirtExist: Bool
+    public let libvirtActive: Bool
+    public let libvirtMessage: String
+    public let storageExist: Bool
+    public let storageMessage: String
 
-    static let empty = VMEnvironmentModel(
+    public static let empty = VMEnvironmentModel(
         arch: "",
         archSupported: false,
         ready: false,
@@ -212,7 +212,7 @@ struct VMEnvironmentModel {
         storageMessage: ""
     )
 
-    init(
+    public init(
         arch: String,
         archSupported: Bool,
         ready: Bool,
@@ -240,7 +240,7 @@ struct VMEnvironmentModel {
         self.storageMessage = storageMessage
     }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         arch = VMValue.string(payload["arch"])
         archSupported = VMValue.bool(payload["archSupported"])
         ready = VMValue.bool(payload["ready"])
@@ -256,18 +256,18 @@ struct VMEnvironmentModel {
     }
 }
 
-struct VMSnapshotModel: Identifiable, Hashable {
-    let name: String
-    let description: String
-    let createdAtMillis: Int
-    let state: String
-    let size: Int
-    let current: Bool
-    let canRecover: Bool
+public struct VMSnapshotModel: Identifiable, Hashable {
+    public let name: String
+    public let description: String
+    public let createdAtMillis: Int
+    public let state: String
+    public let size: Int
+    public let current: Bool
+    public let canRecover: Bool
 
-    var id: String { name }
+    public var id: String { name }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         name = VMValue.string(payload["name"])
         description = VMValue.string(payload["description"])
         createdAtMillis = VMValue.int(payload["createdAtMillis"])
@@ -278,31 +278,31 @@ struct VMSnapshotModel: Identifiable, Hashable {
     }
 }
 
-struct VMSnapshotResult {
-    let canCreate: Bool
-    let canRecover: Bool
-    let items: [VMSnapshotModel]
+public struct VMSnapshotResult {
+    public let canCreate: Bool
+    public let canRecover: Bool
+    public let items: [VMSnapshotModel]
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         canCreate = VMValue.bool(payload["canCreate"])
         canRecover = VMValue.bool(payload["canRecover"])
         items = (payload["items"] as? [[String: Any]] ?? []).map(VMSnapshotModel.init)
     }
 }
 
-struct VMIsoModel: Identifiable, Hashable {
-    let isoId: Int
-    let type: String
-    let name: String
-    let path: String
-    let isExist: Bool
-    let size: Int
-    let status: String
-    let error: String
+public struct VMIsoModel: Identifiable, Hashable {
+    public let isoId: Int
+    public let type: String
+    public let name: String
+    public let path: String
+    public let isExist: Bool
+    public let size: Int
+    public let status: String
+    public let error: String
 
-    var id: Int { isoId }
+    public var id: Int { isoId }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         isoId = VMValue.int(payload["id"])
         type = VMValue.string(payload["type"])
         name = VMValue.string(payload["name"])
@@ -314,22 +314,22 @@ struct VMIsoModel: Identifiable, Hashable {
     }
 }
 
-struct VMTemplateModel: Identifiable, Hashable {
-    let templateId: Int
-    let name: String
-    let sourceVM: String
-    let cpu: Int
-    let memoryMiB: Int
-    let diskSize: Int
-    let storagePool: String
-    let isExist: Bool
-    let size: Int
-    let status: String
-    let error: String
+public struct VMTemplateModel: Identifiable, Hashable {
+    public let templateId: Int
+    public let name: String
+    public let sourceVM: String
+    public let cpu: Int
+    public let memoryMiB: Int
+    public let diskSize: Int
+    public let storagePool: String
+    public let isExist: Bool
+    public let size: Int
+    public let status: String
+    public let error: String
 
-    var id: Int { templateId }
+    public var id: Int { templateId }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         templateId = VMValue.int(payload["id"])
         name = VMValue.string(payload["name"])
         sourceVM = VMValue.string(payload["sourceVM"])
@@ -344,15 +344,15 @@ struct VMTemplateModel: Identifiable, Hashable {
     }
 }
 
-struct VMNetworkUsageModel: Identifiable, Hashable {
-    let ip: String
-    let vmName: String
-    let mac: String
-    let source: String
+public struct VMNetworkUsageModel: Identifiable, Hashable {
+    public let ip: String
+    public let vmName: String
+    public let mac: String
+    public let source: String
 
-    var id: String { "\(ip)-\(mac)-\(vmName)" }
+    public var id: String { "\(ip)-\(mac)-\(vmName)" }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         ip = VMValue.string(payload["ip"])
         vmName = VMValue.string(payload["vmName"])
         mac = VMValue.string(payload["mac"])
@@ -360,23 +360,23 @@ struct VMNetworkUsageModel: Identifiable, Hashable {
     }
 }
 
-struct VMNetworkModel: Identifiable, Hashable {
-    let networkId: Int
-    let name: String
-    let type: String
-    let bridgeName: String
-    let cidr: String
-    let gateway: String
-    let autoStart: Bool
-    let status: String
-    let error: String
-    let vmCount: Int
-    let registered: Bool
-    let usedIPs: [VMNetworkUsageModel]
+public struct VMNetworkModel: Identifiable, Hashable {
+    public let networkId: Int
+    public let name: String
+    public let type: String
+    public let bridgeName: String
+    public let cidr: String
+    public let gateway: String
+    public let autoStart: Bool
+    public let status: String
+    public let error: String
+    public let vmCount: Int
+    public let registered: Bool
+    public let usedIPs: [VMNetworkUsageModel]
 
-    var id: Int { networkId }
+    public var id: Int { networkId }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         networkId = VMValue.int(payload["id"])
         name = VMValue.string(payload["name"])
         type = VMValue.string(payload["type"])
@@ -393,22 +393,22 @@ struct VMNetworkModel: Identifiable, Hashable {
     }
 }
 
-struct VMStorageModel: Identifiable, Hashable {
-    let storageId: Int
-    let name: String
-    let type: String
-    let path: String
-    let autoStart: Bool
-    let status: String
-    let error: String
-    let capacity: Int
-    let available: Int
-    let usedPercent: Double
-    let vmCount: Int
+public struct VMStorageModel: Identifiable, Hashable {
+    public let storageId: Int
+    public let name: String
+    public let type: String
+    public let path: String
+    public let autoStart: Bool
+    public let status: String
+    public let error: String
+    public let capacity: Int
+    public let available: Int
+    public let usedPercent: Double
+    public let vmCount: Int
 
-    var id: Int { storageId }
+    public var id: Int { storageId }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         storageId = VMValue.int(payload["id"])
         name = VMValue.string(payload["name"])
         type = VMValue.string(payload["type"])
@@ -423,16 +423,16 @@ struct VMStorageModel: Identifiable, Hashable {
     }
 }
 
-struct VMHealthItemModel: Identifiable, Hashable {
-    let level: String
-    let check: String
-    let reason: String
-    let detail: String
-    let fixCommand: String
+public struct VMHealthItemModel: Identifiable, Hashable {
+    public let level: String
+    public let check: String
+    public let reason: String
+    public let detail: String
+    public let fixCommand: String
 
-    var id: String { "\(level)-\(check)-\(reason)" }
+    public var id: String { "\(level)-\(check)-\(reason)" }
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         level = VMValue.string(payload["level"])
         check = VMValue.string(payload["check"])
         reason = VMValue.string(payload["reason"])
@@ -441,13 +441,13 @@ struct VMHealthItemModel: Identifiable, Hashable {
     }
 }
 
-struct VMHealthModel {
-    let pass: Int
-    let warn: Int
-    let fail: Int
-    let items: [VMHealthItemModel]
+public struct VMHealthModel {
+    public let pass: Int
+    public let warn: Int
+    public let fail: Int
+    public let items: [VMHealthItemModel]
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         pass = VMValue.int(payload["pass"])
         warn = VMValue.int(payload["warn"])
         fail = VMValue.int(payload["fail"])
@@ -456,15 +456,15 @@ struct VMHealthModel {
     }
 }
 
-struct VMStatsSample {
-    let cpuPercent: Double
-    let memoryPercent: Double
-    let diskBytesPerSecond: Double
-    let networkBytesPerSecond: Double
-    let hasDelta: Bool
-    let isRunning: Bool
+public struct VMStatsSample {
+    public let cpuPercent: Double
+    public let memoryPercent: Double
+    public let diskBytesPerSecond: Double
+    public let networkBytesPerSecond: Double
+    public let hasDelta: Bool
+    public let isRunning: Bool
 
-    init(payload: [String: Any]) {
+    public init(payload: [String: Any]) {
         cpuPercent = VMValue.double(payload["cpuPercent"])
         memoryPercent = VMValue.double(payload["memoryPercent"])
         diskBytesPerSecond = VMValue.double(payload["diskBytesPerSecond"])
@@ -500,28 +500,92 @@ enum VMValue {
     }
 }
 
-enum VMFormatting {
-    static func bytes(_ value: Int) -> String {
+public enum VMFormatting {
+    public static func bytes(_ value: Int) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useAll]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: Int64(value))
     }
 
-    static func mib(_ value: Int) -> String {
+    public static func mib(_ value: Int) -> String {
         bytes(value * 1024 * 1024)
     }
 
-    static func rate(_ bytesPerSecond: Double) -> String {
+    public static func rate(_ bytesPerSecond: Double) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useKB, .useMB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: Int64(bytesPerSecond)) + "/s"
     }
 
-    static func timestamp(_ millis: Int) -> String {
+    public static func timestamp(_ millis: Int) -> String {
         guard millis > 0 else { return "--" }
         let date = Date(timeIntervalSince1970: Double(millis) / 1000)
         return date.formatted(date: .abbreviated, time: .shortened)
+    }
+}
+
+/// 电源操作：由通道给出的能力标记决定可用项，文案键与图标两端共用。
+public struct VMPowerAction: Identifiable, Equatable {
+    public let id: String
+    public let titleKey: String
+    public let fallback: String
+    public let icon: String
+    public let destructive: Bool
+
+    public init(
+        id: String,
+        titleKey: String,
+        fallback: String,
+        icon: String,
+        destructive: Bool = false
+    ) {
+        self.id = id
+        self.titleKey = titleKey
+        self.fallback = fallback
+        self.icon = icon
+        self.destructive = destructive
+    }
+
+    public static func available(_ capabilities: VMCapabilities) -> [VMPowerAction] {
+        var actions: [VMPowerAction] = []
+        if capabilities.canStart {
+            actions.append(VMPowerAction(
+                id: "start", titleKey: "vmInstanceActionStart",
+                fallback: "Start", icon: "play.fill"
+            ))
+        }
+        if capabilities.canShutdown {
+            actions.append(VMPowerAction(
+                id: "shutdown", titleKey: "vmInstanceActionShutdown",
+                fallback: "Shut Down", icon: "power", destructive: true
+            ))
+        }
+        if capabilities.canReboot {
+            actions.append(VMPowerAction(
+                id: "reboot", titleKey: "vmInstanceActionReboot",
+                fallback: "Reboot", icon: "restart"
+            ))
+        }
+        if capabilities.canSuspend {
+            actions.append(VMPowerAction(
+                id: "suspend", titleKey: "vmInstanceActionSuspend",
+                fallback: "Suspend", icon: "pause.fill"
+            ))
+        }
+        if capabilities.canResume {
+            actions.append(VMPowerAction(
+                id: "resume", titleKey: "vmInstanceActionResume",
+                fallback: "Resume", icon: "play.circle"
+            ))
+        }
+        if capabilities.canDestroy {
+            actions.append(VMPowerAction(
+                id: "destroy", titleKey: "vmInstanceActionDestroy",
+                fallback: "Force Off", icon: "bolt.slash.fill", destructive: true
+            ))
+        }
+        return actions
     }
 }

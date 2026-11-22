@@ -73,7 +73,6 @@
 		B10S00010000000000000037 /* WebsiteConfigViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000037 /* WebsiteConfigViews.swift */; };
 		B10S00010000000000000038 /* WebsiteSecurityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000038 /* WebsiteSecurityViews.swift */; };
 		B10S00010000000000000039 /* WebsiteCertificatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000039 /* WebsiteCertificatesView.swift */; };
-		B10S00010000000000000047 /* VMChannelModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000047 /* VMChannelModels.swift */; };
 		B10S00010000000000000048 /* VirtualMachinesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000048 /* VirtualMachinesViewModel.swift */; };
 		B10S00010000000000000049 /* VirtualMachinesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000049 /* VirtualMachinesModuleView.swift */; };
 		B10S0001000000000000004A /* VMResourceSectionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000004A /* VMResourceSectionViews.swift */; };
@@ -191,7 +190,6 @@
 		F10S00010000000000000039 /* WebsiteCertificatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteCertificatesView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000045 /* OperationNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationNotice.swift; sourceTree = "<group>"; };
 		F10S00010000000000000046 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
-		F10S00010000000000000047 /* VMChannelModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMChannelModels.swift; sourceTree = "<group>"; };
 		F10S00010000000000000048 /* VirtualMachinesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachinesViewModel.swift; sourceTree = "<group>"; };
 		F10S00010000000000000049 /* VirtualMachinesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachinesModuleView.swift; sourceTree = "<group>"; };
 		F10S0001000000000000004A /* VMResourceSectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMResourceSectionViews.swift; sourceTree = "<group>"; };
@@ -518,7 +516,6 @@
 		G10S00010000000000000014 /* VirtualMachines */ = {
 			isa = PBXGroup;
 			children = (
-				F10S00010000000000000047 /* VMChannelModels.swift */,
 				F10S00010000000000000048 /* VirtualMachinesViewModel.swift */,
 				F10S00010000000000000049 /* VirtualMachinesModuleView.swift */,
 				F10S0001000000000000004A /* VMResourceSectionViews.swift */,
@@ -831,7 +828,6 @@
 				B10S00010000000000000042 /* ContainerImageOpsSheets.swift in Sources */,
 				B10S00010000000000000043 /* ContainerRepoViews.swift in Sources */,
 				B10S00010000000000000044 /* ContainerFilesView.swift in Sources */,
-				B10S00010000000000000047 /* VMChannelModels.swift in Sources */,
 				B10S00010000000000000048 /* VirtualMachinesViewModel.swift in Sources */,
 				B10S00010000000000000049 /* VirtualMachinesModuleView.swift in Sources */,
 				B10S0001000000000000004A /* VMResourceSectionViews.swift in Sources */,

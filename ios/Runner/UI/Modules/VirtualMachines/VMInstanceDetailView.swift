@@ -137,13 +137,13 @@ struct VMInstanceDetailView: View {
                 )
             }
 
-            if !powerActions(instance).isEmpty {
+            if !VMPowerAction.available(instance.capabilities).isEmpty {
                 Section(translations.get("vmInstancePowerSectionTitle", fallback: "Power")) {
                     LazyVGrid(
                         columns: [GridItem(.adaptive(minimum: 140), spacing: 10)],
                         spacing: 10
                     ) {
-                        ForEach(powerActions(instance)) { action in
+                        ForEach(VMPowerAction.available(instance.capabilities)) { action in
                             Button {
                                 pendingAction = action
                             } label: {
@@ -266,36 +266,6 @@ struct VMInstanceDetailView: View {
         }
     }
 
-    private func powerActions(_ instance: VMInstanceModel) -> [VMPowerAction] {
-        var actions: [VMPowerAction] = []
-        if instance.capabilities.canStart {
-            actions.append(VMPowerAction(id: "start", titleKey: "vmInstanceActionStart",
-                                         fallback: "Start", icon: "play.fill"))
-        }
-        if instance.capabilities.canShutdown {
-            actions.append(VMPowerAction(id: "shutdown", titleKey: "vmInstanceActionShutdown",
-                                         fallback: "Shut Down", icon: "power", destructive: true))
-        }
-        if instance.capabilities.canReboot {
-            actions.append(VMPowerAction(id: "reboot", titleKey: "vmInstanceActionReboot",
-                                         fallback: "Reboot", icon: "restart"))
-        }
-        if instance.capabilities.canSuspend {
-            actions.append(VMPowerAction(id: "suspend", titleKey: "vmInstanceActionSuspend",
-                                         fallback: "Suspend", icon: "pause.fill"))
-        }
-        if instance.capabilities.canResume {
-            actions.append(VMPowerAction(id: "resume", titleKey: "vmInstanceActionResume",
-                                         fallback: "Resume", icon: "play.circle"))
-        }
-        if instance.capabilities.canDestroy {
-            actions.append(VMPowerAction(id: "destroy", titleKey: "vmInstanceActionDestroy",
-                                         fallback: "Force Off", icon: "bolt.slash.fill",
-                                         destructive: true))
-        }
-        return actions
-    }
-
     private func powerTitle(_ action: VMPowerAction) -> String {
         translations.get(action.titleKey, fallback: action.fallback)
     }
@@ -325,14 +295,6 @@ struct VMInstanceDetailView: View {
             }
         }
     }
-}
-
-struct VMPowerAction: Identifiable {
-    let id: String
-    let titleKey: String
-    let fallback: String
-    let icon: String
-    var destructive = false
 }
 
 enum VMDetailSheet: String, Identifiable {
