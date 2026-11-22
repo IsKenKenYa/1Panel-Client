@@ -3,18 +3,22 @@ import AppleSharedUI
 
 enum ContainerSection: String, CaseIterable, Identifiable {
     case containers
-    case compose
+    case images
     case networks
     case volumes
+    case compose
+    case repositories
 
     var id: String { rawValue }
 
     var titleKey: String {
         switch self {
         case .containers: return "containerTabContainers"
-        case .compose: return "orchestrationCompose"
+        case .images: return "containerTabImages"
         case .networks: return "containerTabNetworks"
         case .volumes: return "containerTabVolumes"
+        case .compose: return "orchestrationCompose"
+        case .repositories: return "containerTabRepositories"
         }
     }
 }
@@ -29,6 +33,7 @@ struct ContainersView: View {
     @State private var containerToDelete: ContainerModel?
     @State private var logsContainer: ContainerModel?
     @State private var detailContainer: ContainerModel?
+    @State private var showCreateSheet = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -48,19 +53,23 @@ struct ContainersView: View {
                 switch section {
                 case .containers:
                     containersContent
-                case .compose:
-                    ContainerComposeSectionView()
+                case .images:
+                    ContainerImagesSectionView()
                 case .networks:
                     ContainerNetworksSectionView()
                 case .volumes:
                     ContainerVolumesSectionView()
+                case .compose:
+                    ContainerComposeSectionView()
+                case .repositories:
+                    ContainerReposSectionView()
                 }
             }
         }
         .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
         .toolbar {
             if section == .containers {
-                ToolbarItem(placement: .automatic) {
+                ToolbarItemGroup(placement: .automatic) {
                     if viewModel.isBusy {
                         ProgressView().controlSize(.small)
                     } else {
@@ -71,6 +80,13 @@ struct ContainersView: View {
                         }
                         .help(translations.get("commonRefresh", fallback: "Refresh"))
                     }
+                    Button {
+                        showCreateSheet = true
+                    } label: {
+                        Label(translations.get("containerCreate", fallback: "Create Container"),
+                              systemImage: "plus")
+                    }
+                    .help(translations.get("containerCreate", fallback: "Create Container"))
                 }
             }
         }
@@ -108,6 +124,12 @@ struct ContainersView: View {
             ContainerDetailView(viewModel: viewModel, container: container)
                 .frame(minWidth: 820, minHeight: 620)
                 .id("detail-\(container.id)")
+        }
+        .sheet(isPresented: $showCreateSheet) {
+            ContainerCreateSheet {
+                Task { await viewModel.fetchContainers() }
+            }
+            .environmentObject(translations)
         }
         .task { await viewModel.fetchContainers() }
     }
@@ -200,9 +222,11 @@ struct ContainersView: View {
     private func fallbackTitle(_ section: ContainerSection) -> String {
         switch section {
         case .containers: return "Containers"
-        case .compose: return "Compose"
+        case .images: return "Images"
         case .networks: return "Networks"
         case .volumes: return "Volumes"
+        case .compose: return "Compose"
+        case .repositories: return "Repositories"
         }
     }
 }

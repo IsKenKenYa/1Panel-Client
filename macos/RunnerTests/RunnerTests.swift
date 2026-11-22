@@ -395,6 +395,30 @@ class MacContainerDetailModelTests: XCTestCase {
     XCTAssertFalse(volume.createdAt.isEmpty)
   }
 
+  func testImageDisplayNameUsesFirstTag() {
+    let image = ContainerImageRow(
+      id: "sha256:abc",
+      tags: ["nginx:latest", "nginx:1.27"],
+      size: 1024,
+      createdAt: "2026-11-23 00:00:00",
+      isUsed: true
+    )
+
+    XCTAssertEqual(image.displayName, "nginx:latest")
+  }
+
+  func testImageDisplayNameFallsBackToShortDigest() {
+    let image = ContainerImageRow(
+      id: "sha256:1234567890abcdef1234567890abcdef",
+      tags: [],
+      size: 0,
+      createdAt: "",
+      isUsed: false
+    )
+
+    XCTAssertEqual(image.displayName, "sha256:1234567890ab")
+  }
+
   func testComposeDetailLabelsResolve() {
     let translations = TranslationsManager.shared
     for key in [
