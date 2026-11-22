@@ -467,6 +467,21 @@ class TestRunner {
     }
 
     printInfo('发现 ${uiTests.length} 个 UI/Widget 测试文件');
+
+    // 单进程串行跑：一次依赖解析加一次编译，比逐文件起进程快数倍。
+    // 并发会引入假失败（用例共享静态状态），因此固定 -j 1。
+    printInfo('批量执行（单进程串行）');
+    final exitCode = await runCommand(
+      flutterCommand,
+      ['test', ...uiTests, '--reporter=compact', '-j', '1'],
+    );
+    if (exitCode == 0) {
+      printSuccess('测试通过');
+      return true;
+    }
+
+    // 失败时逐文件重跑，定位具体套件并保留逐条结果。
+    printError('批量执行失败，改为逐文件定位');
     var failures = 0;
     for (final testFile in uiTests) {
       final name = _fileName(testFile);
