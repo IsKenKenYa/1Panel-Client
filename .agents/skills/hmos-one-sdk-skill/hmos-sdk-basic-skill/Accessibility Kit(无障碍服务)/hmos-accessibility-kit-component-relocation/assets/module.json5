@@ -1,0 +1,48 @@
+{
+  "module": {
+    "name": "drag_accessibility_example",
+    "type": "entry",
+    "description": "控件位置调整无障碍播报示例应用",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.ACCESSIBILITY",
+        "reason": "用于实现控件拖拽过程中的无障碍主动播报功能",
+        "usedScene": {
+          "abilities": [
+            "DragAnnounceExample"
+          ],
+          "when": "inuse"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "name": "DragAnnounceExample",
+        "srcEntry": "./ets/drag-announce-example.ets",
+        "description": "控件位置调整无障碍播报示例",
+        "icon": "$media:icon",
+        "label": "$string:entry_label",
+        "startWindowIcon": "$media:startWindowIcon",
+        "startWindowBackground": "$color:startWindowBackground",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

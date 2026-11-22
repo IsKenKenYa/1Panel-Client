@@ -1,0 +1,10 @@
+{
+  //  看护：官方样例常态写法（无引号键 + 注释 + 尾逗号）
+  app: {
+    products: [{ name: "default", runtimeOS: "OpenHarmony", }],
+  },
+  modules: [
+    { name: "entry", srcPath: "./entry" },
+    { name: "feature", srcPath: "./feature" },
+  ]
+}

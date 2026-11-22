@@ -1,0 +1,1964 @@
+{
+  "version": "1.0",
+  "total_documents": 262,
+  "categories": {
+    "accessibility": 16,
+    "animation": 20,
+    "common-types": 34,
+    "dialog": 8,
+    "gesture-drag": 23,
+    "guide": 32,
+    "layout": 14,
+    "node": 38,
+    "render": 9,
+    "text": 29,
+    "window-display": 23,
+    "xcomponent": 16
+  },
+  "documents": [
+    {
+      "id": "doc_0000",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityactionarguments.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityactionarguments.md",
+      "title": "ArkUI_AccessibilityActionArguments",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0001",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityelementinfo.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityelementinfo.md",
+      "title": "ArkUI_AccessibilityElementInfo",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0002",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityelementinfolist.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityelementinfolist.md",
+      "title": "ArkUI_AccessibilityElementInfoList",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0003",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityeventinfo.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityeventinfo.md",
+      "title": "ArkUI_AccessibilityEventInfo",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0004",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityprovider.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityprovider.md",
+      "title": "ArkUI_AccessibilityProvider",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0005",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityprovidercallbacks.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityprovidercallbacks.md",
+      "title": "ArkUI_AccessibilityProviderCallbacks",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0006",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibilityprovidercallbackswithinstance.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibilityprovidercallbackswithinstance.md",
+      "title": "ArkUI_AccessibilityProviderCallbacksWithInstance",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0007",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessibleaction.md",
+      "filename": "capi-arkui-accessibility-arkui-accessibleaction.md",
+      "title": "ArkUI_AccessibleAction",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0008",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessiblegridinfo.md",
+      "filename": "capi-arkui-accessibility-arkui-accessiblegridinfo.md",
+      "title": "ArkUI_AccessibleGridInfo",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0009",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessiblegriditeminfo.md",
+      "filename": "capi-arkui-accessibility-arkui-accessiblegriditeminfo.md",
+      "title": "ArkUI_AccessibleGridItemInfo",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0010",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessiblerangeinfo.md",
+      "filename": "capi-arkui-accessibility-arkui-accessiblerangeinfo.md",
+      "title": "ArkUI_AccessibleRangeInfo",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0011",
+      "path": "accessibility/capi-arkui-accessibility-arkui-accessiblerect.md",
+      "filename": "capi-arkui-accessibility-arkui-accessiblerect.md",
+      "title": "ArkUI_AccessibleRect",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0012",
+      "path": "accessibility/capi-arkui-accessibility.md",
+      "filename": "capi-arkui-accessibility.md",
+      "title": "ArkUI_Accessibility",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0262",
+      "path": "accessibility/capi-arkui-nativemodule-arkui-accessibilitystate.md",
+      "filename": "capi-arkui-nativemodule-arkui-accessibilitystate.md",
+      "title": "ArkUI_AccessibilityState",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0263",
+      "path": "accessibility/capi-arkui-nativemodule-arkui-accessibilityvalue.md",
+      "filename": "capi-arkui-nativemodule-arkui-accessibilityvalue.md",
+      "title": "ArkUI_AccessibilityValue",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0013",
+      "path": "accessibility/capi-native-interface-accessibility-h.md",
+      "filename": "capi-native-interface-accessibility-h.md",
+      "title": "native_interface_accessibility.h",
+      "category": "accessibility"
+    },
+    {
+      "id": "doc_0264",
+      "path": "animation/capi-arkui-nativemodule-arkui-animatecompletecallback.md",
+      "filename": "capi-arkui-nativemodule-arkui-animatecompletecallback.md",
+      "title": "ArkUI_AnimateCompleteCallback",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0265",
+      "path": "animation/capi-arkui-nativemodule-arkui-animateoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-animateoption.md",
+      "title": "ArkUI_AnimateOption",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0266",
+      "path": "animation/capi-arkui-nativemodule-arkui-animator8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-animator8h.md",
+      "title": "ArkUI_Animator*",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0267",
+      "path": "animation/capi-arkui-nativemodule-arkui-animatorevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-animatorevent.md",
+      "title": "ArkUI_AnimatorEvent",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0268",
+      "path": "animation/capi-arkui-nativemodule-arkui-animatoronframeevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-animatoronframeevent.md",
+      "title": "ArkUI_AnimatorOnFrameEvent",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0269",
+      "path": "animation/capi-arkui-nativemodule-arkui-animatoroption.md",
+      "filename": "capi-arkui-nativemodule-arkui-animatoroption.md",
+      "title": "ArkUI_AnimatorOption",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0270",
+      "path": "animation/capi-arkui-nativemodule-arkui-coloranimatablepropertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-coloranimatablepropertyhandle.md",
+      "title": "ArkUI_ColorAnimatablePropertyHandle",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0271",
+      "path": "animation/capi-arkui-nativemodule-arkui-contenttransitioneffect.md",
+      "filename": "capi-arkui-nativemodule-arkui-contenttransitioneffect.md",
+      "title": "ArkUI_ContentTransitionEffect",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0272",
+      "path": "animation/capi-arkui-nativemodule-arkui-curve.md",
+      "filename": "capi-arkui-nativemodule-arkui-curve.md",
+      "title": "ArkUI_Curve",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0273",
+      "path": "animation/capi-arkui-nativemodule-arkui-curve8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-curve8h.md",
+      "title": "ArkUI_Curve*",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0274",
+      "path": "animation/capi-arkui-nativemodule-arkui-drawabledescriptoranimationcontroller.md",
+      "filename": "capi-arkui-nativemodule-arkui-drawabledescriptoranimationcontroller.md",
+      "title": "ArkUI_DrawableDescriptor_AnimationController",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0275",
+      "path": "animation/capi-arkui-nativemodule-arkui-expectedframeraterange.md",
+      "filename": "capi-arkui-nativemodule-arkui-expectedframeraterange.md",
+      "title": "ArkUI_ExpectedFrameRateRange",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0276",
+      "path": "animation/capi-arkui-nativemodule-arkui-floatanimatablepropertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-floatanimatablepropertyhandle.md",
+      "title": "ArkUI_FloatAnimatablePropertyHandle",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0277",
+      "path": "animation/capi-arkui-nativemodule-arkui-imageanimatorframeinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-imageanimatorframeinfo.md",
+      "title": "ArkUI_ImageAnimatorFrameInfo",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0278",
+      "path": "animation/capi-arkui-nativemodule-arkui-keyframeanimateoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-keyframeanimateoption.md",
+      "title": "ArkUI_KeyframeAnimateOption",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0279",
+      "path": "animation/capi-arkui-nativemodule-arkui-motionpathoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-motionpathoptions.md",
+      "title": "ArkUI_MotionPathOptions",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0280",
+      "path": "animation/capi-arkui-nativemodule-arkui-nativeanimateapi-1.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativeanimateapi-1.md",
+      "title": "ArkUI_NativeAnimateAPI_1",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0281",
+      "path": "animation/capi-arkui-nativemodule-arkui-transitioneffect.md",
+      "filename": "capi-arkui-nativemodule-arkui-transitioneffect.md",
+      "title": "ArkUI_TransitionEffect",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0282",
+      "path": "animation/capi-arkui-nativemodule-arkui-vector2animatablepropertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-vector2animatablepropertyhandle.md",
+      "title": "ArkUI_Vector2AnimatablePropertyHandle",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0283",
+      "path": "animation/capi-native-animate-h.md",
+      "filename": "capi-native-animate-h.md",
+      "title": "native_animate.h",
+      "category": "animation"
+    },
+    {
+      "id": "doc_0284",
+      "path": "common-types/capi-arkui-eventmodule-arkui-uiinputevent.md",
+      "filename": "capi-arkui-eventmodule-arkui-uiinputevent.md",
+      "title": "ArkUI_UIInputEvent",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0285",
+      "path": "common-types/capi-arkui-eventmodule.md",
+      "filename": "capi-arkui-eventmodule.md",
+      "title": "ArkUI_EventModule",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0286",
+      "path": "common-types/capi-arkui-nativemodule-abilitybase-want.md",
+      "filename": "capi-arkui-nativemodule-abilitybase-want.md",
+      "title": "AbilityBase_Want",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0287",
+      "path": "common-types/capi-arkui-nativemodule-arkui-activechildreninfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-activechildreninfo.md",
+      "title": "ArkUI_ActiveChildrenInfo",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0288",
+      "path": "common-types/capi-arkui-nativemodule-arkui-attributeitem.md",
+      "filename": "capi-arkui-nativemodule-arkui-attributeitem.md",
+      "title": "ArkUI_AttributeItem",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0289",
+      "path": "common-types/capi-arkui-nativemodule-arkui-coastingaxisevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-coastingaxisevent.md",
+      "title": "ArkUI_CoastingAxisEvent",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0290",
+      "path": "common-types/capi-arkui-nativemodule-arkui-colorpropertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-colorpropertyhandle.md",
+      "title": "ArkUI_ColorPropertyHandle",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0291",
+      "path": "common-types/capi-arkui-nativemodule-arkui-crosslanguageoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-crosslanguageoption.md",
+      "title": "ArkUI_CrossLanguageOption",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0292",
+      "path": "common-types/capi-arkui-nativemodule-arkui-customproperty.md",
+      "filename": "capi-arkui-nativemodule-arkui-customproperty.md",
+      "title": "ArkUI_CustomProperty",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0293",
+      "path": "common-types/capi-arkui-nativemodule-arkui-embeddedcomponentoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-embeddedcomponentoption.md",
+      "title": "ArkUI_EmbeddedComponentOption",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0294",
+      "path": "common-types/capi-arkui-nativemodule-arkui-floatpropertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-floatpropertyhandle.md",
+      "title": "ArkUI_FloatPropertyHandle",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0295",
+      "path": "common-types/capi-arkui-nativemodule-arkui-intoffset.md",
+      "filename": "capi-arkui-nativemodule-arkui-intoffset.md",
+      "title": "ArkUI_IntOffset",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0296",
+      "path": "common-types/capi-arkui-nativemodule-arkui-intsize.md",
+      "filename": "capi-arkui-nativemodule-arkui-intsize.md",
+      "title": "ArkUI_IntSize",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0297",
+      "path": "common-types/capi-arkui-nativemodule-arkui-numbervalue.md",
+      "filename": "capi-arkui-nativemodule-arkui-numbervalue.md",
+      "title": "ArkUI_NumberValue",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0298",
+      "path": "common-types/capi-arkui-nativemodule-arkui-pixelroundpolicy.md",
+      "filename": "capi-arkui-nativemodule-arkui-pixelroundpolicy.md",
+      "title": "ArkUI_PixelRoundPolicy",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0299",
+      "path": "common-types/capi-arkui-nativemodule-arkui-progresslinearstyleoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-progresslinearstyleoption.md",
+      "title": "ArkUI_ProgressLinearStyleOption",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0300",
+      "path": "common-types/capi-arkui-nativemodule-arkui-rect.md",
+      "filename": "capi-arkui-nativemodule-arkui-rect.md",
+      "title": "ArkUI_Rect",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0301",
+      "path": "common-types/capi-arkui-nativemodule-arkui-rotationoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-rotationoptions.md",
+      "title": "ArkUI_RotationOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0302",
+      "path": "common-types/capi-arkui-nativemodule-arkui-scaleoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-scaleoptions.md",
+      "title": "ArkUI_ScaleOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0303",
+      "path": "common-types/capi-arkui-nativemodule-arkui-selectionoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-selectionoptions.md",
+      "title": "ArkUI_SelectionOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0304",
+      "path": "common-types/capi-arkui-nativemodule-arkui-snapshotoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-snapshotoptions.md",
+      "title": "ArkUI_SnapshotOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0305",
+      "path": "common-types/capi-arkui-nativemodule-arkui-stringasyncevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-stringasyncevent.md",
+      "title": "ArkUI_StringAsyncEvent",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0306",
+      "path": "common-types/capi-arkui-nativemodule-arkui-translationoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-translationoptions.md",
+      "title": "ArkUI_TranslationOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0307",
+      "path": "common-types/capi-arkui-nativemodule-arkui-vector2propertyhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-vector2propertyhandle.md",
+      "title": "ArkUI_Vector2PropertyHandle",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0308",
+      "path": "common-types/capi-arkui-nativemodule-arkui-visibleareaeventoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-visibleareaeventoptions.md",
+      "title": "ArkUI_VisibleAreaEventOptions",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0309",
+      "path": "common-types/capi-arkui-nativemodule-oh-pixelmapnative8h.md",
+      "filename": "capi-arkui-nativemodule-oh-pixelmapnative8h.md",
+      "title": "OH_PixelmapNative*",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0310",
+      "path": "common-types/capi-arkui-nativemodule.md",
+      "filename": "capi-arkui-nativemodule.md",
+      "title": "ArkUI_NativeModule",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0311",
+      "path": "common-types/capi-native-interface-focus-h.md",
+      "filename": "capi-native-interface-focus-h.md",
+      "title": "native_interface_focus.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0312",
+      "path": "common-types/capi-native-interface-h.md",
+      "filename": "capi-native-interface-h.md",
+      "title": "native_interface.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0313",
+      "path": "common-types/capi-native-key-event-h.md",
+      "filename": "capi-native-key-event-h.md",
+      "title": "native_key_event.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0314",
+      "path": "common-types/capi-native-type-h.md",
+      "filename": "capi-native-type-h.md",
+      "title": "native_type.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0315",
+      "path": "common-types/capi-native-xcomponent-key-event-h.md",
+      "filename": "capi-native-xcomponent-key-event-h.md",
+      "title": "native_xcomponent_key_event.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0316",
+      "path": "common-types/capi-struct.md",
+      "filename": "capi-struct.md",
+      "title": "OH_PixelmapNative",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0317",
+      "path": "common-types/capi-ui-input-event-h.md",
+      "filename": "capi-ui-input-event-h.md",
+      "title": "ui_input_event.h",
+      "category": "common-types"
+    },
+    {
+      "id": "doc_0318",
+      "path": "dialog/capi-arkui-nativemodule-arkui-customdialogoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-customdialogoptions.md",
+      "title": "ArkUI_CustomDialogOptions",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0319",
+      "path": "dialog/capi-arkui-nativemodule-arkui-dialogdismissevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-dialogdismissevent.md",
+      "title": "ArkUI_DialogDismissEvent",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0320",
+      "path": "dialog/capi-arkui-nativemodule-arkui-nativedialog.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativedialog.md",
+      "title": "ArkUI_NativeDialog",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0321",
+      "path": "dialog/capi-arkui-nativemodule-arkui-nativedialog8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativedialog8h.md",
+      "title": "ArkUI_NativeDialog*",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0322",
+      "path": "dialog/capi-arkui-nativemodule-arkui-nativedialogapi-1.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativedialogapi-1.md",
+      "title": "ArkUI_NativeDialogAPI_1",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0323",
+      "path": "dialog/capi-arkui-nativemodule-arkui-nativedialogapi-2.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativedialogapi-2.md",
+      "title": "ArkUI_NativeDialogAPI_2",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0324",
+      "path": "dialog/capi-arkui-nativemodule-arkui-nativedialogapi-3.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativedialogapi-3.md",
+      "title": "ArkUI_NativeDialogAPI_3",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0325",
+      "path": "dialog/capi-native-dialog-h.md",
+      "filename": "capi-native-dialog-h.md",
+      "title": "native_dialog.h",
+      "category": "dialog"
+    },
+    {
+      "id": "doc_0326",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-dragaction.md",
+      "filename": "capi-arkui-nativemodule-arkui-dragaction.md",
+      "title": "ArkUI_DragAction",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0327",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-draganddropinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-draganddropinfo.md",
+      "title": "ArkUI_DragAndDropInfo",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0328",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-dragevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-dragevent.md",
+      "title": "ArkUI_DragEvent",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0329",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-dragpreviewoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-dragpreviewoption.md",
+      "title": "ArkUI_DragPreviewOption",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0330",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gestureevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-gestureevent.md",
+      "title": "ArkUI_GestureEvent",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0331",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gestureeventtargetinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-gestureeventtargetinfo.md",
+      "title": "ArkUI_GestureEventTargetInfo",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0332",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gestureinterruptinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-gestureinterruptinfo.md",
+      "title": "ArkUI_GestureInterruptInfo",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0333",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gesturerecognizer.md",
+      "filename": "capi-arkui-nativemodule-arkui-gesturerecognizer.md",
+      "title": "ArkUI_GestureRecognizer",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0334",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gesturerecognizerhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-gesturerecognizerhandle.md",
+      "title": "ArkUI_GestureRecognizer*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0335",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-gesturerecognizerhandlearray.md",
+      "filename": "capi-arkui-nativemodule-arkui-gesturerecognizerhandlearray.md",
+      "title": "ArkUI_GestureRecognizerHandle*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0336",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-nativegestureapi-1.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativegestureapi-1.md",
+      "title": "ArkUI_NativeGestureAPI_1",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0337",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-nativegestureapi-2.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativegestureapi-2.md",
+      "title": "ArkUI_NativeGestureAPI_2",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0338",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-parallelinnergestureevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-parallelinnergestureevent.md",
+      "title": "ArkUI_ParallelInnerGestureEvent",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0339",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-textselecteddragpreviewstyle.md",
+      "filename": "capi-arkui-nativemodule-arkui-textselecteddragpreviewstyle.md",
+      "title": "ArkUI_SelectedDragPreviewStyle",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0340",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchrecognizer.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchrecognizer.md",
+      "title": "ArkUI_TouchRecognizer",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0341",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchrecognizerhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchrecognizerhandle.md",
+      "title": "ArkUI_TouchRecognizer*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0342",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchrecognizerhandlearray.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchrecognizerhandlearray.md",
+      "title": "ArkUI_TouchRecognizerHandle*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0343",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchtestinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchtestinfo.md",
+      "title": "ArkUI_TouchTestInfo",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0344",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchtestinfoitem.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchtestinfoitem.md",
+      "title": "ArkUI_TouchTestInfoItem",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0345",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchtestinfoitemhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchtestinfoitemhandle.md",
+      "title": "ArkUI_TouchTestInfoItem*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0346",
+      "path": "gesture-drag/capi-arkui-nativemodule-arkui-touchtestinfoitemhandlearray.md",
+      "filename": "capi-arkui-nativemodule-arkui-touchtestinfoitemhandlearray.md",
+      "title": "ArkUI_TouchTestInfoItemHandle*",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0347",
+      "path": "gesture-drag/capi-drag-and-drop-h.md",
+      "filename": "capi-drag-and-drop-h.md",
+      "title": "drag_and_drop.h",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0348",
+      "path": "gesture-drag/capi-native-gesture-h.md",
+      "filename": "capi-native-gesture-h.md",
+      "title": "native_gesture.h",
+      "category": "gesture-drag"
+    },
+    {
+      "id": "doc_0230",
+      "path": "guide/napi-xcomponent-guidelines.md",
+      "filename": "napi-xcomponent-guidelines.md",
+      "title": "自定义渲染 (XComponent)",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0231",
+      "path": "guide/ndk-access-the-arkts-page.md",
+      "filename": "ndk-access-the-arkts-page.md",
+      "title": "接入ArkTS页面",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0232",
+      "path": "guide/ndk-accessibility-xcomponent.md",
+      "filename": "ndk-accessibility-xcomponent.md",
+      "title": "通过自绘制接入无障碍",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0233",
+      "path": "guide/ndk-add-component-events.md",
+      "filename": "ndk-add-component-events.md",
+      "title": "添加事件监听",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0234",
+      "path": "guide/ndk-add-event-response.md",
+      "filename": "ndk-add-event-response.md",
+      "title": "添加事件响应",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0235",
+      "path": "guide/ndk-bind-gesture-events.md",
+      "filename": "ndk-bind-gesture-events.md",
+      "title": "绑定手势事件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0236",
+      "path": "guide/ndk-bind-input-events.md",
+      "filename": "ndk-bind-input-events.md",
+      "title": "绑定基础输入事件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0237",
+      "path": "guide/ndk-build-custom-components.md",
+      "filename": "ndk-build-custom-components.md",
+      "title": "构建自定义组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0238",
+      "path": "guide/ndk-build-form-components.md",
+      "filename": "ndk-build-form-components.md",
+      "title": "构建表单组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0239",
+      "path": "guide/ndk-build-on-multi-thread.md",
+      "filename": "ndk-build-on-multi-thread.md",
+      "title": "使用多线程NDK接口并行化构建UI页面",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0240",
+      "path": "guide/ndk-build-pop-up-window.md",
+      "filename": "ndk-build-pop-up-window.md",
+      "title": "构建弹窗",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0241",
+      "path": "guide/ndk-build-ui-overview.md",
+      "filename": "ndk-build-ui-overview.md",
+      "title": "基于NDK构建UI概述",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0242",
+      "path": "guide/ndk-common-attribute-layout.md",
+      "filename": "ndk-common-attribute-layout.md",
+      "title": "设置通用布局属性",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0243",
+      "path": "guide/ndk-drag-event.md",
+      "filename": "ndk-drag-event.md",
+      "title": "绑定拖拽事件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0244",
+      "path": "guide/ndk-embed-arkts-components.md",
+      "filename": "ndk-embed-arkts-components.md",
+      "title": "嵌入ArkTS组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0245",
+      "path": "guide/ndk-embed-render-components.md",
+      "filename": "ndk-embed-render-components.md",
+      "title": "构建渲染节点",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0246",
+      "path": "guide/ndk-embedded-component.md",
+      "filename": "ndk-embedded-component.md",
+      "title": "通过EmbeddedComponent拉起EmbeddedUIExtensionAbility",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0247",
+      "path": "guide/ndk-grid.md",
+      "filename": "ndk-grid.md",
+      "title": "使用网格",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0248",
+      "path": "guide/ndk-image-component.md",
+      "filename": "ndk-image-component.md",
+      "title": "显示图片（Image）",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0249",
+      "path": "guide/ndk-layout-container.md",
+      "filename": "ndk-layout-container.md",
+      "title": "使用布局组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0250",
+      "path": "guide/ndk-loading-long-list.md",
+      "filename": "ndk-loading-long-list.md",
+      "title": "使用列表",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0251",
+      "path": "guide/ndk-navigation-query.md",
+      "filename": "ndk-navigation-query.md",
+      "title": "使用导航类组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0252",
+      "path": "guide/ndk-node-query-operate.md",
+      "filename": "ndk-node-query-operate.md",
+      "title": "查询和操作自定义节点",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0253",
+      "path": "guide/ndk-picker.md",
+      "filename": "ndk-picker.md",
+      "title": "使用滑动选择器 (Picker)",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0254",
+      "path": "guide/ndk-scope-task.md",
+      "filename": "ndk-scope-task.md",
+      "title": "在NDK中保证多实例场景功能正常",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0255",
+      "path": "guide/ndk-styled-string.md",
+      "filename": "ndk-styled-string.md",
+      "title": "使用属性字符串",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0256",
+      "path": "guide/ndk-swiper.md",
+      "filename": "ndk-swiper.md",
+      "title": "使用滑块视图容器 (Swiper)",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0257",
+      "path": "guide/ndk-textarea-event.md",
+      "filename": "ndk-textarea-event.md",
+      "title": "添加输入框文本事件监听",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0258",
+      "path": "guide/ndk-use-animation-scene.md",
+      "filename": "ndk-use-animation-scene.md",
+      "title": "使用动画开发指导",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0259",
+      "path": "guide/ndk-use-animation.md",
+      "filename": "ndk-use-animation.md",
+      "title": "动画概述",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0260",
+      "path": "guide/ndk-use-text-component.md",
+      "filename": "ndk-use-text-component.md",
+      "title": "使用Text组件",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0261",
+      "path": "guide/ndk-waterflow.md",
+      "filename": "ndk-waterflow.md",
+      "title": "使用瀑布流",
+      "category": "guide"
+    },
+    {
+      "id": "doc_0349",
+      "path": "layout/capi-arkui-nativemodule-arkui-alignmentruleoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-alignmentruleoption.md",
+      "title": "ArkUI_AlignmentRuleOption",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0350",
+      "path": "layout/capi-arkui-nativemodule-arkui-barrieroption.md",
+      "filename": "capi-arkui-nativemodule-arkui-barrieroption.md",
+      "title": "ArkUI_BarrierOption",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0351",
+      "path": "layout/capi-arkui-nativemodule-arkui-griditemrect.md",
+      "filename": "capi-arkui-nativemodule-arkui-griditemrect.md",
+      "title": "ArkUI_GridItemRect",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0352",
+      "path": "layout/capi-arkui-nativemodule-arkui-griditemsize.md",
+      "filename": "capi-arkui-nativemodule-arkui-griditemsize.md",
+      "title": "ArkUI_GridItemSize",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0353",
+      "path": "layout/capi-arkui-nativemodule-arkui-gridlayoutoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-gridlayoutoptions.md",
+      "title": "ArkUI_GridLayoutOptions",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0354",
+      "path": "layout/capi-arkui-nativemodule-arkui-guidelineoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-guidelineoption.md",
+      "title": "ArkUI_GuidelineOption",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0355",
+      "path": "layout/capi-arkui-nativemodule-arkui-layoutconstraint.md",
+      "filename": "capi-arkui-nativemodule-arkui-layoutconstraint.md",
+      "title": "ArkUI_LayoutConstraint",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0356",
+      "path": "layout/capi-arkui-nativemodule-arkui-listchildrenmainsize.md",
+      "filename": "capi-arkui-nativemodule-arkui-listchildrenmainsize.md",
+      "title": "ArkUI_ListChildrenMainSize",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0357",
+      "path": "layout/capi-arkui-nativemodule-arkui-listitemswipeactionitem.md",
+      "filename": "capi-arkui-nativemodule-arkui-listitemswipeactionitem.md",
+      "title": "ArkUI_ListItemSwipeActionItem",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0358",
+      "path": "layout/capi-arkui-nativemodule-arkui-listitemswipeactionoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-listitemswipeactionoption.md",
+      "title": "ArkUI_ListItemSwipeActionOption",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0359",
+      "path": "layout/capi-arkui-nativemodule-arkui-margin.md",
+      "filename": "capi-arkui-nativemodule-arkui-margin.md",
+      "title": "ArkUI_Margin",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0360",
+      "path": "layout/capi-arkui-nativemodule-arkui-positionedges.md",
+      "filename": "capi-arkui-nativemodule-arkui-positionedges.md",
+      "title": "ArkUI_PositionEdges",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0361",
+      "path": "layout/capi-arkui-nativemodule-arkui-textlayoutmanager.md",
+      "filename": "capi-arkui-nativemodule-arkui-textlayoutmanager.md",
+      "title": "ArkUI_TextLayoutManager",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0362",
+      "path": "layout/capi-arkui-nativemodule-arkui-waterflowsectionoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-waterflowsectionoption.md",
+      "title": "ArkUI_WaterFlowSectionOption",
+      "category": "layout"
+    },
+    {
+      "id": "doc_0363",
+      "path": "node/capi-arkui-nativemodule-arkui-nativenodeapi-1.md",
+      "filename": "capi-arkui-nativemodule-arkui-nativenodeapi-1.md",
+      "title": "ArkUI_NativeNodeAPI_1",
+      "category": "node"
+    },
+    {
+      "id": "doc_0364",
+      "path": "node/capi-arkui-nativemodule-arkui-node-descriptor.md",
+      "filename": "capi-arkui-nativemodule-arkui-node-descriptor.md",
+      "title": "ArkUI_Node",
+      "category": "node"
+    },
+    {
+      "id": "doc_0365",
+      "path": "node/capi-arkui-nativemodule-arkui-node8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-node8h.md",
+      "title": "ArkUI_Node*",
+      "category": "node"
+    },
+    {
+      "id": "doc_0366",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeadapter8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeadapter8h.md",
+      "title": "ArkUI_NodeAdapter*",
+      "category": "node"
+    },
+    {
+      "id": "doc_0367",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeadapterevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeadapterevent.md",
+      "title": "ArkUI_NodeAdapterEvent",
+      "category": "node"
+    },
+    {
+      "id": "doc_0368",
+      "path": "node/capi-arkui-nativemodule-arkui-nodebordercoloroption.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodebordercoloroption.md",
+      "title": "ArkUI_NodeBorderColorOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0369",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeborderradiusoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeborderradiusoption.md",
+      "title": "ArkUI_NodeBorderRadiusOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0370",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeborderstyleoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeborderstyleoption.md",
+      "title": "ArkUI_NodeBorderStyleOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0371",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeborderwidthoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeborderwidthoption.md",
+      "title": "ArkUI_NodeBorderWidthOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0372",
+      "path": "node/capi-arkui-nativemodule-arkui-nodecomponentevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodecomponentevent.md",
+      "title": "ArkUI_NodeComponentEvent",
+      "category": "node"
+    },
+    {
+      "id": "doc_0373",
+      "path": "node/capi-arkui-nativemodule-arkui-nodecontent8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodecontent8h.md",
+      "title": "ArkUI_NodeContent*",
+      "category": "node"
+    },
+    {
+      "id": "doc_0374",
+      "path": "node/capi-arkui-nativemodule-arkui-nodecontentevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodecontentevent.md",
+      "title": "ArkUI_NodeContentEvent",
+      "category": "node"
+    },
+    {
+      "id": "doc_0375",
+      "path": "node/capi-arkui-nativemodule-arkui-nodecustomevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodecustomevent.md",
+      "title": "ArkUI_NodeCustomEvent",
+      "category": "node"
+    },
+    {
+      "id": "doc_0376",
+      "path": "node/capi-arkui-nativemodule-arkui-nodeevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-nodeevent.md",
+      "title": "ArkUI_NodeEvent",
+      "category": "node"
+    },
+    {
+      "id": "doc_0377",
+      "path": "node/capi-arkui-nativemodule-arkui-rendernodeclipoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-rendernodeclipoption.md",
+      "title": "ArkUI_RenderNodeClipOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0378",
+      "path": "node/capi-arkui-nativemodule-arkui-rendernodehandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-rendernodehandle.md",
+      "title": "ArkUI_RenderNodeHandle",
+      "category": "node"
+    },
+    {
+      "id": "doc_0379",
+      "path": "node/capi-arkui-nativemodule-arkui-rendernodemaskoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-rendernodemaskoption.md",
+      "title": "ArkUI_RenderNodeMaskOption",
+      "category": "node"
+    },
+    {
+      "id": "doc_0380",
+      "path": "node/capi-arkui-rendernodeutils.md",
+      "filename": "capi-arkui-rendernodeutils.md",
+      "title": "ArkUI_RenderNodeUtils",
+      "category": "node"
+    },
+    {
+      "id": "doc_0381",
+      "path": "node/capi-native-node-h-nodeattributetype-accessibility.md",
+      "filename": "capi-native-node-h-nodeattributetype-accessibility.md",
+      "title": "ArkUI_NodeAttributeType（无障碍相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0382",
+      "path": "node/capi-native-node-h-nodeattributetype-animator.md",
+      "filename": "capi-native-node-h-nodeattributetype-animator.md",
+      "title": "ArkUI_NodeAttributeType（动效、视效相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0383",
+      "path": "node/capi-native-node-h-nodeattributetype-base.md",
+      "filename": "capi-native-node-h-nodeattributetype-base.md",
+      "title": "ArkUI_NodeAttributeType（基础属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0384",
+      "path": "node/capi-native-node-h-nodeattributetype-common.md",
+      "filename": "capi-native-node-h-nodeattributetype-common.md",
+      "title": "ArkUI_NodeAttributeType（通用属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0385",
+      "path": "node/capi-native-node-h-nodeattributetype-embeddedcomponent.md",
+      "filename": "capi-native-node-h-nodeattributetype-embeddedcomponent.md",
+      "title": "ArkUI_NodeAttributeType（EmbeddedComponent组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0386",
+      "path": "node/capi-native-node-h-nodeattributetype-form.md",
+      "filename": "capi-native-node-h-nodeattributetype-form.md",
+      "title": "ArkUI_NodeAttributeType（表单类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0387",
+      "path": "node/capi-native-node-h-nodeattributetype-image.md",
+      "filename": "capi-native-node-h-nodeattributetype-image.md",
+      "title": "ArkUI_NodeAttributeType（图类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0388",
+      "path": "node/capi-native-node-h-nodeattributetype-informationdisplay.md",
+      "filename": "capi-native-node-h-nodeattributetype-informationdisplay.md",
+      "title": "ArkUI_NodeAttributeType（信息展示类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0389",
+      "path": "node/capi-native-node-h-nodeattributetype-informationselection.md",
+      "filename": "capi-native-node-h-nodeattributetype-informationselection.md",
+      "title": "ArkUI_NodeAttributeType（信息选择类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0390",
+      "path": "node/capi-native-node-h-nodeattributetype-interaction.md",
+      "filename": "capi-native-node-h-nodeattributetype-interaction.md",
+      "title": "ArkUI_NodeAttributeType（交互类相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0391",
+      "path": "node/capi-native-node-h-nodeattributetype-layoutattributes.md",
+      "filename": "capi-native-node-h-nodeattributetype-layoutattributes.md",
+      "title": "ArkUI_NodeAttributeType（布局属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0392",
+      "path": "node/capi-native-node-h-nodeattributetype-layoutcomponent.md",
+      "filename": "capi-native-node-h-nodeattributetype-layoutcomponent.md",
+      "title": "ArkUI_NodeAttributeType（布局类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0393",
+      "path": "node/capi-native-node-h-nodeattributetype-navigationrelatedcomponents.md",
+      "filename": "capi-native-node-h-nodeattributetype-navigationrelatedcomponents.md",
+      "title": "ArkUI_NodeAttributeType（导航类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0394",
+      "path": "node/capi-native-node-h-nodeattributetype-other.md",
+      "filename": "capi-native-node-h-nodeattributetype-other.md",
+      "title": "ArkUI_NodeAttributeType（其他）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0395",
+      "path": "node/capi-native-node-h-nodeattributetype-scrollablecontainer.md",
+      "filename": "capi-native-node-h-nodeattributetype-scrollablecontainer.md",
+      "title": "ArkUI_NodeAttributeType（滚动容器类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0396",
+      "path": "node/capi-native-node-h-nodeattributetype-text.md",
+      "filename": "capi-native-node-h-nodeattributetype-text.md",
+      "title": "ArkUI_NodeAttributeType（文本显示类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0397",
+      "path": "node/capi-native-node-h-nodeattributetype-textinputcategory.md",
+      "filename": "capi-native-node-h-nodeattributetype-textinputcategory.md",
+      "title": "ArkUI_NodeAttributeType（文本输入类组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0398",
+      "path": "node/capi-native-node-h-nodeattributetype-xcomponent.md",
+      "filename": "capi-native-node-h-nodeattributetype-xcomponent.md",
+      "title": "ArkUI_NodeAttributeType（XComponent组件相关属性）",
+      "category": "node"
+    },
+    {
+      "id": "doc_0399",
+      "path": "node/capi-native-node-h.md",
+      "filename": "capi-native-node-h.md",
+      "title": "native_node.h",
+      "category": "node"
+    },
+    {
+      "id": "doc_0400",
+      "path": "node/capi-native-node-napi-h.md",
+      "filename": "capi-native-node-napi-h.md",
+      "title": "native_node_napi.h",
+      "category": "node"
+    },
+    {
+      "id": "doc_0401",
+      "path": "render/capi-arkui-nativemodule-arkui-circleshapeoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-circleshapeoption.md",
+      "title": "ArkUI_CircleShapeOption",
+      "category": "render"
+    },
+    {
+      "id": "doc_0402",
+      "path": "render/capi-arkui-nativemodule-arkui-colorstop.md",
+      "filename": "capi-arkui-nativemodule-arkui-colorstop.md",
+      "title": "ArkUI_ColorStop",
+      "category": "render"
+    },
+    {
+      "id": "doc_0403",
+      "path": "render/capi-arkui-nativemodule-arkui-commandpathoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-commandpathoption.md",
+      "title": "ArkUI_CommandPathOption",
+      "category": "render"
+    },
+    {
+      "id": "doc_0404",
+      "path": "render/capi-arkui-nativemodule-arkui-drawabledescriptor.md",
+      "filename": "capi-arkui-nativemodule-arkui-drawabledescriptor.md",
+      "title": "ArkUI_DrawableDescriptor",
+      "category": "render"
+    },
+    {
+      "id": "doc_0405",
+      "path": "render/capi-arkui-nativemodule-arkui-rectshapeoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-rectshapeoption.md",
+      "title": "ArkUI_RectShapeOption",
+      "category": "render"
+    },
+    {
+      "id": "doc_0406",
+      "path": "render/capi-arkui-nativemodule-arkui-rendercontentmodifierhandle.md",
+      "filename": "capi-arkui-nativemodule-arkui-rendercontentmodifierhandle.md",
+      "title": "ArkUI_RenderContentModifierHandle",
+      "category": "render"
+    },
+    {
+      "id": "doc_0407",
+      "path": "render/capi-arkui-nativemodule-arkui-roundrectshapeoption.md",
+      "filename": "capi-arkui-nativemodule-arkui-roundrectshapeoption.md",
+      "title": "ArkUI_RoundRectShapeOption",
+      "category": "render"
+    },
+    {
+      "id": "doc_0408",
+      "path": "render/capi-drawable-descriptor-h.md",
+      "filename": "capi-drawable-descriptor-h.md",
+      "title": "drawable_descriptor.h",
+      "category": "render"
+    },
+    {
+      "id": "doc_0409",
+      "path": "render/capi-native-render-h.md",
+      "filename": "capi-native-render-h.md",
+      "title": "native_render.h",
+      "category": "render"
+    },
+    {
+      "id": "doc_0410",
+      "path": "text/capi-arkui-nativemodule-arkui-context.md",
+      "filename": "capi-arkui-nativemodule-arkui-context.md",
+      "title": "ArkUI_Context",
+      "category": "text"
+    },
+    {
+      "id": "doc_0411",
+      "path": "text/capi-arkui-nativemodule-arkui-context8h.md",
+      "filename": "capi-arkui-nativemodule-arkui-context8h.md",
+      "title": "ArkUI_Context*",
+      "category": "text"
+    },
+    {
+      "id": "doc_0412",
+      "path": "text/capi-arkui-nativemodule-arkui-contextcallback.md",
+      "filename": "capi-arkui-nativemodule-arkui-contextcallback.md",
+      "title": "ArkUI_ContextCallback",
+      "category": "text"
+    },
+    {
+      "id": "doc_0413",
+      "path": "text/capi-arkui-nativemodule-arkui-customspandrawinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-customspandrawinfo.md",
+      "title": "ArkUI_CustomSpanDrawInfo",
+      "category": "text"
+    },
+    {
+      "id": "doc_0414",
+      "path": "text/capi-arkui-nativemodule-arkui-customspanmeasureinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-customspanmeasureinfo.md",
+      "title": "ArkUI_CustomSpanMeasureInfo",
+      "category": "text"
+    },
+    {
+      "id": "doc_0415",
+      "path": "text/capi-arkui-nativemodule-arkui-customspanmetrics.md",
+      "filename": "capi-arkui-nativemodule-arkui-customspanmetrics.md",
+      "title": "ArkUI_CustomSpanMetrics",
+      "category": "text"
+    },
+    {
+      "id": "doc_0416",
+      "path": "text/capi-arkui-nativemodule-arkui-drawcontext.md",
+      "filename": "capi-arkui-nativemodule-arkui-drawcontext.md",
+      "title": "ArkUI_DrawContext",
+      "category": "text"
+    },
+    {
+      "id": "doc_0417",
+      "path": "text/capi-arkui-nativemodule-arkui-pickerindicatorbackground.md",
+      "filename": "capi-arkui-nativemodule-arkui-pickerindicatorbackground.md",
+      "title": "ArkUI_PickerIndicatorBackground",
+      "category": "text"
+    },
+    {
+      "id": "doc_0418",
+      "path": "text/capi-arkui-nativemodule-arkui-pickerindicatordivider.md",
+      "filename": "capi-arkui-nativemodule-arkui-pickerindicatordivider.md",
+      "title": "ArkUI_PickerIndicatorDivider",
+      "category": "text"
+    },
+    {
+      "id": "doc_0419",
+      "path": "text/capi-arkui-nativemodule-arkui-pickerindicatorstyle.md",
+      "filename": "capi-arkui-nativemodule-arkui-pickerindicatorstyle.md",
+      "title": "ArkUI_PickerIndicatorStyle",
+      "category": "text"
+    },
+    {
+      "id": "doc_0420",
+      "path": "text/capi-arkui-nativemodule-arkui-styledstring-descriptor.md",
+      "filename": "capi-arkui-nativemodule-arkui-styledstring-descriptor.md",
+      "title": "ArkUI_StyledString_Descriptor",
+      "category": "text"
+    },
+    {
+      "id": "doc_0421",
+      "path": "text/capi-arkui-nativemodule-arkui-styledstring.md",
+      "filename": "capi-arkui-nativemodule-arkui-styledstring.md",
+      "title": "ArkUI_StyledString",
+      "category": "text"
+    },
+    {
+      "id": "doc_0422",
+      "path": "text/capi-arkui-nativemodule-arkui-swiperarrowstyle.md",
+      "filename": "capi-arkui-nativemodule-arkui-swiperarrowstyle.md",
+      "title": "ArkUI_SwiperArrowStyle",
+      "category": "text"
+    },
+    {
+      "id": "doc_0423",
+      "path": "text/capi-arkui-nativemodule-arkui-swiperdigitindicator.md",
+      "filename": "capi-arkui-nativemodule-arkui-swiperdigitindicator.md",
+      "title": "ArkUI_SwiperDigitIndicator",
+      "category": "text"
+    },
+    {
+      "id": "doc_0424",
+      "path": "text/capi-arkui-nativemodule-arkui-swiperindicator.md",
+      "filename": "capi-arkui-nativemodule-arkui-swiperindicator.md",
+      "title": "ArkUI_SwiperIndicator",
+      "category": "text"
+    },
+    {
+      "id": "doc_0425",
+      "path": "text/capi-arkui-nativemodule-arkui-systemfontstyleevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-systemfontstyleevent.md",
+      "title": "ArkUI_SystemFontStyleEvent",
+      "category": "text"
+    },
+    {
+      "id": "doc_0426",
+      "path": "text/capi-arkui-nativemodule-arkui-textcascadepickerrangecontentarray.md",
+      "filename": "capi-arkui-nativemodule-arkui-textcascadepickerrangecontentarray.md",
+      "title": "ArkUI_TextCascadePickerRangeContentArray",
+      "category": "text"
+    },
+    {
+      "id": "doc_0427",
+      "path": "text/capi-arkui-nativemodule-arkui-textchangeevent.md",
+      "filename": "capi-arkui-nativemodule-arkui-textchangeevent.md",
+      "title": "ArkUI_TextChangeEvent",
+      "category": "text"
+    },
+    {
+      "id": "doc_0428",
+      "path": "text/capi-arkui-nativemodule-arkui-textcontentbasecontroller.md",
+      "filename": "capi-arkui-nativemodule-arkui-textcontentbasecontroller.md",
+      "title": "ArkUI_TextContentBaseController",
+      "category": "text"
+    },
+    {
+      "id": "doc_0429",
+      "path": "text/capi-arkui-nativemodule-arkui-texteditmenuoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-texteditmenuoptions.md",
+      "title": "ArkUI_TextEditMenuOptions",
+      "category": "text"
+    },
+    {
+      "id": "doc_0430",
+      "path": "text/capi-arkui-nativemodule-arkui-textmarqueeoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-textmarqueeoptions.md",
+      "title": "ArkUI_TextMarqueeOptions",
+      "category": "text"
+    },
+    {
+      "id": "doc_0431",
+      "path": "text/capi-arkui-nativemodule-arkui-textmenuitem.md",
+      "filename": "capi-arkui-nativemodule-arkui-textmenuitem.md",
+      "title": "ArkUI_TextMenuItem",
+      "category": "text"
+    },
+    {
+      "id": "doc_0432",
+      "path": "text/capi-arkui-nativemodule-arkui-textmenuitemarray.md",
+      "filename": "capi-arkui-nativemodule-arkui-textmenuitemarray.md",
+      "title": "ArkUI_TextMenuItemArray",
+      "category": "text"
+    },
+    {
+      "id": "doc_0433",
+      "path": "text/capi-arkui-nativemodule-arkui-textpickercascaderangecontent.md",
+      "filename": "capi-arkui-nativemodule-arkui-textpickercascaderangecontent.md",
+      "title": "ARKUI_TextPickerCascadeRangeContent",
+      "category": "text"
+    },
+    {
+      "id": "doc_0434",
+      "path": "text/capi-arkui-nativemodule-arkui-textpickerrangecontent.md",
+      "filename": "capi-arkui-nativemodule-arkui-textpickerrangecontent.md",
+      "title": "ARKUI_TextPickerRangeContent",
+      "category": "text"
+    },
+    {
+      "id": "doc_0435",
+      "path": "text/capi-arkui-nativemodule-arkui-textpickerrangecontentarray.md",
+      "filename": "capi-arkui-nativemodule-arkui-textpickerrangecontentarray.md",
+      "title": "ArkUI_TextPickerRangeContentArray",
+      "category": "text"
+    },
+    {
+      "id": "doc_0436",
+      "path": "text/capi-arkui-nativemodule-arkui-textselectionmenuoptions.md",
+      "filename": "capi-arkui-nativemodule-arkui-textselectionmenuoptions.md",
+      "title": "ArkUI_TextSelectionMenuOptions",
+      "category": "text"
+    },
+    {
+      "id": "doc_0437",
+      "path": "text/capi-arkui-nativemodule-arkui-textshowcounterconfig.md",
+      "filename": "capi-arkui-nativemodule-arkui-textshowcounterconfig.md",
+      "title": "ArkUI_ShowCounterConfig",
+      "category": "text"
+    },
+    {
+      "id": "doc_0438",
+      "path": "text/capi-styled-string-h.md",
+      "filename": "capi-styled-string-h.md",
+      "title": "styled_string.h",
+      "category": "text"
+    },
+    {
+      "id": "doc_0439",
+      "path": "window-display/capi-arkui-nativemodule-arkui-hostwindowinfo.md",
+      "filename": "capi-arkui-nativemodule-arkui-hostwindowinfo.md",
+      "title": "ArkUI_HostWindowInfo",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0192",
+      "path": "window-display/capi-nativedisplaymanager-cutoutinfo.md",
+      "filename": "capi-nativedisplaymanager-cutoutinfo.md",
+      "title": "NativeDisplayManager_CutoutInfo",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0193",
+      "path": "window-display/capi-nativedisplaymanager-displaycolorspace.md",
+      "filename": "capi-nativedisplaymanager-displaycolorspace.md",
+      "title": "NativeDisplayManager_DisplayColorSpace",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0194",
+      "path": "window-display/capi-nativedisplaymanager-displayhdrformat.md",
+      "filename": "capi-nativedisplaymanager-displayhdrformat.md",
+      "title": "NativeDisplayManager_DisplayHdrFormat",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0195",
+      "path": "window-display/capi-nativedisplaymanager-displayinfo.md",
+      "filename": "capi-nativedisplaymanager-displayinfo.md",
+      "title": "NativeDisplayManager_DisplayInfo",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0196",
+      "path": "window-display/capi-nativedisplaymanager-displaysinfo.md",
+      "filename": "capi-nativedisplaymanager-displaysinfo.md",
+      "title": "NativeDisplayManager_DisplaysInfo",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0197",
+      "path": "window-display/capi-nativedisplaymanager-rect.md",
+      "filename": "capi-nativedisplaymanager-rect.md",
+      "title": "NativeDisplayManager_Rect",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0198",
+      "path": "window-display/capi-nativedisplaymanager-waterfalldisplayarearects.md",
+      "filename": "capi-nativedisplaymanager-waterfalldisplayarearects.md",
+      "title": "NativeDisplayManager_WaterfallDisplayAreaRects",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0199",
+      "path": "window-display/capi-oh-display-capture-h.md",
+      "filename": "capi-oh-display-capture-h.md",
+      "title": "oh_display_capture.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0200",
+      "path": "window-display/capi-oh-display-info-h.md",
+      "filename": "capi-oh-display-info-h.md",
+      "title": "oh_display_info.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0201",
+      "path": "window-display/capi-oh-display-manager-h.md",
+      "filename": "capi-oh-display-manager-h.md",
+      "title": "oh_display_manager.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0202",
+      "path": "window-display/capi-oh-displaymanager.md",
+      "filename": "capi-oh-displaymanager.md",
+      "title": "OH_DisplayManager",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0203",
+      "path": "window-display/capi-oh-window-comm-h.md",
+      "filename": "capi-oh-window-comm-h.md",
+      "title": "oh_window_comm.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0204",
+      "path": "window-display/capi-oh-window-event-filter-h.md",
+      "filename": "capi-oh-window-event-filter-h.md",
+      "title": "oh_window_event_filter.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0205",
+      "path": "window-display/capi-oh-window-h.md",
+      "filename": "capi-oh-window-h.md",
+      "title": "oh_window.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0206",
+      "path": "window-display/capi-oh-window-pip-h.md",
+      "filename": "capi-oh-window-pip-h.md",
+      "title": "oh_window_pip.h",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0207",
+      "path": "window-display/capi-pictureinpicture-pipconfig.md",
+      "filename": "capi-pictureinpicture-pipconfig.md",
+      "title": "PictureInPicture_PipConfig",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0208",
+      "path": "window-display/capi-windowmanager-avoidarea.md",
+      "filename": "capi-windowmanager-avoidarea.md",
+      "title": "WindowManager_AvoidArea",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0209",
+      "path": "window-display/capi-windowmanager-rect.md",
+      "filename": "capi-windowmanager-rect.md",
+      "title": "WindowManager_Rect",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0210",
+      "path": "window-display/capi-windowmanager-windowmanager-mainwindowinfo.md",
+      "filename": "capi-windowmanager-windowmanager-mainwindowinfo.md",
+      "title": "WindowManager_MainWindowInfo",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0211",
+      "path": "window-display/capi-windowmanager-windowmanager-windowsnapshotconfig.md",
+      "filename": "capi-windowmanager-windowmanager-windowsnapshotconfig.md",
+      "title": "WindowManager_WindowSnapshotConfig",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0212",
+      "path": "window-display/capi-windowmanager-windowproperties.md",
+      "filename": "capi-windowmanager-windowproperties.md",
+      "title": "WindowManager_WindowProperties",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0213",
+      "path": "window-display/capi-windowmanager.md",
+      "filename": "capi-windowmanager.md",
+      "title": "WindowManager",
+      "category": "window-display"
+    },
+    {
+      "id": "doc_0214",
+      "path": "xcomponent/capi-native-interface-xcomponent-h.md",
+      "filename": "capi-native-interface-xcomponent-h.md",
+      "title": "native_interface_xcomponent.h",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0215",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-arkui-xcomponentsurfaceconfig.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-arkui-xcomponentsurfaceconfig.md",
+      "title": "ArkUI_XComponentSurfaceConfig",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0216",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-nativewindow.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-nativewindow.md",
+      "title": "NativeWindow",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0217",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-arkui-surfacecallback.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-arkui-surfacecallback.md",
+      "title": "OH_ArkUI_SurfaceCallback",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0218",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-arkui-surfaceholder.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-arkui-surfaceholder.md",
+      "title": "OH_ArkUI_SurfaceHolder",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0219",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-callback.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-callback.md",
+      "title": "OH_NativeXComponent_Callback",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0220",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-expectedraterange.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-expectedraterange.md",
+      "title": "OH_NativeXComponent_ExpectedRateRange",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0221",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-extramouseeventinfo.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-extramouseeventinfo.md",
+      "title": "OH_NativeXComponent_ExtraMouseEventInfo",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0222",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-historicalpoint.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-historicalpoint.md",
+      "title": "OH_NativeXComponent_HistoricalPoint",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0223",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-keyevent.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-keyevent.md",
+      "title": "OH_NativeXComponent_KeyEvent",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0224",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-mouseevent-callback.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-mouseevent-callback.md",
+      "title": "OH_NativeXComponent_MouseEvent_Callback",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0225",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-mouseevent.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-mouseevent.md",
+      "title": "OH_NativeXComponent_MouseEvent",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0226",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-touchevent.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-touchevent.md",
+      "title": "OH_NativeXComponent_TouchEvent",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0227",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-touchpoint.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent-touchpoint.md",
+      "title": "OH_NativeXComponent_TouchPoint",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0228",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent-oh-nativexcomponent.md",
+      "title": "OH_NativeXComponent",
+      "category": "xcomponent"
+    },
+    {
+      "id": "doc_0229",
+      "path": "xcomponent/capi-oh-nativexcomponent-native-xcomponent.md",
+      "filename": "capi-oh-nativexcomponent-native-xcomponent.md",
+      "title": "OH_NativeXComponent Native XComponent",
+      "category": "xcomponent"
+    }
+  ],
+  "component_map": {},
+  "keyword_map": {
+    "弹窗": [
+      "guide/ndk-build-pop-up-window.md",
+      "dialog"
+    ],
+    "对话框": [
+      "guide/ndk-build-pop-up-window.md",
+      "dialog"
+    ],
+    "手势": [
+      "guide/ndk-bind-gesture-events.md",
+      "guide/ndk-bind-input-events.md",
+      "gesture-drag"
+    ],
+    "拖拽": [
+      "guide/ndk-drag-event.md",
+      "gesture-drag"
+    ],
+    "列表": [
+      "guide/ndk-loading-long-list.md",
+      "layout"
+    ],
+    "动画": [
+      "guide/ndk-use-animation.md",
+      "guide/ndk-use-animation-scene.md",
+      "animation"
+    ],
+    "布局": [
+      "guide/ndk-common-attribute-layout.md",
+      "guide/ndk-layout-container.md",
+      "layout"
+    ],
+    "网格": [
+      "guide/ndk-grid.md",
+      "layout"
+    ],
+    "瀑布流": [
+      "guide/ndk-waterflow.md",
+      "layout"
+    ],
+    "文本": [
+      "guide/ndk-use-text-component.md",
+      "text"
+    ],
+    "选择器": [
+      "guide/ndk-picker.md",
+      "text"
+    ],
+    "轮播": [
+      "guide/ndk-swiper.md",
+      "text"
+    ],
+    "图片": [
+      "guide/ndk-image-component.md"
+    ],
+    "导航": [
+      "guide/ndk-navigation-query.md"
+    ],
+    "节点": [
+      "guide/ndk-node-query-operate.md",
+      "node"
+    ],
+    "多线程": [
+      "guide/ndk-build-on-multi-thread.md",
+      "guide/ndk-scope-task.md"
+    ],
+    "无障碍": [
+      "guide/ndk-accessibility-xcomponent.md",
+      "accessibility"
+    ],
+    "嵌入": [
+      "guide/ndk-embed-arkts-components.md",
+      "guide/ndk-embed-render-components.md",
+      "guide/ndk-embedded-component.md"
+    ],
+    "卡片": [
+      "guide/ndk-build-form-components.md"
+    ],
+    "自定义组件": [
+      "guide/ndk-build-custom-components.md"
+    ],
+    "样式字符串": [
+      "guide/ndk-styled-string.md",
+      "text"
+    ],
+    "渲染": [
+      "guide/ndk-embed-render-components.md",
+      "render",
+      "guide/napi-xcomponent-guidelines.md"
+    ],
+    "XComponent": [
+      "guide/napi-xcomponent-guidelines.md",
+      "xcomponent"
+    ],
+    "事件": [
+      "guide/ndk-add-component-events.md",
+      "guide/ndk-add-event-response.md"
+    ]
+  },
+  "synonym_groups": [
+    [
+      "ndk",
+      "native",
+      "capi",
+      "nativemodule",
+      "native module"
+    ]
+  ],
+  "keywords": []
+}

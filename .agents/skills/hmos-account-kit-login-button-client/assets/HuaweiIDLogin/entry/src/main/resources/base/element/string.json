@@ -1,0 +1,108 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "HuaweiIDSample"
+    },
+    {
+      "name": "hwid_no_internet_connect",
+      "value": "No Internet connection. Check your network settings. "
+    },
+    {
+      "name": "hwid_text_button_known",
+      "value": "OK"
+    },
+    {
+      "name": "agree",
+      "value": "You have read and agreed to the "
+    },
+    {
+      "name": "and",
+      "value": " and "
+    },
+    {
+      "name": "end",
+      "value": ""
+    },
+    {
+      "name": "cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "close",
+      "value": "Continue"
+    },
+    {
+      "name": "other_login_models",
+      "value": "Other ways to sign in"
+    },
+    {
+      "name": "user_agreement",
+      "value": "XXXX User Service Agreement"
+    },
+    {
+      "name": "privacy_policy",
+      "value": "XXXX Privacy Statement."
+    },
+    {
+      "name": "huaweiId_user_authentication_protocol",
+      "value": "HUAWEI ID User Authentication Agreement"
+    },
+    {
+      "name": "user_agreement_and_privacy_policy",
+      "value": "User Agreement and Privacy Policy"
+    },
+    {
+      "name": "protocol_separator",
+      "value": ""
+    },
+    {
+      "name": "service_error",
+      "value": "Service or network exception. Try again later."
+    },
+    {
+      "name": "agree_and_sign_in",
+      "value": "Accept & sign in"
+    },
+    {
+      "name": "not_login_in",
+      "value": "HUAWEI ID not signed in. Sign in first and try this operation again."
+    },
+    {
+      "name": "scope_not_supported",
+      "value": "Unsupported scopes or permissions."
+    },
+    {
+      "name": "get_network_info_reason",
+      "value": "Query and set the network status before clicking the privacy agreement."
+    },
+    {
+      "name": "internet_reason",
+      "value": "Access to external links"
+    },
+    {
+      "name": "internet_permission_reason",
+      "value": "Used to invoke the one-click login component."
+    },
+    {
+      "name": "get_network_info_permission_reason",
+      "value": "Used to determine whether the current device is connected to the network before redirecting to the Huawei ID user authentication agreement page."
+    },
+    {
+      "name": "login_success",
+      "value": "Login Success"
+    },
+    {
+      "name": "agreement_not_accepted_toast",
+      "value": "Read and agree to the XXXX User Service Agreement and XXXX Privacy Statement."
+    }
+  ]
+}

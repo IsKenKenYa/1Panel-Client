@@ -1,0 +1,13 @@
+<div class="container">
+    <stack>
+        <div class="container-img">
+            <image src="/common/widget.png" class="bg-img"></image>
+            <image src="/common/rect.png" class="bottom-img"></image>
+        </div>
+        <div class="container-inner">
+            <text class="title" onclick="routerEvent">{{title}}</text>
+            <text class="detail_text" onclick="messageEvent">{{detail}}</text>
+            <text class="time_text">{{updateTime}}</text>
+        </div>
+    </stack>
+</div>

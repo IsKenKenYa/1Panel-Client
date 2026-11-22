@@ -1,0 +1,92 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "files": {
+    "SKILL.md": {
+      "exists": true,
+      "description": "主技能定义文件",
+      "size": 19496
+    },
+    "references/api_reference_links.md": {
+      "exists": true,
+      "description": "API参考链接汇总",
+      "size": 6124
+    },
+    "references/api_guide_summary.md": {
+      "exists": true,
+      "description": "API指南摘要",
+      "size": 1845
+    },
+    "assets/WgtImgUpdateEntryFormAbility.ets": {
+      "exists": true,
+      "description": "FormExtensionAbility示例代码",
+      "size": 4678
+    },
+    "assets/WidgetImageUpdateCard.ets": {
+      "exists": true,
+      "description": "卡片页面示例代码",
+      "size": 1587
+    },
+    "assets/module.json5": {
+      "exists": true,
+      "description": "模块配置示例",
+      "size": 1342
+    },
+    "assets/form_config.json": {
+      "exists": true,
+      "description": "卡片配置示例",
+      "size": 644
+    },
+    "tests/test_local_image_refresh.ts": {
+      "exists": true,
+      "description": "本地图片刷新测试",
+      "size": 3078
+    },
+    "tests/test_network_image_refresh.ts": {
+      "exists": true,
+      "description": "网络图片刷新测试",
+      "size": 3498
+    },
+    "tests/test_multiple_images.ts": {
+      "exists": true,
+      "description": "多图片显示测试",
+      "size": 3335
+    },
+    "tests/test_image_size_limit.ts": {
+      "exists": true,
+      "description": "图片大小限制测试",
+      "size": 2356
+    },
+    "tests/test_image_count_limit.ts": {
+      "exists": true,
+      "description": "图片数量限制测试",
+      "size": 2735
+    },
+    "tests/test_download_time_limit.ts": {
+      "exists": true,
+      "description": "下载时间限制测试",
+      "size": 3086
+    },
+    "tests/test_permission_missing.ts": {
+      "exists": true,
+      "description": "权限未申请测试",
+      "size": 2870
+    },
+    "tests/test_invalid_url.ts": {
+      "exists": true,
+      "description": "网络链接无效测试",
+      "size": 3523
+    },
+    "tests/test_file_open_failed.ts": {
+      "exists": true,
+      "description": "文件打开失败测试",
+      "size": 4486
+    },
+    "tests/test_download_timeout.ts": {
+      "exists": true,
+      "description": "下载超时测试",
+      "size": 4324
+    }
+  }
+}

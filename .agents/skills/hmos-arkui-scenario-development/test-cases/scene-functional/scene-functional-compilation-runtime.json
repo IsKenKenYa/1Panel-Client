@@ -1,0 +1,343 @@
+[
+  {
+    "case_id": "CR-FUNC-001",
+    "layer": "scene-functional",
+    "title": "网络图片 syncLoad 同步下载导致应用冻屏",
+    "phase": "FIX",
+    "user_prompt": "接手一个商品列表页，每项一张网络图，列表项代码大致是 `Image(url).syncLoad(true).width(120).height(120)`。线上反馈打开页面卡死几秒、弱网下直接弹「应用无响应」、偶发 ANR，HiAppEvent 里能看到 AppFreeze/ThreadBlock 事件。请排查根因并给出修复方案。",
+    "intent": "验证网络图 syncLoad 同步下载冻屏场景能路由至 ARKUI-06 FIX 阶段，方案覆盖 syncLoad 语义根因 + 改异步 + 占位/autoResize + 弱网复现与 AppFreeze 定界。与 ARKUI-07（List+Image 组件使用）区分：本场景核心是性能/稳定性排查而非组件用法。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定位根因：syncLoad(true) 使网络图片的下载（网络 IO）与解码（CPU 密集）同步在主线程执行，主线程被阻塞后无法处理输入与下一帧渲染，连续超时被 watchdog 判定为应用冻屏（AppFreeze/ThreadBlock）。",
+        "修复必须让网络图保持 syncLoad 默认 false（异步加载），不得对网络图使用 syncLoad(true)。",
+        "必须为网络图配置 placeholder（加载中占位）、alt（加载失败兜底）与 autoResize(true)（按显示尺寸解码省内存），并配合图片缓存库避免重复下载与内存峰值。",
+        "若确需同步语义，必须改用 request.downloadFile 异步预下载到本地缓存路径再交给 Image，不得在主线程同步等待。",
+        "诊断方法必须给出：HiAppEvent 订阅 APP_FREEZE 取 ThreadBlock 瞬时栈、Profiler/hiLog 看主线程是否停留在解码/网络请求栈、弱网/断网复现放大信号。"
+      ],
+      "should_reuse_resources": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "对网络图继续保留 syncLoad(true)。",
+        "修复后不加 placeholder/alt 导致加载期间白屏闪烁。",
+        "在生命周期函数内做同步网络/文件操作（如 fs.openSync 未改 await）。",
+        "把问题当作组件用法问题路由到 ARKUI-07 而非性能/稳定性排查 ARKUI-06。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（含大量网络图的长列表）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "修复后首屏/快速滑动时主线程不再被网络下载与解码阻塞，无连续卡死。",
+        "弱网/断网复现下不再触发 AppFreeze/ThreadBlock 事件。",
+        "加载期间显示 placeholder 占位、失败显示 alt 兜底，无白屏闪烁。",
+        "autoResize 生效，内存峰值不因大图解码而飙升。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "修复前后 Profiler 主线程长帧对比（同步解码段消失）",
+        "弱网复现无 AppFreeze/ThreadBlock 的 HiAppEvent 日志",
+        "syncLoad 已移除且 placeholder/alt/autoResize 配置的代码"
+      ]
+    }
+  },
+  {
+    "case_id": "CR-FUNC-002",
+    "layer": "scene-functional",
+    "title": "自定义组件 aboutToDisappear 回调异常/崩溃",
+    "phase": "FIX",
+    "user_prompt": "一个自定义组件，从 Navigation pop 返回或外层 if 变 false 销毁后会偶发崩溃，日志显示在 aboutToDisappear 里取到的对象变 undefined。该回调代码大致是 `this.count = 999; setTimeout(() => this.cleanup(), 500)`。另外这个崩溃很难定位，框架似乎把回调里的异常吞掉了。请排查根因并给出修复方案。",
+    "intent": "验证 aboutToDisappear 回调异常场景能路由至 ARKUI-06 FIX 阶段，方案覆盖 detached 节点根因 + 禁改状态/禁异步闭包 + 同步清理 + errorManager/try-catch 定位。与 ARKUI-05（Navigation 生命周期）、ARKUI-03（状态管理）区分：本场景核心是运行时回调异常排查。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-05",
+        "ARKUI-03"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定位根因：aboutToDisappear 在组件析构销毁之前执行，此时后端节点已标记 detached 即将摘除，组件实例及 @State/@Link 随时被 GC，访问 UI 引用或修改状态已不可靠。",
+        "修复必须保证 aboutToDisappear 内禁改状态变量（尤其 @Link 会破坏与同步源绑定），禁用 async/await/Promise/setTimeout（异步闭包持有 this 阻止 GC、执行时引用已失效）。",
+        "回调内只做同步清理：取消定时器、解注册监听、关闭资源；耗时任务提前到 aboutToAppear 注册并在销毁前取消（可用 disposed 标记让遗留异步任务自行退出）。",
+        "必须防方法重名：不得在 @Component 内定义与 aboutToAppear/aboutToDisappear 同名的业务方法，避免框架回调被 override。",
+        "诊断方法必须给出：aboutToAppear/aboutToDisappear/异步任务内分别 hilog 打点确认时序、errorManager.on('error') 全局拦截回调异常避免被框架静默吞、回调体内 try-catch 打印 stack 定位失效对象。"
+      ],
+      "should_reuse_resources": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "在 aboutToDisappear 内修改 @State/@Link。",
+        "在 aboutToDisappear 内启动 async/await/Promise/setTimeout 持有 this。",
+        "@Component 内定义与生命周期同名的业务方法导致 override。",
+        "不做 try-catch/errorManager 兜底，依赖框架吞异常无法定位。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（Navigation 路由 + 条件销毁组件）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "Navigation pop 返回 / if 销毁子组件后不再出现 undefined 空引用崩溃。",
+        "aboutToDisappear 内只做同步清理，异步任务在销毁前已取消或通过 disposed 标记退出。",
+        "errorManager/try-catch 能捕获并打印回调异常，不再被静默吞。",
+        "销毁后无定时器/监听残留导致的内存泄漏。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "aboutToAppear/aboutToDisappear/异步任务时序 hilog 日志",
+        "errorManager 捕获异常的日志（修复后该异常不再出现）",
+        "修复前后对比代码（同步清理 + disposed 标记 + try-catch）"
+      ]
+    }
+  },
+  {
+    "case_id": "CR-FUNC-003",
+    "layer": "scene-functional",
+    "title": "主线程耗时操作导致界面丢帧",
+    "phase": "FIX",
+    "user_prompt": "列表滑动明显卡顿、点击按钮界面冻住半秒、冷启动白屏也长。Profiler 抓到主线程连续长任务（单次 20ms+）。相关代码大致是：onWillScroll 里 this.recompute(offset)、aboutToReuse 里 this.derive()、aboutToAppear 里 this.data = JSON.parse(rawBigJson)。请定位耗时点并给出优化方案。",
+    "intent": "验证主线程耗时丢帧场景能路由至 ARKUI-06 FIX 阶段，方案覆盖高频回调瘦身 + TaskPool 下沉 + 接口选优（传 id）+ Profiler/hiTraceMeter 定位。与 ARKUI-07（列表组件）、ARKUI-03（状态）区分。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定位根因：布局/绘制/状态刷新/Vsync 回调全跑主线程，某段代码独占主线程超一帧（约 16.6ms@60fps）即丢帧；高频回调（onWillScroll/aboutToReuse/aboutToAppear/itemGenerator）里塞耗时操作、JSON.parse/同步 IO 是典型拖累。",
+        "高频回调必须瘦身，只留轻量赋值，耗时计算/JSON 解析/大文件读取必须下沉到 taskpool/Worker 子线程执行。",
+        "必须指出异步 ≠ 不阻塞：async/await 回调最终仍由主线程执行，大数据 JSON.parse 照样卡帧，必须真正下沉子线程。",
+        "接口选优：getStringSync 传 .id（引用，~0.07ms）而非 resource 对象（深拷贝，~1.9ms）；release 包移除 hilog.debug/空 onAreaChange 等冗余回调。",
+        "诊断方法必须给出：DevEco Studio Profiler Frame 看 Main 线程红色长帧定位函数、hiTraceMeter startTrace/finishTrace 自定义打点量单次耗时、Code Linter 扫描空回调和主线程网络请求。",
+        "必须指出组件属性是「整体刷新」：改一个 width 会连带重算同组件其他属性的入参函数，不得把耗时函数挂在任何组件属性上；并须移除 getInspectorByKey/sendEventByKey 等仅供测试的接口。"
+      ],
+      "should_reuse_resources": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "在高频回调（onWillScroll/aboutToReuse/itemGenerator）里保留耗时计算或 JSON.parse。",
+        "误以为 async/await 就不阻塞主线程，未真正下沉 taskpool/Worker。",
+        "getStringSync 传 resource 对象触发深拷贝。",
+        "release 包残留 hilog.debug/空回调未移除。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（含长列表 + 数据解析）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "高频回调内仅轻量赋值，耗时任务在 taskpool/Worker 子线程执行，主线程不再有连续长任务。",
+        "滑动/点击丢帧率显著下降，长任务单次耗时降至一帧预算以内。",
+        "JSON.parse 大数据在子线程执行，主线程 Trace 不再出现解析段空白帧。",
+        "release 包无冗余日志/空回调开销。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "修复前后 Profiler Main 线程长帧对比",
+        "hiTraceMeter 自定义打点耗时对比（优化前 20ms+ → 优化后毫秒级）",
+        "TaskPool 下沉的代码与接口选优（传 id）代码"
+      ]
+    }
+  },
+  {
+    "case_id": "CR-FUNC-004",
+    "layer": "scene-functional",
+    "title": "滑动场景长帧与丢帧分析",
+    "phase": "FIX",
+    "user_prompt": "长列表（List/Grid）滑动卡顿不跟手，画面撕裂、有白块，快速惯性滚动时尤其明显。Profiler 看到应用进程连续丢帧，最大连续丢帧数大于 3。我已经用了 LazyForEach 但还是卡。请帮我用 Profiler 定位是哪一帧、哪个阶段慢，并给出优化方案。",
+    "intent": "验证滑动长帧/丢帧分析场景能路由至 ARKUI-06 FIX 阶段，方案覆盖 Frame 轨道定位丢帧进程 + debug 开关抓 Trace + @Reusable/reuseId + @ObjectLink 替 @Prop + 删冗余状态变量。与 ARKUI-07（列表组件）、ARKUI-09（动画卡顿）区分。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07",
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "诊断必须先开 ArkUI debug 开关（persist.ace.debug.enabled/trace.enabled/layout.enabled）再抓 Trace，否则只有粗粒度信息。",
+        "必须用 Frame 轨道先判断丢帧发生在应用进程还是 RS 进程：RS 丢帧但应用侧均衡时多半是系统绘制问题而非应用代码。",
+        "必须框选红色帧到 ArkTS Callstack 泳道看耗时阶段，识别关键 Trace 点：BuildItem（组件复用失效）、deepCopyObject（@Prop 深拷贝）、ViewPU.ViewPropertyHasChanged（冗余状态变量）。",
+        "优化必须正确启用组件复用：复用组件加 @Reusable 并设置正确 reuseId（多模板场景必须用 reuseId 区分），消除滑动时大量 BuildItem。",
+        "必须用 @Observed+@ObjectLink 替代 @Prop（避免复杂对象深拷贝）、删除未绑定 UI 的冗余 @State（改普通变量）、改 LazyForEach 全量刷新为局部刷新、合理设 cachedCount、用 RelativeContainer 扁平化或 @Builder 代替 @Component 减少嵌套层级（避免 __Common__ 节点）。"
+      ],
+      "should_reuse_resources": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "未开 debug 开关直接抓 Trace 导致无法定位标脏变量。",
+        "误把 RS 进程丢帧当应用代码问题排查。",
+        "仅加 @Reusable 不设 reuseId（多模板场景复用池命中率低）。",
+        "@Prop 传复杂对象触发 deepCopyObject 未改 @ObjectLink。",
+        "保留未绑定 UI 的冗余 @State 变量。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（List/Grid 长列表）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "滑动过程最大连续丢帧数降至 3 以下，帧率稳定在目标值（60fps/120fps）。",
+        "Trace 中滑动时不再大量出现 BuildItem（组件复用命中）。",
+        "BuildItem 单帧不再因 deepCopyObject 耗时 3ms+。",
+        "冗余状态变量已移除，ViewPU.ViewPropertyHasChanged 不再触发未绑定 UI 的变量。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "修复前后 Frame 轨道丢帧对比（连续丢帧数与帧率）",
+        "ArkTS Callstack 关键 Trace 点对比（BuildItem/deepCopyObject 减少）",
+        "@Reusable+reuseId 与 @ObjectLink 改造代码"
+      ]
+    }
+  },
+  {
+    "case_id": "CR-FUNC-005",
+    "layer": "scene-functional",
+    "title": "滑动列表占位符加载完成时延过大",
+    "phase": "FIX",
+    "user_prompt": "长列表惯性滚动停止后，屏幕内图片占位符迟迟加载不出来、出现空白块；上拉加载更多时 loading 卡很久。相关刷新逻辑大致是：数据回来后 this.dataSource.notifyDataReload()，占位图 Image(item.url).animation({透明度+缩放渐变})。请分析为什么加载这么慢并优化，目标是占位符加载完成时延达标。",
+    "intent": "验证滑动占位符加载完成时延场景能路由至 ARKUI-06 FIX 阶段，方案覆盖 APP_LIST_FLING 定起止点（标准≤40ms）+ notifyDataReload 改局部刷新 + @Reusable/reuseId + 动画时长计入时延。与 ARKUI-07、ARKUI-09 区分。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07",
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须正确度量时延：以 APP_LIST_FLING 终点（滚动停止）为起点、应用停止向 RenderService 送帧为终点，标准 ≤ 40ms，不得用错误口径测量。",
+        "必须将 LazyForEach 的 notifyDataReload 全量刷新改为 notifyDataAdd/notifyDataChange 局部刷新，避免键值未变的项被重建。",
+        "必须启用组件复用 @Reusable + reuseId，消除滑动中 GridItem 被析构重建（Trace 中大量 aboutToBeDeleted 即未复用信号）。",
+        "必须指出占位图加载阶段的 JSAnimation（透明度/缩放）duration 会直接计入加载完成时延，能免则免或缩短 duration。",
+        "网络优化：预请求（快滑到底部提前触发）、网图用小图、Image 设 alt 本地占位、启用图片缓存。"
+      ],
+      "should_reuse_resources": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用错误时延口径（非 APP_LIST_FLING 终点起算）测量。",
+        "继续用 notifyDataReload 全量刷新。",
+        "组件复用未配 reuseId，Trace 中大量 aboutToBeDeleted。",
+        "占位图加载保留长 duration 的渐变动画。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（含网络图的长列表 + 上拉加载）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "惯性滚动停止后占位符加载完成时延 ≤ 40ms。",
+        "上拉加载更多后占位图及时出现，无长时间空白块。",
+        "局部刷新后仅新增项重建，键值未变的项不被重建。",
+        "占位图动画 duration 缩短或移除，不再拖累时延。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "修复前后 APP_LIST_FLING 起止点时延对比（>40ms → ≤40ms）",
+        "notifyDataReload 改 notifyDataAdd/notifyDataChange 的代码",
+        "Trace 中 aboutToBeDeleted 大量减少的对比"
+      ]
+    }
+  }
+]

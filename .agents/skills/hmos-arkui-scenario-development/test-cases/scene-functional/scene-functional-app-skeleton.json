@@ -1,0 +1,150 @@
+[
+  {
+    "case_id": "AS-FUNC-001",
+    "layer": "scene-functional",
+    "title": "垂类App基础骨架 Navigation+断点+Tabs 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿资讯/电商垂类App：使用Navigation作为根容器管理页面栈，结合断点系统（WidthBreakpoint/HeightBreakpoint）实现多设备动态适配，手机端底部TabBar单栏、平板端侧边导航双栏/三栏布局，内容区按断点切换List lanes列数和GridRow栅格列数，顶部搜索栏按设备形态切换紧凑/聚合/分行布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-11 页面骨架场景中 Navigation + 断点系统 + Tabs 底部导航 + 响应式布局的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-11",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/app-skeleton-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Navigation 作为根容器，传入 NavPathStack 管理页面栈，配置 mode(NavigationMode.Stack) 和 hideTitleBar(true) 并通过 navDestination 注册路由表。",
+        "必须使用 @StorageProp 监听 currentWidthBreakpoint 和 currentHeightBreakpoint，并通过 @Watch('onBreakpointChange') 注册断点回调实现宽高断点双向完整映射（含 isSmallScreen/isLargeScreen/isSmallSquareScreen 标志位）。",
+        "必须使用 BreakpointType 按断点定义字体尺寸、内容边距、列表列数、栅格列数等差异化值，通过 getValue(currentWidthBp) 获取当前断点对应值，不能硬编码。",
+        "必须使用 Tabs 配置 barPosition（大屏 BarPosition.Start 侧边 / 小屏 BarPosition.End 底部）、vertical（大屏纵向）、barMode（大屏 BarMode.Scrollable / 小屏 BarMode.Fixed）实现底部↔侧边导航挪移。",
+        "内容区必须根据断点切换 List lanes 列数（sm 1 / md 2 / lg 3）和 GridRow columns 栅格列数（sm 4 / md 6 / lg 12）实现响应式布局。",
+        "必须通过自定义 @Builder TopBar 按设备形态切换布局（小方形屏紧凑 / 大屏标题+搜索聚合 / 手机竖屏分行），不能使用 Navigation 默认标题栏。"
+      ],
+      "should_reuse_resources": [
+        "./references/app-skeleton-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 router.pushUrl 代替 Navigation+NavPathStack，无法支持分栏导航和路由栈管理。",
+        "不使用 @StorageProp/@Watch 监听断点变化，硬编码设备类型判断无法适配折叠屏动态切换。",
+        "不使用 BreakpointType 而是硬编码字体/边距/列数值，无法按断点缩放。",
+        "Tabs 不配置 barPosition/vertical 切换，大屏仍显示底部导航无法利用侧边空间。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手机竖屏（WIDTH_SM）显示底部 TabBar 单栏布局，内容区 List 单列、GridRow 少列栅格。",
+        "平板横屏（WIDTH_LG）切换为侧边导航纵向排列，内容区 List 多列、GridRow 多列栅格。",
+        "折叠屏展开时宽高断点同时变化，@Watch 回调正确触发布局切换不闪烁。",
+        "点击列表项 pushPath 跳转详情页，详情页通过 NavDestination 路由表渲染，返回正确回到首页。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手机竖屏底部TabBar单栏布局截图",
+        "平板侧边导航双栏布局截图",
+        "折叠屏展开布局切换截图"
+      ]
+    }
+  },
+  {
+    "case_id": "AS-FUNC-002",
+    "layer": "scene-functional",
+    "title": "地图导航综合页面 Stack层叠+浮动面板+抽屉 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿地图导航App综合页面：使用Stack作为根容器实现层叠布局，底层全屏地图支持单指拖动平移和双指缩放，顶部毛玻璃浮动导航栏，右下角控制按钮组（缩放/图层/定位），底部抽屉面板支持拖拽手柄三档高度吸附，各浮层通过状态变量独立控制显隐并适配安全区。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-11 页面骨架场景中 Stack 层叠 + 浮动面板 + 抽屉 Drawer + 手势交互 + 安全区适配的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-11",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/app-skeleton-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Stack 作为根容器实现层叠布局，底层地图占满全屏 zIndex(0)，各浮层通过 zIndex 控制层级（顶部栏 2 / 抽屉 7 / 图层面板 9 / 控制按钮 10）。",
+        "必须使用 GestureGroup(GestureMode.Exclusive, PanGesture, PinchGesture) 互斥手势组实现地图单指拖动与双指缩放二选一，通过 scale({ x, y }) 和 translate({ x, y }) 变换地图，缩放范围限制 0.5-3.0。",
+        "顶部导航栏必须使用 backgroundBlurStyle(BlurStyle.BACKGROUND_THIN) 毛玻璃效果，并 expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP]) 适配状态栏，padding 顶部使用动态获取的 statusBarHeight。",
+        "浮层容器必须设置 hitTestBehavior(HitTestMode.Transparent) 实现事件透传，自身不响应触摸但子节点和下层地图可接收事件。",
+        "底部抽屉必须使用 parallelGesture(PanGesture) 响应拖拽，onActionUpdate 动态调整 drawerHeight，onActionEnd 按 velocityY 速度判断（>1000 快速跳档 / 否则慢速吸附最近档位），并用 animateTo({ duration: 250, curve: Curve.EaseOut }) 实现吸附动画。",
+        "抽屉三档高度必须根据 onAreaChange 获取的 screenHeight 动态计算（collapsedHeight / midHeight=screenHeight*0.5 / expandedHeight=screenHeight*0.9），抽屉宽度按断点切换（sm 100% / md 50% / lg 33.33%）。",
+        "各浮层必须通过 @State 状态变量（showLayerControl/showTopBar/currentZoom/drawerHeight 等）独立控制显隐，互不干扰。"
+      ],
+      "should_reuse_resources": [
+        "./references/app-skeleton-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 Column+绝对定位代替 Stack 层叠，无法使用 alignContent 精确定位各浮层和 zIndex 层级控制。",
+        "不使用 GestureGroup Exclusive 互斥手势，单指拖动和双指缩放同时触发导致地图变换冲突。",
+        "浮层不设置 hitTestBehavior(HitTestMode.Transparent)，遮挡底层地图导致地图无法交互。",
+        "抽屉不用 animateTo 吸附而是直接设置高度，无平滑过渡效果。",
+        "不使用 expandSafeArea 适配状态栏，顶部导航栏被状态栏遮挡。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "底层地图全屏显示，单指拖动平移地图、双指缩放地图，两者互斥不冲突。",
+        "顶部毛玻璃导航栏避开状态栏显示，不遮挡地图内容。",
+        "底部抽屉可拖拽，快速滑动跳档、慢速拖拽吸附最近档位，三档高度正确。",
+        "各浮层（图层面板、控制按钮、抽屉）独立显隐互不影响，浮层透传不遮挡地图交互。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "地图全屏+顶部栏+控制按钮+抽屉层叠布局截图",
+        "双指缩放地图截图",
+        "抽屉拖拽吸附档位截图"
+      ]
+    }
+  }
+]

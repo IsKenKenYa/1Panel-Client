@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "open_form_manager_button",
+      "value": "添加应用卡片到桌面"
+    },
+    {
+      "name": "widget_display_name",
+      "value": "示例卡片"
+    },
+    {
+      "name": "widget_description",
+      "value": "这是一个示例卡片"
+    }
+  ]
+}

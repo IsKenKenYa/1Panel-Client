@@ -1,0 +1,30 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "extensionAbilities": [
+      {
+        "name": "JsCardFormAbility",
+        "srcEntry": "./ets/jscardformability/JsCardFormAbility.ets",
+        "description": "$string:JSCardFormAbility_desc",
+        "label": "$string:JSCardFormAbility_label",
+        "type": "form",
+        "metadata": [
+          {
+            "name": "ohos.extension.form",
+            "resource": "$profile:form_jscard_config"
+          }
+        ]
+      }
+    ]
+  }
+}

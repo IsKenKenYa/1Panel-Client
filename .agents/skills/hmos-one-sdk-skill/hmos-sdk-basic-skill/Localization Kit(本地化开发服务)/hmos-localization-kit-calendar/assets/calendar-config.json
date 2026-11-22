@@ -1,0 +1,109 @@
+{
+  "calendarConfig": {
+    "defaultLocale": "zh-Hans-CN",
+    "defaultCalendarType": "gregory",
+    "supportedCalendarTypes": [
+      {
+        "type": "buddhist",
+        "name": "佛历",
+        "regions": ["泰国", "柬埔寨", "老挝"],
+        "description": "比公历多543年"
+      },
+      {
+        "type": "chinese",
+        "name": "农历",
+        "regions": ["中国", "台湾", "新加坡"],
+        "description": "干支纪年(1-60循环)"
+      },
+      {
+        "type": "gregory",
+        "name": "公历",
+        "regions": ["全球"],
+        "description": "标准公元纪年"
+      },
+      {
+        "type": "islamic_civil",
+        "name": "伊斯兰希吉来历",
+        "regions": ["伊斯兰国家"],
+        "description": "比公历少约580年"
+      },
+      {
+        "type": "japanese",
+        "name": "日本历",
+        "regions": ["日本"],
+        "description": "基于年号纪年"
+      }
+    ],
+    "timezoneConfig": {
+      "defaultTimezone": "Asia/Shanghai",
+      "supportedTimezones": [
+        "Asia/Shanghai",
+        "Asia/Tokyo",
+        "America/New_York",
+        "Europe/London",
+        "UTC"
+      ]
+    },
+    "weekConfig": {
+      "defaultFirstDayOfWeek": 1,
+      "firstDayOfWeekMapping": {
+        "zh-CN": 1,
+        "en-US": 1,
+        "en-GB": 2,
+        "ja-JP": 1
+      },
+      "minimalDaysInFirstWeek": {
+        "default": 1,
+        "ISO": 4
+      }
+    },
+    "apiVersionRequirements": {
+      "minApiVersion": 8,
+      "addMethod": 11,
+      "getTimeInMillis": 11,
+      "compareDays": 11,
+      "metaServiceSupport": 12
+    },
+    "errorHandling": {
+      "errorCodes": {
+        "401": {
+          "description": "Parameter error",
+          "solutions": [
+            "检查必填参数是否提供",
+            "验证参数类型是否正确"
+          ]
+        },
+        "890001": {
+          "description": "Invalid parameter",
+          "solutions": [
+            "验证locale格式",
+            "验证历法类型是否支持",
+            "验证时区ID是否合法"
+          ]
+        }
+      },
+      "fallbackStrategy": {
+        "unsupportedCalendarType": "使用默认公历",
+        "invalidTimezone": "使用系统默认时区",
+        "invalidLocale": "使用zh-Hans-CN"
+      }
+    },
+    "bestPractices": {
+      "monthHandling": {
+        "reminder": "月份从0开始计数",
+        "examples": {
+          "january": 0,
+          "december": 11
+        }
+      },
+      "leapYearHandling": {
+        "description": "自动处理闰年2月",
+        "leapYearCheck": "年份能被4整除但不能被100整除,或能被400整除"
+      },
+      "dateValidation": {
+        "beforeSetting": "验证日期参数合法性",
+        "afterGetting": "处理月份+1用于显示"
+      }
+    }
+  }
+}

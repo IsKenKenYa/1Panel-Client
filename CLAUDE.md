@@ -16,7 +16,7 @@ Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态�
 - 核心基础设施：日志（自动 IP 掩码）、i18n（EN/ZH）、导航、Material Design 3
 - 容器管理、数据库管理、文件管理、网站管理、Dashboard 实时监控
 - Shell 架构：自适应壳 + 模块切换 + 服务器感知导航
-- HarmonyOS 平台适配（Flutter-OH bridge + HUKS 安全存储 + 原生下载器）
+- HarmonyOS 平台适配（Flutter-OH bridge + HUKS 安全存储 + 原生下载器；官方 Flutter 3.44.9 与 Flutter-OH 3.44.9+ohos-1.0.0 双轨，环境准备见 `docs/development/harmonyos_build_and_sideload.md`）
 - 统一消息提示系统（SnackBarUtils，替换 272 处内联调用）
 - 33 个功能模块完整覆盖
 
@@ -34,6 +34,8 @@ flutter build apk --release                  # Android APK
 flutter build ios --release                  # iOS（仅 macOS）
 ```
 
+Flutter 版本：官方 `3.44.9`；HarmonyOS 构建使用独立的 Flutter-OH `3.44.9+ohos-1.0.0` 与 DevEco Studio 26.0.0，配置 `DEVECO_SDK_HOME` 与 hvigor、ohpm 路径后执行 `hflutter build hap --release`。两套 SDK 不共用 `.dart_tool`，切换后必须重新 `pub get`。
+
 测试门禁：`dart run test/scripts/test_runner.dart unit|integration|ui|all`
 
 ## 日常分支与提交
@@ -44,7 +46,7 @@ flutter build ios --release                  # iOS（仅 macOS）
 
 ## 技能与 MCP
 
-- 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（`dart-*`、`flutter-*`）优先；详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
+- 开工前检索 `.agents/skills/`，与任务相关的技能必须使用，官方技能（Flutter/Dart、Android、HarmonyOS、Apple 官方集）优先；详见 `AGENTS.md`「技能与 MCP 工具（强制）」。
 - Dart & Flutter MCP server 配置在 `.mcp.json`（`dart mcp-server`），analyzer 诊断、测试执行、热重载与运行时内省优先走 MCP 工具。
 
 ## 实时功能规划

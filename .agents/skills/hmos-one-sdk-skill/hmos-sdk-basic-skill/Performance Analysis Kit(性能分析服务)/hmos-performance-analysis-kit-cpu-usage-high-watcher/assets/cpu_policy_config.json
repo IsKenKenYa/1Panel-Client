@@ -1,0 +1,57 @@
+{
+  "cpuUsageHighPolicy": {
+    "foregroundLoadThreshold": 10,
+    "backgroundLoadThreshold": 5,
+    "threadLoadThreshold": 50,
+    "perfLogCaptureCount": 3,
+    "threadLoadInterval": 30
+  },
+  "policyDescription": {
+    "foregroundLoadThreshold": {
+      "type": "number",
+      "range": "[1, 100]",
+      "unit": "%",
+      "default": 30,
+      "description": "应用前台CPU负载异常阈值。建议取值小于30%。超出范围时系统使用默认值30%"
+    },
+    "backgroundLoadThreshold": {
+      "type": "number",
+      "range": "[1, 100]",
+      "unit": "%",
+      "default": 10,
+      "description": "应用后台CPU负载异常阈值。建议取值小于10%。超出范围时系统使用默认值10%"
+    },
+    "threadLoadThreshold": {
+      "type": "number",
+      "range": "[15, 100]",
+      "unit": "%",
+      "default": 70,
+      "description": "应用线程CPU负载异常阈值。超出范围时系统使用默认值70%"
+    },
+    "perfLogCaptureCount": {
+      "type": "number",
+      "rangeDebug": "[-1, 100]",
+      "rangeRelease": "[0, 20]",
+      "unit": "times",
+      "default": 1,
+      "description": "采样栈每日采集次数上限。Debug版本范围[-1,100]，Release版本范围[0,20]。-1表示不限制，0表示不采集"
+    },
+    "threadLoadInterval": {
+      "type": "number",
+      "range": "[5, 3600]",
+      "unit": "seconds",
+      "default": 60,
+      "description": "应用线程CPU高负载异常检测周期。超出范围时系统使用默认值60秒"
+    }
+  },
+  "usageNotes": [
+    "配置值会被持久化，后续调用时不设置参数则取上一次的值",
+    "抓取采样栈有内存开销和功耗影响，建议仅本地调试时使用",
+    "Release版本应用采样栈次数限制较严格，避免影响性能",
+    "事件信息包含external_log字段，指向采样栈日志文件路径",
+    "log_over_limit字段表示是否达到采集次数上限"
+  ],
+  "apiVersion": "API 12+",
+  "kit": "@kit.PerformanceAnalysisKit",
+  "api": "hiAppEvent.configEventPolicy"
+}

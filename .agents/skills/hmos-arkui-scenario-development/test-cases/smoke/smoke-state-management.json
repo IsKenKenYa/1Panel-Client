@@ -1,0 +1,1282 @@
+[
+  {
+    "case_id": "SMOKE-STATE-01",
+    "layer": "smoke",
+    "title": "外卖结算页V1父子组件状态同步",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App结算页使用：父组件管理收货方式（配送/自取）、备注信息和购买数量；配送方式卡片只读展示收货方式和备注（父组件修改后自动更新）；数量选择器可加减数量并同步回父组件重新计算配送费。要求使用V1状态变量实现父子组件间的单向同步和双向同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1父子组件状态同步子场景，覆盖 @State 管理父组件状态 + @Prop 单向同步只读数据 + @Link 双向同步可修改数据。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "RSC_ARKUI_03_1",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-02",
+    "layer": "smoke",
+    "title": "外卖结算页V2父子组件状态同步",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App结算页：父组件管理收货方式、备注和购买数量；配送方式卡片只读展示收货方式和备注；数量选择器通过回调修改数量并同步回父组件；店铺标签组件仅初始化时接收一次店铺ID后续不同步。要求使用V2状态变量实现父子组件间的单向同步、回调双向同步与初始化同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2父子组件状态同步子场景，覆盖 @Local 管理父组件状态 + @Param 单向同步 + @Param+@Event 回调双向同步 + @Param+@Once 仅初始化同步一次。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "RSC_ARKUI_03_1",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-03",
+    "layer": "smoke",
+    "title": "音乐播放器V1跨组件层级双向同步",
+    "phase": "DEV",
+    "user_prompt": "仿音乐播放器App：根组件维护全局播放状态（当前歌曲、播放进度、播放/暂停），中间有多层容器组件（播放列表容器→布局容器），最底层的迷你播放器控件和歌词控件需要直接读写播放状态，无需逐层传递参数。要求使用V1状态变量实现跨组件层级双向同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1跨组件层级双向同步子场景，覆盖 @Provide 提供数据 + @Consume 消费数据 + 变量名/别名匹配 + 跨层级双向同步。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "RSC_ARKUI_03_1",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-04",
+    "layer": "smoke",
+    "title": "音乐播放器V2跨组件层级双向同步",
+    "phase": "DEV",
+    "user_prompt": "仿音乐播放器App：根组件维护全局播放状态（当前歌曲、播放进度、播放/暂停），中间有多层容器组件，最底层的迷你播放器控件和歌词控件需要直接读写播放状态。要求使用V2状态变量实现跨组件层级双向同步，后代组件需设默认值。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2跨组件层级双向同步子场景，覆盖 @Provider() 提供数据 + @Consumer() 消费数据 + aliasName 匹配 + 后代本地初始化默认值。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "RSC_ARKUI_03_1",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-05",
+    "layer": "smoke",
+    "title": "外卖地址簿V1嵌套对象属性观测",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App地址簿管理页：地址(Address)包含收件人信息和区域(Region)嵌套对象，区域包含省份、城市、街道。需要观测嵌套对象的深层属性变化（如修改街道名称、切换省份），并实现属性级精准更新（改街道仅刷新街道UI）。要求使用V1状态变量实现嵌套对象监听与属性级更新。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1嵌套对象监听子场景，覆盖 @Observed 装饰内层类 + @ObjectLink 在子组件接收内层对象 + @Track 实现属性级精准更新 + @State 仅观察第一层限制。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-06",
+    "layer": "smoke",
+    "title": "外卖地址簿V2嵌套对象属性观测",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App地址簿管理页：地址(Address)包含收件人信息和区域(Region)嵌套对象，区域包含省份、城市、街道。需要直接在父组件中观测多层嵌套对象的深层属性变化（如修改街道名称、切换省份），实现属性级精准更新，无需拆分子组件。要求使用V2状态变量实现嵌套对象监听与属性级更新。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2嵌套对象监听子场景，覆盖 @ObservedV2 + @Trace 直接在父组件观测多层嵌套属性 + @Trace 自带属性级精准更新 + 外层类无需装饰器 + 任意深度观测。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-07",
+    "layer": "smoke",
+    "title": "记账App V1状态变量变化监听",
+    "phase": "DEV",
+    "user_prompt": "仿记账App预算管理页：用户记录收入和支出项，不同收支项数量变化时统一判断是否超出预算，支出列表变化时重新计算本月剩余预算。要求使用V1状态变量监听变化，多个变量绑定同一回调通过propName区分来源。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1状态变量变化监听子场景，覆盖 @Watch 监听状态变量变化 + 多变量共享回调通过 propName 区分 + @Link+@Watch 组合监听子组件变化。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-08",
+    "layer": "smoke",
+    "title": "记账App V2精准监听与变化前后值",
+    "phase": "DEV",
+    "user_prompt": "仿记账App预算管理页：用户记录收入和支出，收入/支出数量变化时自动计算余额并显示变化前后值（如「余额从 ¥3200 变为 ¥2800」），账单对象的属性变化需要精准监听。要求使用V2状态变量实现精准监听与变化前后值获取。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2精准监听子场景，覆盖 @Monitor 同时监听多个变量 + monitor.dirty 返回变化路径 + monitor.value() 获取前后值 + @ObservedV2 类内 @Monitor 监听 @Trace 属性。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-09",
+    "layer": "smoke",
+    "title": "健身打卡页V2深层属性路径监听",
+    "phase": "DEV",
+    "user_prompt": "仿健身打卡页：运动项目(SportItem)包含运动类型和规格(Specs)嵌套对象，规格包含组数、次数、重量。需要监听基础数据变化（如运动时长）和嵌套规格属性路径变化（如 specs.weight），获取变化前后值记录训练日志。要求使用V2状态变量实现深层属性路径监听。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2深层属性路径监听子场景，覆盖 @Monitor('sport.specs.weight') 深层路径监听 + @ObservedV2+@Trace 嵌套类属性 + monitor.value() 获取嵌套属性前后值。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-10",
+    "layer": "smoke",
+    "title": "股票自选股页V2同步监听",
+    "phase": "DEV",
+    "user_prompt": "仿股票自选股页：股价实时变化时需要每次变化都立即触发回调（而非等所有变化结束后才触发一次），同步刷新股价涨跌提醒和涨跌幅颜色标记。要求使用V2状态变量的同步监听实现每次变化立即响应。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2同步监听子场景，覆盖 @SyncMonitor 同步触发每次变化 + 区别于 @Monitor 异步只触发一次 + monitor.value() 获取前后值 + @ObservedV2 类内 @SyncMonitor。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-11",
+    "layer": "smoke",
+    "title": "任务看板页V2通配符监听",
+    "phase": "DEV",
+    "user_prompt": "仿项目管理任务看板页：任务对象(TaskData)包含标题、状态、优先级、截止日期等属性，任意属性变化都需要触发状态提醒刷新看板排列。要求使用V2状态变量的通配符监听实现对象任意 @Trace 属性变化统一触发回调。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2通配符监听子场景，覆盖 @SyncMonitor('taskData.*') 通配符模糊监听 + 任意 @Trace 属性变化触发 + before/now 为 undefined + 通配符只能在路径末尾。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-12",
+    "layer": "smoke",
+    "title": "睡眠监测App V2动态监听",
+    "phase": "DEV",
+    "user_prompt": "仿睡眠监测App：用户开始睡眠监测时动态添加心率/血氧监听回调（配置同步监听实现实时异常报警），结束监测时清除监听，不同睡眠阶段监听不同指标。要求使用V2状态变量的动态监听与取消监听实现按需添加和移除回调。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2动态监听子场景，覆盖 UIUtils.addMonitor 动态添加监听 + isSynchronous:true 配置同步监听 + UIUtils.clearMonitor 动态取消 + 回调必须为命名方法 + 数组路径批量监听。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-13",
+    "layer": "smoke",
+    "title": "外卖优惠券计算页V2计算属性",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App优惠券计算页：购物车包含多个商品（每个有单价和数量），需要自动计算每件商品小计、购物车总价、满减优惠金额和最终支付金额（含配送费），总价变化时记录变化日志。要求使用V2状态变量实现依赖驱动的自动计算。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2计算属性子场景，覆盖 @Computed 装饰 getter + 依赖 @Trace 属性自动重算 + 链式依赖（满减依赖总价） + 只读 + @Monitor 监听 @Computed + @Param 传递计算结果给子组件。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-14",
+    "layer": "smoke",
+    "title": "健身周报页V2计算属性链式依赖",
+    "phase": "DEV",
+    "user_prompt": "仿健身周报页：每日运动数据包含运动时长和消耗卡路里，需要自动计算每日运动总时长、总消耗卡路里、周达标率（目标完成比例），达标率变化时触发提醒。要求使用V2状态变量实现多级链式依赖的计算属性，并使用@Monitor监听计算属性变化。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2计算属性链式依赖子场景，覆盖 @Computed 多级链式依赖（达标率依赖总卡路里依赖每日数据） + @Monitor 监听 @Computed 获取前后值 + 计算结果只读 + 缓存只算一次。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-15",
+    "layer": "smoke",
+    "title": "电商App V1页面级与应用级全局共享",
+    "phase": "DEV",
+    "user_prompt": "仿电商App多页面场景：商品列表页和商品详情页跨页面共享购物车数量和当前选中商品，商品详情页内筛选面板和排序栏共享筛选条件（仅页面内共享，页面销毁后释放）。要求使用V1状态变量实现应用级全局共享和页面级共享。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1全局共享子场景，覆盖 AppStorage+@StorageLink 双向应用级同步 + @StorageProp 单向只读 + LocalStorage+@LocalStorageLink 页面级双向 + @LocalStorageProp 页面级单向 + 页面销毁释放。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-16",
+    "layer": "smoke",
+    "title": "电商App V2应用级class全局共享",
+    "phase": "DEV",
+    "user_prompt": "仿电商App多页面场景：商品列表页和商品详情页跨页面共享购物车状态（商品数量、选中商品ID、优惠信息），任一页面修改后其他页面同步更新。要求使用V2状态变量实现应用级class全局共享。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2应用级共享子场景，覆盖 AppStorageV2.connect 创建/获取全局单例 + @ObservedV2+@Trace class 类型 + @Trace 属性变化触发同步 + 非 @Trace 属性不触发 UI 刷新 + V2 无页面级存储方案。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-17",
+    "layer": "smoke",
+    "title": "阅读App V1 UI状态持久化",
+    "phase": "DEV",
+    "user_prompt": "仿阅读App：主阅读页和设置页共享阅读偏好配置（字体大小、夜间模式开关、阅读进度、翻页方式），这些配置在应用退出后再次启动时仍保留。翻页方式指示器只读展示当前模式。要求使用V1状态变量实现UI状态持久化。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1持久化子场景，覆盖 PersistentStorage.persistProps 批量持久化 + @StorageLink 双向同步持久化 + @StorageProp 单向只读 + 调用顺序限制 + 不支持嵌套对象 + 数据大小限制。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-18",
+    "layer": "smoke",
+    "title": "阅读App V2 UI状态持久化",
+    "phase": "DEV",
+    "user_prompt": "仿阅读App：阅读偏好配置包含嵌套的阅读样式设置（字号、行距、页边距、背景色），需要在应用退出后再次启动时保留。主阅读页和设置页通过 globalConnect 共享持久化数据，非 @Trace 属性需要手动保存。要求使用V2状态变量实现UI状态持久化。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2持久化子场景，覆盖 PersistenceV2.globalConnect 应用级存储 + @Type 处理嵌套对象序列化/反序列化 + @Trace 属性自动持久化 + 非 @Trace 属性手动 save + PersistenceV2.keys()。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-19",
+    "layer": "smoke",
+    "title": "天气App makeObserved三方数据可观察",
+    "phase": "DEV",
+    "user_prompt": "仿天气App城市天气页：天气数据来源于三方SDK（无法添加 @Trace），也支持从服务端 JSON.parse 加载。需要将这些不可观察的数据变为可观察，配合 @Monitor 和 @Computed 使用，修改属性后触发 UI 刷新。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 makeObserved 子场景，覆盖 UIUtils.makeObserved 将三方class/JSON.parse返回值变为可观察 + 整体赋值需再次调用 + 配合 @Monitor/@Computed/@Param 使用 + 不能和 V1 装饰器混用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-20",
+    "layer": "smoke",
+    "title": "快递查询App canBeObserved调试与getTarget",
+    "phase": "DEV",
+    "user_prompt": "仿快递查询App物流详情页：物流信息数据修改后 UI 不刷新，需要调试定位问题原因；物流轨迹数组被状态管理框架代理后类型判断异常，需要获取代理前的原始对象进行 NAPI 调用。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 canBeObserved/getTarget 子场景，覆盖 UIUtils.canBeObserved 判断可观察+获取关联组件信息 + reason 定位 UI 不刷新 + UIUtils.getTarget 获取代理前原始对象 + 原始对象修改不触发 UI 刷新。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-21",
+    "layer": "smoke",
+    "title": "股票行情页V2同步刷新接口",
+    "phase": "DEV",
+    "user_prompt": "仿股票行情页：@Monitor 监听股价变化后触发 animateTo 实现股价数字位移渐隐动画，由于 V2 异步标脏导致 animateTo 闭包内修改尚未标脏、动画不显示；批量更新多只股票数据后展开详情卡片动画首帧错误。要求使用同步刷新接口解决 V2 版本动效问题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中同步刷新接口子场景，覆盖 UIUtils.applySync 同步刷新闭包内修改 + flushUpdates 同步刷新调用前修改 + flushUIUpdates 仅刷新 UI 节点不触发 @Monitor + @Monitor 触发 animateTo 的异步标脏问题。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-22",
+    "layer": "smoke",
+    "title": "旅行App Environment获取系统环境变量",
+    "phase": "DEV",
+    "user_prompt": "仿旅行App出行助手页：需要根据设备系统语言显示本地化出行标签（中文/英文），根据深浅色模式切换页面配色，字体大小跟随系统缩放。要求通过 Environment 获取系统环境变量并在组件中使用。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 Environment 获取环境变量子场景，覆盖 Environment.envProp 写入 AppStorage + @StorageProp 单向同步只读 + runScopedTask 明确 UIContext + Environment 无响应式能力 + envProp 默认值限制。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-23",
+    "layer": "smoke",
+    "title": "旅行App Ability接口获取系统环境变量",
+    "phase": "DEV",
+    "user_prompt": "仿旅行App出行助手页：需要根据设备系统语言和深浅色模式适配界面。要求通过 UIAbility.context.config 在 Ability 生命周期中直接读取系统环境变量写入 AppStorage，组件通过 @StorageProp 获取。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 Ability 接口获取环境变量子场景，覆盖 UIAbility.context.config 读取配置 + onCreate 写入 AppStorage + @StorageProp 单向同步 + Configuration 常见参数（language/colorMode/direction）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-24",
+    "layer": "smoke",
+    "title": "备忘录App $$双向绑定系统组件",
+    "phase": "DEV",
+    "user_prompt": "仿备忘录App新建笔记页：用户输入笔记标题和内容，支持底部高级设置弹窗（标签选择/置顶开关/提醒时间）。需要通过 $$ 语法糖实现系统组件参数与 V1 状态变量的双向同步：用户操作控件时状态变量自动更新，状态变量变化时控件同步显示。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 $$ 双向绑定子场景，覆盖 $$ 绑定 TextInput text 参数 + $$ 绑定 bindSheet isShow 参数 + 仅支持系统组件不支持自定义组件 + V1 @State 双向同步。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-25",
+    "layer": "smoke",
+    "title": "备忘录App !!双向绑定自定义组件与系统组件",
+    "phase": "DEV",
+    "user_prompt": "仿备忘录App新建笔记页：笔记标题输入组件为自定义组件，通过 !! 语法糖实现与父组件的双向同步；笔记内容输入和高级设置弹窗通过 !! 绑定系统组件参数。要求使用 !! 语法糖统一实现自定义组件间和系统组件参数的双向绑定。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 !! 双向绑定子场景，覆盖 !! 简化 @Param+@Event 自定义组件双向绑定 + !! 绑定 TextInput/bindSheet 系统组件 + @Event 方法名规则 + 不支持多层传递 + 不支持与 @Event 混用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-26",
+    "layer": "smoke",
+    "title": "地图导航面板V1属性动画",
+    "phase": "DEV",
+    "user_prompt": "仿地图App导航面板：底部导航信息面板点击展开时通过属性动画平滑展开为全屏导航视图（高度增大、圆角变小、背景色渐变、路线图缩放、展开图标旋转180°）。要求使用 V1 状态变量管理动画状态，animateTo 驱动属性动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1属性动画子场景，覆盖 V1 @State 修改后立即同步标脏 + animateTo 闭包内修改直接生效 + 首帧正确渲染 + .animation() 隐式动画 + 无需额外处理。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-27",
+    "layer": "smoke",
+    "title": "地图导航面板V2属性动画",
+    "phase": "DEV",
+    "user_prompt": "仿地图App导航面板：底部导航信息面板点击展开时通过属性动画平滑展开为全屏导航视图（高度增大、圆角变小、背景色渐变、路线图缩放、展开图标旋转180°）。要求使用 V2 状态变量管理动画状态，animateTo 驱动属性动画，并解决 V2 异步标脏与 animateTo 不兼容导致的动画首帧问题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2属性动画子场景，覆盖 V2 @Local 异步标脏问题 + API 22 前 animateToImmediately 同步刷新 + API 22+ animateTo 闭包内 UIUtils.applySync 同步刷新 + 首帧正确。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-28",
+    "layer": "smoke",
+    "title": "短视频App V1组件复用信息流",
+    "phase": "DEV",
+    "user_prompt": "仿短视频App推荐流列表：信息流长列表使用 LazyForEach 懒加载渲染，视频卡片有纯视频、图文混排、广告推荐三种结构，需通过 reuseId 区分。覆盖 @Reusable 基本使用（aboutToRecycle/aboutToReuse）、LazyForEach 配合复用、reuseId 区分不同结构。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1组件复用子场景，覆盖 @Reusable+@Component + aboutToRecycling/aboutToReuse 生命周期 + LazyForEach 懒加载配合复用 + .reuseId() 区分不同结构 + cachedCount 缓存 + 手动更新 @State。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-29",
+    "layer": "smoke",
+    "title": "二手交易App V2组件复用商品瀑布流",
+    "phase": "DEV",
+    "user_prompt": "仿二手交易App商品浏览页：商品瀑布流列表使用 Repeat 懒加载渲染，支持滚动时回收复用，支持 if 条件切换显示/隐藏商品详情卡片。要求使用 V2 状态变量实现组件复用功能。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2组件复用子场景，覆盖 @ReusableV2+@ComponentV2 + aboutToReuse 无入参状态自动重置 + Repeat.virtualScroll 懒加载复用 + .reuse({reuseId}) 回调 + if 条件切换触发回收/复用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-30",
+    "layer": "smoke",
+    "title": "邮箱App V1自定义组件冻结",
+    "phase": "DEV",
+    "user_prompt": "仿邮箱App首页：包含「收件箱」「星标」「归档」三个标签页，收件箱标签页内 Navigation 可跳转邮件详情子页面，邮件列表用 LazyForEach 渲染并配合 @Reusable 复用。标签页切换、页面跳转、列表滚动、组件复用时，非活跃组件的状态变量变化不应触发无效刷新。要求使用 V1 状态变量实现自定义组件冻结功能。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1组件冻结子场景，覆盖 @Component({freezeWhenInactive:true}) + @Watch 非活跃不触发 + TabContent/Navigation/LazyForEach/组件复用场景冻结 + 解冻批量触发 + @Reusable+freezeWhenInactive 混用 @Watch 不触发。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-31",
+    "layer": "smoke",
+    "title": "邮箱App V2自定义组件冻结",
+    "phase": "DEV",
+    "user_prompt": "仿邮箱App首页：包含「收件箱」「星标」「归档」三个标签页，收件箱内 Navigation 可跳转邮件详情，邮件列表用 Repeat 渲染并配合 @ReusableV2 复用。要求使用 V2 状态变量实现自定义组件冻结功能，对比 V1 的 @Monitor 获取变化前后值、Repeat 缓存节点冻结、@ReusableV2 自动冻结。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2组件冻结子场景，覆盖 @ComponentV2({freezeWhenInactive:true}) + @Monitor 获取前后值 + Repeat+virtualScroll+cachedCount 缓存节点冻结 + @ReusableV2 自动冻结 + 复用解冻 @Monitor 触发 + API 18+ 解冻精准刷新。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-32",
+    "layer": "smoke",
+    "title": "股票自选股页 @Builder状态变量刷新",
+    "phase": "DEV",
+    "user_prompt": "仿股票自选股页：页面中多个股票数据卡片使用 @Builder 函数封装复用，需要实现：股价数据仅展示（父组件修改→@Builder内刷新），自选股数量可在 @Builder 内点击按钮修改并同步回父组件，股票数据对象（@ObservedV2+@Trace）在 @Builder 内修改属性并同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中 @Builder 状态变量刷新子场景，覆盖 UIUtils.makeBinding 读回调返回 Binding 只读刷新 + 读回调+写回调返回 MutableBinding 双向同步 + @Builder 内修改同步回父组件 + @ObservedV2+@Trace 对象传递 + @Trace 属性触发刷新。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-33",
+    "layer": "smoke",
+    "title": "待办事项App V1循环渲染",
+    "phase": "DEV",
+    "user_prompt": "仿待办事项App任务管理页：包含两部分：（1）今日待办——短列表使用 ForEach 全量渲染，支持添加/删除/完成/拖拽排序；（2）历史任务——长列表使用 LazyForEach 懒加载，支持搜索/添加/删除/修改/移动/重载/拖拽排序。使用 @Observed+@ObjectLink 实现任务子属性（完成状态、优先级）的深层观测。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V1循环渲染子场景，覆盖 ForEach 全量渲染+键值生成 + LazyForEach IDataSource 实现+5种 notifyData* 方法 + @Observed+@ObjectLink 深层属性观测 + List .onMove 拖拽排序 + cachedCount 缓存。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-34",
+    "layer": "smoke",
+    "title": "二手交易App V2循环渲染多模板懒加载",
+    "phase": "DEV",
+    "user_prompt": "仿二手交易App商品列表：列表展示不同类型的商品项目（普通商品、竞价商品、广告推荐），需要通过 V2 的 Repeat 链式 API 实现多类型模板渲染、按需懒加载和节点复用。覆盖 .each() 基本渲染、.key() 键值生成、.template()/.templateId() 多模板、.virtualScroll() 懒加载+@ReusableV2 节点复用。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2循环渲染多模板子场景，覆盖 Repeat .each()+.key() 基本渲染 + .template()/.templateId() 多类型模板 + .virtualScroll() 懒加载 + @ReusableV2 节点复用 + @ObservedV2+@Trace+@Param 深层属性观测。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-35",
+    "layer": "smoke",
+    "title": "资讯App V2循环渲染无限滚动与拖拽",
+    "phase": "DEV",
+    "user_prompt": "仿资讯App新闻瀑布流：列表展示大量新闻项目，需要支持滚动接近末尾时自动加载更多数据（无限滚动），支持拖拽排序重新排列新闻顺序，支持深层属性变化观测（如收藏状态切换、阅读数变化）。要求使用 V2 的 Repeat 实现 .onLazyLoading() 精准懒加载、.onMove() 拖拽排序和 @ObservedV2+@Trace 深层属性观测。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景是否稳定命中V2循环渲染无限滚动子场景，覆盖 Repeat .onLazyLoading() 精准懒加载自动追加数据 + .onMove() 拖拽排序交换数组 + @ObservedV2+@Trace+@Param 深层属性精确观测 + .virtualScroll() + .key() 键值生成。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-36",
+    "layer": "smoke",
+    "title": "外卖店铺详情页 V1中使用V2组件API19前",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App店铺详情页：V1父组件管理店铺信息（店铺名、评分、月销量、作者详情、商品标签列表），需要嵌入多个V2子组件展示不同维度信息。由于 API19 前 V1→V2 传递数据存在类型限制，需针对不同数据类型采用不同适配方案：简单类型直接传递、@ObservedV2 类作为普通变量传递、@Observed 类通过桥接组件中转、嵌套对象通过 @ObjectLink 拆分、内置类型只能作为普通变量传递。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景是否稳定命中V1中使用V2组件API19前子场景，覆盖简单类型直接 @Param 传递 + @ObservedV2+@Trace 普通变量传递 + @Observed class 桥接组件模式 + @ObjectLink 拆分嵌套对象 + 内置类型普通变量无法观测 + 编译报错限制。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-37",
+    "layer": "smoke",
+    "title": "外卖店铺详情页 V1中使用V2组件API19后",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App店铺详情页：V1父组件管理店铺信息（店铺名、评分、月销量），需要使用V2子组件展示店铺详情。API19后通过 enableV2Compatibility 简化了V1→V2的数据传递，普通class和@Observed+@Track装饰的class可直接传递给V2的@Param，无需桥接组件。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景是否稳定命中V1中使用V2组件API19后基础子场景，覆盖 enableV2Compatibility 使V1普通class在V2可观察第一层 + @Observed+@Track class 直接 enableV2Compatibility 无需 makeV1Observed + @Track 属性 V1/V2 均可观察 + 非 @Track 属性差异 + 建议在V2组件构造处调用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-38",
+    "layer": "smoke",
+    "title": "外卖评价管理页 V1中使用V2组件复杂类型",
+    "phase": "DEV",
+    "user_prompt": "仿外卖App评价管理页：V1父组件管理评价数据（评分列表、多级标签组、嵌套评价详情），需要使用V2子组件展示。API19后需通过 makeV1Observed+enableV2Compatibility 处理内置类型（Array）、二维数组（标签组）和嵌套类型的传递，避免双重代理问题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景是否稳定命中V1中使用V2组件复杂类型子场景，覆盖 makeV1Observed 包装 Array 为V1状态变量 + enableV2Compatibility 避免双重代理 + 二维数组逐层 makeV1Observed + 嵌套类型逐层包装+深度观测 + 新增数据需 makeV1Observed。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-39",
+    "layer": "smoke",
+    "title": "出行打车页 V2中使用V1组件API19前",
+    "phase": "DEV",
+    "user_prompt": "仿出行App打车页面：V2父组件管理行程信息（行程状态、车型信息、订单详情、出行标签），需要使用V1第三方组件展示订单详情。API19前需解决V2向V1传递不同类型数据时的限制：简单类型通过 @State/@Prop/@Provide 接收，普通class 通过 @State 接收观测一层，@ObservedV2+@Trace 类作为普通变量依赖 @Trace 观测，内置类型去掉 @Local 普通变量传递，@Observed 类不支持。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景是否稳定命中V2中使用V1组件API19前子场景，覆盖 V2→V1 简单类型 @State/@Prop/@Provide 接收 + 普通 class @State 接收一层观测 + @ObservedV2+@Trace 普通变量 @Trace 独立观测 + 内置类型装饰器互斥去 @Local + @Observed 不支持编译报错。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-STATE-40",
+    "layer": "smoke",
+    "title": "出行打车页 V2中使用V1组件API19后",
+    "phase": "DEV",
+    "user_prompt": "仿出行App打车页面：V2父组件管理行程信息（订单号、车型详情、价格列表、多级标签），需要使用V1第三方组件展示订单详情。API19后通过 enableV2Compatibility+makeV1Observed 实现V2→V1双向数据联动：普通class 双方可观察，@Observed+@Track class 直接 enableV2Compatibility，内置类型 makeV1Observed+enableV2Compatibility 避免 V1 用 @ObjectLink 接收，嵌套类型逐层包装深度观测。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景是否稳定命中V2中使用V1组件API19后子场景，覆盖 enableV2Compatibility(makeV1Observed()) 双向联动 + @Observed class 直接 enableV2Compatibility + V1 @ObjectLink 接收 makeV1Observed 返回值 + 内置类型避免双重代理 + 二维数组逐层包装 + 嵌套类型多层 @ObjectLink 拆分+V2深度观测。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  }
+]

@@ -1,0 +1,288 @@
+[
+  {
+    "case_id": "SMOKE-CC-01",
+    "layer": "smoke",
+    "title": "设计类App按钮渐变边框+外发光DrawModifier",
+    "phase": "DEV",
+    "user_prompt": "仿设计类App：按钮需要绘制独特的渐变边框（红/青/灰三色分段）和外发光光晕效果，系统Button组件无法满足该视觉需求，需通过DrawModifier在背景层绘制渐变边框、前景层绘制多层半透明圆形外发光，并支持霓虹灯变体方案。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 设计类App按钮渐变边框+外发光DrawModifier 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-02",
+    "layer": "smoke",
+    "title": "企业级App按钮四态样式AttributeModifier",
+    "phase": "DEV",
+    "user_prompt": "仿企业级App：需要封装一套统一的主按钮样式规范，支持正常态、按压态、焦点态、禁用态四种状态切换，每种状态有不同背景色/圆角/阴影/缩放，且样式定义需跨文件导出复用、一个Modifier实例可绑定到多个Button。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 企业级App按钮四态样式AttributeModifier 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-03",
+    "layer": "smoke",
+    "title": "设计工具App画布元素动态切换手势GestureModifier",
+    "phase": "DEV",
+    "user_prompt": "仿设计工具App：画布上的图形元素需根据编辑模式动态切换手势行为——选择模式绑定拖拽手势、缩放模式绑定捏合手势、旋转模式绑定旋转手势，手势类型随模式运行时变化，并需通过translate/scale/rotate属性驱动元素变换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 设计工具App画布元素动态切换手势GestureModifier 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-04",
+    "layer": "smoke",
+    "title": "组件库Button图标+文字ContentModifier",
+    "phase": "DEV",
+    "user_prompt": "仿组件库全局定制：需将系统Button的内容区统一替换为\"图标+文字\"组合样式，并为Checkbox添加自定义的收藏切换内容（★/☆），通过config.selected/config.pressed驱动UI刷新，支持一个Modifier实例复用到多个组件。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 组件库Button图标+文字ContentModifier 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-05",
+    "layer": "smoke",
+    "title": "JSON驱动动态表单FrameNode",
+    "phase": "DEV",
+    "user_prompt": "仿动态表单页：需根据后端返回的JSON配置动态生成表单组件（输入框、开关、按钮），并在运行时动态添加或删除表单项，新增/删除直接操作节点不重建整树以保留已有输入，根容器需自带垂直流式布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 JSON驱动动态表单FrameNode 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-06",
+    "layer": "smoke",
+    "title": "电子合同手写签名RenderNode",
+    "phase": "DEV",
+    "user_prompt": "仿电子合同签署页：用户在屏幕上手写签名，手指或触控笔拖动时实时绘制平滑笔迹，支持撤销上一步和清除画板，书写需流畅不卡顿，通过RenderNode重写draw方法逐帧重绘。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 电子合同手写签名RenderNode 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-07",
+    "layer": "smoke",
+    "title": "信息流穿插广告BuilderNode",
+    "phase": "DEV",
+    "user_prompt": "仿新闻信息流：列表中穿插广告条目，广告形态（图文/视频/轮播）在运行时根据服务器下发数据动态创建，先用NodeContainer占位显示加载中样式、数据到达后填充实际内容，支持数据更新后重建。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 信息流穿插广告BuilderNode 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CC-08",
+    "layer": "smoke",
+    "title": "XComponent Surface自定义绘制",
+    "phase": "DEV",
+    "user_prompt": "仿自定义绘制App：需在XComponent的Surface上使用画布对象直接绘制矩形等图形，无需Native代码，通过lockCanvas获取画布、drawing.Brush设置颜色、unlockCanvasAndPost提交显示，支持onLoad初始化和onDestroy清理。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 场景路由分发稳定命中，覆盖 XComponent Surface自定义绘制 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  }
+]

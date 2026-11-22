@@ -1,0 +1,465 @@
+[
+  {
+    "case_id": "SMOKE-NAV-001",
+    "layer": "smoke",
+    "title": "登录/注册/找回密码认证页面流管理",
+    "phase": "DEV",
+    "user_prompt": "做一个登录认证流程：登录页可以跳到注册页，注册页可以跳到找回密码页，三个页面之间能互相跳转；登录或注册成功后要回到主页，并且把认证相关的这几个页面从路由栈里清掉，用户在主页按返回不会回到登录/注册页。用 Navigation 和 NavPathStack 管理这个页面流转。请给出页面跳转和路由栈清理的实现方案。",
+    "intent": "验证开发者提问认证页面流（登录/注册/找回密码互跳 + 完成清栈）时，能否命中 ARKUI-05；与案例集 FUNC-001 权限拦截不同，本场景聚焦多页面流转与栈清理，不涉及 data 字段权限标记。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-002",
+    "layer": "smoke",
+    "title": "Onboarding 引导向导多步骤流程",
+    "phase": "DEV",
+    "user_prompt": "应用首次启动要做一个引导流程：3 个引导页逐步展示功能亮点，底部有「下一步」和「跳过」按钮，用户走完 3 步或点跳过后进入主页，且主页按返回键不能回到引导页。整个引导过程用 Navigation 页面栈管理，完成后清空引导页栈。请给出实现方案。",
+    "intent": "验证开发者提问 Onboarding 多步骤引导流程（顺序 push + 完成清栈）时，能否命中 ARKUI-05；案例集无此场景，属页面流程与栈清理范畴。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-003",
+    "layer": "smoke",
+    "title": "订单支付流程完成后清栈回主页",
+    "phase": "DEV",
+    "user_prompt": "电商下单流程：订单确认页 → 支付页 → 支付结果页。支付成功后用户在结果页点「完成」要直接回到主页或订单列表，不能让用户返回到支付页和订单确认页。用 NavPathStack 管理这个流程，支付完成后把中间的订单/支付页面从栈里清理掉。请给出实现方案。",
+    "intent": "验证开发者提问业务流程完成后清理中间页面栈时，能否命中 ARKUI-05；与案例集 FUNC-005 重定向、FUNC-006 参数返回不同，本场景聚焦流程结束后的一次性清栈/popTo。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-004",
+    "layer": "smoke",
+    "title": "深层页面一键返回到栈中指定页",
+    "phase": "DEV",
+    "user_prompt": "应用有深层页面跳转 A → B → C → D，用户在 D 页想一键回到 A 页（首页），而不是一层层按返回键 pop 三次。用 NavPathStack 怎么实现「按页面名返回到路由栈中指定的某个页面」，把目标页上面的页面都移除？请给出实现方案。",
+    "intent": "验证开发者提问按页面名返回到栈中指定页（popTo/popToName）时，能否命中 ARKUI-05；案例集无此通用栈操作场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-005",
+    "layer": "smoke",
+    "title": "深链接打开应用内指定页面",
+    "phase": "DEV",
+    "user_prompt": "希望从外部（浏览器链接、推送通知、其他应用分享）通过一个链接直接打开应用内的指定页面，比如点击 example.com/product/123 就进入商品详情页。用 Navigation 怎么处理这种深度链接：解析链接参数后路由到对应的 NavDestination 页面，并处理应用冷启动和热启动两种情况下的页面栈。请给出实现方案。",
+    "intent": "验证开发者提问深度链接（deep link）路由时，能否命中 ARKUI-05；深度链接是 ARKUI-05 的 intent_signal，案例集无此场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-006",
+    "layer": "smoke",
+    "title": "router_map.json 基础路由表配置与页面跳转",
+    "phase": "DEV",
+    "user_prompt": "刚开始用 Navigation 做页面路由，有几个页面：首页、商品列表页、商品详情页。想用系统路由表 router_map.json 注册这些页面，然后用 pushPathByName 从首页跳到列表页、列表页跳到详情页，用 pop 返回。请给出最基础的路由表配置（module.json5 注册 + router_map.json 页面声明）和页面跳转的实现方案。",
+    "intent": "验证开发者提问基础路由表配置与 push/pop 跳转时，能否命中 ARKUI-05；与案例集 FUNC-001（data 权限）、FUNC-002（方向）、FUNC-003（多模块）不同，本场景是纯基础路由表 + push/pop，不涉及权限/方向/动态路由。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-007",
+    "layer": "smoke",
+    "title": "WebView 与原生页面混合路由栈管理",
+    "phase": "DEV",
+    "user_prompt": "应用里原生页面和 WebView 页面混用：原生列表页点条目进 WebView 详情页，WebView 里又点了链接跳到另一个 WebView 页。现在按系统返回键，页面栈顺序有时乱（有时直接跳出 WebView，有时返回到错误的页）。想用 Navigation 统一管理原生 + WebView 的混合页面栈，保证返回键按正确的入栈顺序逐层返回。请给出实现方案。",
+    "intent": "验证开发者提问原生与 WebView 混合页面栈管理时，能否命中 ARKUI-05；案例集无此场景，属路由栈顺序管理范畴。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-008",
+    "layer": "smoke",
+    "title": "路由跳转期间的 loading 过渡（非转场动画）",
+    "phase": "DEV",
+    "user_prompt": "列表页点条目跳详情页时，详情页数据要加载一两秒，希望在路由跳转期间显示一个 loading 蒙层，数据加载完再展示详情内容。这个 loading 是路由跳转期间的状态过渡，不是页面转场动画（不需要自定义 push/pop 转场效果），就是在跳转的目标页加载阶段盖一层 loading。用 Navigation 跳转怎么配合这个 loading？请给出实现方案。",
+    "intent": "边界 case：验证「路由跳转期间的 loading 状态过渡」能否命中 ARKUI-05 而非被 Q1 误判为转场动画 ARKUI-09；prompt 明确非转场动画，属路由跳转流程范畴。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-009",
+    "layer": "smoke",
+    "title": "页面预加载与按需加载优化路由性能",
+    "phase": "DEV",
+    "user_prompt": "应用页面跳转偶尔有卡顿，尤其是首次进入某些重的页面时明显。想知道 Navigation 路由有没有页面预加载或按需（懒）加载的机制，怎么优化路由跳转的响应性能，减少首次进入页面的白屏/卡顿。请给出路由层面的性能优化方案。",
+    "intent": "验证开发者提问路由页面预加载/按需加载性能优化时，能否命中 ARKUI-05；案例集无此场景，属路由性能范畴。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-010",
+    "layer": "smoke",
+    "title": "设置页深层菜单页面栈架构",
+    "phase": "REQ",
+    "user_prompt": "设置模块页面多、层级深：设置首页 → 网络设置 → WiFi 设置 → WiFi 详细配置，每层都是独立的 NavDestination 页面。请先给出需求分析：这种深层设置页面用 Navigation 怎么组织页面栈、返回逻辑怎么设计（逐层返回 vs 一键回根页）、层级过深时有没有栈管理或交互上的优化建议，以及验收标准。",
+    "intent": "验证开发者提问深层设置菜单页面栈架构需求分析时，能否命中 ARKUI-05；与案例集 FUNC-007/008 分栏布局不同，本场景聚焦深层页面栈组织与返回策略。",
+    "expected": {
+      "primary_phase": "REQ",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "device_constraints",
+        "capability_boundary",
+        "acceptance_focus"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-011",
+    "layer": "smoke",
+    "title": "路由栈深度管理（防溢出）需求分析",
+    "phase": "REQ",
+    "user_prompt": "担心应用页面跳转多了，路由栈越压越深：占用内存、用户返回要连按很多次、极端情况可能栈溢出。请分析路由栈深度管理的需求：要不要限制 NavPathStack 最大深度，超出后怎么处理（清栈 / replace 替换 / 提示用户），返回体验怎么保证不被破坏，以及验收标准。",
+    "intent": "验证开发者提问路由栈深度管理（防溢出）需求分析时，能否命中 ARKUI-05；案例集无此场景，属路由栈容量与清理策略范畴。",
+    "expected": {
+      "primary_phase": "REQ",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "device_constraints",
+        "capability_boundary",
+        "acceptance_focus"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-012",
+    "layer": "smoke",
+    "title": "嵌套 Navigation 多栈架构选型",
+    "phase": "REQ",
+    "user_prompt": "应用有底部 Tab 栏（消息/通讯录/我的），每个 Tab 下又有多级页面跳转（比如消息 Tab：会话列表 → 聊天详情 → 聊天设置）。考虑用嵌套 Navigation：外层管 Tab，每个 Tab 内部独立一个 Navigation 和 NavPathStack，各 Tab 路由互不干扰。请分析这种嵌套 Navigation 多栈架构的选型：相比单一 NavPathStack 的优缺点、什么场景适合、Tab 间状态怎么隔离、切换 Tab 时各栈状态怎么保留，以及验收标准。",
+    "intent": "边界 case：验证「每个 Tab 独立 Navigation 多栈」架构选型能否命中 ARKUI-05；与案例集 FUNC-008（Navigation+Tabs 单栈方案）不同角度，本场景聚焦多栈隔离架构选型。",
+    "expected": {
+      "primary_phase": "REQ",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "device_constraints",
+        "capability_boundary",
+        "acceptance_focus"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-013",
+    "layer": "smoke",
+    "title": "圆形展开转场（Circular Reveal）",
+    "phase": "DEV",
+    "user_prompt": "想要 Material 风格的路由转场：点击页面上的某个按钮（比如悬浮 FAB）后，新页面从按钮的点击位置以圆形向外扩散的方式展开铺满整个屏幕（circular reveal 效果），而不是系统默认的右滑进入；返回时反向圆形收缩回点击点。用 Navigation 的自定义转场实现这个「从点击点圆形扩散」的页面 push/pop 过渡。请给出实现方案。",
+    "intent": "边界 case：验证「从点击点圆形扩散展开的路由转场（circular reveal）」能否命中 ARKUI-05（路由转场范畴）并联动 ARKUI-09，不被 Q1 单独抢到 ARKUI-09。案例集第五章无此具体效果（第五章为系统转场类型/单页 customTransition/全局 customNavContentTransition 缩放渐变/手势返回/共享元素/DIALOG 蒙层），属不重复的自定义路由转场切入点。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-09"
+      ],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-NAV-014",
+    "layer": "smoke",
+    "title": "页面 3D 翻转转场（Page Flip）",
+    "phase": "DEV",
+    "user_prompt": "想要卡片翻转风格的路由转场：push 新页面时，当前页面像翻卡片一样沿 Y 轴做 3D 翻转，翻出背面就是新页面（page flip 效果），而不是默认的平移滑动；返回时反向翻转回原页面。用 Navigation 的自定义转场实现这个「沿 Y 轴 3D 翻转」的页面 push/pop 过渡。请给出实现方案。",
+    "intent": "边界 case：验证「页面沿 Y 轴 3D 翻转的路由转场（page flip）」能否命中 ARKUI-05 并联动 ARKUI-09，不被 Q1 单独抢到 ARKUI-09。案例集第五章无此具体效果，属不重复的自定义路由转场切入点。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-09"
+      ],
+      "next_scene_refs": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-03"
+      ]
+    }
+  }
+]

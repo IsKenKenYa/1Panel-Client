@@ -1,0 +1,75 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "Knock Share Example Application",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "virtualMachine": "ark",
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "Main ability for knock share example",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:icon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ],
+        "metadata": [
+          {
+            "name": "ohos.extension.share",
+            "value": "ShareExtensionAbility",
+            "resource": "$profile:share_config"
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "ShareExtensionAbility",
+        "srcEntry": "./ets/shareextensionability/ShareExtensionAbility.ets",
+        "description": "Share extension for receiving shared data",
+        "icon": "$media:icon",
+        "label": "$string:ShareExtensionAbility_label",
+        "exported": true,
+        "type": "share",
+        "metadata": [
+          {
+            "name": "ohos.share.configuration",
+            "resource": "$profile:share_config"
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "Need network info for share functionality",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

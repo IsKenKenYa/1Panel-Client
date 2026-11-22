@@ -1,0 +1,88 @@
+{
+  "forms": [
+    {
+      "name": "TimedRefreshCard",
+      "displayName": "$string:timed_refresh_card_name",
+      "description": "$string:timed_refresh_card_desc",
+      "src": "./ets/pages/TimedRefreshCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": true,
+      "updateEnabled": true,
+      "updateDuration": 2,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2"
+      ]
+    },
+    {
+      "name": "ScheduledRefreshCard",
+      "displayName": "$string:scheduled_refresh_card_name",
+      "description": "$string:scheduled_refresh_card_desc",
+      "src": "./ets/pages/ScheduledRefreshCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": false,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "multiScheduledUpdateTime": "11:30,16:30",
+      "updateDuration": 0,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2",
+        "2*4"
+      ]
+    },
+    {
+      "name": "NetworkRefreshCard",
+      "displayName": "$string:network_refresh_card_name",
+      "description": "$string:network_refresh_card_desc",
+      "src": "./ets/pages/NetworkRefreshCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": false,
+      "updateEnabled": true,
+      "updateDuration": 0,
+      "conditionUpdate": [
+        "network"
+      ],
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2"
+      ]
+    },
+    {
+      "name": "MixedRefreshCard",
+      "displayName": "$string:mixed_refresh_card_name",
+      "description": "$string:mixed_refresh_card_desc",
+      "src": "./ets/pages/MixedRefreshCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": false,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "09:00",
+      "multiScheduledUpdateTime": "12:00,18:00",
+      "updateDuration": 1,
+      "conditionUpdate": [
+        "network"
+      ],
+      "defaultDimension": "2*4",
+      "supportDimensions": [
+        "2*2",
+        "2*4"
+      ]
+    }
+  ]
+}

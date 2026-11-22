@@ -1,0 +1,34 @@
+{
+  "network-security-config": {
+    "base-config": {
+      "cleartextTrafficPermitted": true
+    },
+    "domain-config": [
+      {
+        "domains": [
+          {
+            "name": "example.com"
+          },
+          {
+            "name": "api.example.org"
+          }
+        ],
+        "cleartextTrafficPermitted": false
+      },
+      {
+        "domains": [
+          {
+            "name": "localhost"
+          },
+          {
+            "name": "192.168.1.100"
+          }
+        ],
+        "cleartextTrafficPermitted": true
+      }
+    ],
+    "component-config": {
+      "Remote Communication Kit": true
+    }
+  }
+}

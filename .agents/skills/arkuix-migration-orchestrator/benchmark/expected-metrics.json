@@ -1,0 +1,166 @@
+{
+  "fullFlow": {
+    "exitCode": 0,
+    "callOrder": [
+      "scan",
+      "skeleton",
+      "bridge"
+    ],
+    "stages": {
+      "scan": {
+        "status": "done",
+        "artifacts": [
+          "scan-report.json"
+        ],
+        "exit_code": 0
+      },
+      "skeleton": {
+        "status": "done",
+        "artifacts": [
+          "skeleton-result.json"
+        ],
+        "exit_code": 0
+      },
+      "bridge": {
+        "status": "done",
+        "artifacts": [
+          "bridge-artifact.json"
+        ],
+        "exit_code": 0
+      },
+      "report": {
+        "status": "done",
+        "artifacts": [
+          "migration-report.md"
+        ]
+      }
+    },
+    "currentStage": "done",
+    "noInterrupted": true,
+    "sixDecisions": [
+      {
+        "point": "bd:@hms.map::map.MapComponent",
+        "source": "hms-closed",
+        "chosen": "降级为OH替代",
+        "questionContains": "@ohos.map.mapComponent"
+      },
+      {
+        "point": "bd:@hms.push::pushService.getToken",
+        "source": "hms-closed",
+        "chosen": "裁剪",
+        "questionContains": "需开发者评估"
+      },
+      {
+        "point": "bd:@ohos.distributedDeviceManager::deviceManager.getTrustedDeviceList",
+        "source": "ohos-unique",
+        "chosen": "重新设计实现",
+        "questionContains": "系统独有"
+      },
+      {
+        "point": "bd:@kit.MockKit::mockKit.doThing",
+        "source": "kit-closed",
+        "chosen": "降级为OH替代",
+        "questionContains": "闭源 Kit"
+      }
+    ],
+    "keyDecision": {
+      "point": "skeleton_mode",
+      "chosen": "modify"
+    },
+    "skeletonResult": {
+      "mode": "modify",
+      "platform": "both"
+    },
+    "reportSections": {
+      "converted": [
+        "router.pushUrl",
+        "WebComponent"
+      ],
+      "degraded": [
+        "startVibration",
+        "（⑥决策：降级为OH替代）"
+      ],
+      "bridge": [
+        "DeviceInfoUdid",
+        "@ohos.nonsense::mysteryApi"
+      ],
+      "unresolved": [
+        "mockFeature"
+      ],
+      "decisions": [
+        "skeleton_mode",
+        "bd:@hms.map::map.MapComponent"
+      ]
+    },
+    "securityDeclaration": "未发起网络外传",
+    "ukDecisions": [
+      {
+        "point": "uk:@ohos.nonsense::mysteryApi",
+        "source": "unknown",
+        "chosen": "equivalent_bridge"
+      },
+      {
+        "point": "uk:@ohos.mockFeature::legacyApi",
+        "source": "unknown",
+        "chosen": "keep_unknown"
+      }
+    ]
+  },
+  "newMode": {
+    "exitCode": 0,
+    "skeletonCall": "skeleton(new,scaffold-from=builtin,migrate-configs=no,compile-sdk=26.0.0)",
+    "mode": "new"
+  },
+  "subset": {
+    "exitCode": 0,
+    "skipped": [
+      "skeleton",
+      "bridge",
+      "report"
+    ],
+    "reportMark": "未执行"
+  },
+  "missingPrecondition": {
+    "exitCode": 3
+  },
+  "abortNoPreset": {
+    "exitCode": 4
+  },
+  "abortBadPreset": {
+    "exitCode": 4,
+    "stderrContains": "预设应答非法"
+  },
+  "skillFailure": {
+    "exitCode": 5,
+    "interruptedPrefix": "bridge:"
+  },
+  "resumeNoRerun": {
+    "scanCallsUnchanged": true,
+    "decisionsPreserved": true
+  },
+  "corruptedArtifact": {
+    "rerunsScan": true
+  },
+  "rollbackScan": {
+    "exitCode": 0,
+    "skeletonReruns": 2,
+    "scanReruns": 2
+  },
+  "rollbackNone": {
+    "exitCode": 4
+  },
+  "usage": {
+    "exitCode": 2
+  },
+  "offline": {
+    "netHits": 0
+  },
+  "determinism": {
+    "runs": 3
+  },
+  "scaffoldPassthrough": {
+    "defaultBuiltin": "scaffold-from=builtin",
+    "explicitDir": "scaffold-from=/custom/archive",
+    "exitCode": 0
+  }
+}

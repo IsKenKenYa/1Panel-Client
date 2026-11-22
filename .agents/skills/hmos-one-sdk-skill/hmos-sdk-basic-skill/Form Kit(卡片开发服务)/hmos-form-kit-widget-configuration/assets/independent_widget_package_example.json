@@ -1,0 +1,83 @@
+{
+  "application_package_module": {
+    "module": {
+      "name": "entry",
+      "type": "entry",
+      "description": "$string:module_desc",
+      "mainElement": "EntryAbility",
+      "deviceTypes": [
+        "phone",
+        "tablet"
+      ],
+      "deliveryWithInstall": true,
+      "installationFree": false,
+      "pages": "$profile:main_pages",
+      "extensionAbilities": [
+        {
+          "name": "EntryFormAbility",
+          "srcEntry": "./ets/entryformability/EntryFormAbility.ets",
+          "label": "$string:EntryFormAbility_label",
+          "description": "$string:EntryFormAbility_desc",
+          "type": "form",
+          "metadata": [
+            {
+              "name": "ohos.extension.form",
+              "resource": "$profile:form_config"
+            }
+          ]
+        }
+      ],
+      "formWidgetModule": "library"
+    }
+  },
+  "widget_package_module": {
+    "module": {
+      "name": "library",
+      "type": "shared",
+      "description": "$string:shared_desc",
+      "deviceTypes": [
+        "phone",
+        "tablet"
+      ],
+      "deliveryWithInstall": true,
+      "formExtensionModule": "entry"
+    }
+  },
+  "widget_config_file": {
+    "path": "library/src/main/resources/base/profile/form_config.json",
+    "content": {
+      "forms": [
+        {
+          "name": "independent_widget",
+          "displayName": "$string:independent_widget_display_name",
+          "description": "$string:independent_widget_desc",
+          "src": "./ets/widget/pages/IndependentWidgetCard.ets",
+          "uiSyntax": "arkts",
+          "window": {
+            "designWidth": 720,
+            "autoDesignWidth": true
+          },
+          "renderingMode": "fullColor",
+          "isDefault": true,
+          "updateEnabled": true,
+          "scheduledUpdateTime": "10:30",
+          "updateDuration": 1,
+          "defaultDimension": "2*2",
+          "supportDimensions": [
+            "2*2",
+            "2*4"
+          ],
+          "formConfigAbility": "ability://EntryAbility",
+          "isDynamic": true,
+          "metadata": []
+        }
+      ]
+    }
+  },
+  "notes": [
+    "独立卡片包需要配置两个module.json5文件",
+    "应用包module.json5中配置formWidgetModule字段，指向卡片包模块名称",
+    "卡片包module.json5中配置formExtensionModule字段，指向应用包模块名称",
+    "卡片配置文件form_config.json放在卡片包模块的resources/base/profile/目录下"
+  ]
+}

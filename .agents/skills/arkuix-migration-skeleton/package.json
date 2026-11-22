@@ -1,0 +1,16 @@
+{
+  "name": "arkuix-migration-skeleton",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ArkUI-X 迁移骨架生成 Skill（modify/new 双模式 + SkeletonResult）",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test \"scripts/*.test.js\"",
+    "benchmark": "node benchmark/compare.js",
+    "guard": "node scripts/guard.js"
+  },
+  "dependencies": {}
+}

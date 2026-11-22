@@ -1,0 +1,53 @@
+{
+  "skill_name": "huawei-payment-integration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "这是一个基于 HarmonyOS 的客户端初始化工程，我要接入华为支付基础支付。后端预下单接口是 https://petalpaydemo.hwcloudtest.cn:44086/merchantdemoserver/api/payment/prepay，请帮我先确认还缺哪些关键信息，再给客户端落代码。当前我只知道回调地址是 https://petalpaydemo.hwcloudtest.cn:44086/api/payment/callback/pay。",
+      "expected_output": "应先按基础支付路径收集最小契约信息，明确还缺请求字段、响应字段中 orderStr 的位置、callbackUrl 归属和金额单位，不能直接假设页面字段名就是后端字段名。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "HarmonyOS 标准 App 接入华为支付时，服务端返回 resultDesc: prepay.request.callbackUrl: must not be blank，客户端页面里现在有 orderSummary 和 orderAmount 两个输入框。请帮我判断这是 Payment Kit 问题、module.json5 问题，还是预下单字段契约问题，并告诉我下一步怎么改。",
+      "expected_output": "应优先判断为客户端请求字段与服务端预下单契约不匹配，要求先核对 callbackUrl、mercOrderNo、tradeSummary、totalAmount 等字段名和值，而不是把问题误判为 Payment Kit 拉起或配置导入问题。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我在 ArkTS 页面里接华为支付，编译报错：The 'getHostContext' API is supported since SDK version 12. However, the current compatible SDK version is 4.1.0(11)。另外还有 arkts-no-any-unknown，涉及 PaymentService.ets 和 PaymentHelper.ets。请帮我排查这是不是华为支付接入问题，并给出修复方向。",
+      "expected_output": "应把问题优先分流到 HarmonyOS SDK 兼容性和 ArkTS 类型约束，而不是预下单字段或 Payment Kit 业务链路；应指出需要替换高版本上下文 API、去掉 unknown/any、检查异常归一化和页面上下文获取方式。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "这是一个 Spring Boot + Maven 的华为支付服务端 starter，我准备优先按官方 SDK 接入基础支付。现在仓库里只有启动类和 application.yml，我还没有确认官方 SDK 的 Maven 坐标，也不知道关键类和方法名。请你帮我规划实现并开始改代码。",
+      "expected_output": "应先确认商户模型、业务场景、接口契约和回调模式；在用户要求优先官方 SDK 时，应先验证依赖是否可下载、关键类和关键 API 是否可确认，未验证前不能伪造 SDK 直连实现，应回退为 SDK 适配层加 HTTP 网关兜底，并说明 starter 实现与生产完成态的差距。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "我在 Java 服务端里为了做华为支付 SM2 签名，新增了 bcpkix 之后编译报错：程序包 org.bouncycastle.openssl 不存在。与此同时 mvn 还报过 PKIX path building failed。请你判断这是支付字段问题、签名实现问题，还是 Maven 构建环境问题，并告诉我下一步怎么处理。",
+      "expected_output": "应优先分流到“新增依赖未解析”和“Maven 仓库/证书链环境问题”，而不是误判为支付字段契约问题；应建议先验证依赖能否成功解析，再决定是否继续使用 bcpkix，并优先采用纯 JDK 加最小必要依赖的 PEM/证书读取策略。",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "我做的是华为支付 Java starter 样例工程，现在为了把 PEM 私钥读进来，想直接上 PEMParser 和 JcaPEMKeyConverter。目标不是生产完整闭环，只要先能编译、启动、给客户端返回 orderStr。请问这种 starter 场景下应该怎么取舍？",
+      "expected_output": "应强调 starter/样例工程优先级是可编译、可启动、可配置、可替换，再考虑完整闭环；若只是处理 PEM 私钥、公钥或证书读取，应优先采用纯 JDK 加最小必要依赖，不默认引入 bcpkix 的 openssl 解析类。",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "我们内部一般把这个能力叫鸿蒙支付服务，不太说华为支付。我现在在一个 HarmonyOS 标准 App 里接基础支付，服务端说会返回 orderStr，但我还没确认 callbackUrl 是固定配置还是前端传，也不清楚 totalAmount 是分还是元。你先别写代码，先告诉我还缺哪些关键契约信息。",
+      "expected_output": "应把“鸿蒙支付服务”识别为与华为支付 / HarmonyOS Payment Kit 同一主题，按基础支付客户端最小确认清单继续追问接口 URL、请求字段名、响应字段层级、callbackUrl 归属和金额单位，而不是因为叫法不同走偏。",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "这是一个 Spring Boot + Maven 的鸿蒙支付服务端 starter，我希望优先走官方 SDK。现在只有 application.yml 和启动类，还没确认 pay-java 的 Maven 坐标，也没核对关键类和 API。请先判断下一步该怎么推进，不要直接编造 SDK 代码。",
+      "expected_output": "应把“鸿蒙支付服务端”识别为华为支付 / HarmonyOS Payment Kit 服务端场景，先确认商户模型、业务场景、字段契约和回调模式；在用户要求官方 SDK 时，应先验证依赖可解析、关键类可见、关键 API 可确认，未验证前不能伪造 SDK 直连实现。",
+      "files": []
+    }
+  ]
+}

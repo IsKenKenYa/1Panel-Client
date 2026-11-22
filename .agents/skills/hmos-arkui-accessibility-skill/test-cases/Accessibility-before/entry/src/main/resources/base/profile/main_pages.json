@@ -1,0 +1,31 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/B01DefaultAdapt",
+    "pages/B02PlayIcon",
+    "pages/B03SubmitOrder",
+    "pages/B04FullScreen",
+    "pages/B05DateGroup",
+    "pages/B06DecorHeader",
+    "pages/B07CheckedAndTabs",
+    "pages/B08Checkbox",
+    "pages/B09FavoriteIcon",
+    "pages/B10LineChart",
+    "pages/B11Dashboard",
+    "pages/Player",
+    "pages/B13FocusCard",
+    "pages/B14Birthday",
+    "pages/B15OverrideQuery",
+    "pages/B16DefaultFocus",
+    "pages/B17NextFocus",
+    "pages/B18NextFocusChild",
+    "pages/B19NextFocusSkipChild",
+    "pages/B20HoverText",
+    "pages/B21IconAction",
+    "pages/B22ProductCard",
+    "pages/B23ThemeList",
+    "pages/B24DownloadState",
+    "pages/B25PageOne",
+    "pages/B25PageTwo"
+  ]
+}

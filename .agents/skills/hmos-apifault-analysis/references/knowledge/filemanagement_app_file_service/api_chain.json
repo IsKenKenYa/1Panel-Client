@@ -1,0 +1,177 @@
+[
+  {
+    "api_name": "backup.getLocalCapabilities",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::Async",
+    "impl_func": "ServiceClient::GetLocalCapabilities",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/service_client.h"
+  },
+  {
+    "api_name": "backup.getBackupInfo",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::DoGetBackupInfo",
+    "impl_func": "ServiceClient::GetBackupInfo",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/service_client.h"
+  },
+  {
+    "api_name": "backup.updateTimer",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::DoUpdateTimer",
+    "impl_func": "ServiceClient::UpdateTimer",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/service_client.h"
+  },
+  {
+    "api_name": "backup.updateSendRate",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::DoUpdateSendRate",
+    "impl_func": "ServiceClient::UpdateSendRate",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/service_client.h"
+  },
+  {
+    "api_name": "backup.getBackupVersion",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::DoGetBackupVersion",
+    "impl_func": "BConstants::GetBackupVersion",
+    "impl_file": "interfaces/kits/js/backup/prop_n_operation.cpp"
+  },
+  {
+    "api_name": "backup.fileSystemServiceRequest",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "PropNOperation::FileSystemServiceRequest",
+    "impl_func": "ServiceClient::FileSystemServiceRequest",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/service_client.h"
+  },
+  {
+    "api_name": "SessionBackup.getLocalCapabilities",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionBackupNExporter::GetLocalCapabilities",
+    "impl_func": "BSessionBackup::GetLocalCapabilities",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_backup.h"
+  },
+  {
+    "api_name": "SessionBackup.getBackupDataSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionBackupNExporter::GetBackupDataSize",
+    "impl_func": "BSessionBackup::GetBackupDataSize",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_backup.h"
+  },
+  {
+    "api_name": "SessionBackup.appendBundles",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionBackupNExporter::AppendBundles",
+    "impl_func": "BSessionBackup::AppendBundles",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_backup.h"
+  },
+  {
+    "api_name": "SessionBackup.release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionBackupNExporter::Release",
+    "impl_func": "BSessionBackup::Release",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_backup.h"
+  },
+  {
+    "api_name": "SessionBackup.cancel",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionBackupNExporter::Cancel",
+    "impl_func": "BSessionBackup::Cancel",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_backup.h"
+  },
+  {
+    "api_name": "SessionRestore.getLocalCapabilities",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::GetLocalCapabilities",
+    "impl_func": "BSessionRestore::GetLocalCapabilities / BIncrementalRestoreSession::GetLocalCapabilities",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_restore.h"
+  },
+  {
+    "api_name": "SessionRestore.appendBundles",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::AppendBundles",
+    "impl_func": "BSessionRestore::AppendBundles / BIncrementalRestoreSession::AppendBundles",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_restore.h"
+  },
+  {
+    "api_name": "SessionRestore.publishFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::PublishFile",
+    "impl_func": "BSessionRestore::PublishFile / BIncrementalRestoreSession::PublishFile",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_restore.h"
+  },
+  {
+    "api_name": "SessionRestore.getFileHandle",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::GetFileHandle",
+    "impl_func": "BSessionRestore::GetFileHandle / BIncrementalRestoreSession::GetFileHandle",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_restore.h"
+  },
+  {
+    "api_name": "SessionRestore.release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::Release",
+    "impl_func": "BSessionRestore::Release / BIncrementalRestoreSession::Release",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_session_restore.h"
+  },
+  {
+    "api_name": "SessionRestore.migrateFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::MigrateFile",
+    "impl_func": "BIncrementalRestoreSession::MigrateFile",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_incremental_restore_session.h"
+  },
+  {
+    "api_name": "SessionRestore.getApkFileHandle",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionRestoreNExporter::GetApkFileHandle",
+    "impl_func": "BIncrementalRestoreSession::GetApkFileHandle",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_incremental_restore_session.h"
+  },
+  {
+    "api_name": "IncrementalBackupSession.getLocalCapabilities",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionIncrementalBackupNExporter::GetLocalCapabilities",
+    "impl_func": "BIncrementalBackupSession::GetLocalCapabilities",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_incremental_backup_session.h"
+  },
+  {
+    "api_name": "IncrementalBackupSession.getBackupDataSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionIncrementalBackupNExporter::GetBackupDataSize",
+    "impl_func": "BIncrementalBackupSession::GetBackupDataSize",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_incremental_backup_session.h"
+  },
+  {
+    "api_name": "IncrementalBackupSession.appendBundles",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "napi_func": "SessionIncrementalBackupNExporter::AppendBundles",
+    "impl_func": "BIncrementalBackupSession::AppendBundles",
+    "impl_file": "interfaces/inner_api/native/backup_kit_inner/impl/b_incremental_backup_session.h"
+  },
+  {
+    "api_name": "fileuri.getUriFromPath",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileuri.d.ts",
+    "napi_func": "GetUriFromPath::Sync",
+    "impl_func": "CommonFunc::GetUriFromPath",
+    "impl_file": "interfaces/common/include/common_func.h"
+  },
+  {
+    "api_name": "FileUri.toString",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileuri.d.ts",
+    "napi_func": "FileUriNExporter::UriToString",
+    "impl_func": "FileUri::ToString",
+    "impl_file": "interfaces/innerkits/native/file_uri/include/file_uri.h"
+  },
+  {
+    "api_name": "FileUri.normalize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileuri.d.ts",
+    "napi_func": "FileUriNExporter::Normalize",
+    "impl_func": "FileUri::Normalize",
+    "impl_file": "interfaces/innerkits/native/file_uri/include/file_uri.h"
+  },
+  {
+    "api_name": "fileshare.grantUriPermission",
+    "d_ts_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "napi_func": "GrantUriPermission::Async",
+    "impl_func": "DoGrantUriPermission / UriPermissionClient::GrantUriPermission",
+    "impl_file": "interfaces/kits/js/file_share/grant_uri_permission.cpp"
+  }
+]

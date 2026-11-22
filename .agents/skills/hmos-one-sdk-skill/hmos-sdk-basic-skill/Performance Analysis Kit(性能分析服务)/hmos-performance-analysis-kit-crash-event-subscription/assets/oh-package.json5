@@ -1,0 +1,12 @@
+{
+  "name": "hiappevent_crash_example",
+  "version": "1.0.0",
+  "description": "HiAppEvent crash event watcher example",
+  "main": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kit.PerformanceAnalysisKit": "latest",
+    "@kit.BasicServicesKit": "latest"
+  }
+}

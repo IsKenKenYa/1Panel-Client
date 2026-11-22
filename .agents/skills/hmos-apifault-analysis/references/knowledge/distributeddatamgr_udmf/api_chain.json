@@ -1,0 +1,170 @@
+[
+  {
+    "api_name": "unifiedDataChannel.insertData",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::InsertData",
+    "impl_func": "UdmfClient::SetData",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.updateData",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::UpdateData",
+    "impl_func": "UdmfClient::UpdateData",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.queryData",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::QueryData",
+    "impl_func": "UdmfClient::GetBatchData",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.deleteData",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::DeleteData",
+    "impl_func": "UdmfClient::DeleteData",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.setAppShareOptions",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::SetAppShareOptions",
+    "impl_func": "UdmfClient::SetAppShareOption",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.removeAppShareOptions",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::RemoveAppShareOptions",
+    "impl_func": "UdmfClient::RemoveAppShareOption",
+    "impl_file": "framework/innerkitsimpl/client/udmf_client.cpp"
+  },
+  {
+    "api_name": "unifiedDataChannel.convertRecordsToEntries",
+    "d_ts_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "napi_func": "UnifiedDataChannelNapi::ConvertRecordsToEntries",
+    "impl_func": "UnifiedData::ConvertRecordsToEntries",
+    "impl_file": "framework/innerkitsimpl/data/unified_data.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.getTypeDescriptor",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::GetTypeDescriptor",
+    "impl_func": "UtdClient::GetTypeDescriptor",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.getUniformDataTypeByFilenameExtension",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::GetUniformDataTypeByFilenameExtension",
+    "impl_func": "UtdClient::GetUniformDataTypeByFilenameExtension",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.getUniformDataTypeByMIMEType",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::GetUniformDataTypeByMIMEType",
+    "impl_func": "UtdClient::GetUniformDataTypeByMIMEType",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.getUniformDataTypesByFilenameExtension",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::GetMultiUniformDataTypesByFilenameExtension",
+    "impl_func": "UtdClient::GetUniformDataTypesByFilenameExtension",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.getUniformDataTypesByMIMEType",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::GetMultiUniformDataTypesByMIMEType",
+    "impl_func": "UtdClient::GetUniformDataTypesByMIMEType",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.registerTypeDescriptors",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::RegisterTypeDescriptors",
+    "impl_func": "UtdClient::RegisterTypeDescriptors",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "uniformTypeDescriptor.unregisterTypeDescriptors",
+    "d_ts_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "napi_func": "UniformTypeDescriptorNapi::UnregisterTypeDescriptors",
+    "impl_func": "UtdClient::UnregisterTypeDescriptors",
+    "impl_file": "framework/innerkitsimpl/client/utd_client.cpp"
+  },
+  {
+    "api_name": "intelligence.ImageEmbedding.getImageEmbeddingModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "ImageEmbeddingNapi::GetImageEmbeddingModel",
+    "impl_func": "IAipCoreManager::InitImageModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.ImageEmbedding.loadModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "ImageEmbeddingNapi::LoadModel",
+    "impl_func": "IAipCoreManager::LoadImageModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.ImageEmbedding.releaseModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "ImageEmbeddingNapi::ReleaseModel",
+    "impl_func": "IAipCoreManager::ReleaseImageModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.ImageEmbedding.getEmbedding",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "ImageEmbeddingNapi::GetEmbedding",
+    "impl_func": "IAipCoreManager::GetImageEmbedding",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.getTextEmbeddingModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::GetTextEmbeddingModel",
+    "impl_func": "IAipCoreManager::InitTextModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.loadModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::LoadModel",
+    "impl_func": "IAipCoreManager::LoadTextModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.releaseModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::ReleaseModel",
+    "impl_func": "IAipCoreManager::ReleaseTextModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.getEmbedding",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::GetEmbedding",
+    "impl_func": "IAipCoreManager::GetTextEmbedding",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.getSupportedCloudModel",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::GetSupportedCloudModel",
+    "impl_func": "IAipCoreManager::GetSupportedCloudModel",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  },
+  {
+    "api_name": "intelligence.TextEmbedding.splitText",
+    "d_ts_file": "@ohos.data.intelligence.d.ts",
+    "napi_func": "TextEmbeddingNapi::SplitText",
+    "impl_func": "IAipCoreManager::SplitText",
+    "impl_file": "framework/innerkitsimpl/aipcore/i_aip_core_manager_impl.cpp"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "entry_desc",
+      "value": "entry description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "EntryAbility description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Map Location Demo"
+    },
+    {
+      "name": "location_permission",
+      "value": "This app needs location permission to display your position on the map"
+    },
+    {
+      "name": "fuzzy_location_permission",
+      "value": "This app needs approximate location permission to provide basic location services"
+    }
+  ]
+}

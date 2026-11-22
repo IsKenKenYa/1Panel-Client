@@ -1,0 +1,65 @@
+{
+  "forms": [
+    {
+      "name": "weatherCard",
+      "displayName": "Weather Widget",
+      "description": "Show weather information with manual refresh",
+      "src": "./ets/weather/pages/WeatherCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": ["2*2", "2*4", "4*4"],
+      "formConfigAbility": "ability://com.example.weather.EntryFormAbility",
+      "metadata": {
+        "customizeData": [
+          {
+            "name": "originWidgetName",
+            "value": "WeatherWidget"
+          }
+        ]
+      }
+    },
+    {
+      "name": "updateByMessageCard",
+      "displayName": "Update by Message Widget",
+      "description": "Widget with manual refresh button",
+      "src": "./ets/updatebymessage/pages/UpdateByMessageCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "isDefault": false,
+      "updateEnabled": false,
+      "defaultDimension": "2*2",
+      "supportDimensions": ["2*2"]
+    },
+    {
+      "name": "reloadByUIAbilityCard",
+      "displayName": "Batch Reload Widget",
+      "description": "Widget for batch refresh demonstration",
+      "src": "./ets/reloadbyuiability/pages/ReloadByUIAbilityCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "isDefault": false,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "15:00",
+      "updateDuration": 0,
+      "defaultDimension": "2*2",
+      "supportDimensions": ["2*2", "4*4"]
+    }
+  ]
+}

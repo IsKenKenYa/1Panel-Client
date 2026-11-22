@@ -1,0 +1,438 @@
+[
+  {
+    "case_id": "TC-FUNC-001",
+    "layer": "scene-functional",
+    "title": "新闻文章正文展示+超长省略+展开收起开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿新闻阅读App：文章正文以多段落展示，标题使用大字体加粗并自定义行高，正文支持自定义字体大小、行间距、字间距，正文超长时默认显示3行后以省略号截断，点击\"展开全文\"按钮显示完整内容且按钮文案切换为\"收起\"，再次点击恢复省略状态，并对促销词添加删除线装饰。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 Text + fontSize/fontWeight/lineHeight/letterSpacing + maxLines + textOverflow(Ellipsis) + 展开/收起交互 + decoration 删除线的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Text 组件展示文章正文，不能使用 TextInput 或 RichEditor 替代（文章正文仅需只读展示）。",
+        "标题必须设置 .fontSize(22).fontWeight(FontWeight.Bold).lineHeight(32).letterSpacing(1) 实现大字体加粗和自定义行高字间距。",
+        "正文必须设置 .fontSize(16).lineHeight(28).letterSpacing(0.5) 自定义字体行间距字间距，并通过 @State isExpanded 控制展开/收起状态。",
+        "正文必须使用 .maxLines(this.isExpanded ? 100 : 3) 动态切换行数，配合 .textOverflow({ overflow: TextOverflow.Ellipsis }) 实现省略号截断。",
+        "必须提供\"展开全文/收起\" Button 按钮，onClick 回调切换 isExpanded 状态并同步更新按钮文案。",
+        "促销词文本必须使用 .decoration({ type: TextDecorationType.LineThrough, color: '#e74c3c' }) 实现红色删除线装饰。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 RichEditor 或 TextArea 展示文章正文，文章仅需只读展示不需要编辑能力。",
+        "正文只设置 maxLines 不设置 textOverflow，超长文字直接裁剪不显示省略号。",
+        "展开/收起按钮不绑定 onClick 回调或回调中不切换 isExpanded 状态，点击无响应。",
+        "标题和正文不设置 lineHeight/letterSpacing，使用默认行高字间距无法满足自定义排版需求。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "文章标题以大字体加粗显示，行高和字间距为自定义值。",
+        "正文默认显示3行并在末尾显示省略号，字体行间距字间距符合自定义配置。",
+        "点击\"展开全文\"按钮后正文显示完整内容，按钮文案变为\"收起\"；再次点击恢复3行省略状态。",
+        "促销词文本显示红色删除线装饰效果。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "文章正文收起状态截图（3行+省略号+展开全文按钮）",
+        "文章正文展开状态截图（完整内容+收起按钮）",
+        "促销词删除线装饰截图"
+      ]
+    }
+  },
+  {
+    "case_id": "TC-FUNC-002",
+    "layer": "scene-functional",
+    "title": "用户注册表单多种输入类型验证开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿用户注册页：包含用户名（普通文本键盘）、密码（密码模式遮蔽显示）、邮箱（邮箱键盘含@符号）、手机号（数字键盘）四个输入框，每种拉起对应类型键盘，placeholder 设置占位提示文本，maxLength 限制输入长度，并实现 onChange 回调实时表单验证。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 TextInput + type(InputType.Normal/Password/Email/Number) + placeholder + maxLength + onChange 回调的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 TextInput 组件构建四个输入框，不能使用 TextArea（注册表单各项均为单行输入）或 RichEditor（仅需纯文本）。",
+        "用户名输入框必须设置 .type(InputType.Normal).maxLength(20)，placeholder 提示\"请输入用户名\"。",
+        "密码输入框必须设置 .type(InputType.Password) 实现遮蔽显示，placeholder 提示\"请输入密码\"。",
+        "邮箱输入框必须设置 .type(InputType.Email) 拉起含@符号的邮箱键盘，placeholder 提示\"请输入邮箱\"。",
+        "手机号输入框必须设置 .type(InputType.Number).maxLength(11) 拉起数字键盘并限制11位，placeholder 提示\"请输入手机号\"。",
+        "每个输入框必须绑定 .onChange((value: string) => {...}) 回调，将输入值同步到 @State 状态变量并实现实时验证逻辑。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 TextArea 多行输入框替代 TextInput，注册表单各项均为单行输入。",
+        "所有输入框使用默认 InputType.Normal，邮箱和手机号字段不拉起对应类型键盘。",
+        "密码输入框不设置 type(InputType.Password)，密码明文显示存在安全隐患。",
+        "输入框不绑定 onChange 回调，输入值无法同步到状态变量也无法实时验证。",
+        "手机号输入框不设置 maxLength(11)，用户可输入超长号码。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "用户名输入框点击后拉起普通文本键盘，输入超20字符被截断。",
+        "密码输入框点击后拉起密码键盘，输入内容以遮蔽点显示。",
+        "邮箱输入框点击后拉起含@符号的邮箱键盘。",
+        "手机号输入框点击后拉起数字键盘，输入超11位被截断，onChange 实时同步状态变量。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "注册表单四个输入框截图（placeholder 提示文本显示）",
+        "各输入框拉起对应键盘截图（普通/密码/邮箱/数字）",
+        "onChange 实时验证反馈截图"
+      ]
+    }
+  },
+  {
+    "case_id": "TC-FUNC-003",
+    "layer": "scene-functional",
+    "title": "论坛发帖富文本编辑加粗斜体颜色开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社区论坛发帖页：用户在 RichEditor 编辑区输入文字并支持对选中文本设置加粗、斜体、下划线、颜色样式，工具栏提供 B/I 按钮和颜色选择圆点切换后续输入样式，支持插入表情图片实现图文混合编辑，placeholder 提示\"在这里输入文本...\"。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 RichEditor + RichEditorController + setTypingStyle + fontWeight/fontStyle/decoration/fontColor + placeholder + 工具栏交互的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 RichEditor 组件构建富文本编辑区，通过 controller: RichEditorController = new RichEditorController() 初始化控制器，不能用 Text+Span（不支持交互编辑）或 TextArea（不支持样式和图片）替代。",
+        "RichEditor 必须设置 .placeholder('在这里输入文本...') 提示占位文本，.width('100%').height(240) 设置编辑区尺寸。",
+        "必须实现 applyTypingStyle() 方法调用 controller.setTypingStyle() 设置后续输入样式，包含 fontWeight（Bold/Normal）、fontStyle（Italic/Normal）、decoration（Underline/None）、fontColor。",
+        "工具栏必须提供 B 按钮切换 isBold、I 按钮切换 isItalic，每次切换后调用 applyTypingStyle() 更新输入样式。",
+        "工具栏必须提供颜色选择圆点（ForEach 遍历 colors 数组），点击圆点更新 currentColor 并调用 applyTypingStyle()。",
+        "加粗、斜体、颜色状态必须使用 @State 管理，确保工具栏切换状态与输入样式同步。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 Text+Span 代替 RichEditor，Text+Span 只能展示图文混排不支持用户交互式编辑。",
+        "使用 TextArea 代替 RichEditor，TextArea 仅支持纯文本输入无法设置样式和插入图片。",
+        "不通过 controller.setTypingStyle() 设置输入样式，而是手动拼接 Span，无法实现实时样式切换。",
+        "工具栏按钮不绑定 onClick 回调或不调用 applyTypingStyle()，点击按钮后输入样式不更新。",
+        "不使用 @State 管理加粗斜体颜色状态，导致工具栏切换状态丢失。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "RichEditor 编辑区显示 placeholder 提示文本\"在这里输入文本...\"，尺寸为 width 100% height 240。",
+        "点击 B 按钮后后续输入的文字为加粗，再次点击恢复正常粗细。",
+        "点击 I 按钮后后续输入的文字为斜体，点击颜色圆点后后续输入文字为对应颜色。",
+        "工具栏按钮状态与实际输入样式同步，切换样式即时生效。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "RichEditor 编辑区截图（placeholder 提示文本显示）",
+        "加粗+斜体+颜色样式输入截图",
+        "工具栏按钮高亮状态截图"
+      ]
+    }
+  },
+  {
+    "case_id": "TC-FUNC-004",
+    "layer": "scene-functional",
+    "title": "系统设置页SymbolGlyph开关图标开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿系统设置页：WiFi/蓝牙/飞行模式/定位等开关按钮使用系统预置 Symbol 图标，开启状态图标为蓝色、关闭状态图标为灰色，点击切换时图标带系统级弹跳动效过渡，使用 sys.symbol.ohos_wifi 等系统资源。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 SymbolGlyph + fontColor + renderingStrategy(SymbolRenderingStrategy.SINGLE) + symbolEffect(BounceSymbolEffect) + EffectScope 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 SymbolGlyph 组件渲染系统图标，不能使用 Image（不具备系统级动效和多色渲染）或图标字体替代。",
+        "必须引用系统预置 symbol 资源（如 sys.symbol.ohos_wifi、sys.symbol.bluetooth、sys.symbol.airplane、sys.symbol.location_north_up_right）。",
+        "必须通过 .fontColor(item.enabled ? ['#1890ff'] : ['#999999']) 根据开关状态切换图标颜色（开启蓝色/关闭灰色）。",
+        "必须设置 .renderingStrategy(SymbolRenderingStrategy.SINGLE) 指定单色渲染策略。",
+        "必须设置 .symbolEffect(new BounceSymbolEffect(EffectScope.LAYER), this.triggerValues[index]) 实现点击切换时的系统级弹跳动效。",
+        "开关状态必须使用 @State 或数组状态管理，点击切换时更新 enabled 状态并触发 triggerValues 驱动动效。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 Image 组件代替 SymbolGlyph，Image 不具备 Symbol 图标的系统级动效和多色渲染能力。",
+        "不设置 renderingStrategy 使用默认值，可能导致多色图标渲染异常。",
+        "不设置 symbolEffect，点击切换图标时无系统级动效过渡。",
+        "fontColor 使用单值字符串而非数组形式，与 SymbolGlyph 多层颜色配置不匹配。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "系统设置页展示 WiFi/蓝牙/飞行模式/定位等开关项，每项使用 SymbolGlyph 渲染对应系统图标。",
+        "开启状态图标为蓝色（#1890ff），关闭状态图标为灰色（#999999）。",
+        "点击切换开关时图标带系统级弹跳（Bounce）动效过渡。",
+        "开关状态切换后图标颜色即时更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "系统设置页开关列表截图（多个 SymbolGlyph 图标）",
+        "开关开启状态截图（蓝色图标）",
+        "点击切换动效过程截图"
+      ]
+    }
+  },
+  {
+    "case_id": "TC-FUNC-005",
+    "layer": "scene-functional",
+    "title": "搜索结果关键字高亮MutableStyledString开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿商品搜索结果列表：搜索\"手机\"时结果列表中商品名称匹配的\"手机\"二字高亮变色显示，同一段文本中不同关键词（如\"手机\"红色、\"华为\"蓝色）使用不同高亮颜色和加粗样式，通过 MutableStyledString 构建属性字符串并设置到 Text 组件渲染。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 MutableStyledString + replaceStyle + StyledStringKey.FONT + TextStyle + TextController.setStyledString 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 MutableStyledString 构建属性字符串，不能使用 Span 子组件（动态拼接多个 Span 在复杂高亮场景下代码冗长且不易维护）或 RichEditor（搜索结果只读展示不需要编辑）替代。",
+        "必须实现 buildHighlight(text) 方法，通过 new MutableStyledString(text) 初始化属性字符串并查找关键词位置建立字符位置→关键词映射。",
+        "必须对匹配关键词的文本范围调用 styled.replaceStyle() 设置高亮样式，styledKey 为 StyledStringKey.FONT。",
+        "styledValue 必须使用 new TextStyle({ fontColor: color, fontWeight: FontWeight.Bold }) 设置关键词颜色和加粗，不同关键词使用不同颜色（如手机红色、华为蓝色）。",
+        "必须使用 TextController 通过 Text(undefined, { controller: this.controller }) 渲染属性字符串，并通过 controller.setStyledString() 设置构建好的 MutableStyledString。",
+        "关键词颜色映射必须通过预定义数组（KEYWORD_STYLES）配置，支持多关键词多颜色扩展。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用多个 Span 子组件手动拼接高亮文本，复杂高亮场景下代码冗长且不易维护。",
+        "使用 RichEditor 展示搜索结果，搜索结果仅需只读展示不需要编辑能力。",
+        "不使用 StyledStringKey.FONT 而是使用错误的 styledKey，无法设置字体颜色和粗细。",
+        "不通过 TextController.setStyledString() 设置属性字符串，MutableStyledString 无法渲染到 Text 组件。",
+        "关键词颜色硬编码不使用预定义映射数组，无法扩展多关键词高亮。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "搜索结果列表中商品名称匹配的关键词高亮变色显示（如\"手机\"红色加粗）。",
+        "同一段文本中不同关键词使用不同高亮颜色（\"手机\"红色、\"华为\"蓝色）。",
+        "高亮关键词为加粗样式，非关键词部分为正常样式。",
+        "通过 TextController 渲染 MutableStyledString 属性字符串，文本分段样式正确。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "搜索结果列表截图（关键词高亮变色显示）",
+        "多关键词不同颜色高亮截图",
+        "关键词加粗样式截图"
+      ]
+    }
+  },
+  {
+    "case_id": "TC-FUNC-006",
+    "layer": "scene-functional",
+    "title": "Text+Span+ImageSpan图文行内混排开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿商品详情页促销横幅：文字\"限时特惠 立减50元 今日下单送赠品\"中间嵌入促销时钟图标和赠品小图片，图片与文字在同一行内混合排列，图片垂直居中对齐，每个文本片段独立设置字号、粗细、颜色，整体红色背景圆角容器。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 文本组件场景中 Text 子组件 + Span + ImageSpan + verticalAlign(ImageSpanAlignment.CENTER) + 分段 fontSize/fontWeight/fontColor + 容器样式的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Text 组件作为容器，子组件中使用 Span 显示文本片段、ImageSpan 插入行内图片，不能用 Image（独立图片组件无法嵌入文本流）或 RichEditor（商品详情页只读展示不需要编辑）替代。",
+        "必须使用 ImageSpan($r('sys.media.ohos_ic_public_clock')).width(18).height(18) 插入行内图标图片并设置尺寸。",
+        "ImageSpan 必须设置 .verticalAlign(ImageSpanAlignment.CENTER) 实现图片与文字垂直居中对齐。",
+        "每个 Span 文本片段必须独立设置 .fontSize()/.fontWeight()/.fontColor() 分段样式（如\"限时特惠\"白色加粗、\"立减50元\"黄色加粗大字号）。",
+        "Text 容器必须设置 .backgroundColor('#E74C3C').borderRadius(8).padding(12) 实现红色背景圆角容器样式。",
+        "图文混排内容必须在同一行内排列，图片和文字按顺序混合不换行。"
+      ],
+      "should_reuse_resources": [
+        "./references/text-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 Image 独立图片组件代替 ImageSpan，Image 无法嵌入文本流中与文字行内混排。",
+        "使用 RichEditor 代替 Text+Span+ImageSpan，商品详情页是只读展示不需要编辑功能。",
+        "ImageSpan 不设置 verticalAlign，图片与文字默认对齐方式可能不居中。",
+        "所有 Span 使用相同样式不独立设置 fontSize/fontWeight/fontColor，无法实现分段富样式文案。",
+        "Text 容器不设置 backgroundColor/borderRadius/padding，缺少促销横幅视觉容器样式。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "促销横幅在红色背景圆角容器内展示，图文在同一行内混合排列。",
+        "ImageSpan 图标图片与文字垂直居中对齐，尺寸为 18x18。",
+        "各 Span 文本片段独立样式（\"限时特惠\"白色加粗、\"立减50元\"黄色加粗大字号）正确渲染。",
+        "图文混排内容不换行，图片和文字按顺序排列在同一行内。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "促销横幅截图（红色背景圆角容器+图文行内混排）",
+        "ImageSpan 图片垂直居中对齐截图",
+        "各 Span 分段样式截图（不同字号颜色粗细）"
+      ]
+    }
+  }
+]

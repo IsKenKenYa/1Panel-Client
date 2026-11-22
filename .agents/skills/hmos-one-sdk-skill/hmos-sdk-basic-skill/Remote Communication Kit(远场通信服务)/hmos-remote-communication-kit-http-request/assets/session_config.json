@@ -1,0 +1,182 @@
+{
+  "basic": {
+    "description": "基本会话配置",
+    "config": {
+      "requestConfiguration": {
+        "transfer": {
+          "timeout": {
+            "connectMs": 5000,
+            "transferMs": 10000
+          }
+        }
+      }
+    }
+  },
+  "withProxy": {
+    "description": "带代理配置的会话",
+    "config": {
+      "requestConfiguration": {
+        "proxy": "system",
+        "transfer": {
+          "timeout": {
+            "connectMs": 8000,
+            "transferMs": 15000
+          }
+        }
+      }
+    }
+  },
+  "withInterceptors": {
+    "description": "带拦截器的会话配置",
+    "config": {
+      "interceptors": [
+        {
+          "type": "logging",
+          "enabled": true
+        },
+        {
+          "type": "caching",
+          "enabled": true,
+          "maxAge": 60000
+        },
+        {
+          "type": "authentication",
+          "enabled": true,
+          "token": "your-access-token"
+        }
+      ],
+      "requestConfiguration": {
+        "transfer": {
+          "timeout": {
+            "connectMs": 5000,
+            "transferMs": 10000
+          }
+        }
+      }
+    }
+  },
+  "withHeaders": {
+    "description": "带自定义请求头的会话",
+    "config": {
+      "headers": {
+        "Authorization": "Bearer your-access-token",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": "HarmonyOS-App/1.0"
+      }
+    }
+  },
+  "withCookies": {
+    "description": "带Cookie的会话配置",
+    "config": {
+      "cookies": {
+        "session_id": "abc123",
+        "user_id": "user001",
+        "preferences": "dark_mode"
+      }
+    }
+  },
+  "withDNS": {
+    "description": "带DNS配置的会话",
+    "config": {
+      "requestConfiguration": {
+        "dns": {
+          "dnsRules": [
+            {
+              "host": "example.com",
+              "port": 443,
+              "ipAddresses": ["192.168.1.1", "192.168.1.2"]
+            }
+          ],
+          "dnsOverHttps": {
+            "url": "https://dns.example.com/dns-query",
+            "skipCertificatesValidation": false
+          }
+        }
+      }
+    }
+  },
+  "withSecurity": {
+    "description": "带安全配置的会话",
+    "config": {
+      "requestConfiguration": {
+        "security": {
+          "certificate": {
+            "content": "-----BEGIN CERTIFICATE-----\n...",
+            "type": "PEM",
+            "key": "-----BEGIN PRIVATE KEY-----\n...",
+            "keyPassword": "your-password"
+          },
+          "serverAuthentication": {
+            "credential": {
+              "username": "your-username",
+              "password": "your-password"
+            },
+            "authenticationType": "basic"
+          }
+        }
+      }
+    }
+  },
+  "withConnection": {
+    "description": "带连接配置的会话",
+    "config": {
+      "connectionConfiguration": {
+        "maxConnectionsPerHost": 6,
+        "maxTotalConnections": 64
+      }
+    }
+  },
+  "fullConfiguration": {
+    "description": "完整配置示例",
+    "config": {
+      "requestConfiguration": {
+        "transfer": {
+          "autoRedirect": true,
+          "timeout": {
+            "connectMs": 5000,
+            "transferMs": 10000
+          },
+          "assumesHTTP3Capable": true,
+          "pathPreference": "auto",
+          "maxAutoRedirects": 50
+        },
+        "tracing": {
+          "verbose": true,
+          "collectTimeInfo": true
+        },
+        "proxy": "system",
+        "dns": {
+          "dnsRules": [
+            {
+              "host": "api.example.com",
+              "port": 443,
+              "ipAddresses": ["192.168.1.1"]
+            }
+          ]
+        },
+        "security": {
+          "certificate": {
+            "content": "-----BEGIN CERTIFICATE-----\n...",
+            "type": "PEM"
+          }
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer token",
+        "Content-Type": "application/json"
+      },
+      "cookies": {
+        "session": "active"
+      },
+      "connectionConfiguration": {
+        "maxConnectionsPerHost": 6,
+        "maxTotalConnections": 64
+      },
+      "sessionListener": {
+        "onCanceled": "session canceled callback",
+        "onClosed": "session closed callback"
+      }
+    }
+  }
+}

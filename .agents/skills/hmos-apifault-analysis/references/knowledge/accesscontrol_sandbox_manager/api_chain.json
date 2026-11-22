@@ -1,0 +1,332 @@
+[
+  {
+    "api_name": "SandboxManagerKit::PersistPolicy(vector<PolicyInfo>)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager，SA 3508）",
+    "ipc_proxy_method": "SandboxManagerClient::PersistPolicy → ISandboxManager::PersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::PersistPolicy → PolicyInfoManager::AddPolicy → SandboxManagerRdb::Insert",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST（ACCESS_PERSIST_PERMISSION_NAME）",
+    "note": "批量持久化策略到 RDB；返回每条结果的 SandboxRetType 向量。service 层 ~L271/L296 校验权限；非 FOUNDATION_UID 走分支 L277。"
+  },
+  {
+    "api_name": "SandboxManagerKit::PersistPolicy(vector<PolicyInfo>, SetInfo)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::PersistPolicy → ISandboxManager::PersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::PersistPolicy → PolicyInfoManager::AddPolicy → SandboxManagerRdb::Insert",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST",
+    "note": "带 SetInfo（bundleName/timestamp/userId）的持久化重载，用于按用户/应用维度落库。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnPersistPolicy(vector<PolicyInfo>)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnPersistPolicy → ISandboxManager::UnPersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::UnPersistPolicy → PolicyInfoManager::RemovePolicy → SandboxManagerRdb::Delete",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST",
+    "note": "按 PolicyInfo 批量移除持久化规则。记录不存在时单条返回 POLICY_HAS_NOT_BEEN_PERSISTED(4)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnPersistPolicy(uint32_t tokenId)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnPersistPolicy → ISandboxManager::UnPersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::UnPersistPolicy → PolicyInfoManager::RemovePolicyByToken → SandboxManagerRdb::Delete",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST（限 FOUNDATION_UID，L373）",
+    "note": "按 tokenId 清除该应用所有持久化规则；仅 foundation 可调用。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnPersistPolicy(uint32_t tokenId, PolicyInfo)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnPersistPolicy → ISandboxManager::UnPersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::UnPersistPolicy → PolicyInfoManager::RemovePolicy → SandboxManagerRdb::Delete",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST（FOUNDATION_UID 分支 L383）",
+    "note": "按 tokenId + 单条 PolicyInfo 移除持久化规则的重载。"
+  },
+  {
+    "api_name": "SandboxManagerKit::CleanPersistPolicyByPath",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::CleanPersistPolicyByPath → ISandboxManager::CleanPersistPolicyByPath (SA 3508)",
+    "impl_func": "SandboxManagerService::CleanPersistPolicyByPath → PolicyInfoManager::RemovePathPolicy → SandboxManagerRdb::Delete",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_MANAGER（FILE_ACCESS_PERMISSION_NAME，L233）",
+    "note": "按路径列表批量清除持久化规则；service L231 延迟卸载，L233 校验权限。"
+  },
+  {
+    "api_name": "SandboxManagerKit::GetPersistPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::GetPersistPolicy → ISandboxManager::GetPersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::GetPersistPolicy → PolicyInfoManager::GetPolicy → SandboxManagerRdb::Query",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.GET_FILE_ACCESS_PERSIST（GET_PERSIST_PERMISSION_NAME，L732）",
+    "note": "查询某 tokenId 的持久化策略列表。非 system app 返回 NOT_SYS_APP(14)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::CleanPolicyByUserId",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::CleanPolicyByUserId → ISandboxManager::CleanPolicyByUserId (SA 3508)",
+    "impl_func": "SandboxManagerService::CleanPolicyByUserId → PolicyInfoManager::RemovePolicyByUser → SandboxManagerRdb::Delete",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID",
+    "note": "按 userId 清除该用户下所有策略；用户删除场景调用。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicy(tokenId, vector<PolicyInfo>, policyFlag)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicy → ISandboxManager::SetPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicy → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy（ioctl 下推内核）",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY（SET_POLICY_PERMISSION_NAME，L464）",
+    "note": "设置临时规则（非持久化），直接下推 MAC 内核。service L462 延迟卸载，L464 校验权限。失败可能返回 MAC_IOCTL_ERR(10)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicy(tokenId, vector<PolicyInfo>, policyFlag, vector<uint32_t>&)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicy → ISandboxManager::SetPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicy → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 SPACE_MGR_SERVICE_UID(7013)，L505；另需 SET_SANDBOX_POLICY",
+    "note": "带结果向量的 SetPolicy 重载；service L504 校验调用方 UID 必须为 space_manager_service(7013)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicy(tokenId, vector<PolicyInfo>, policyFlag, vector<uint32_t>&, flag)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicy → ISandboxManager::SetPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicy → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY（L534）；限 SPACE_MGR_SERVICE_UID(7013)，L553",
+    "note": "SetPolicy 带 flag 重载；service L532 校验权限，L552 延迟卸载，L553 校验 UID。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnSetPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnSetPolicy → ISandboxManager::UnSetPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::UnSetPolicy → PolicyInfoManager::UnSetPolicy → MacAdapter::UnsetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "移除单条临时规则（内核 MAC 层）。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetDenyPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetDenyPolicy → ISandboxManager::SetDenyPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::SetDenyPolicy → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy（DENY_READ/DENY_WRITE 位）",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "设置 deny 规则（DENY_READ_MODE=32 / DENY_WRITE_MODE=64），禁止读/写。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnSetDenyPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnSetDenyPolicy → ISandboxManager::UnSetDenyPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::UnSetDenyPolicy → PolicyInfoManager::UnSetPolicy → MacAdapter::UnsetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "移除 deny 规则。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicyAsync(tokenId, vector<PolicyInfo>, policyFlag)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicyAsync → ISandboxManager::SetPolicyAsync (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicyAsync → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "异步下推临时规则（不阻塞返回，无结果向量）。适合批量场景。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicyAsync(tokenId, vector<PolicyInfo>, policyFlag, flag)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicyAsync → ISandboxManager::SetPolicyAsync (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicyAsync → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "异步带 flag 重载。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnSetPolicyAsync",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnSetPolicyAsync → ISandboxManager::UnSetPolicyAsync (SA 3508)",
+    "impl_func": "SandboxManagerService::UnSetPolicyAsync → PolicyInfoManager::UnSetPolicy → MacAdapter::UnsetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "异步移除单条临时规则。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetPolicyByBundleName",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetPolicyByBundleName → ISandboxManager::SetPolicyByBundleName (SA 3508)",
+    "impl_func": "SandboxManagerService::SetPolicyByBundleName → PolicyInfoManager::SetPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY（L712）；限 FOUNDATION_UID（L691）",
+    "note": "按 bundleName + appCloneIndex 为指定应用设置策略；service L691 校验 UID 必须为 foundation(5523)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::CheckPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::CheckPolicy → ISandboxManager::CheckPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::CheckPolicy → PolicyInfoManager::CheckPolicy → PolicyTrie::Match",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.CHECK_SANDBOX_POLICY（CHECK_POLICY_PERMISSION_NAME，L590）",
+    "note": "查询某 tokenId 是否命中临时规则，返回 vector<bool>。service L587/L590 校验。"
+  },
+  {
+    "api_name": "SandboxManagerKit::CheckPersistPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::CheckPersistPolicy → ISandboxManager::CheckPersistPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::CheckPersistPolicy → PolicyInfoManager::CheckPersistPolicy → SandboxManagerRdb::Query",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.CHECK_SANDBOX_POLICY（L666）",
+    "note": "查询某 tokenId 是否命中持久化规则。非 system app 返回 NOT_SYS_APP(14)。"
+  },
+  {
+    "api_name": "SandboxManagerKit::StartAccessingPolicy(vector<PolicyInfo>, vector<uint32_t>&)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::StartAccessingPolicy → ISandboxManager::StartAccessingPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::StartAccessingPolicy → PolicyInfoManager::StartAccessingPolicy → MacAdapter::SetSandboxPolicy（激活持久化规则到内核）",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST（L613）；非 FOUNDATION_UID 校验（L617）",
+    "note": "激活持久化规则（从 RDB 读出并下推内核 MAC），应用开始访问。service L611/L613 校验权限。"
+  },
+  {
+    "api_name": "SandboxManagerKit::StartAccessingPolicy(vector<PolicyInfo>, vector<uint32_t>&, flag)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::StartAccessingPolicy → ISandboxManager::StartAccessingPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::StartAccessingPolicy → PolicyInfoManager::StartAccessingPolicy → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST（L646）",
+    "note": "带 flag 的激活重载。"
+  },
+  {
+    "api_name": "SandboxManagerKit::StopAccessingPolicy",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::StopAccessingPolicy → ISandboxManager::StopAccessingPolicy (SA 3508)",
+    "impl_func": "SandboxManagerService::StopAccessingPolicy → PolicyInfoManager::StopAccessingPolicy → MacAdapter::UnsetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.FILE_ACCESS_PERSIST",
+    "note": "停止访问（从内核撤销激活的规则），与 StartAccessingPolicy 配对。"
+  },
+  {
+    "api_name": "SandboxManagerKit::StartAccessingByTokenId(uint32_t)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::StartAccessingByTokenId → ISandboxManager::StartAccessingByTokenId (SA 3508)",
+    "impl_func": "SandboxManagerService::StartAccessingByTokenId → PolicyInfoManager::StartAccessingByToken → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID",
+    "note": "按 tokenId 激活该应用全部持久化规则（无需逐条传 PolicyInfo）。"
+  },
+  {
+    "api_name": "SandboxManagerKit::StartAccessingByTokenId(uint32_t, uint64_t timestamp)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::StartAccessingByTokenId → ISandboxManager::StartAccessingByTokenId (SA 3508)",
+    "impl_func": "SandboxManagerService::StartAccessingByTokenId → PolicyInfoManager::StartAccessingByToken → MacAdapter::SetSandboxPolicy",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID",
+    "note": "带 timestamp 重载，用于临时授权场景（如分享后过期）。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnSetAllPolicyByToken(uint32_t tokenId)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnSetAllPolicyByToken → ISandboxManager::UnSetAllPolicyByToken (SA 3508)",
+    "impl_func": "SandboxManagerService::UnSetAllPolicyByToken → PolicyInfoManager::UnSetAllPolicyByToken → MacAdapter（批量撤销内核规则）",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "撤销某 tokenId 的全部临时规则（应用卸载/退出场景）。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnSetAllPolicyByToken(uint32_t tokenId, uint64_t timestamp)",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnSetAllPolicyByToken → ISandboxManager::UnSetAllPolicyByToken (SA 3508)",
+    "impl_func": "SandboxManagerService::UnSetAllPolicyByToken → PolicyInfoManager::UnSetAllPolicyByToken → MacAdapter",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.SET_SANDBOX_POLICY",
+    "note": "带 timestamp 重载，撤销指定时间戳之前的全部规则。"
+  },
+  {
+    "api_name": "SandboxManagerKit::SetShareFileInfo",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::SetShareFileInfo → ISandboxManager::SetShareFileInfo (SA 3508)",
+    "impl_func": "SandboxManagerService::SetShareFileInfo → SandboxManagerShare::SetShareFileInfo",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID(5523)",
+    "note": "设置共享文件信息（cfginfo + bundleName + userId + tokenId）；仅 foundation 进程可调用，否则 PERMISSION_DENIED。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UpdateShareFileInfo",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UpdateShareFileInfo → ISandboxManager::UpdateShareFileInfo (SA 3508)",
+    "impl_func": "SandboxManagerService::UpdateShareFileInfo → SandboxManagerShare::UpdateShareFileInfo",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID(5523)",
+    "note": "更新共享文件信息；仅 foundation 可调用。"
+  },
+  {
+    "api_name": "SandboxManagerKit::UnsetShareFileInfo",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::UnsetShareFileInfo → ISandboxManager::UnsetShareFileInfo (SA 3508)",
+    "impl_func": "SandboxManagerService::UnsetShareFileInfo → SandboxManagerShare::UnsetShareFileInfo",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "限 FOUNDATION_UID(5523)；另 REVOKE_PERSIST_PERMISSION_NAME 分支（L320/L418）",
+    "note": "撤销共享文件信息。kit 侧另有需 ohos.permission.REVOKE_FILE_ACCESS_PERSIST 的重载路径。"
+  },
+  {
+    "api_name": "SandboxManagerKit::GetSharedDirectoryInfo",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::GetSharedDirectoryInfo → ISandboxManager::GetSharedDirectoryInfo (SA 3508)",
+    "impl_func": "SandboxManagerService::GetSharedDirectoryInfo → PolicyInfoManager::GetSharedDirectoryInfo",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.ACCESS_SHARED_FILE；非 system app → NOT_SYS_APP(14)",
+    "note": "查询当前用户共享目录列表（SharedDirectoryInfo）。service 强制 system app 校验。"
+  },
+  {
+    "api_name": "SandboxManagerKit::GrantSharedDirectoryPermission",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::GrantSharedDirectoryPermission → ISandboxManager::GrantSharedDirectoryPermission (SA 3508)",
+    "impl_func": "SandboxManagerService::GrantSharedDirectoryPermission → PolicyInfoManager::GrantSharedDirectoryPermission",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.ACCESS_SHARED_FILE；非 system app → NOT_SYS_APP(14)",
+    "note": "授予共享目录权限给当前调用方应用。service 强制 system app。"
+  },
+  {
+    "api_name": "SandboxManagerKit::RevokeSharedDirectoryPermission",
+    "d_ts_file": "N/A（无 JS API；inner API 头：interfaces/inner_api/sandbox_manager/include/sandbox_manager_kit.h）",
+    "napi_func": "N/A（无 NAPI；经 IPC proxy ISandboxManager）",
+    "ipc_proxy_method": "SandboxManagerClient::RevokeSharedDirectoryPermission → ISandboxManager::RevokeSharedDirectoryPermission (SA 3508)",
+    "impl_func": "SandboxManagerService::RevokeSharedDirectoryPermission → PolicyInfoManager::RevokeSharedDirectoryPermission",
+    "impl_file": "services/sandbox_manager/main/cpp/src/service/sandbox_manager_service.cpp",
+    "permission": "ohos.permission.ACCESS_SHARED_FILE；非 system app → NOT_SYS_APP(14)",
+    "note": "撤销当前调用方应用的共享目录权限。service 强制 system app。"
+  }
+]

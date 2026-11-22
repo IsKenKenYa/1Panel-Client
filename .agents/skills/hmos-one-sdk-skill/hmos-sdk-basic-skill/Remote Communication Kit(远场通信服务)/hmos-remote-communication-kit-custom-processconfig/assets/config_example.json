@@ -1,0 +1,68 @@
+{
+  "sessionConfiguration": {
+    "requestConfiguration": {
+      "transfer": {
+        "autoRedirect": true,
+        "timeout": {
+          "connectMs": 5000,
+          "transferMs": 10000
+        }
+      },
+      "processing": {
+        "validateResponse": "custom_function"
+      }
+    },
+    "baseAddress": "https://api.example.com",
+    "headers": {
+      "Authorization": "Bearer YOUR_ACCESS_TOKEN",
+      "Content-Type": "application/json"
+    }
+  },
+  "requestConfiguration": {
+    "processing": {
+      "validateResponse": {
+        "type": "function",
+        "description": "Custom validation function to check response",
+        "expectedStatusCode": 200,
+        "checkBodyNotEmpty": true,
+        "checkContentType": "application/json"
+      }
+    },
+    "transfer": {
+      "timeout": {
+        "connectMs": 3000,
+        "transferMs": 8000
+      }
+    }
+  },
+  "validationRules": {
+    "statusCodes": {
+      "success": [200, 201, 204],
+      "redirect": [301, 302, 303, 307, 308],
+      "clientError": [400, 401, 403, 404],
+      "serverError": [500, 502, 503, 504]
+    },
+    "headers": {
+      "required": ["Content-Type"],
+      "contentTypeWhitelist": ["application/json", "text/plain", "text/html"]
+    },
+    "body": {
+      "maxSizeBytes": 10485760,
+      "minSizeBytes": 0,
+      "allowEmpty": false
+    }
+  },
+  "errorHandling": {
+    "onValidationFail": "throw_error",
+    "onNetworkError": "log_and_retry",
+    "maxRetries": 3,
+    "retryDelayMs": 1000
+  },
+  "permissions": [
+    "ohos.permission.INTERNET"
+  ],
+  "apiVersion": {
+    "minimum": "5.0.0(12)",
+    "target": "6.0.0(20)"
+  }
+}

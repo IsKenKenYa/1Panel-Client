@@ -1,0 +1,355 @@
+﻿[
+  {
+    "api_name": "camera.getCameraManager",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraNapi::GetCameraManager (camera_napi.cpp)",
+    "impl_func": "CameraManager::GetInstance()",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h",
+    "description": "获取 CameraManager 单例。NAPI 层通过 CameraManagerNapi 包装。"
+  },
+  {
+    "api_name": "CameraManager.getSupportedCameras",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::GetSupportedCameras",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1266",
+    "impl_func": "CameraManager::GetSupportedCameras()",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp:2572",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:186",
+    "description": "获取支持的相机列表。内部通过 IPC 调用 camera_service 的 HCameraDeviceManager。"
+  },
+  {
+    "api_name": "CameraManager.getSupportedOutputCapability",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::GetSupportedOutputCapability",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1728",
+    "impl_func": "CameraManager::GetSupportedOutputCapability()",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:201",
+    "description": "获取指定相机的能力（预览/拍照/录像 Profile 列表）。"
+  },
+  {
+    "api_name": "CameraManager.createCameraInput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateCameraInputInstance",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1869",
+    "impl_func": "CameraManager::CreateCameraInput(sptr<CameraDevice>&, sptr<CameraInput>*)",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp:2721",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:246",
+    "description": "创建 CameraInput 实例。返回 CameraInputNapi 包装对象。"
+  },
+  {
+    "api_name": "CameraManager.createCaptureSession",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateCameraSessionInstance",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:846",
+    "impl_func": "CameraManager::CreateCaptureSession() / CameraSessionNapi::CreateCameraSession",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:268",
+    "description": "创建旧版 CaptureSession。NAPI 委托到 CameraSessionNapi::CreateCameraSession。"
+  },
+  {
+    "api_name": "CameraManager.createSession (mode=CAPTURE)",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateSessionInstance → PhotoSessionNapi::CreateCameraSession",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:877 / frameworks/js/camera_napi/src/mode/photo_session_napi.cpp:71",
+    "impl_func": "CameraManager::CreateCaptureSession(SceneMode::CAPTURE)",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:275",
+    "description": "createSession(SceneMode.CAPTURE) 创建 PhotoSession。g_sessionFactories 映射 JS_CAPTURE→PhotoSessionNapi。内部创建 PhotoSession(继承 CaptureSession)。"
+  },
+  {
+    "api_name": "CameraManager.createSession (mode=VIDEO)",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateSessionInstance → VideoSessionNapi::CreateCameraSession",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:877 / frameworks/js/camera_napi/src/mode/video_session_napi.cpp",
+    "impl_func": "CameraManager::CreateCaptureSession(SceneMode::VIDEO)",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_manager.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:275",
+    "description": "createSession(SceneMode.VIDEO) 创建 VideoSession。g_sessionFactories 映射 JS_VIDEO→VideoSessionNapi。内部创建 VideoSession(继承 CaptureSession)。"
+  },
+  {
+    "api_name": "CameraManager.createPreviewOutput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreatePreviewOutputInstance → PreviewOutputNapi::CreatePreviewOutput",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1011",
+    "impl_func": "CameraManager::CreatePreviewOutput() (经 PreviewOutputNapi 包装)",
+    "impl_file": "frameworks/native/camera/base/src/output/preview_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/preview_output.h",
+    "description": "创建预览输出。surfaceId 来自 XComponent。"
+  },
+  {
+    "api_name": "CameraManager.createPhotoOutput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreatePhotoOutputInstance → PhotoOutputNapi::CreatePhotoOutput",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1075",
+    "impl_func": "CameraManager::CreatePhotoOutput() (经 PhotoOutputNapi 包装)",
+    "impl_file": "frameworks/native/camera/base/src/output/photo_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/photo_output.h",
+    "description": "创建拍照输出。"
+  },
+  {
+    "api_name": "CameraManager.createVideoOutput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateVideoOutputInstance → VideoOutputNapi::CreateVideoOutput",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1139",
+    "impl_func": "CameraManager::CreateVideoOutput() (经 VideoOutputNapi 包装)",
+    "impl_file": "frameworks/native/camera/base/src/output/video_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/video_output.h",
+    "description": "创建录像输出。"
+  },
+  {
+    "api_name": "CameraManager.createMetadataOutput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraManagerNapi::CreateMetadataOutputInstance → MetadataOutputNapi::CreateMetadataOutput",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_manager_napi.cpp:1208",
+    "impl_func": "CameraManager::CreateMetadataOutput() (经 MetadataOutputNapi 包装)",
+    "impl_file": "frameworks/native/camera/base/src/output/metadata_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/metadata_output.h",
+    "description": "创建元数据输出（人脸/人体检测等）。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.beginConfig",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::BeginConfig",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp:1482",
+    "impl_func": "CaptureSession::BeginConfig()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp:472",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:722",
+    "description": "开始会话配置。必须先调用此方法才能 addInput/addOutput。PhotoSession/VideoSession 继承自 CaptureSession 共用此实现。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.addInput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::AddInput",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp:1669",
+    "impl_func": "CaptureSession::AddInput(sptr<CaptureInput>&)",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:741",
+    "description": "向会话添加 CameraInput。必须在 beginConfig 之后、commitConfig 之前调用。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.addOutput",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::AddOutput",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp:1823",
+    "impl_func": "CaptureSession::AddOutput(sptr<CaptureOutput>&)",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:755",
+    "description": "向会话添加输出（PreviewOutput/PhotoOutput/VideoOutput/MetadataOutput）。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.commitConfig",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::CommitConfig (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp:1551 (CommitConfigAsync:1506)",
+    "impl_func": "CaptureSession::CommitConfig()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp:504",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:727",
+    "description": "提交会话配置。NAPI 使用异步 work (uv_queue_work) 执行，通过 Promise/回调返回结果。失败常见码：7400105(配置锁定)、7400110(流冲突)、7400201(服务错误)。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.start",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::Start (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp:1924 (StartAsync:1909)",
+    "impl_func": "CaptureSession::Start()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp:1655",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:782",
+    "description": "启动会话。前置条件：commitConfig 成功。未提交时返回 7400103。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.stop",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::Stop",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp",
+    "impl_func": "CaptureSession::Stop()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp:1677",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:787",
+    "description": "停止会话。"
+  },
+  {
+    "api_name": "CaptureSession/PhotoSession/VideoSession.release",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::Release",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp",
+    "impl_func": "CaptureSession::Release()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:914",
+    "description": "释放会话资源。"
+  },
+  {
+    "api_name": "CaptureSession.hasFlash",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::HasFlash",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp",
+    "impl_func": "CaptureSession::HasFlash()",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:1294",
+    "description": "查询是否支持闪光灯。"
+  },
+  {
+    "api_name": "CaptureSession.isFlashModeSupported",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraSessionNapi::IsFlashModeSupported",
+    "napi_file": "frameworks/js/camera_napi/src/session/camera_session_napi.cpp",
+    "impl_func": "CaptureSession::IsFlashModeSupported(FlashMode)",
+    "impl_file": "frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:1309",
+    "description": "查询是否支持指定闪光灯模式。"
+  },
+  {
+    "api_name": "CameraInput.open",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraInputNapi::Open (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_input_napi.cpp:382",
+    "impl_func": "CameraInput::Open() / Open(bool,uint64_t*) / Open(int32_t)",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_input.cpp:238",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_input.h:70",
+    "description": "打开相机设备。异步执行。安全相机路径走 Open(true, &secureSeqId)，普通路径走 Open() 或 Open(cameraConcurrentType)。"
+  },
+  {
+    "api_name": "CameraInput.release",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraInputNapi::Release",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_input_napi.cpp",
+    "impl_func": "CameraInput::Release()",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_input.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_input.h",
+    "description": "释放 CameraInput 资源。"
+  },
+  {
+    "api_name": "CameraInput.on('error')",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "CameraInputNapi::On",
+    "napi_file": "frameworks/js/camera_napi/src/input/camera_input_napi.cpp",
+    "impl_func": "CameraInput::SetErrorCallback() (经 listener_base)",
+    "impl_file": "frameworks/native/camera/base/src/input/camera_input.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_input.h",
+    "description": "注册 CameraInput 错误回调。错误码通过 CameraInputErrorCallback 回传，常见 7400107/7400109/7400201。"
+  },
+  {
+    "api_name": "PhotoOutput.capture",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "PhotoOutputNapi::Capture (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/output/photo_output_napi.cpp:1088",
+    "impl_func": "PhotoOutput::Capture(std::shared_ptr<PhotoCaptureSetting>)",
+    "impl_file": "frameworks/native/camera/base/src/output/photo_output.cpp:813",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/photo_output.h:340",
+    "description": "触发拍照。会话必须处于 running 状态，否则返回 7400102/7400104。"
+  },
+  {
+    "api_name": "PhotoOutput.on('photoAvailable')",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "PhotoOutputNapi::On / OnCapturePhotoAvailable",
+    "napi_file": "frameworks/js/camera_napi/src/output/photo_output_napi.cpp",
+    "impl_func": "PhotoOutput::SetCallback() (经 PhotoOutputCallbackListener)",
+    "impl_file": "frameworks/native/camera/base/src/output/photo_output.cpp / output/photo_output_callback.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/photo_output.h / photo_output_callback.h",
+    "description": "注册拍照结果回调，接收 photoAvailable/frameShutter/captureEnd/error 等事件。"
+  },
+  {
+    "api_name": "PreviewOutput.start",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "PreviewOutputNapi::Start (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/output/preview_output_napi.cpp:615",
+    "impl_func": "PreviewOutput::Start()",
+    "impl_file": "frameworks/native/camera/base/src/output/preview_output.cpp:269",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/preview_output.h",
+    "description": "启动预览流。"
+  },
+  {
+    "api_name": "PreviewOutput.stop",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "PreviewOutputNapi::Stop (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/output/preview_output_napi.cpp",
+    "impl_func": "PreviewOutput::Stop()",
+    "impl_file": "frameworks/native/camera/base/src/output/preview_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/preview_output.h",
+    "description": "停止预览流。"
+  },
+  {
+    "api_name": "VideoOutput.start",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "VideoOutputNapi::Start (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/output/video_output_napi.cpp:513",
+    "impl_func": "VideoOutput::Start()",
+    "impl_file": "frameworks/native/camera/base/src/output/video_output.cpp:146",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/video_output.h",
+    "description": "启动录像流。"
+  },
+  {
+    "api_name": "VideoOutput.stop",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "VideoOutputNapi::Stop (异步)",
+    "napi_file": "frameworks/js/camera_napi/src/output/video_output_napi.cpp",
+    "impl_func": "VideoOutput::Stop()",
+    "impl_file": "frameworks/native/camera/base/src/output/video_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/video_output.h",
+    "description": "停止录像流。"
+  },
+  {
+    "api_name": "MetadataOutput.start",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "napi_func": "MetadataOutputNapi::Start",
+    "napi_file": "frameworks/js/camera_napi/src/output/metadata_output_napi.cpp",
+    "impl_func": "MetadataOutput::Start()",
+    "impl_file": "frameworks/native/camera/base/src/output/metadata_output.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/output/metadata_output.h",
+    "description": "启动元数据输出流。"
+  },
+  {
+    "api_name": "CameraPicker.pick",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.cameraPicker.d.ts",
+    "napi_func": "CameraPickerNapi::Pick (静态方法，异步)",
+    "napi_file": "frameworks/js/camera_napi/src/picker/camera_picker_napi.cpp:406 (Init:460)",
+    "impl_func": "通过 AbilityContext 拉起 CameraPicker UIAbility",
+    "impl_file": "frameworks/js/camera_napi/src/picker/camera_picker_napi.cpp",
+    "description": "系统级相机选择器。pick() 是静态方法，通过 StartAbility 拉起系统图库/相机选择 UI，返回 PickerResult（含 uri）。仅系统应用可用。"
+  },
+  {
+    "api_name": "[Native API] OH_Camera_GetCameraManager",
+    "d_ts_file": "interfaces/kits/native/include/camera/camera.h",
+    "napi_func": "OH_Camera_GetCameraManager",
+    "impl_func": "Camera_ManagerImpl 构造 → CameraManager::GetInstance()",
+    "impl_file": "frameworks/native/xxx/impl/camera_manager_impl.cpp",
+    "inner_api_header": "interfaces/kits/native/include/camera/camera_manager.h",
+    "description": "Native API 入口：获取 Camera_Manager 句柄。since 11。"
+  },
+  {
+    "api_name": "[Native API] OH_CameraManager_GetSupportedCameras",
+    "d_ts_file": "interfaces/kits/native/include/camera/camera_manager.h",
+    "napi_func": "OH_CameraManager_GetSupportedCameras",
+    "impl_func": "CameraManager::GetInstance()->GetSupportedCameras() → ProcessCameraInfos",
+    "impl_file": "frameworks/native/xxx/impl/camera_manager_impl.cpp:267",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:186",
+    "description": "xxx 获取支持的相机列表。since 11。"
+  },
+  {
+    "api_name": "[Native API] OH_CameraManager_CreateCaptureSession",
+    "d_ts_file": "interfaces/kits/native/include/camera/camera_manager.h",
+    "napi_func": "OH_CameraManager_CreateCaptureSession",
+    "impl_func": "CameraManager::GetInstance()->CreateCaptureSession(SceneMode::NORMAL)",
+    "impl_file": "frameworks/native/xxx/impl/camera_manager_impl.cpp:574",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:275",
+    "description": "xxx 创建会话。注意 xxx 使用 SceneMode::NORMAL（非 CAPTURE/VIDEO）。since 11。"
+  },
+  {
+    "api_name": "[Native API] OH_CameraManager_CreateCameraInput",
+    "d_ts_file": "interfaces/kits/native/include/camera/camera_manager.h",
+    "napi_func": "OH_CameraManager_CreateCameraInput",
+    "impl_func": "CameraManager::GetInstance()->CreateCameraInput(cameraDevice, &innerCameraInput)",
+    "impl_file": "frameworks/native/xxx/impl/camera_manager_impl.cpp:590",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/input/camera_manager.h:246",
+    "description": "xxx 创建 CameraInput。since 11。"
+  },
+  {
+    "api_name": "[Native API] OHCaptureSession_Begin / OHCaptureSession_CommitConfig / Start",
+    "d_ts_file": "interfaces/kits/native/include/camera/capture_session.h",
+    "napi_func": "OH_CaptureSession_Begin / CommitConfig / Start",
+    "impl_func": "CaptureSession::BeginConfig/CommitConfig/Start (经 CaptureSessionImpl 包装)",
+    "impl_file": "frameworks/native/xxx/impl/capture_session_impl.cpp → frameworks/native/camera/base/src/session/capture_session.cpp",
+    "inner_api_header": "interfaces/inner_api/native/camera/include/session/capture_session.h:722/727/782",
+    "description": "xxx 会话操作。xxx 通过 CaptureSessionImpl 代理调用内部 CaptureSession。错误经 FrameworkToxxxCameraError 映射。"
+  }
+]

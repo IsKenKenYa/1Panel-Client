@@ -1,0 +1,407 @@
+[
+  {
+    "code": "13900001",
+    "name": "OPERATION_NOT_PERMITTED",
+    "message": "Operation not permitted",
+    "errno": "EPERM",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "操作不允许（权限不足或文件系统限制）。FFI 调用 native 返回 EPERM 时抛出。"
+  },
+  {
+    "code": "13900002",
+    "name": "NO_SUCH_FILE_OR_DIRECTORY",
+    "message": "No such file or directory",
+    "errno": "ENOENT",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。文件/目录不存在。open/stat/access/rename/unlink/rmdir/moveDir/copyDir/copyFile 等路径不存在时 native 返回 ENOENT。"
+  },
+  {
+    "code": "13900003",
+    "name": "NO_SUCH_PROCESS",
+    "message": "No such process",
+    "errno": "ESRCH",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无此进程，native 返回 ESRCH。"
+  },
+  {
+    "code": "13900004",
+    "name": "INTERRUPTED_SYSTEM_CALL",
+    "message": "Interrupted system call",
+    "errno": "EINTR",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "系统调用被中断（EINTR）。tryLock/unlock 文档声明可抛。"
+  },
+  {
+    "code": "13900005",
+    "name": "IO_ERROR",
+    "message": "I/O error",
+    "errno": "EIO",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。底层读写 I/O 错误（EIO）。大量 API 文档声明可抛（createStream/fdopenStream/lstat/Stat 属性/Stream 读写/getParent 等）。"
+  },
+  {
+    "code": "13900006",
+    "name": "NO_SUCH_DEVICE_OR_ADDRESS",
+    "message": "No such device or address",
+    "errno": "ENXIO",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无此设备或地址（ENXIO）。"
+  },
+  {
+    "code": "13900007",
+    "name": "ARG_LIST_TOO_LONG",
+    "message": "Arg list too long",
+    "errno": "E2BIG",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "参数列表过长（E2BIG）。"
+  },
+  {
+    "code": "13900008",
+    "name": "BAD_FILE_DESCRIPTOR",
+    "message": "Bad file descriptor",
+    "errno": "EBADF",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。文件描述符无效/已关闭。read/write/lseek/fsync/fdatasync/tryLock/unlock/dup/close 等传入非法或已 close 的 fd 时 native 返回 EBADF。"
+  },
+  {
+    "code": "13900009",
+    "name": "NO_CHILD_PROCESSES",
+    "message": "No child processes",
+    "errno": "ECHILD",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无子进程（ECHILD）。"
+  },
+  {
+    "code": "13900010",
+    "name": "TRY_AGAIN",
+    "message": "Try again",
+    "errno": "EAGAIN",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "资源暂时不可用，重试（EAGAIN）。"
+  },
+  {
+    "code": "13900011",
+    "name": "OUT_OF_MEMORY",
+    "message": "Out of memory",
+    "errno": "ENOMEM",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。内存不足（ENOMEM）。FileUri 构造在 FFI 返回 id<0 时显式抛出；众多 API 文档声明可抛。"
+  },
+  {
+    "code": "13900012",
+    "name": "PERMISSION_DENIED",
+    "message": "Permission denied",
+    "errno": "EACCES",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。权限拒绝（EACCES）。仓颉接口多为沙箱内，权限问题相对少；open/mkdir/access/moveDir/copyDir 等路径无权限时 native 返回 EACCES。access 失败典型抛此码。"
+  },
+  {
+    "code": "13900013",
+    "name": "BAD_ADDRESS",
+    "message": "Bad address",
+    "errno": "EFAULT",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "错误地址（EFAULT），通常是 native 侧指针非法。"
+  },
+  {
+    "code": "13900014",
+    "name": "DEVICE_OR_RESOURCE_BUSY",
+    "message": "Device or resource busy",
+    "errno": "EBUSY",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "设备或资源忙（EBUSY）。"
+  },
+  {
+    "code": "13900015",
+    "name": "FILE_EXISTS",
+    "message": "File exists",
+    "errno": "EEXIST",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "文件已存在（EEXIST）。open 带 CREATE 且未带 TRUNC 覆盖已存在文件、mkdir 已存在目录等场景。"
+  },
+  {
+    "code": "13900016",
+    "name": "CROSS_DEVICE_LINK",
+    "message": "Cross-device link",
+    "errno": "EXDEV",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "跨设备链接（EXDEV）。rename/moveFile/moveDir 跨文件系统（如不同挂载点）时 native 返回。"
+  },
+  {
+    "code": "13900017",
+    "name": "NO_SUCH_DEVICE",
+    "message": "No such device",
+    "errno": "ENODEV",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无此设备（ENODEV）。"
+  },
+  {
+    "code": "13900018",
+    "name": "NOT_A_DIRECTORY",
+    "message": "Not a directory",
+    "errno": "ENOTDIR",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "高频。路径中某段非目录（ENOTDIR）。向文件路径当目录操作、rmdir/moveDir 路径父段非目录等。"
+  },
+  {
+    "code": "13900019",
+    "name": "IS_A_DIRECTORY",
+    "message": "Is a directory",
+    "errno": "EISDIR",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "目标是目录（EISDIR）。unlink 对目录、open 写一个目录、readText/Stream 写目录等。"
+  },
+  {
+    "code": "13900020",
+    "name": "INVALID_ARGUMENT",
+    "message": "Invalid argument",
+    "errno": "EINVAL",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "最高频。参数非法（EINVAL）。Filter 构造、AccessModeType/WhenceType 非法枚举值、WriteOptions.length>buffer.size、createRandomAccessFile 误传 start/end、空字符串路径（FileUri 构造/getUriFromPath）、OpenMode 非法组合等场景显式或经 native 抛出。常量 INVALID_ARGS_CODE=13900020。"
+  },
+  {
+    "code": "13900021",
+    "name": "FILE_TABLE_OVERFLOW",
+    "message": "File table overflow",
+    "errno": "EMFILE",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "进程文件表溢出（EMFILE），打开文件过多。"
+  },
+  {
+    "code": "13900022",
+    "name": "TOO_MANY_OPEN_FILES",
+    "message": "Too many open files",
+    "errno": "ENFILE",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "系统级打开文件过多（ENFILE）。open/createStream/createRandomAccessFile 等达到系统上限。"
+  },
+  {
+    "code": "13900023",
+    "name": "TEXT_FILE_BUSY",
+    "message": "Text file busy",
+    "errno": "ETXTBSY",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "文本文件忙（ETXTBSY），通常写入正在执行的可执行文件。"
+  },
+  {
+    "code": "13900024",
+    "name": "FILE_TOO_LARGE",
+    "message": "File too large",
+    "errno": "EFBIG",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "文件过大（EFBIG），超 ulimit 文件大小限制。write 时触发。"
+  },
+  {
+    "code": "13900025",
+    "name": "NO_SPACE_LEFT_ON_DEVICE",
+    "message": "No space left on device",
+    "errno": "ENOSPC",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "磁盘空间不足（ENOSPC）。write/mkdir/copyFile/moveFile 等写入耗尽空间时触发。"
+  },
+  {
+    "code": "13900026",
+    "name": "ILLEGAL_SEEK",
+    "message": "Illegal seek",
+    "errno": "ESPIPE",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "非法 seek（ESPIPE），对管道/流等不可 seek 的 fd 调用 lseek/setFilePointer。"
+  },
+  {
+    "code": "13900027",
+    "name": "READ_ONLY_FILE_SYSTEM",
+    "message": "Read-only file system",
+    "errno": "EROFS",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "只读文件系统（EROFS）。在只读分区/资源目录上 mkdir/open(WRITE)/unlink/rename 等写操作。"
+  },
+  {
+    "code": "13900028",
+    "name": "TOO_MANY_LINKS",
+    "message": "Too many links",
+    "errno": "EMLINK",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "链接数过多（EMLINK），目录子项/硬链接达上限。"
+  },
+  {
+    "code": "13900029",
+    "name": "RESOURCE_DEADLOCK_WOULD_OCCUR",
+    "message": "Resource deadlock would occur",
+    "errno": "EDEADLK",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "将发生资源死锁（EDEADLK），文件锁递归/循环。"
+  },
+  {
+    "code": "13900030",
+    "name": "FILENAME_TOO_LONG",
+    "message": "Filename too long",
+    "errno": "ENAMETOOLONG",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "文件名/路径过长（ENAMETOOLONG），超 NAME_MAX/PATH_MAX。"
+  },
+  {
+    "code": "13900031",
+    "name": "FUNCTION_NOT_IMPLEMENTED",
+    "message": "Function not implemented",
+    "errno": "ENOSYS",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "功能未实现（ENOSYS）。基类 Uri.path/toString 显式抛 'The prop/function is not supported.'（FileUri 已重写为可用实现，仅在直接使用基类 Uri 时触发）。"
+  },
+  {
+    "code": "13900032",
+    "name": "DIRECTORY_NOT_EMPTY",
+    "message": "Directory not empty",
+    "errno": "ENOTEMPTY",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "目录非空（ENOTEMPTY）。rmdir 非空目录（且未递归）时 native 返回。"
+  },
+  {
+    "code": "13900033",
+    "name": "TOO_MANY_SYMBOLIC_LINKS",
+    "message": "Too many symbolic links encountered",
+    "errno": "ELOOP",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "符号链接过多（ELOOP），路径解析遇循环符号链接。"
+  },
+  {
+    "code": "13900034",
+    "name": "OPERATION_WOULD_BLOCK",
+    "message": "Operation would block",
+    "errno": "EWOULDBLOCK",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "操作将阻塞（EWOULDBLOCK）。tryLock 非阻塞模式无法获取锁时文档声明可抛。"
+  },
+  {
+    "code": "13900035",
+    "name": "INVALID_REQUEST_DESCRIPTOR",
+    "message": "Invalid request descriptor",
+    "errno": "",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无效请求描述符，无标准 POSIX 对应。"
+  },
+  {
+    "code": "13900036",
+    "name": "DEVICE_NOT_A_STREAM",
+    "message": "Device not a stream",
+    "errno": "",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "设备非流，无标准 POSIX 对应。"
+  },
+  {
+    "code": "13900037",
+    "name": "NO_DATA_AVAILABLE",
+    "message": "No data available",
+    "errno": "ENODATA",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "无数据可用（ENODATA）。"
+  },
+  {
+    "code": "13900038",
+    "name": "VALUE_TOO_LARGE",
+    "message": "Value too large for defined data type",
+    "errno": "EOVERFLOW",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "值超出定义数据类型范围（EOVERFLOW），如大文件 stat 在 32 位偏移上溢出。"
+  },
+  {
+    "code": "13900039",
+    "name": "FILE_DESCRIPTOR_IN_BAD_STATE",
+    "message": "File descriptor in bad state",
+    "errno": "",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "文件描述符状态错误，无标准 POSIX 对应。"
+  },
+  {
+    "code": "13900040",
+    "name": "INTERRUPTED_SYSTEM_CALL_RESTART",
+    "message": "Interrupted system call should be restarted",
+    "errno": "",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "中断的系统调用应重启，无标准 POSIX 对应。"
+  },
+  {
+    "code": "13900041",
+    "name": "QUOTA_EXCEEDED",
+    "message": "Quota exceeded",
+    "errno": "EDQUOT",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "配额超限（EDQUOT）。应用沙箱/用户磁盘配额耗尽，write/mkdir/copyFile/moveFile 等写入时触发。"
+  },
+  {
+    "code": "13900042",
+    "name": "UNKNOWN_ERROR",
+    "message": "Unknown error",
+    "errno": "",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "兜底未知错误。getErrorInfo 对未命中 map 的 code 也返回 'Unknown error'。几乎所有 API 文档都声明可抛此码作为通用失败兜底。"
+  },
+  {
+    "code": "13900043",
+    "name": "NO_RECORD_LOCKS_AVAILABLE",
+    "message": "No record locks available",
+    "errno": "ENOLCK",
+    "source_file": "ohos/file/fs/file.cj",
+    "in_error_map": false,
+    "description": "无可用记录锁（ENOLCK）。仅在 File.tryLock/unlock 中由 native 返回该 code 后抛出。注意：该码不在 ERROR_CODE_MAP，经 getErrorInfo 会回落为 'Unknown error'，但 BusinessException 抛出的 code 仍为 13900043。"
+  },
+  {
+    "code": "13900044",
+    "name": "NETWORK_IS_UNREACHABLE",
+    "message": "Network is unreachable",
+    "errno": "ENETUNREACH",
+    "source_file": "ohos/file/fs/conflict_file_exception.cj",
+    "in_error_map": true,
+    "description": "网络不可达（ENETUNREACH）。涉及远程/分布式文件路径时可能返回。"
+  },
+  {
+    "code": "14300002",
+    "name": "INVALID_URI",
+    "message": "Invalid uri",
+    "errno": "",
+    "source_file": "ohos/file/fileuri/file_uri.cj",
+    "in_error_map": false,
+    "description": "无效 URI。属于 AppFileService 错误域（前缀 143），不在本模块 fs 的 ERROR_CODE_MAP 内。FileUri 构造/getParent 在 native 校验 URI 失败时抛出。File.getParent 文档声明可抛 14300002。"
+  }
+]

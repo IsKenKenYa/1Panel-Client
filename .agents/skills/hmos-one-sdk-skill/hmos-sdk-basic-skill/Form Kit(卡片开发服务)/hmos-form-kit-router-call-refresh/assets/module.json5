@@ -1,0 +1,59 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "WidgetEventRouterEntryAbility",
+        "srcEntry": "./ets/widgetevententryability/WidgetEventRouterEntryAbility.ts",
+        "description": "$string:WidgetEventRouterEntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:WidgetEventRouterEntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "launchType": "standard"
+      },
+      {
+        "name": "WidgetCalleeEntryAbility",
+        "srcEntry": "./ets/widgetcalleeentryability/WidgetCalleeEntryAbility.ts",
+        "description": "$string:WidgetCalleeEntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:WidgetCalleeEntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "launchType": "singleton"
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.KEEP_BACKGROUND_RUNNING"
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "FormAbility",
+        "srcEntry": "./ets/formability/FormAbility.ts",
+        "type": "form",
+        "label": "$string:form_name",
+        "description": "$string:form_desc",
+        "metadata": [
+          {
+            "name": "ohos.extension.form",
+            "resource": "$profile:form_config"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "zh-CN": {
+    "string": [
+      {
+        "name": "multilingual_message",
+        "value": "屏幕朗读支持多语种内容，欢迎使用"
+      },
+      {
+        "name": "accessibility_multilingual_message",
+        "value": "屏幕朗读功能已启用，系统支持多语种内容的朗读，欢迎您使用本功能"
+      },
+      {
+        "name": "description_multilingual",
+        "value": "本文本展示如何使用Resource资源实现多语言屏幕朗读支持"
+      },
+      {
+        "name": "rtl_safe_message",
+        "value": "屏幕朗读多语种示例（LTR模式）"
+      },
+      {
+        "name": "rtl_accessibility",
+        "value": "这是一个安全的单一Resource文本，避免拼接错误"
+      }
+    ]
+  },
+  "en-US": {
+    "string": [
+      {
+        "name": "multilingual_message",
+        "value": "Screen reader supports multilingual content, welcome"
+      },
+      {
+        "name": "accessibility_multilingual_message",
+        "value": "Screen reader is enabled, supports multilingual content reading, welcome to use this feature"
+      },
+      {
+        "name": "description_multilingual",
+        "value": "This text demonstrates how to use Resource for multilingual screen reader support"
+      },
+      {
+        "name": "rtl_safe_message",
+        "value": "Multilingual screen reader example (LTR mode)"
+      },
+      {
+        "name": "rtl_accessibility",
+        "value": "This is a safe single Resource text to avoid concatenation errors"
+      }
+    ]
+  },
+  "ar-SA": {
+    "string": [
+      {
+        "name": "multilingual_message",
+        "value": "قارئ الشاشة يدعم المحتوى متعدد اللغات، مرحباً بكم"
+      },
+      {
+        "name": "accessibility_multilingual_message",
+        "value": "تم تفعيل قارئ الشاشة، يدعم قراءة المحتوى متعدد اللغات، مرحباً بكم"
+      },
+      {
+        "name": "description_multilingual",
+        "value": "هذا النص يوضح كيفية استخدام Resource لدعم قارئ الشاشة متعدد اللغات"
+      },
+      {
+        "name": "rtl_safe_message",
+        "value": "مرحباً بكم في نظام HarmonyOS، قارئ الشاشة متعدد اللغات"
+      },
+      {
+        "name": "rtl_accessibility",
+        "value": "مرحباً بكم، قارئ الشاشة يدعم اللغة العربية بشكل صحيح"
+      },
+      {
+        "name": "rtl_description",
+        "value": "في لغة RTL، يجب استخدام Resource واحد بدلاً من التسلسل"
+      },
+      {
+        "name": "rtl_complete_message",
+        "value": "مرحباً بكم في HarmonyOS، قارئ الشاشة مفعّل"
+      },
+      {
+        "name": "rtl_complete_accessibility",
+        "value": "مرحباً بكم في نظام HarmonyOS، تم تفعيل قارئ الشاشة للقراءة من اليمين إلى اليسار"
+      }
+    ]
+  }
+}

@@ -1,0 +1,464 @@
+[
+  {
+    "api_name": "dataShare.createDataShareHelper",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_CreateDataShareHelper",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "dataShare.enableSilentProxy",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::EnableSilentProxy",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "dataShare.disableSilentProxy",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::DisableSilentProxy",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "dataShare.createDataProxyHandle",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_CreateDataProxyHandle",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataShareHelper.on(dataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_On",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.off(dataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Off",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.insert",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Insert",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.delete",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Delete",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.query",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Query",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.update",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Update",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.batchInsert",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_BatchInsert",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.batchUpdate",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_BatchUpdate",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.normalizeUri",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_NormalizeUri",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.denormalizeUri",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_DenormalizeUri",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.notifyChange",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_NotifyChange",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.addTemplate",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_AddTemplate",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.delTemplate",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_DelTemplate",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.on(rdbDataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_On",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.off(rdbDataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Off",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.on(publishedDataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_On",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.off(publishedDataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Off",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.publish",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Publish",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.getPublishedData",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_GetPublishedData",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataShareHelper.close",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataShareHelper::Napi_Close",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_datashare_helper.cpp -> interfaces/inner_api/consumer/include/datashare_helper.h"
+  },
+  {
+    "api_name": "DataProxyHandle.on(dataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_On",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.off(dataChange)",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_Off",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.publish",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_Publish",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.delete",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_Delete",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.deleteMyPublishedData",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_DeleteMyPublishedData",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.get",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_Get",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.putValue",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_PutValue",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.removeValue",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_RemoveValue",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataProxyHandle.getValues",
+    "d_ts_file": "@ohos.data.dataShare.d.ts",
+    "napi_func": "NapiDataProxyHandle::Napi_GetValues",
+    "impl_file": "frameworks/js/napi/dataShare/src/napi_dataproxy_handle.cpp -> interfaces/inner_api/consumer/include/dataproxy_handle.h"
+  },
+  {
+    "api_name": "DataSharePredicates.equalTo",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::EqualTo",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.notEqualTo",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::NotEqualTo",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.beginWrap",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::BeginWrap",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.endWrap",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::EndWrap",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.or",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Or",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.and",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::And",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.contains",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Contains",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.beginsWith",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::BeginsWith",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.endsWith",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::EndsWith",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.isNull",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::IsNull",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.isNotNull",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::IsNotNull",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.like",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Like",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.unlike",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Unlike",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.glob",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Glob",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.between",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Between",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.notBetween",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::NotBetween",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.greaterThan",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::GreaterThan",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.lessThan",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::LessThan",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.greaterThanOrEqualTo",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::GreaterThanOrEqualTo",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.lessThanOrEqualTo",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::LessThanOrEqualTo",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.orderByAsc",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::OrderByAsc",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.orderByDesc",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::OrderByDesc",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.distinct",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Distinct",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.limit",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::Limit",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.groupBy",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::GroupBy",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.indexedBy",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::IndexedBy",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.in",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::In",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.notIn",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::NotIn",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.prefixKey",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::PrefixKey",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataSharePredicates.inKeys",
+    "d_ts_file": "@ohos.data.dataSharePredicates.d.ts",
+    "napi_func": "DataSharePredicatesProxy::InKeys",
+    "impl_file": "frameworks/js/napi/common/src/datashare_predicates_proxy.cpp -> interfaces/inner_api/common/include/datashare_predicates.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goToFirstRow",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goToLastRow",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goToNextRow",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goToPreviousRow",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goTo",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.goToRow",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getBlob",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getString",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getLong",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getDouble",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.close",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getColumnIndex",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getColumnName",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  },
+  {
+    "api_name": "DataShareResultSet.getDataType",
+    "d_ts_file": "@ohos.data.DataShareResultSet.d.ts",
+    "napi_func": "(native result set, 无独立NAPI模块, 由DataShareHelper.query返回)",
+    "impl_file": "interfaces/inner_api/consumer/include/datashare_result_set.h -> interfaces/inner_api/consumer/include/datashare_abs_result_set.h"
+  }
+]

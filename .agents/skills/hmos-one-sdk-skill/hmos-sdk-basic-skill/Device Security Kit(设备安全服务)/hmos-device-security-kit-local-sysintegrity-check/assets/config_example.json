@@ -1,0 +1,68 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1",
+      "wearable"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "virtualMachine": "ark",
+    "pages": [
+      "pages/Index"
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "Main ability",
+        "icon": "$media:icon",
+        "label": "$string:entry_label",
+        "visible": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "metadata": [
+      {
+        "name": "ohos.permission.SECURITY_DETECT",
+        "resource": "$file:profile/profile.json"
+      }
+    ]
+  },
+  "app": {
+    "bundleName": "com.example.devicesecurity",
+    "vendor": "example",
+    "version": {
+      "code": 1000000,
+      "name": "1.0.0"
+    },
+    "apiVersion": {
+      "compatible": 18,
+      "target": 18,
+      "releaseType": "Release"
+    },
+    "debug": false
+  },
+  "dependencies": {
+    "@kit.DeviceSecurityKit": ">=5.1.0(18)"
+  },
+  "note": "需要配置的权限和Profile文件说明",
+  "requirements": [
+    "1. 在AppGallery Connect开通'安全检测服务'",
+    "2. 申请Profile文件并配置到工程的签名文件中",
+    "3. API版本要求≥5.1.0(18)",
+    "4. 仅支持Phone/Tablet/PC/2in1/Wearable设备类型"
+  ]
+}

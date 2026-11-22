@@ -1,6 +1,13 @@
 {
   "version": 2,
   "skills": {
+    "adaptive": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/adaptive/SKILL.md",
+      "computedHash": "7519d3ff62439c00c1af253e0e5ebac2221947a95cc04cd495258be0017ca462"
+    },
     "agent-memory-mcp": {
       "source": "sickn33/agentic-awesome-skills",
       "commit": "4a52ab5ef117bdce2c6ba8d87dd64df0c840dfea",
@@ -17,6 +24,134 @@
       "computedHash": "6866b9be1af02101e244f8a005079cd6ec05029688ef8e3cd6e46c9aa9127737",
       "installMode": "copy"
     },
+    "agp-9-upgrade": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "build-system/agp/agp-9-upgrade/SKILL.md",
+      "computedHash": "5ea250405ef337c52af03b9342b90fd67a16683c1ea3ff1cc429c2156f926478"
+    },
+    "android-cli": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "devtools/android-cli/SKILL.md",
+      "computedHash": "8a982e9380aaa40ae06c955308c156942f4937071cd1e12c3d1cf2310d7c00c2"
+    },
+    "android-for-cars-parked-apps": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "cars/android-for-cars-parked-apps/SKILL.md",
+      "computedHash": "9a7bf9d84df34fbd92b8f237158729af58674824b311d369d4a38736f7a6ab30"
+    },
+    "android-intent-security": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "security/android-intent-security/SKILL.md",
+      "computedHash": "41a3b30d26f74c13b6b0471eb750b7a866244a6bd2774e2af5ccbe1ae5cf385f"
+    },
+    "android-permissions-security": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "security/android-permissions-security/SKILL.md",
+      "computedHash": "eb407bbe35d8afe518f7d20d396f097f483657be22f836618169e24edd0712ed"
+    },
+    "android-profiler": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "profilers/android-profiler/SKILL.md",
+      "computedHash": "8dfcfca81310cb187fe61381d3c6f7933f5eb1915ce06a67707fbbb23f318fe1"
+    },
+    "anr-audit-and-fix": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "performance/anr-audit-and-fix/SKILL.md",
+      "computedHash": "ab13efcb3b7816b3a0bcbe54245383c85973c87173cb60f3087ee31f2619a54e"
+    },
+    "app-metadata-audit-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "05-launch-and-distribute/app-metadata-audit-skill/SKILL.md",
+      "computedHash": "f5905963b51ef239e9aca80f337dc9ffbcec86fac0e2f8f2e54e9c1a688c482a"
+    },
+    "appfunctions": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "device-ai/appfunctions/SKILL.md",
+      "computedHash": "0f995faa33d1241fc8e880cfadf6d41bc39fa034e2fe875d8567f1d28608e946"
+    },
+    "arkui-imperative-node": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/arkui-imperative-node/SKILL.md",
+      "computedHash": "3601eeea2a7e265652218622093de7579ed60e920e867770c9914b651e08998b"
+    },
+    "arkui-memory-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/arkui-memory-analysis/SKILL.md",
+      "computedHash": "86366a7b6118e718d0bc32946ad9fd2de0793bc86188164ffdf2ab73951bfd2d"
+    },
+    "arkui-ndk-ui-node-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/arkui-ndk-ui-node-skill/SKILL.md",
+      "computedHash": "89f8566739601517f7abd22277cf32fa2ab222afacb6eac028c8647e09a97663"
+    },
+    "arkuix-bridge-codegen": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui-x/arkuix-bridge-codegen/SKILL.md",
+      "computedHash": "f7e347ec57939075afd7f709e811f62a27a443f7c40e5d90ee49c369b5fbf306"
+    },
+    "arkuix-flowlog-diagnose-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui-x/arkuix-flowlog-diagnose-skill/SKILL.md",
+      "computedHash": "5d81cf66ffc324eb03e5ef5c7b600a425d7aa06130870b27a5c1c0d652797df4"
+    },
+    "arkuix-interface-scan": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui-x/arkuix-interface-scan/SKILL.md",
+      "computedHash": "f1d908c655234104647e3cb2e3a42b921c0a360263a58ba5e472cd6b1976406d"
+    },
+    "arkuix-migration-orchestrator": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui-x/arkuix-migration-orchestrator/SKILL.md",
+      "computedHash": "4c92e2e30e736dcb780bbd79dae9e236228124903fb623a3d5749349fae4faab"
+    },
+    "arkuix-migration-skeleton": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui-x/arkuix-migration-skeleton/SKILL.md",
+      "computedHash": "af69d447c532331760a5a180170abcce949c88811bada9f23f0e03a39f3793f7"
+    },
     "ask-matt": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -24,6 +159,13 @@
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
       "computedHash": "7ff2383b40fe9d8f3e753d267d964fb2b44d120a948fd2a57c3b26ddfc318370",
       "installMode": "copy"
+    },
+    "camerax": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "camera/camerax/SKILL.md",
+      "computedHash": "287fb330c1c5997da46df71ea6a0a6813be8a7a860eb5498ce483b4bf151a71f"
     },
     "claude-handoff": {
       "source": "mattpocock/skills",
@@ -48,6 +190,22 @@
       "skillPath": "skills/engineering/codebase-design/SKILL.md",
       "computedHash": "d40f025dc1b0f2020663260f38f2bcb8d6ed3523afb11e5fda624b01238677e8",
       "installMode": "copy"
+    },
+    "component_basic_ui": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/component_basic_ui/SKILL.md",
+      "computedHash": "60ec28fcd8a5613eecdaa2d9204f6e10aa63cf3f98a474218cf45f0725159285"
+    },
+    "component_container": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/component_container/SKILL.md",
+      "computedHash": "df5204ffaf5b71036945ee38d31e059964b3859db572ea43fd38f408e262def3"
     },
     "dart-add-unit-test": {
       "source": "flutter/agent-plugins",
@@ -154,6 +312,78 @@
       "skillPath": "skills/dart-write-documentation/SKILL.md",
       "computedHash": "672d8e9e5dc290c11eaf58da617a1d07349d0b728f0440cfcf22bf644a50dba6"
     },
+    "deveco-autobugfix": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-autobugfix/SKILL.md",
+      "computedHash": "a0173844bc7aafb614e8170586cec0a5f852b3f406bf16ceef489e1f6b993225"
+    },
+    "deveco-native-flow": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/SKILL.md",
+      "computedHash": "dc23812654aee10d2bc438bfd3d5b39467d77998db4ef35c3eafa6d9b86f327a"
+    },
+    "deveco-requirement-development": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-requirement-development/SKILL.md",
+      "computedHash": "7c5306449cddc600465cb6e1636111d1104410bdaa97515683c48df11625a6b2"
+    },
+    "deveco-studio-codelinter": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-codelinter/SKILL.md",
+      "computedHash": "c79fae9d28838134c8830b735acc732fd305e064d25f4a384ee65ac863c48a78"
+    },
+    "deveco-studio-codescanner": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-codescanner/SKILL.md",
+      "computedHash": "7304571d1addfb93c307b9833adbcf94c43bed0d513f341f3ae77c136c41008d"
+    },
+    "deveco-studio-emulator": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-emulator/SKILL.md",
+      "computedHash": "c617972c2a3ff7fe7243b83a3a05fd51a517a51e00c759379fb3570db4a4913a"
+    },
+    "deveco-studio-hilog": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-hilog/SKILL.md",
+      "computedHash": "fb710594c2074d7eec1f70e20787b905f0e7c25f0325f98eb55d05c189273f77"
+    },
+    "deveco-studio-hvigor": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-hvigor/SKILL.md",
+      "computedHash": "5a6d685f890da4a1f93df56836106ebf616da3fec0e4966339f70774a75057d0"
+    },
+    "deveco-studio-verify": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-studio-verify/SKILL.md",
+      "computedHash": "b5b9eb81efe7ff3cc3dd165c6162357c7ef8e9c5dbd644ab5c78d916c8c9482d"
+    },
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -162,6 +392,13 @@
       "computedHash": "87c78ae966e591f9ceb177789cc5cc9de69277cd26679ffd36ca5300f430d513",
       "installMode": "copy"
     },
+    "display-glasses-with-jetpack-compose-glimmer": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "xr/display-glasses-with-jetpack-compose-glimmer/SKILL.md",
+      "computedHash": "649d7ccda93f0dfd9492953a433d964f8e1bb166ed5eaa38a4894fa43f1a50d6"
+    },
     "domain-modeling": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -169,6 +406,20 @@
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
       "computedHash": "b78689833404148c769077355e12dbe5ad996a158a1e21e58ddf169e439d9d8c",
       "installMode": "copy"
+    },
+    "edge-to-edge": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "system/edge-to-edge/SKILL.md",
+      "computedHash": "954c391ab845f97ce160c04c3944d6c6da3c7ad0385970353b314ee2a3aabea2"
+    },
+    "engage-sdk-integration": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "play/engage-sdk-integration/SKILL.md",
+      "computedHash": "dacadf87c68d11fade457e6e0be73985698dc80ceb383252b9bce18e21dd6ce6"
     },
     "flutter-add-integration-test": {
       "source": "flutter/agent-plugins",
@@ -272,6 +523,20 @@
       "computedHash": "7aa92e9d469c6cd0b24ed8accb2e4be681c44c1524d71604c06b4055b7b56482",
       "installMode": "copy"
     },
+    "glance-appwidget-updates-and-memory": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "system/glance-appwidget-updates-and-memory/SKILL.md",
+      "computedHash": "7fc088da1a6c9bd7a2cbfe341db03c632f4a1854967d32fc8638b0897f413bc9"
+    },
+    "glance-canonical-layouts": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "system/glance-canonical-layouts/SKILL.md",
+      "computedHash": "91f23adf611df9c0447c677012fc3fcca9c8a2715df6be6cb9ed40898702e3a7"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -304,6 +569,590 @@
       "computedHash": "f60a2c3688379b7a306b3a7b8dd4120eab39da44c74fa2cb62d6424935f04aa7",
       "installMode": "copy"
     },
+    "harmony-build-fix": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/harmony-build-fix/SKILL.md",
+      "computedHash": "aaf3dc588e30dc8b7cc71e54cc38f294a5a6bc8b9363664eb4fc54294a517937"
+    },
+    "harmony-learner": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/harmony-learner/SKILL.md",
+      "computedHash": "6b5e37d941793ee32a77c0aabd225963dea2185f6fbc8686c9c7c4104cb1ddec"
+    },
+    "harmony-verify": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/harmony-verify/SKILL.md",
+      "computedHash": "32562d0b8519dc4125b64ede13a6fc14fbe8c2d96e2d16eaa0b6d7a83a6f2fa9"
+    },
+    "harmonyos-memory-optimization-solution": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/performance/harmonyos-memory-optimization-solution/SKILL.md",
+      "computedHash": "6c3988b5c84654e597fadac7f762723eee128a386654700677528474b9a01dc5"
+    },
+    "hmos-ability-insight-intent-generator": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/ability/hmos-ability-insight-intent-generator/SKILL.md",
+      "computedHash": "e0f79d18088c7ceaf80d7bbc16e99c0adb0074d2ac46113a8c6c46415552be9f"
+    },
+    "hmos-account-kit-login-api-client": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/account-kit/hmos-account-kit-login-api-client/SKILL.md",
+      "computedHash": "27b504d2004e6437d0d7c891e447dc4fd280e28ca7ab53c81b029c9d3cc1365f"
+    },
+    "hmos-account-kit-login-button-client": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/account-kit/hmos-account-kit-login-button-client/SKILL.md",
+      "computedHash": "05b5e80eda89d188b3cecdfced35607ffbcdbf1f97c02a15058222e2a9eae5dc"
+    },
+    "hmos-account-kit-quicklogin-client": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/account-kit/hmos-account-kit-quicklogin-client/SKILL.md",
+      "computedHash": "d4a8460b55041546ead33737d027f36be4d3571a0f5ac84a233cdb42d65d7095"
+    },
+    "hmos-ads-kit-access": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/ads-kit/hmos-ads-kit-access/SKILL.md",
+      "computedHash": "5c9af59bff0a35587ad0c1a026faf7f1111cc8c58fbe21c85ae4559af98671f5"
+    },
+    "hmos-apifault-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-apifault-analysis/SKILL.md",
+      "computedHash": "76197dd04e82e97ee51caf5d8c67c4564587afb7febb52ddaa590cb0c73f4769"
+    },
+    "hmos-app-continuity-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/feature-integration/hmos-app-continuity-skill/SKILL.md",
+      "computedHash": "1f8a890c1db03558dffb81f381b947a5a05d1466aca283718635fc6de0e63de0"
+    },
+    "hmos-appfreeze-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-appfreeze-analysis/SKILL.md",
+      "computedHash": "0024f12dabff88f8cc43250302616390faae4299e393132a30efcca6cf01aad4"
+    },
+    "hmos-arkts-deprecated-interface-checker": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkts/hmos-arkts-deprecated-interface-checker/SKILL.md",
+      "computedHash": "6ffed4114e458d9b0f62e7f0ac691638c55c856f9ec2719b0889ce9c723de6d9"
+    },
+    "hmos-arkts-knowledge-retriever": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkts/hmos-arkts-knowledge-retriever/SKILL.md",
+      "computedHash": "bdc5dd0e7574277e7efdcea9561d6e0967edc1e69bc12db0cefd9c55f6d15ad6"
+    },
+    "hmos-arkts-napi-side-effect-fixer": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkts/hmos-arkts-napi-side-effect-fixer/SKILL.md",
+      "computedHash": "23756f14bc35ca4a166439b9a83a7cf66eac52c140e20a104c73bc4445b6d8be"
+    },
+    "hmos-arkts-syntax-checker": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkts/hmos-arkts-syntax-checker/SKILL.md",
+      "computedHash": "27a638e50ee3b5322b16057608f52c452223d9cd2abb7657bc638de65626e024"
+    },
+    "hmos-arkui-accessibility-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-accessibility-skill/SKILL.md",
+      "computedHash": "3e419c4d99a4bf38a521e1af6fc6c95985ff275d9b07517f7f062f8566f8c9b3"
+    },
+    "hmos-arkui-dark-light-adaptation": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-dark-light-adaptation/SKILL.md",
+      "computedHash": "a7da46d282b9679b10d7c8e35ccb421c4194a9cee169104f9c54ab67bb91be9e"
+    },
+    "hmos-arkui-develop-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-develop-skill/SKILL.md",
+      "computedHash": "0ac1e5260d33c8b07037d8e07e5e76e38f7de659ade82201337dae04822956d0"
+    },
+    "hmos-arkui-kit-window-floatwindow": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-kit-window-floatwindow/SKILL.md",
+      "computedHash": "de075fd7563e7e2b3bf39f7c4b318aec8224bdf9afd82cfa9f760e3d30bdde98"
+    },
+    "hmos-arkui-knowledge-retriever": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-knowledge-retriever/SKILL.md",
+      "computedHash": "9a972d4c80afa76d6af7bd6c944118c5f0aac97662494e59ef134e38eeca8b92"
+    },
+    "hmos-arkui-longtake-transition": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-longtake-transition/SKILL.md",
+      "computedHash": "5b30025b0a703f68522f14f086212a72ac118473756b0b5e5f84f29df7dea056"
+    },
+    "hmos-arkui-mvvm-pattern": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-mvvm-pattern/SKILL.md",
+      "computedHash": "e348bb02d6387ac3a0b1b357aa3242207d4ba62461a15cfbfd877d89a888d6ca"
+    },
+    "hmos-arkui-navigation-transition": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-navigation-transition/SKILL.md",
+      "computedHash": "efcb6575708e5959b32ef35cdf9d00c0f9084ba124b215a71b4c047242971926"
+    },
+    "hmos-arkui-performance-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-performance-analysis/SKILL.md",
+      "computedHash": "f5dcb542e3015d73d48e1a1e609da63caa1ffebf63dfb2fcd36e698b0476ee35"
+    },
+    "hmos-arkui-scenario-development": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-scenario-development/SKILL.md",
+      "computedHash": "c3d4065755d14829d07265e544a89bc2effee69b7012e8ed8470adaeef39d48a"
+    },
+    "hmos-arkui-statemgt-migration": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-statemgt-migration/SKILL.md",
+      "computedHash": "2efe13541c804dc78566971487aa8469cad2b045e94a696e9039b9f407addad9"
+    },
+    "hmos-arkui-v1-v2-migration-and-mixusage": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/arkui/hmos-arkui-v1-v2-migration-and-mixusage/SKILL.md",
+      "computedHash": "339094f0cb119518411c4582b3d3574f2bf9b18da5a85884bb86b082469d8f79"
+    },
+    "hmos-ascf-assistant": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/atomic-service/hmos-ascf-assistant/SKILL.md",
+      "computedHash": "dea4151c6ca5f552a4e9a96b99da320eeec619e73bbb8dcfeb825e7ff4400f5a"
+    },
+    "hmos-ascf-convert-taro": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/atomic-service/hmos-ascf-convert-taro/SKILL.md",
+      "computedHash": "cf71e67b7e853d2501667f669f0ca31daf83dc4040f8c12ac923d46e66e15836"
+    },
+    "hmos-ascf-convert-uniapp": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/atomic-service/hmos-ascf-convert-uniapp/SKILL.md",
+      "computedHash": "48c19c40419d48f2fed0edf59aa773e9eb897f277baa33833180adb14d87af53"
+    },
+    "hmos-atomicservice-assistant": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/atomic-service/hmos-atomicservice-assistant/SKILL.md",
+      "computedHash": "e1d998e547261f993c4987471179c74f22055afd2e465143b54940955278bb31"
+    },
+    "hmos-connect-api-cli-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "05-launch-and-distribute/hmos-connect-api-cli-skill/SKILL.md",
+      "computedHash": "4b7f214a6930f3efb2c998d985c2ad348a0473c87cc318dc4c206ed28ebc1981"
+    },
+    "hmos-cppcrash-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-cppcrash-analysis/SKILL.md",
+      "computedHash": "8b700aec46e8b24d5a94581c8a6f9b8a8acbaba33ddd6751f08e7ec2943d23e0"
+    },
+    "hmos-design-visual-mobile": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "01-design/mobile/hmos-design-visual-mobile/SKILL.md",
+      "computedHash": "7c1100d83a9175709c774679c590a5446d70e8d861514f30e1a7de7aa2271749"
+    },
+    "hmos-dfx-analyzer": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-dfx-analyzer/SKILL.md",
+      "computedHash": "07b61564e889bb29c4e11f971e3a7b83e7f03a47e85aca2365885faf12ca486a"
+    },
+    "hmos-fdleak-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-fdleak-analysis/SKILL.md",
+      "computedHash": "813ee0fa9ee251ed313616a0b72b9ebbe108e8be1644bf933659c6369061a8b6"
+    },
+    "hmos-instrument-test": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "03-test/hmos-instrument-test/SKILL.md",
+      "computedHash": "68045b55747ffcb9982ebd74b5ea8f4dabd8ccc1e08cad07e8dda40304b10528"
+    },
+    "hmos-jscrash-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-jscrash-analysis/SKILL.md",
+      "computedHash": "5cbcfb5f2d22fc01d333a9a1acdf3bbb49c3592386761e68bcc03894e8fad983"
+    },
+    "hmos-jsleak-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-jsleak-analysis/SKILL.md",
+      "computedHash": "0d972b1609d32be0d97b690483019c0ba979c0e682776c3e488bf6a7277e581e"
+    },
+    "hmos-lazy-import-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/lazy-import/hmos-lazy-import-analysis/SKILL.md",
+      "computedHash": "3b42bf5e294d0309eeb10b626ec6e37acdb9949ae1d981f11abed93fb28035ee"
+    },
+    "hmos-live-view-kit-build-location": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/live-view-kit/hmos-live-view-kit-build-location/SKILL.md",
+      "computedHash": "dd2d9ab860bea972949771ef274246d22f97097e7db078712970754458c6ec91"
+    },
+    "hmos-local-test": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "03-test/hmos-local-test/SKILL.md",
+      "computedHash": "4e8ec7a43ba8c3d1893a8d804f53b6e7f3e3c868922a373698a0c3665494d2df"
+    },
+    "hmos-map-kit-map-creation": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/map-kit/hmos-map-kit-map-creation/SKILL.md",
+      "computedHash": "d236cc4615913c76b134f15e546c3287168644d0043f122ee97d0d3418bf42c0"
+    },
+    "hmos-map-kit-poi-search": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/map-kit/hmos-map-kit-poi-search/SKILL.md",
+      "computedHash": "6be831d696a0b8a13458409e1ebdc82484f3b891155db824983b28dfe53e1441"
+    },
+    "hmos-map-kit-route-planning": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/map-kit/hmos-map-kit-route-planning/SKILL.md",
+      "computedHash": "649ac5cb73f5c73f8b4518718cf2ea9ffc30337f2aa64c4a078cb4bc4cac9f8d"
+    },
+    "hmos-memleak-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-memleak-analysis/SKILL.md",
+      "computedHash": "4e30c95216dfb6084202737486f47d4c68bf039144344630b9717c5484bd25b5"
+    },
+    "hmos-memory-anti-regression": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/performance/hmos-memory-anti-regression/SKILL.md",
+      "computedHash": "57be2bf1624ff3cda11527030413c1c5a07433f2de4b94ae212fa55fc6e3dccc"
+    },
+    "hmos-memory-tier-optimizer": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/performance/hmos-memory-tier-optimizer/SKILL.md",
+      "computedHash": "cab4c95260de377ac637147e83d0a88c8aa88da4f0a2e608323099c44b15a12f"
+    },
+    "hmos-module-dependency-visualizer": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/modtree/hmos-module-dependency-visualizer/SKILL.md",
+      "computedHash": "e3087f9ea3a282db351bd812104dac4c2b1eea8dad0ddb069df22684305b7ff0"
+    },
+    "hmos-multidevice-avoid-areas": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-avoid-areas/SKILL.md",
+      "computedHash": "c0be7c9cfb394697a66f0208787bec5fd90f2229ece2de3837f6a4d476e601a0"
+    },
+    "hmos-multidevice-fold-state": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-fold-state/SKILL.md",
+      "computedHash": "c7da97d3b71b4fda825071607dfc358602a3ba397747abb84a16618f8babe0f9"
+    },
+    "hmos-multidevice-hardware-access": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-hardware-access/SKILL.md",
+      "computedHash": "641e7ea504ee775361e9e398ec4d347f438324245ed5218614fc5877da0e61b9"
+    },
+    "hmos-multidevice-interaction-methods": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-interaction-methods/SKILL.md",
+      "computedHash": "5096c6e79a7946a3a3d473e51d828b18a3e78d0220a3a9247b47da436412d12a"
+    },
+    "hmos-multidevice-natural-orientation": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-natural-orientation/SKILL.md",
+      "computedHash": "407d876d6e37c8639083105012cc32803cb83826d31f91b95a9e51957bc24b5b"
+    },
+    "hmos-multidevice-scenario-entry": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-scenario-entry/SKILL.md",
+      "computedHash": "86ee09f960f65592a7bc35753917745b720f0473a6cead3340dd01b889451ee2"
+    },
+    "hmos-multidevice-screen-window-size": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/multi-device/hmos-multidevice-screen-window-size/SKILL.md",
+      "computedHash": "da232340728242bfe0e79283eb2c4627a06d479139cf6e49428657cb619b5ce7"
+    },
+    "hmos-native-memleak-analysis": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "06-solutions/stability/hmos-native-memleak-analysis/SKILL.md",
+      "computedHash": "d829a86308700d232b776f0dda14c782afcc2a4d5e0f32960a5893e9981682fc"
+    },
+    "hmos-one-sdk-skill": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/sdk/hmos-one-sdk-skill/SKILL.md",
+      "computedHash": "9a32993a9d8bc3855dfcaf2c87d9a618ece2d4969d727b264f2ad989f8e175db"
+    },
+    "hmos-payment-kit-huawei-payment-integration": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/payment-kit/hmos-payment-kit-huawei-payment-integration/SKILL.md",
+      "computedHash": "4f545ee7fdcb6ad4688354364b266e549df1a20b0e0a01e89841defe33022bce"
+    },
+    "hmos-push-kit": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/push-kit/hmos-push-kit/SKILL.md",
+      "computedHash": "d31236d182be35683a264e08bd87bf6aa6fed170d2bceefd80def5a34d4b9be4"
+    },
+    "hmos-push-kit-background": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/push-kit/hmos-push-kit/hmos-push-kit-background/SKILL.md",
+      "computedHash": "15a3a34b1b8f5262557bea33f05ebb085760972c74e1b3f26055c855ea7bd494"
+    },
+    "hmos-push-kit-notification": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/push-kit/hmos-push-kit/hmos-push-kit-notification/SKILL.md",
+      "computedHash": "9944815b337d57863368832bec936ce020e346fa44ae641c6068c791111cd624"
+    },
+    "hmos-push-kit-token": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/push-kit/hmos-push-kit/hmos-push-kit-token/SKILL.md",
+      "computedHash": "8dbc1cc575b52843d1201f44947740b08d14e49340492cecc3ed31cd43ae803f"
+    },
+    "hmos-push-kit-voip": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/push-kit/hmos-push-kit/hmos-push-kit-voip/SKILL.md",
+      "computedHash": "40fe1f7433515b9350503a682807babf3134440332e44f448339f6890331697f"
+    },
+    "hmos-scan-kit-customscan": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/scan-kit/hmos-scan-kit-customscan/SKILL.md",
+      "computedHash": "b69f426dfd8811c19ab7171d3437fc918d5eb25cf33f0829f6742051add0246d"
+    },
+    "hmos-scan-kit-defaultscan": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/scan-kit/hmos-scan-kit-defaultscan/SKILL.md",
+      "computedHash": "9ff1e1c099c2b27af4993759d30abf363e16b4d6962a44595e583c42f7966e35"
+    },
+    "hmos-share-kit-gestures-share": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/share-kit/hmos-share-kit-gestures-share/SKILL.md",
+      "computedHash": "68326471c59adb86fcb8acf02041c4075a380ecdbc8c0fe54925e7582e28d5d4"
+    },
+    "hmos-share-kit-knock-share": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/share-kit/hmos-share-kit-knock-share/SKILL.md",
+      "computedHash": "e9e03101381ef3cddcc56ecc98822beee21958ff6972599b8f3729518f353dd4"
+    },
+    "hmos-skill-reviewer": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": ".aw-skills/hmos-skill-reviewer/SKILL.md",
+      "computedHash": "1cb65857cd022301bbbd3eb8a0d854f30423563e272927d2540bec976606e744"
+    },
+    "hmos-window-hover-state": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/window/hmos-window-hover-state/SKILL.md",
+      "computedHash": "9bacbf89246b1ca6ddd4a5e8270a05611b6d36d4d126bed2f107ea6bad4590e0"
+    },
+    "hmos-window-immersive": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/window/hmos-window-immersive/SKILL.md",
+      "computedHash": "d98739bbe06e0451be29c0012ac9fc4cde089b6cd5acd6a56a90e5dc56228539"
+    },
+    "hmos-window-smart-orientation": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "02-development/window/hmos-window-smart-orientation/SKILL.md",
+      "computedHash": "846847c477d9bf95a0332e02d0dc564ef036542b438ec6d6dc8d23c0e54733c9"
+    },
     "implement": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -328,6 +1177,263 @@
       "computedHash": "f0820b18426a7d9a6c823a890988ba0ac70bf0fd596d30d7ef07c88558728c23",
       "installMode": "copy"
     },
+    "ink-app-builder": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/ink/ink-app-builder/SKILL.md",
+      "computedHash": "7b5dcc853fd06ce73faac3e85dde5b48ece1b82f156a1d33f8acfca4aac9409e"
+    },
+    "ink-custom-brush-builder": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/ink/ink-custom-brush-builder/SKILL.md",
+      "computedHash": "da12388b77540f79e11c310838aa49e7c541770132231d779a42366305d20942"
+    },
+    "ios-to-android": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "migration/ios-to-android/SKILL.md",
+      "computedHash": "54d46a3b0a613f4c342af283730c4b26005efbd7c1854294957855ad41988a07"
+    },
+    "jetpack-compose-performance": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/jetpack-compose-performance/SKILL.md",
+      "computedHash": "a66ab42a03f6b559bfd1c8325e242ff65d276c173a7ef8e889837c311d179d49"
+    },
+    "kits_ability": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_ability/SKILL.md",
+      "computedHash": "5a78b7c0c2edf7e88eb4978d9b3a21aa906ac898552acf63c428e103f8325dd1"
+    },
+    "kits_accessibility": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_accessibility/SKILL.md",
+      "computedHash": "09389a4fd6b26a11750d2832b66834adfb79f40a4d3710591462d932e2390de0"
+    },
+    "kits_arkts": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_arkts/SKILL.md",
+      "computedHash": "171cad07d61d53ac99309e45f392e3185f225c4950929633c150eb31a55e5924"
+    },
+    "kits_avsession": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_avsession/SKILL.md",
+      "computedHash": "6b0671f9da2edd1a33598af719aee1f685a61f46012d7ef722f7a8b19db20478"
+    },
+    "kits_basic_services": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_basic_services/SKILL.md",
+      "computedHash": "4e3b1a6bb84f5fec9c21bec1ef1e69af664a7231383fb6f42c6b6ebd64b6e2ec"
+    },
+    "kits_connectivity": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_connectivity/SKILL.md",
+      "computedHash": "78e0da8c8ce20dc99b76a37312327b6fd0036cf0e249ea63c13424f4425e0439"
+    },
+    "kits_data": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_data/SKILL.md",
+      "computedHash": "718d7a68e645215f1814484b339801a833a62cb9684f13a577e2d3a0d1032345"
+    },
+    "kits_device": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_device/SKILL.md",
+      "computedHash": "f84cc8f3c4bc0f6012dbddab56f8d18c40faf0a259daa6b0eba99eeecf7bd680"
+    },
+    "kits_distributed": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_distributed/SKILL.md",
+      "computedHash": "126c66de899b011f181ace6b3a42dccce996fa9f0e5b9fa53ba8d91af117d224"
+    },
+    "kits_file": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_file/SKILL.md",
+      "computedHash": "51ab666f70e1afcd5dd8a70373af9bb46286d38a7f039cc375a91c0147f6b062"
+    },
+    "kits_form": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_form/SKILL.md",
+      "computedHash": "9e01bf443569f2aef9417bd6dd9acacff2858c1b59ee28f3d7fa895af0671511"
+    },
+    "kits_graphics2d": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_graphics2d/SKILL.md",
+      "computedHash": "45dc35e4f84b30b77bd03a3618eb3f69ca86ab06ed6b7ff4469bb02af582c9b0"
+    },
+    "kits_ime": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_ime/SKILL.md",
+      "computedHash": "0c6d410adfb340ac5d5ac12d7b9260b31279ef6fec4feabc22ec559844577444"
+    },
+    "kits_input": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_input/SKILL.md",
+      "computedHash": "db32582f42a1a37e9b3aca0e1a1add2bf689748dd92df0664a0dc6597ac6f726"
+    },
+    "kits_ipc": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_ipc/SKILL.md",
+      "computedHash": "4f81f48ce39f7a46dde4a296bb94f671de174d9aef4024b5c9750c7f65d3d14e"
+    },
+    "kits_localization": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_localization/SKILL.md",
+      "computedHash": "67cc9c171baf0ed4fb591180cd6cc9a23f25d5fb5aea0f8e21a2277c2a1076ba"
+    },
+    "kits_media": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_media/SKILL.md",
+      "computedHash": "460decda54f0be27ef345e21f23979d16a35350daaa0349a404af62a667cdd3a"
+    },
+    "kits_network": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_network/SKILL.md",
+      "computedHash": "a07e9544fc415d784ffdaf330e937c528563c853881c795943281d77495b6ded"
+    },
+    "kits_performance": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_performance/SKILL.md",
+      "computedHash": "4e3c19aa2e2b0141f7172c244a6d3a9eb6da5f05b22a5687af0f130392f23097"
+    },
+    "kits_security": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_security/SKILL.md",
+      "computedHash": "6e8447e7ab020f953eb76d4b771a8e2776647eb2f91baa6a4b5fa2ece14ea5a3"
+    },
+    "kits_telephony": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_telephony/SKILL.md",
+      "computedHash": "4178b0700b116f84485546d05e8e539d7cef25135c0fbe6de85e9ec3dccbf3b2"
+    },
+    "kits_test": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_test/SKILL.md",
+      "computedHash": "e64142a5ed6b81fb41cb423ff1b766a0c0f307bb5dc993e05b546a8131f9afe1"
+    },
+    "kits_ui": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_ui/SKILL.md",
+      "computedHash": "8bb3313f20ef0dc6d2720053adac1acbad862f0000b9c4d78eaaec1886961b9f"
+    },
+    "kits_web": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/kits_web/SKILL.md",
+      "computedHash": "61e64fcfc6f372407138ec8812f3768187fe6012a52bc17764cc90745776213e"
+    },
+    "knowledge_search": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/knowledge_search/SKILL.md",
+      "computedHash": "7f5538f9f499c75aeba1402dceda48c166486ca47c5a42f7adaa40146b780991"
+    },
+    "lang-syntax": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/lang-syntax/SKILL.md",
+      "computedHash": "8f24b2240ecedf294b988269f7af1ff41b8789d0373b532964d42e662658b346"
+    },
+    "leanback-to-compose-tv-migration": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "tv/leanback-to-compose-tv-migration/SKILL.md",
+      "computedHash": "726f57d45afa7deaa3d0066dc64e08ac028f0ea766a4017f2b0b4ee8f90cc3fb"
+    },
+    "litert-lm": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "device-ai/litert/litert-lm/SKILL.md",
+      "computedHash": "a20d10b41b55c9b043905d90f4b06ed15c0d8f70836b480d7e7db105569ca66a"
+    },
+    "litert-runtime": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "device-ai/litert/litert-runtime/SKILL.md",
+      "computedHash": "1456abc0d1f69db154054b0fdb8a19a271e7713734fb0c71bce347bd76064228"
+    },
     "loop-me": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -336,6 +1442,13 @@
       "computedHash": "5dac8f9919f3e1a528a4f1f00db07c81c3e6092e706376d81c697d16422ab163",
       "installMode": "copy"
     },
+    "media3-cast-integration": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "media/media3-cast-integration/SKILL.md",
+      "computedHash": "5dc77b2f9d0c4905326b458662bf17b7ef0182d20c18889cc0aca54cbc7ddbd6"
+    },
     "migrate-to-shoehorn": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -343,6 +1456,27 @@
       "skillPath": "skills/misc/migrate-to-shoehorn/SKILL.md",
       "computedHash": "a63549df6d5b5c6595029f8c504ccf31a12f01312f03db70da4b45cb10ba5ca8",
       "installMode": "copy"
+    },
+    "migrate-xml-views-to-jetpack-compose": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/migration/migrate-xml-views-to-jetpack-compose/SKILL.md",
+      "computedHash": "6a8eac9ddf591078160b21c43458e45969169f58dbd906e551727982c7048223"
+    },
+    "ml-kit-genai-prompt-api": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "device-ai/ml-kit-genai-prompt-api/SKILL.md",
+      "computedHash": "3c3a49cf4d0b5cbff9b5756f1996ce9020c68c7796079a974bda818bd839eadf"
+    },
+    "mlkit-agent-api": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "device-ai/mlkit-agent-api/SKILL.md",
+      "computedHash": "3618de901b3847be5502243d3e485752833f5eacadcb9f032b10f664a1710681"
     },
     "mobile-android-design": {
       "source": "wshobson/agents",
@@ -416,6 +1550,80 @@
       "computedHash": "2f34a5446fd2160ecd8e086efe0f373cfe740e58e3c4c84b5714b584705c777b",
       "installMode": "copy"
     },
+    "native-analyse": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/native-analyse/SKILL.md",
+      "computedHash": "41be42bccba3aa126b66100e6e677773b810647e75931dabdb8cd0a1fa0c7f6e"
+    },
+    "native-build-fix": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/native-build-fix/SKILL.md",
+      "computedHash": "3ed237f53909e98b308e98c50e11a5b277a58c56613fb0198261653381c007f1"
+    },
+    "native-coding": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/native-coding/SKILL.md",
+      "computedHash": "2839f620d206e835b6ecd68b08e3e25e544f7d4ab90997f3e9e8bdca0c70d0ed"
+    },
+    "native-plan": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/native-plan/SKILL.md",
+      "computedHash": "9a52e9713954e29550ed0320ca3b6a6abc8bf5641452916af960f5a7c6a9b33d"
+    },
+    "navigation-3": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "navigation/navigation-3/SKILL.md",
+      "computedHash": "ffcdc1382dd5ea750155cade0c9658c838bdaca6600c40dd879405ec97bfd329"
+    },
+    "navigation-event": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "navigation/navigation-event/SKILL.md",
+      "computedHash": "40c0d24c4d12f9bd4303830e2f28a46c51ffaf4748ea2b6585e44aa0cd22eea9"
+    },
+    "play-billing-library-version-upgrade": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "play/play-billing-library-version-upgrade/SKILL.md",
+      "computedHash": "29b6894a47a22cc215da184af5b77a825b9371e49cc94977d48a671575c0a8ac"
+    },
+    "play-policy-insights": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "play/play-policy-insights/SKILL.md",
+      "computedHash": "fac741f7d1fb71b44e8dbfd0c4da9e3a0c95c7543c555565d268d154581857e9"
+    },
+    "plugin-creator": {
+      "source": "openai/plugins",
+      "commit": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/plugin-creator/SKILL.md",
+      "computedHash": "e7b023808c388d2b84a69673fcc74de7e8c1760bd9a1e0e194b27fd661f65145"
+    },
+    "projected-hardware": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "xr/projected-hardware/SKILL.md",
+      "computedHash": "59a962557624771b3784506504699a7e8cbfc6699ff74ae5559b4888aeb77ea7"
+    },
     "prototype": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -424,6 +1632,21 @@
       "computedHash": "1e3ba2202a5b77b8aa50bc4447432331d6e42590e53ec0935689662cfed199ca",
       "installMode": "copy"
     },
+    "r8-analyzer": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "performance/r8-analyzer/SKILL.md",
+      "computedHash": "fbd0f9f9e434b0732302d0de0ba69606ef3a5806478d35aa128e09fe4828f276"
+    },
+    "refactoring": {
+      "source": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "sourceUrl": "https://gitcode.com/HarmonyOS_Skills/harmonyos-agent-skills.git",
+      "commit": "f55d842c21012444efecbe7b4f67c38c2a1a2a25",
+      "sourceType": "git",
+      "skillPath": "04-tools/deveco/deveco-native-flow/references/refactoring/SKILL.md",
+      "computedHash": "14473b145befcc0bccd310548dcd261b7c6f038002b80157478523590296863b"
+    },
     "research": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -431,6 +1654,13 @@
       "skillPath": "skills/engineering/research/SKILL.md",
       "computedHash": "7662666af51f8b1672ed7d88360d4b82656da21bb7b11c49e956eeb3036b85d5",
       "installMode": "copy"
+    },
+    "restore-credentials": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "identity/restore-credentials/SKILL.md",
+      "computedHash": "a107a5b59c1e4fab5952916dc74b0f2456a532bc1f158107679727cdbb032bf6"
     },
     "retro": {
       "source": "mattpocock/skills",
@@ -504,6 +1734,20 @@
       "computedHash": "cb0e04bb644fdf702e22f066090df0f8ce17b9e9451ad7936546435771a4de3a",
       "installMode": "copy"
     },
+    "swift-concurrency": {
+      "source": "AvdLee/Swift-Concurrency-Agent-Skill",
+      "commit": "3b1580d8398e0b5408b3bf0bada0e941a1cfc642",
+      "sourceType": "github",
+      "skillPath": "skills/swift-concurrency/SKILL.md",
+      "computedHash": "7977e699ad9eae2cccdb8de7520b5fb7701ed01a6bde52d47263bc30dec09482"
+    },
+    "swiftui-pro": {
+      "source": "twostraws/SwiftUI-Agent-Skill",
+      "commit": "f2920b63995263f57b3e198674e89a602efba6d2",
+      "sourceType": "github",
+      "skillPath": "swiftui-pro/SKILL.md",
+      "computedHash": "5ae476da16f2b0af60385b856cdcb121a4f4675ddc06c27e81259f12e987aeb1"
+    },
     "tdd": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -519,6 +1763,13 @@
       "skillPath": "skills/productivity/teach/SKILL.md",
       "computedHash": "31bb3eed09dd2787e290e933def99fbf7d65044a29119c224af47c01404ab228",
       "installMode": "copy"
+    },
+    "testing-setup": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "testing/testing-setup/SKILL.md",
+      "computedHash": "a9e77fd6f6fb507018d97c3f80af5deaee792c02a19a1d1e56e5fb9bff33ebee"
     },
     "to-questionnaire": {
       "source": "mattpocock/skills",
@@ -585,6 +1836,13 @@
       "computedHash": "51a7da9890db80fbea035a9cb286792ff09beccd827ac2b11139d04200934763",
       "installMode": "copy"
     },
+    "verified-email": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "identity/verified-email/SKILL.md",
+      "computedHash": "c504fb556f1814a38996e434405ede4d645cd50de73d8377154a11ce6f625c08"
+    },
     "wait-what": {
       "source": "mattpocock/skills",
       "commit": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
@@ -600,6 +1858,20 @@
       "skillPath": "skills/engineering/wayfinder/SKILL.md",
       "computedHash": "bd82983c105881f6cb0c15e5d029c0d5fca756939b69eebe94e49003069a276f",
       "installMode": "copy"
+    },
+    "wear-compose-m3": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "wear/wear-compose-m3/SKILL.md",
+      "computedHash": "f879d72c23365a78fe54b73f43f560ff6fc95de0604bd20059ac81477aada1c3"
+    },
+    "wear-widgets": {
+      "source": "android/skills",
+      "commit": "c72942584fff970dac86ced78b367fce0c441e52",
+      "sourceType": "github",
+      "skillPath": "wear/wear-widgets/SKILL.md",
+      "computedHash": "faa61cf21e4dc9f2ced35d889e8ac93b14e19df51763c9b9248d70b2ac816a3a"
     },
     "wizard": {
       "source": "mattpocock/skills",

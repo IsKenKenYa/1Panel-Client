@@ -1,0 +1,243 @@
+[
+  {
+    "api_name": "distributedDataObject.create(context, source)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9 constructor -> joinSession)",
+    "napi_func": "JSDistributedObjectStore::JSCreateObjectSync",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "DistributedObjectStore::CreateObject(sessionId, status) -> DistributedObjectStoreImpl::CreateObject -> FlatObjectStore::CreateObject",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "JS 层 create() 调用底层 createObjectSync(version, sessionId, objectId[, context])。NAPI 层校验 sandbox、获取 DistributedObjectStore 实例并 CreateObject，返回包装后的 DistributedObject。ANI 层通过 ohos.data.distributedDataObject.impl.cpp 的 Create() -> DataObjectImpl 构造函数实现。"
+  },
+  {
+    "api_name": "distributedDataObject.createDistributedObject(source) [deprecated since 9]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV8)",
+    "napi_func": "JSDistributedObjectStore::JSCreateObjectSync (version=8)",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "DistributedObjectStore::CreateObject -> DistributedObjectStoreImpl::CreateObject -> FlatObjectStore::CreateObject",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "已废弃 API。JS 层以 version=8 调用 createObjectSync。"
+  },
+  {
+    "api_name": "distributedDataObject.genSessionId()",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (generateSessionId JS function)",
+    "napi_func": "JSDistributedObjectStore::JSEquenceNum",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "std::random_device + std::uniform_int_distribution (inline)",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "description": "生成随机 session ID。NAPI 层 JSEquenceNum 使用 C++ random_device 直接生成。ANI 层通过 ohos.data.distributedDataObject.impl.cpp 的 GenSessionId() -> DataObjectImpl::GenerateRandomNum()。"
+  },
+  {
+    "api_name": "distributedDataObject.destroyObjectSync(version, object)",
+    "d_ts_file": "(internal sync function, not in .d.ts)",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (leaveSession -> destroyObjectSync)",
+    "napi_func": "JSDistributedObjectStore::JSDestroyObjectSync",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "DistributedObjectStore::DeleteObject -> DistributedObjectStoreImpl::DeleteObject -> FlatObjectStore::Delete",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "内部同步函数，销毁分布式对象。JS 层 leaveSession 调用此函数。"
+  },
+  {
+    "api_name": "DataObject.setSessionId(sessionId)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.setSessionId -> joinSession/leaveSession)",
+    "napi_func": "JSDistributedObjectStore::JSCreateObjectSync (joinSession) / JSDestroyObjectSync (leaveSession)",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "DistributedObjectStore::CreateObject / DeleteObject -> DistributedObjectStoreImpl::CreateObject / DeleteObject -> FlatObjectStore::CreateObject / Delete",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "JS 层 setSessionId 有3重载：callback版、promise版(sessionId参数)、exit版(无sessionId)。sessionId为空时调用 leaveSession；非空时校验格式后调用 joinSession。ANI 层通过 DataObjectImpl::SetSessionIdWithCallbackSync / SetSessionIdPromiseSync -> JoinSession/LeaveSession。"
+  },
+  {
+    "api_name": "DataObject.save(deviceId)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.save -> proxy.save)",
+    "napi_func": "JSDistributedObject::JSSave",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobject.cpp",
+    "impl_func": "DistributedObject::Save -> DistributedObjectImpl::Save -> FlatObjectStore::Save",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_impl.cpp",
+    "description": "NAPI 层 JSSave 异步执行 DistributedObject::Save(deviceId)。ERR_PROCESSING 映射为 801。ANI 层通过 AniDataobjectSession::Save -> DistributedObject::Save。"
+  },
+  {
+    "api_name": "DataObject.revokeSave()",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.revokeSave -> proxy.revokeSave)",
+    "napi_func": "JSDistributedObject::JSRevokeSave",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobject.cpp",
+    "impl_func": "DistributedObject::RevokeSave -> DistributedObjectImpl::RevokeSave -> FlatObjectStore::RevokeSave",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_impl.cpp",
+    "description": "NAPI 层 JSRevokeSave 异步执行 DistributedObject::RevokeSave()。ERR_PROCESSING 映射为 801。ANI 层通过 AniDataobjectSession::RevokeSave -> DistributedObject::RevokeSave。"
+  },
+  {
+    "api_name": "DataObject.bindAssetStore(assetKey, bindInfo)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.bindAssetStore -> proxy.bindAssetStore)",
+    "napi_func": "JSDistributedObject::JSBindAssetStore",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobject.cpp",
+    "impl_func": "DistributedObject::BindAssetStore -> DistributedObjectImpl::BindAssetStore -> FlatObjectStore::BindAsset",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_impl.cpp",
+    "description": "NAPI 层 JSBindAssetStore 异步执行 DistributedObject::BindAssetStore(assetKey, bindInfo)。ANI 层通过 DataObjectImpl::BindAssetStoreSync -> AniDataobjectSession::BindAssetStore -> DistributedObject::BindAssetStore。"
+  },
+  {
+    "api_name": "DataObject.on(type: 'change', callback)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.on -> onWatch -> distributedObject.on)",
+    "napi_func": "JSDistributedObjectStore::JSOn + JSRecordCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::AddWatch -> JSWatcher::On -> DistributedObjectStore::Watch -> DistributedObjectStoreImpl::Watch -> FlatObjectStore::Watch",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "JS 层 on() 调用 NAPI 层 JSOn(version, type, object, callback) 注册监听，同时通过 JSRecordCallback 记录回调以便对象重建时恢复。ANI 层通过 DataObjectImpl::OnChange -> AniDataobjectSession::AddWatch -> AniWatcher::On。"
+  },
+  {
+    "api_name": "DataObject.off(type: 'change', callback?)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.off -> offWatch -> distributedObject.off)",
+    "napi_func": "JSDistributedObjectStore::JSOff + JSDeleteCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::DeleteWatch -> JSWatcher::Off -> DistributedObjectStore::UnWatch -> DistributedObjectStoreImpl::UnWatch -> FlatObjectStore::UnWatch",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "JS 层 off() 调用 NAPI 层 JSOff 注销监听，同时通过 JSDeleteCallback 清理回调记录。ANI 层通过 DataObjectImpl::OffChange -> AniDataobjectSession::DeleteWatch -> AniWatcher::Off。"
+  },
+  {
+    "api_name": "DataObject.on(type: 'status', callback)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.on -> onWatch)",
+    "napi_func": "JSDistributedObjectStore::JSOn + JSRecordCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::AddWatch -> JSWatcher::On -> DistributedObjectStore::SetStatusNotifier -> DistributedObjectStoreImpl::SetStatusNotifier -> FlatObjectStore::SetStatusNotifier",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "状态监听。ANI 层通过 DataObjectImpl::OnStatus -> AniDataobjectSession::AddWatch (EVENT_STATUS) -> AniWatcher::On。"
+  },
+  {
+    "api_name": "DataObject.off(type: 'status', callback?)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.off -> offWatch)",
+    "napi_func": "JSDistributedObjectStore::JSOff + JSDeleteCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::DeleteWatch -> JSWatcher::Off",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_object_wrapper.cpp",
+    "description": "取消状态监听。ANI 层通过 DataObjectImpl::OffStatus -> AniDataobjectSession::DeleteWatch (EVENT_STATUS)。"
+  },
+  {
+    "api_name": "DataObject.on(type: 'progressChanged', callback) [since 20]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (onWatch for progressChanged)",
+    "napi_func": "JSDistributedObjectStore::JSOn + JSRecordCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::AddWatch -> JSWatcher::On -> DistributedObjectStore::SetProgressNotifier -> DistributedObjectStoreImpl::SetProgressNotifier -> FlatObjectStore::SetProgressNotifier",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_store_impl.cpp",
+    "description": "资产传输进度监听。ANI 层通过 DataObjectImpl::OnProgressChanged -> AniDataobjectSession::AddWatch (EVENT_PROGRESS)。"
+  },
+  {
+    "api_name": "DataObject.off(type: 'progressChanged', callback?) [since 20]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (offWatch for progressChanged)",
+    "napi_func": "JSDistributedObjectStore::JSOff + JSDeleteCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSObjectWrapper::DeleteWatch -> JSWatcher::Off",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_object_wrapper.cpp",
+    "description": "取消资产传输进度监听。ANI 层通过 DataObjectImpl::OffProgressChanged -> AniDataobjectSession::DeleteWatch (EVENT_PROGRESS)。"
+  },
+  {
+    "api_name": "DataObject.onChange(callback) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OnChange -> AniDataobjectSession::AddWatch (EVENT_CHANGE) -> AniWatcher::On",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。直接通过 DataObjectImpl 实现，注册数据变更监听。"
+  },
+  {
+    "api_name": "DataObject.offChange(callback?) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OffChange -> AniDataobjectSession::DeleteWatch (EVENT_CHANGE) -> AniWatcher::Off",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。取消数据变更监听。"
+  },
+  {
+    "api_name": "DataObject.onStatus(callback) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OnStatus -> AniDataobjectSession::AddWatch (EVENT_STATUS) -> AniWatcher::On",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。注册状态变更监听。"
+  },
+  {
+    "api_name": "DataObject.offStatus(callback?) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OffStatus -> AniDataobjectSession::DeleteWatch (EVENT_STATUS) -> AniWatcher::Off",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。取消状态变更监听。"
+  },
+  {
+    "api_name": "DataObject.onProgressChanged(callback) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OnProgressChanged -> AniDataobjectSession::AddWatch (EVENT_PROGRESS) -> AniWatcher::On",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。注册资产传输进度监听。"
+  },
+  {
+    "api_name": "DataObject.offProgressChanged(callback?) [since 23 static]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "napi_func": "(ANI only, no NAPI equivalent - static API)",
+    "impl_func": "DataObjectImpl::OffProgressChanged -> AniDataobjectSession::DeleteWatch (EVENT_PROGRESS) -> AniWatcher::Off",
+    "impl_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "description": "ANI 静态化层独有 API（since 23）。取消资产传输进度监听。"
+  },
+  {
+    "api_name": "DataObject.setAsset(assetKey, uri) [since 20]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.setAsset)",
+    "impl_func": "JS layer only (getDefaultAsset -> appendPropertyToObj)",
+    "impl_file": "interfaces/jskits/distributed_data_object.js",
+    "description": "设置单个资产属性。在 JS 层完成：校验 sessionId 未设置、校验 assetKey/uri 非空、读取文件属性并构建 asset 对象。必须在 setSessionId 之前调用。ANI 层通过 DataObjectImpl::SetAssetSync 实现，逻辑类似。"
+  },
+  {
+    "api_name": "DataObject.setAssets(assetsKey, uris) [since 20]",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (DistributedV9.setAssets)",
+    "impl_func": "JS layer only (getDefaultAsset -> appendPropertyToObj)",
+    "impl_file": "interfaces/jskits/distributed_data_object.js",
+    "description": "设置多个资产属性。uris 数组长度 1~50。在 JS 层完成。ANI 层通过 DataObjectImpl::SetAssetsSync 实现。"
+  },
+  {
+    "api_name": "DataObject [key: string] get/set (property access)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.distributedDataObject.d.ts",
+    "js_layer": "interfaces/jskits/distributed_data_object.js (proxy get/set)",
+    "napi_func": "JSDistributedObject::JSPut / JSDistributedObject::JSGet",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobject.cpp",
+    "impl_func": "Put: DistributedObject::PutDouble/PutBoolean/PutString/PutComplex -> DistributedObjectImpl::Put* -> FlatObjectStore::Put*; Get: DistributedObject::GetType -> DistributedObject::GetDouble/GetBoolean/GetString/GetComplex -> DistributedObjectImpl::Get* -> FlatObjectStore::Get*",
+    "impl_file": "frameworks/innerkitsimpl/src/adaptor/distributed_object_impl.cpp",
+    "description": "属性读写通过 Proxy 拦截。JS 层 put/get 调用 NAPI 层 JSPut/JSGet。ANI 层通过 DataObjectImpl::SetValueImpl/GetValueImpl -> AniDataobjectSession::SyncDataToStore/GetValueFromStore。"
+  },
+  {
+    "api_name": "distributedObject.recordCallback(version, type, objectId, callback) [internal sync]",
+    "d_ts_file": "(internal sync function, not in .d.ts)",
+    "napi_func": "JSDistributedObjectStore::JSRecordCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSDistributedObjectStore::AddCallback (inline, stores napi_ref in ConcurrentMap)",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "description": "内部同步函数，记录回调到全局映射（g_changeCallBacks / g_statusCallBacks / g_progressCallBacks），用于对象重建时恢复监听。"
+  },
+  {
+    "api_name": "distributedObject.deleteCallback(version, type, objectId[, callback]) [Internal sync]",
+    "d_ts_file": "(internal sync function, not in .d.ts)",
+    "napi_func": "JSDistributedObjectStore::JSDeleteCallback",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "JSDistributedObjectStore::DelCallback (inline, removes napi_ref from ConcurrentMap)",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "description": "内部同步函数，从全局映射中删除回调记录。"
+  },
+  {
+    "api_name": "distributedObject.sequenceNum() [Internal sync]",
+    "d_ts_file": "(internal sync function, not in .d.ts)",
+    "napi_func": "JSDistributedObjectStore::JSEquenceNum",
+    "napi_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "impl_func": "std::random_device + std::uniform_int_distribution (inline)",
+    "impl_file": "frameworks/jskitsimpl/src/adaptor/js_distributedobjectstore.cpp",
+    "description": "内部同步函数，生成随机序列号。用于 genSessionId 的底层实现。"
+  }
+]

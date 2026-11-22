@@ -1,0 +1,55 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "GroupInviteReceiverAbility",
+        "srcEntry": "./ets/groupinvite/GroupInviteReceiverAbility.ets",
+        "description": "$string:GroupInviteReceiverAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:GroupInviteReceiverAbility_label",
+        "startWindowIcon": "$media:startWindowIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ],
+        "metadata": [
+          {
+            "name": "ohos.share.knock",
+            "value": "enable",
+            "resource": "$profile:knock_share_config"
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "$string:permission_network_reason",
+        "usedScene": {
+          "abilities": [
+            "GroupInviteReceiverAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

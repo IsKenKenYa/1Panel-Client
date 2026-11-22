@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "project_model": "stage",
+  "sdk": {
+    "path": "/oh-sdk",
+    "version": "26.0.0",
+    "confirmed": true,
+    "origin": "explicit"
+  },
+  "inventory": [],
+  "adaptation": {
+    "full_direct": [],
+    "reduced_direct": [],
+    "equivalent_bridge": [
+      {
+        "source": "ohos",
+        "module": "@ohos.deviceInfo",
+        "symbol": "udid",
+        "occurrences": 2,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:8",
+          "entry/src/main/ets/pages/Index.ets:35"
+        ],
+        "reason": "ArkUI-X 无直接支持，存在等价原生能力（双源一致）",
+        "advice": "由 F3 生成等价桥接",
+        "suggested_alternative": "N/A"
+      },
+      {
+        "source": "ohos",
+        "module": "@ohos.nonsense",
+        "symbol": "mysteryApi",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:14"
+        ],
+        "reason": "ArkUI-X 无直接支持（映射表未收录）",
+        "advice": "由 F3 生成等价桥接，映射待人工确认",
+        "suggested_alternative": "N/A"
+      },
+      {
+        "source": "ohos",
+        "module": "@ohos.batteryInfo",
+        "symbol": "batterySOC",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Detail.ets:5"
+        ],
+        "reason": "ArkUI-X 无直接支持，存在等价原生能力（双源一致）",
+        "advice": "由 F3 生成等价桥接",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "degraded_bridge": [
+      {
+        "source": "ohos",
+        "module": "@ohos.vibrator",
+        "symbol": "startVibration",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:19"
+        ],
+        "reason": "振幅精细化控制在 ArkUI-X 侧不可用，仅基础振动等价",
+        "advice": "由 F3 生成降级桥接",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "platform_trim": [],
+    "business_decision": [],
+    "unknown": []
+  }
+}

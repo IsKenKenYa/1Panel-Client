@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+       color: #1f2328; background: #f6f8fa; margin: 0; padding: 24px; line-height: 1.65; }
+.layout { max-width: 1232px; margin: 0 auto; display: flex; gap: 32px; align-items: flex-start; }
+.page { flex: 1 1 auto; min-width: 0; max-width: 960px; background: #fff; border: 1px solid #d0d7de;
+        border-radius: 10px; padding: 32px 40px; box-shadow: 0 1px 3px rgba(31,35,40,.08); }
+h1 { font-size: 22px; border-bottom: 1px solid #d8dee4; padding-bottom: 10px; margin-top: 0; }
+h2 { font-size: 18px; border-bottom: 1px solid #eaeef2; padding-bottom: 6px; margin-top: 28px; }
+h3 { font-size: 16px; margin-top: 22px; }
+h4, h5, h6 { font-size: 14px; margin-top: 18px; }
+h1, h2, h3, h4, h5, h6 { scroll-margin-top: 16px; }
+.meta { color: #57606a; font-size: 13px; margin-bottom: 20px; }
+.meta .badge { display: inline-block; background: #ddf4ff; color: #0969da; border: 1px solid #54aeff;
+               border-radius: 999px; padding: 1px 10px; margin-right: 10px; font-weight: 600; }
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+table { border-collapse: collapse; width: 100%; margin: 0; font-size: 14px; }
+th, td { border: 1px solid #d8dee4; padding: 6px 12px; text-align: left; vertical-align: top; }
+th { background: #f6f8fa; }
+code { font-family: ui-monospace, SFMono-Regular, 'JetBrains Mono', Consolas, monospace;
+       background: #eff1f3; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+pre { background: #f6f8fa; border: 1px solid #d8dee4; border-radius: 8px; padding: 14px 16px;
+      overflow: auto; line-height: 1.5; max-height: 70vh; }
+pre code { background: none; padding: 0; font-size: 13px; white-space: pre; }
+.tok-kw { color: #cf222e; font-weight: 600; }
+.tok-str { color: #0a3069; }
+.tok-com { color: #6e7781; font-style: italic; }
+.tok-num { color: #0550ae; }
+.diff-ins { color: #116329; background: #dafbe1; display: block; }
+.diff-del { color: #82071e; background: #ffebe9; display: block; }
+.diff-hunk { color: #0550ae; background: #ddf4ff; display: block; }
+.diff-file { color: #57606a; background: #eff1f3; display: block; }
+.diff-txt { display: block; }
+hr { border: none; border-top: 1px solid #d8dee4; margin: 20px 0; }
+blockquote { border-left: 3px solid #54aeff; background: #f6f8fa; color: #57606a;
+             margin: 12px 0; padding: 8px 16px; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 4px 0; }
+.footer { color: #6e7781; font-size: 12px; margin-top: 32px; border-top: 1px solid #eaeef2; padding-top: 12px; }
+.toc { flex: 0 0 240px; position: sticky; top: 24px; max-height: calc(100vh - 48px);
+       overflow-y: auto; font-size: 13px; line-height: 1.5; padding: 6px 0 6px 14px;
+       border-left: 2px solid #eaeef2; }
+.toc:empty { display: none; }
+.toc .toc-title { font-weight: 600; color: #1f2328; margin-bottom: 6px; font-size: 12px;
+                  letter-spacing: .5px; }
+.toc a { display: block; color: #57606a; text-decoration: none; padding: 3px 6px; border-radius: 6px; }
+.toc a:hover { color: #0969da; background: #f6f8fa; }
+.toc a.active { color: #0969da; background: #ddf4ff; font-weight: 600; }
+.toc a.toc-1 { font-weight: 600; }
+.toc a.toc-2 { padding-left: 16px; }
+@media (max-width: 1200px) { .toc { display: none; } }
+@media print {
+  body { background: #fff; padding: 0; }
+  .layout { display: block; max-width: none; }
+  .page { border: none; box-shadow: none; max-width: none; }
+  .toc { display: none; }
+  pre { max-height: none; }
+  .table-wrap { overflow: visible; }
+  th, td { overflow-wrap: anywhere; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="page">
+<h1>{{TITLE}}</h1>
+<div class="meta"><span class="badge">{{TYPE_LABEL}}</span>生成时间：{{GENERATED_AT}}</div>
+{{BODY}}
+<div class="footer">本报告由 DevEco Code DFX 故障分析生成 · 代码块含语法高亮，修复建议含源码差异对比</div>
+</div>
+<nav class="toc" id="dfx-toc">{{TOC}}</nav>
+</div>
+<script>
+(function () {
+  var nav = document.getElementById("dfx-toc");
+  var links = nav ? Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']")) : [];
+  if (!links.length) return;
+  var targets = [];
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute("href").slice(1));
+    if (el) targets.push(el);
+  });
+  function update() {
+    var pos = window.scrollY + 96;
+    var idx = 0;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].offsetTop <= pos) idx = i;
+    }
+    links.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
+  }
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>

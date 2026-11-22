@@ -1,0 +1,368 @@
+[
+  {
+    "code": "SUCCESS",
+    "message": "SUCCESS",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "操作成功，值等于 ERR_OK (0)。"
+  },
+  {
+    "code": "ERROR",
+    "message": "ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "执行失败，通用错误。值 = DISTRIBUTEDDATAMGR_ERR_OFFSET (子系统=13, 模块=3 的偏移基值)。"
+  },
+  {
+    "code": "INVALID_ARGUMENT",
+    "message": "INVALID_ARGUMENT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "参数无效。JS 错误码 401（参数校验失败）。常见于 key/value 为空、storeId 非法、securityLevel 非法等。值 = OFFSET+1。"
+  },
+  {
+    "code": "ILLEGAL_STATE",
+    "message": "ILLEGAL_STATE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "非法状态。值 = OFFSET+2。"
+  },
+  {
+    "code": "SERVER_UNAVAILABLE",
+    "message": "SERVER_UNAVAILABLE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "KVStore 服务不可用。值 = OFFSET+3。"
+  },
+  {
+    "code": "STORE_NOT_OPEN",
+    "message": "STORE_NOT_OPEN",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "KVStore 未打开（未先调用 getKVStore）。值 = OFFSET+4。"
+  },
+  {
+    "code": "STORE_ALREADY_SUBSCRIBE",
+    "message": "STORE_ALREADY_SUBSCRIBE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "重复订阅。值 = OFFSET+5。"
+  },
+  {
+    "code": "STORE_NOT_SUBSCRIBE",
+    "message": "STORE_NOT_SUBSCRIBE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "未订阅（取消订阅时未找到已注册的观察者）。值 = OFFSET+6。"
+  },
+  {
+    "code": "NOT_FOUND",
+    "message": "NOT_FOUND",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "未找到（STORE_NOT_FOUND / KEY_NOT_FOUND / DEVICE_NOT_FOUND 的别名）。JS 错误码 15100004。值 = OFFSET+7。"
+  },
+  {
+    "code": "STORE_META_CHANGED",
+    "message": "STORE_META_CHANGED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "选项参数不一致（使用不同 Options 打开已存在的数据库）。JS 错误码 15100002。值 = OFFSET+8。"
+  },
+  {
+    "code": "STORE_UPGRADE_FAILED",
+    "message": "STORE_UPGRADE_FAILED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据库升级失败。值 = OFFSET+9。"
+  },
+  {
+    "code": "DB_ERROR",
+    "message": "DB_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据库错误（底层 sqlite/DistributedDB 异常）。值 = OFFSET+10。"
+  },
+  {
+    "code": "NETWORK_ERROR",
+    "message": "NETWORK_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "网络错误（分布式同步网络不可达）。值 = OFFSET+11。"
+  },
+  {
+    "code": "PERMISSION_DENIED",
+    "message": "PERMISSION_DENIED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "权限被拒绝。JS 错误码 202（非系统应用调用系统 API）。分布式同步需 ohos.permission.DISTRIBUTED_DATASYNC 权限。值 = OFFSET+12。"
+  },
+  {
+    "code": "IPC_ERROR",
+    "message": "IPC_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "IPC 通信错误。值 = OFFSET+13。"
+  },
+  {
+    "code": "CRYPT_ERROR",
+    "message": "CRYPT_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "加密错误（rekey 失败或加密级别冲突）。JS 错误码 15100003。值 = OFFSET+14。"
+  },
+  {
+    "code": "TIME_OUT",
+    "message": "TIME_OUT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "操作超时。值 = OFFSET+15。"
+  },
+  {
+    "code": "NOT_SUPPORT",
+    "message": "NOT_SUPPORT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "不支持的操作。值 = OFFSET+17。"
+  },
+  {
+    "code": "SCHEMA_MISMATCH",
+    "message": "SCHEMA_MISMATCH",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "Schema 不匹配（数据格式与 Schema 定义不一致）。值 = OFFSET+18。"
+  },
+  {
+    "code": "INVALID_SCHEMA",
+    "message": "INVALID_SCHEMA",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "Schema 无效。值 = OFFSET+19。"
+  },
+  {
+    "code": "READ_ONLY",
+    "message": "READ_ONLY",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "只读存储（尝试写入只读数据库）。值 = OFFSET+20。"
+  },
+  {
+    "code": "INVALID_VALUE_FIELDS",
+    "message": "INVALID_VALUE_FIELDS",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "Value 字段无效（Schema 模式下写入数据不符合字段定义）。值 = OFFSET+21。"
+  },
+  {
+    "code": "INVALID_FIELD_TYPE",
+    "message": "INVALID_FIELD_TYPE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "字段类型无效（Schema 模式下写入数据类型不匹配）。值 = OFFSET+22。"
+  },
+  {
+    "code": "CONSTRAIN_VIOLATION",
+    "message": "CONSTRAIN_VIOLATION",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "约束违反（sqlite 约束检查失败）。值 = OFFSET+23。"
+  },
+  {
+    "code": "INVALID_FORMAT",
+    "message": "INVALID_FORMAT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据格式无效。值 = OFFSET+24。"
+  },
+  {
+    "code": "INVALID_QUERY_FORMAT",
+    "message": "INVALID_QUERY_FORMAT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "查询格式无效。值 = OFFSET+25。"
+  },
+  {
+    "code": "INVALID_QUERY_FIELD",
+    "message": "INVALID_QUERY_FIELD",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "查询字段无效。值 = OFFSET+26。"
+  },
+  {
+    "code": "SYSTEM_ACCOUNT_EVENT_PROCESSING",
+    "message": "SYSTEM_ACCOUNT_EVENT_PROCESSING",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "系统帐号事件处理中。值 = OFFSET+27。"
+  },
+  {
+    "code": "RECOVER_SUCCESS",
+    "message": "RECOVER_SUCCESS",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "恢复成功（数据库损坏后自动重建成功）。值 = OFFSET+28。"
+  },
+  {
+    "code": "RECOVER_FAILED",
+    "message": "RECOVER_FAILED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "恢复失败。值 = OFFSET+29。"
+  },
+  {
+    "code": "EXCEED_MAX_ACCESS_RATE",
+    "message": "EXCEED_MAX_ACCESS_RATE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "超过最大访问频率。值 = OFFSET+31。"
+  },
+  {
+    "code": "SECURITY_LEVEL_ERROR",
+    "message": "SECURITY_LEVEL_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "安全级别错误（本地与远端 SecurityOption 不一致）。值 = OFFSET+32。"
+  },
+  {
+    "code": "OVER_MAX_LIMITS",
+    "message": "OVER_MAX_LIMITS",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "超出最大限制（如订阅观察者数量超限）。JS 错误码 15100001。值 = OFFSET+33。"
+  },
+  {
+    "code": "ALREADY_CLOSED",
+    "message": "ALREADY_CLOSED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "KVStore 或结果集已关闭。JS 错误码 15100005。值 = OFFSET+34。"
+  },
+  {
+    "code": "IPC_PARCEL_ERROR",
+    "message": "IPC_PARCEL_ERROR",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "IPC Parcel 序列化错误。值 = OFFSET+35。"
+  },
+  {
+    "code": "DATA_CORRUPTED",
+    "message": "DATA_CORRUPTED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据损坏。JS 错误码 15100003。GetKVStore 检测到此错误时会尝试 rebuild。值 = OFFSET+36。"
+  },
+  {
+    "code": "WAL_OVER_LIMITS",
+    "message": "WAL_OVER_LIMITS",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "WAL 文件大小超限。JS 错误码 14800047。值 = OFFSET+37。"
+  },
+  {
+    "code": "RATE_LIMIT",
+    "message": "RATE_LIMIT",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "会话正在打开中（限流）。值 = OFFSET+38。"
+  },
+  {
+    "code": "SYNC_ACTIVATED",
+    "message": "SYNC_ACTIVATED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据正在同步中（不允许重复触发同步）。值 = OFFSET+39。"
+  },
+  {
+    "code": "NOT_SUPPORT_BROADCAST",
+    "message": "NOT_SUPPORT_BROADCAST",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "不支持广播。值 = OFFSET+40。"
+  },
+  {
+    "code": "CLOUD_DISABLED",
+    "message": "CLOUD_DISABLED",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "云存储已禁用（云开关已关闭）。值 = OFFSET+41。"
+  },
+  {
+    "code": "DB_CANT_OPEN",
+    "message": "DB_CANT_OPEN",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "数据库无法打开。值 = OFFSET+42。"
+  },
+  {
+    "code": "DEVICE_NOT_ONLINE",
+    "message": "DEVICE_NOT_ONLINE",
+    "source_file": "interfaces/innerkits/distributeddata/include/store_errno.h",
+    "description": "设备未在线（同步目标设备不在线）。值 = OFFSET+43。"
+  },
+  {
+    "code": "DB_ERROR_INVALID_ARGS",
+    "message": "INVALID_ARGS",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：参数无效。DBStatus 枚举值 27328515。"
+  },
+  {
+    "code": "DB_ERROR_NOT_SUPPORT",
+    "message": "NOT_SUPPORT",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：不支持的操作。DBStatus 枚举值 27328516。"
+  },
+  {
+    "code": "DB_ERROR_INVALID_PASSWD_OR_CORRUPTED_DB",
+    "message": "INVALID_PASSWD_OR_CORRUPTED_DB",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：密码无效或数据库损坏。DBStatus 枚举值 27328517。"
+  },
+  {
+    "code": "DB_ERROR_OVER_MAX_LIMITS",
+    "message": "OVER_MAX_LIMITS",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：超出最大限制。DBStatus 枚举值 27328518。"
+  },
+  {
+    "code": "DB_ERROR_NO_PERMISSION",
+    "message": "NO_PERMISSION",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：无权限。DBStatus 枚举值 27328520。"
+  },
+  {
+    "code": "DB_ERROR_EKEYREVOKED",
+    "message": "EKEYREVOKED_ERROR",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：操作 db 文件时密钥被撤销 (EKEYREVOKED)。DBStatus 枚举值 27328527。"
+  },
+  {
+    "code": "DB_ERROR_LOG_OVER_LIMITS",
+    "message": "LOG_OVER_LIMITS",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：日志大小超限。DBStatus 枚举值。"
+  },
+  {
+    "code": "DB_ERROR_SQLITE_CANT_OPEN",
+    "message": "SQLITE_CANT_OPEN",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：sqlite 无法打开。DBStatus 枚举值。"
+  },
+  {
+    "code": "DB_ERROR_CLOUD_DISABLED",
+    "message": "CLOUD_DISABLED",
+    "source_file": "frameworks/libs/distributeddb/interfaces/include/store_types.h",
+    "description": "DistributedDB 底层错误：云开关已关闭。DBStatus 枚举值。"
+  },
+  {
+    "code": "JS_401",
+    "message": "401 - Parameter error. Parameters verification failed.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 401：参数校验失败。常见原因：必填参数缺失、参数类型不匹配、key/value 为空、storeId 非法等。对应 C++ Status::INVALID_ARGUMENT。"
+  },
+  {
+    "code": "JS_202",
+    "message": "202 - Permission verification failed, application which is not a system application uses system API.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 202：权限校验失败，非系统应用使用了系统 API（如 DataShare 相关查询）。对应 C++ Status::PERMISSION_DENIED。"
+  },
+  {
+    "code": "JS_15100000",
+    "message": "15100000 - Parameter error. Parameters verification failed.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100000（新 API 版）：参数校验失败。对应 C++ Status::INVALID_ARGUMENT。"
+  },
+  {
+    "code": "JS_15100001",
+    "message": "15100001 - Over max limits.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100001：超出最大限制（如观察者数量超限）。对应 C++ Status::OVER_MAX_LIMITS。"
+  },
+  {
+    "code": "JS_15100002",
+    "message": "15100002 - Open existed database with changed options.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100002：使用不同选项打开已存在数据库。对应 C++ Status::STORE_META_CHANGED。"
+  },
+  {
+    "code": "JS_15100003",
+    "message": "15100003 - Database corrupted.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100003：数据库损坏。对应 C++ Status::CRYPT_ERROR / DATA_CORRUPTED。"
+  },
+  {
+    "code": "JS_15100004",
+    "message": "15100004 - Not found.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100004：未找到（key/device/store 不存在）。对应 C++ Status::NOT_FOUND。"
+  },
+  {
+    "code": "JS_15100005",
+    "message": "15100005 - Database or result set already closed.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 15100005：数据库或结果集已关闭。对应 C++ Status::ALREADY_CLOSED。"
+  },
+  {
+    "code": "JS_14800047",
+    "message": "14800047 - The WAL file size exceeds the default limit.",
+    "source_file": "@ohos.data.distributedKVStore.d.ts",
+    "description": "JS 业务错误码 14800047（since 10）：WAL 文件大小超限。对应 C++ Status::WAL_OVER_LIMITS。"
+  }
+]

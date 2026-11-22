@@ -1,0 +1,78 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "Network Boost Kit业务场景设置示例应用",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "用于获取设备网络信息,支持Network Boost Kit业务场景设置功能",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "允许应用访问网络,进行多网并发数据传输",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.LINKTURBO",
+        "reason": "允许应用使用多网并发等网络加速能力,用于优化网络连接和业务场景管控",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ts",
+        "description": "主入口能力",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:icon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// 注意事项:
+// 1. ohos.permission.GET_NETWORK_INFO: 必需权限,用于获取网络信息
+// 2. ohos.permission.INTERNET: 必需权限,用于网络访问
+// 3. ohos.permission.LINKTURBO: 受限ACL权限,需要特别申请(参见开发准备文档)
+// 4. reason字段需清晰描述权限用途,用于权限审核
+// 5. usedScene字段指定权限使用场景和时机
+// 6. 受限ACL权限申请流程:
+//    - 在AGC中申请调试Profile和发布Profile
+//    - 在权限搜索框中输入"ohos.permission.LINKTURBO"
+//    - 根据业务需求填写申请原因并提交
+//    - 1个工作日内回复审核结果
+//    - 权限通过后,在Profile文件中添加LINKTURBO权限

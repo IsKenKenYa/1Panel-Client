@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@kit.LocalizationKit": "^1.0.0",
+    "@kit.BasicServicesKit": "^1.0.0"
+  }
+}

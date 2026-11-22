@@ -1,0 +1,157 @@
+# 使用“华为账号登录”按钮登录
+---
+# 使用“华为账号登录”按钮登录
+#### 场景介绍
+应用可以使用Account Kit提供的华为账号登录按钮组件及服务端交互获取华为账号用户身份标识UnionID、OpenID，通过UnionID、OpenID完成用户登录；或者与应用账号完成绑定，绑定后用于登录或者验证。
+华为账号登录按钮包含文本、标志和文本、标志三种样式，以满足应用对界面风格一致性和灵活性的要求。
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/7a/v3/32qM8q5gSk-zrBll-myp9A/zh-cn_image_0000002628861420.png?HW-CC-KV=V1&HW-CC-Date=20260701T105121Z&HW-CC-Expire=86400&HW-CC-Sign=346698658A839AC4F27410A967D5E1B96461176B388893AEE9EB2D041EB7F3AF)
+#### 约束与限制
+华为账号按钮登录能力支持Phone、Tablet、PC/2in1设备。并且从5.1.1(19)版本开始，新增支持TV设备；从26.0.0版本开始，新增支持Car设备。
+#### 用户体验设计
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/96/v3/5ZwRsSqxSTi5WrNOkUiLxQ/zh-cn_image_0000002659220733.png?HW-CC-KV=V1&HW-CC-Date=20260701T105121Z&HW-CC-Expire=86400&HW-CC-Sign=ACF5DAE0ACD92A207ED256FF4419DA9072A5C10BEA25324640F4041890915890)
+账号登录按钮的用户体验和UX设计需符合 [【华为账号登录】按钮](https://developer.huawei.com/consumer/cn/doc/design-guides/id-0000001880001344#section2624430102713) 规范，不符合规范的UX设计可能会对应用上架和用户体验带来影响。
+#### 业务流程
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/27/v3/jIKflsW5TKWx6TZ57LFzsA/zh-cn_image_0000002628701542.png?HW-CC-KV=V1&HW-CC-Date=20260701T105121Z&HW-CC-Expire=86400&HW-CC-Sign=9D35D91E8FFDA8A7A0723801CA42E118580B225E3AF676D168C8865224EEBC40)
+流程说明：
+1.
+调用登录按钮展示登录页阶段（序号1-3）：
+1. 用户打开应用进行登录，应用设置[LoginType](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)类型为LoginType.ID后拉起应用自己的登录页并展示“华为账号登录”按钮，用户点击按钮，请求华为账号授权信息。
+2.
+用户点击登录阶段（序号4-6）：
+1. 如华为账号未登录，将拉起华为账号登录页，用户登录后，将返回Authorization Code等数据给应用。
+2. 如华为账号已登录，将直接返回Authorization Code等数据给应用。
+3.
+用户关联应用账号阶段（序号7-16）：
+1. 应用服务端通过Authorization Code获取到Access Token，再使用Access Token调用[解析凭证接口](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-get-token-info.md)获取用户相关信息。通过Authorization Code凭证获取用户信息可以有效避免黑客通过数据遍历、身份伪造、重放攻击等手段导致的安全风险。
+2. 应用服务端将业务登录凭证SessionId、UnionID/OpenID传给应用，应用获取到UnionID/OpenID可用于判断华为账号是否登录等功能。
+3. 应用对用户身份标识UnionID/OpenID、业务登录凭证SessionId信息进行认证后，通过UnionID/OpenID判断用户是否已关联应用系统数据库，如已关联，则完成用户登录；如未关联，则创建新用户，绑定UnionID/OpenID。
+#### 接口说明
+华为账号登录按钮关键接口如下表所示：
+| 接口名 | 描述 |
+| --- | --- |
+| [LoginWithHuaweiIDButton](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-huawei-id-button.md) | 华为账号Button登录组件。当前该组件支持Icon类型按钮、纯文本按钮、Icon和文本混合按钮，如果仍然不能满足开发者的诉求，可以使用[Style](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)的BUTTON_CUSTOM值定义按钮的文字颜色和背景色。 |
+| [onClickLoginWithHuaweiIDButton](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)(callback: AsyncCallback<[HuaweiIDCredential](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)>):[LoginWithHuaweiIDButtonController](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md) | 注册华为账号登录按钮的登录事件结果回调。使用callback异步回调。 |
+| [setAgreementStatus](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)(agreementStatus:[AgreementStatus](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md)):[LoginWithHuaweiIDButtonController](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-component-manager.md) | 设置协议状态方法。如果需要用户同意协议才能完成华为账号登录，请先设置协议状态为NOT_ACCEPTED，当用户同意协议后设置协议状态为ACCEPTED，才可以完成华为账号登录。 |
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/e2/v3/6Sci6P0VSDyWLJwCgjiLGg/caution_3.0-zh-cn.png?HW-CC-KV=V1&HW-CC-Date=20260701T105121Z&HW-CC-Expire=86400&HW-CC-Sign=A57B123C6F298008F663F71693571A34B16C008D3C29A93C57A0DCC4A2811461)
+上述接口需在页面或自定义组件生命周期内调用。
+#### 开发前提
+在进行代码开发前，请确保已按照“开发准备”章节中的指导完成 [配置签名和指纹](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Account Kit（华为账号服务）/开发准备/配置签名和指纹/account-sign-fingerprints.md) 、 [配置Client ID](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Account Kit（华为账号服务）/开发准备/配置Client ID/account-client-id.md) 。此场景无需申请账号权限。
+#### 客户端开发
+1.
+导入 [LoginWithHuaweiIDButton](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-huawei-id-button.md) 模块及相关公共模块。
+```typescript
+import { LoginWithHuaweiIDButton, loginComponentManager } from '@kit.AccountKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
+```
+2.
+调用 [LoginWithHuaweiIDButton](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/ArkTS组件/account-api-huawei-id-button.md) 组件，展示华为账号登录按钮，用户点击华为账号登录按钮后，应用获取到Authorization Code、ID Token，将数据传给应用服务端，可参考 [客户端与服务端交互开发](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Account Kit（华为账号服务）/登录/华为账号一键登录（获取手机号和UnionID_OpenID）/account-phone-unionid-login.md) 的开发步骤a和b，完成服务端开发。通过Authorization Code凭证获取用户信息可以有效避免黑客通过数据遍历、身份伪造、重放攻击等手段导致的安全风险。应用可以通过公开的网址获取到华为账号服务器发布的公钥，对签名和ID Token中的必要信息进行验证，以证明其没有被篡改过。解析ID Token可参考 [ID Token解析与验证](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Account Kit（华为账号服务）/Account Kit常见问题/ID Token的使用场景与使用方法/account-faq-12.md) 。
+```typescript
+@Entry
+@Component
+struct PreviewLoginButtonPage {
+  // 构造LoginWithHuaweiIDButton组件的控制器
+  controller: loginComponentManager.LoginWithHuaweiIDButtonController =
+    new loginComponentManager.LoginWithHuaweiIDButtonController()
+      .onClickLoginWithHuaweiIDButton((error: BusinessError, response: loginComponentManager.HuaweiIDCredential) => {
+        if (error) {
+          this.dealAllError(error);
+          return;
+        }
+        if (response) {
+          hilog.info(0x0000, 'testTag', 'Succeeded in getting response.');
+          const authorizationCode = response.authorizationCode;
+          // 开发者处理authorizationCode
+        }
+      });
+  // 错误处理
+  dealAllError(error: BusinessError): void {
+    hilog.error(0x0000, 'testTag',
+      `Failed to login, errorCode is ${error.code}, errorMessage is ${error.message}`);
+    // 在应用登录涉及UI交互场景下，建议按照如下错误码指导提示用户
+    if (error.code === ErrorCode.ERROR_CODE_LOGIN_OUT) {
+      // 用户未登录华为账号，请登录华为账号并重试或者尝试使用其他方式登录
+    } else if (error.code === ErrorCode.ERROR_CODE_NETWORK_ERROR) {
+      // 网络错误，请检查当前网络状态并重试
+    } else if (error.code === ErrorCode.ERROR_CODE_INTERNAL_ERROR) {
+      // 登录失败，请尝试使用其他方式登录
+    } else if (error.code === ErrorCode.ERROR_CODE_USER_CANCEL) {
+      // 用户取消授权
+    } else if (error.code === ErrorCode.ERROR_CODE_SYSTEM_SERVICE) {
+      // 系统服务异常，请稍后重试或者尝试使用其他方式登录
+    } else if (error.code === ErrorCode.ERROR_CODE_REQUEST_REFUSE) {
+      // 重复请求，应用无需处理
+    } else if (error.code === ErrorCode.ERROR_CODE_AGREEMENT_STATUS_NOT_ACCEPTED) {
+      // 用户未同意协议
+    } else {
+      // 应用登录失败，请尝试使用其他方式登录
+    }
+  }
+  build() {
+    Column() {
+      Column() {
+        Column() {
+          LoginWithHuaweiIDButton({
+            params: {
+              // LoginWithHuaweiIDButton支持的样式
+              style: loginComponentManager.Style.BUTTON_RED,
+              // 账号登录按钮在登录过程中展示加载态
+              extraStyle: {
+                buttonStyle: new loginComponentManager.ButtonStyle().loadingStyle({
+                  show: true
+                })
+              },
+              // LoginWithHuaweiIDButton的边框圆角半径
+              borderRadius: 24,
+              // LoginWithHuaweiIDButton支持的登录类型
+              loginType: loginComponentManager.LoginType.ID,
+              // LoginWithHuaweiIDButton支持按钮的样式跟随系统深浅色模式切换
+              supportDarkMode: true
+            },
+            controller: this.controller
+          })
+        }
+        .height(40)
+      }.width('100%')
+    }
+    .justifyContent(FlexAlign.Center)
+    .constraintSize({ minHeight: '100%' })
+    .margin({
+      left: 16,
+      right: 16
+    })
+  }
+}
+export enum ErrorCode {
+  // 账号未登录
+  ERROR_CODE_LOGIN_OUT = 1001502001,
+  // 网络错误
+  ERROR_CODE_NETWORK_ERROR = 1001502005,
+  // 内部错误
+  ERROR_CODE_INTERNAL_ERROR = 1001502009,
+  // 用户取消授权
+  ERROR_CODE_USER_CANCEL = 1001502012,
+  // 系统服务异常
+  ERROR_CODE_SYSTEM_SERVICE = 12300001,
+  // 重复请求
+  ERROR_CODE_REQUEST_REFUSE = 1001500002,
+  // 用户未同意用户协议
+  ERROR_CODE_AGREEMENT_STATUS_NOT_ACCEPTED = 1005300001
+}
+```
+#### 服务端开发
+1.
+应用服务端使用Client ID、Client Secret、Authorization Code调用 [获取用户级凭证接口](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-obtain-user-token.md) 向华为账号服务器请求获取Access Token、Refresh Token。
+2.
+使用Access Token调用 [解析凭证接口](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-get-token-info.md) 获取用户的UnionID。
+**Access Token过期处理**
+由于Access Token的有效期仅为60分钟，当Access Token失效或者即将失效时（可通过 [REST API错误码](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-get-token-info.md) 判断），可以使用Refresh Token（有效期180天）通过 [刷新用户级凭证接口](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-obtain-refresh-token.md) 向华为账号服务器请求获取新的Access Token。
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/7e/v3/5oB4kWC0RDWBtnfO7TgsGw/note_3.0-zh-cn.png?HW-CC-KV=V1&HW-CC-Date=20260701T105121Z&HW-CC-Expire=86400&HW-CC-Sign=A491E7956C7C1CCB855124A93481C3DC4EE3DA3CE2B530237FA785071684DCC9)
+1.
+当Access Token失效时，若应用不使用Refresh Token向华为账号服务器请求获取新的Access Token，账号的授权信息将会失效，导致使用Access Token的功能都会失败。
+2.
+当Access Token非正常失效（如修改密码、退出账号、删除设备）时，应用可重新登录授权获取Authorization Code，向华为账号服务器请求获取新的Access Token。
+**Refresh Token过期处理**
+由于Refresh Token的有效期为180天，当Refresh Token失效后（可通过 [REST API错误码](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Account Kit（华为账号服务）/REST API/开放接口调用凭证/account-api-obtain-refresh-token.md) 判断），应用服务端需要通知客户端，重新调用授权接口，请求用户重新授权。
+3.
+应用在自己的用户体系通过查询获取的UnionID判断该用户是否已关联。如已关联，则完成用户登录；如未关联，则创建新用户，绑定UnionID，完成用户登录。

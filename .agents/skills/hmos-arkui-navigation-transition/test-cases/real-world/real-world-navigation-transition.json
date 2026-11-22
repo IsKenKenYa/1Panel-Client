@@ -1,0 +1,246 @@
+[
+  {
+    "case_id": "NT-REAL-001",
+    "layer": "real-world",
+    "title": "自定义转场含交互诉求 — 边界引导",
+    "phase": "DEV",
+    "bug_id": "demo.md#BENCH-009",
+    "user_prompt": "给 NavDestination 配自定义转场，转场中要能交互",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 AC-3.2 边界引导：customTransition 含交互诉求时显式提示不可交互并引导至 customNavContentTransition",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "secondary_scenes": ["customTransition"],
+      "boundary_trigger": "关键词 '自定义' + '交互' → L3 自定义转场 → 含交互诉求 → AC-3.2 引导 → customNavContentTransition",
+      "decision_path": "关键词 '自定义' + 'NavDestination' + '交互' → L3 自定义转场 → 含交互诉求 → AC-3.2 引导 → customNavContentTransition"
+    },
+    "problem_profile": {
+      "symptom": "开发者在 NavDestination 上配置 customTransition 后，期望转场过程中能响应交互（如手势返回），但 customTransition 是页面级转场，无法在转场过程中响应交互",
+      "root_cause": "customTransition 返回的 NavDestinationTransition 数组仅在转场开始时执行 event 闭包中的 UI 状态变更，转场过程中用户无法与页面交互",
+      "fix_strategy": "显式提示 customTransition 不可交互 → 引导开发者使用 Navigation.customNavContentTransition → 生成 NavigationAnimatedTransition 框架代码（含 isInteractive: true + NavigationTransitionProxy）"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "显式提示「customTransition 不可交互，customTransition 是页面级转场，无法在转场过程中响应交互」",
+        "引导开发者使用整体可交互转场接口 customNavContentTransition（指向 AC-4.1 路径）",
+        "不静默生成不可交互方案",
+        "生成 NavigationAnimatedTransition 框架代码（含 transition 回调 + NavigationTransitionProxy）",
+        "给出 transition 注册建议（全局注册或单例可访问）"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customTransition",
+        "references/navigation-transition-api.md#customNavContentTransition",
+        "templates/customNavContentTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "静默生成 customTransition 方案而不提示不可交互",
+        "生成不可交互方案后不引导至 customNavContentTransition",
+        "使用 onTransitionFrom/onTransitionTo（实际 API 不存在）"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "输出包含明确的不可交互提示文本",
+        "生成的 customNavContentTransition 框架代码可编译",
+        "转场过程中可通过手势驱动 updateTransition 更新进度"
+      ],
+      "pass_evidence": "输出含提示文本 + 框架代码编译通过 + 转场中手势交互录屏"
+    },
+    "regression_watchlist": [
+      "customTransition 的 event 闭包内是否误用 animateTo（event 本身已在动画执行上下文，应直接赋值结束值，初始值在回调体内同步赋值）",
+      "isInteractive: true 时 transition 回调是否误用 animateTo 播放完整动画（应存入单例由手势驱动）",
+      "Navigation 级 customNavContentTransition 与 NavDestination 级 customTransition 同时设置时优先级是否正确"
+    ]
+  },
+  {
+    "case_id": "NT-REAL-002",
+    "layer": "real-world",
+    "title": "异常处理 — 文件路径不存在",
+    "phase": "DEV",
+    "bug_id": "demo.md#BENCH-014",
+    "user_prompt": "请添加系统转场动画",
+    "input_file": "src/main/ets/pages/NonExistentPage.ets",
+    "intent": "验证 AC-1.2 异常处理：文件路径不存在时输出无法处理提示并请求补充输入",
+    "expected": {
+      "primary_scene": "exception",
+      "exception_type": "file_not_found",
+      "decision_path": "文件不存在 → 异常处理 → 提示文件路径不存在"
+    },
+    "problem_profile": {
+      "symptom": "开发者提供的文件路径不存在，Skill 无法读取文件内容",
+      "root_cause": "文件路径 NonExistentPage.ets 在项目中不存在",
+      "fix_strategy": "输出无法处理提示，请求提供有效的 .ets 文件路径"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "不产出任何配置方案/框架代码",
+        "输出明确的无法处理提示",
+        "请求补充输入（请求提供有效文件路径）",
+        "提示指向具体缺失项（文件路径不存在）"
+      ],
+      "should_reuse_resources": [],
+      "forbidden_patterns": [
+        "臆造文件内容并生成配置方案",
+        "假设文件中隐含 NavDestination 组件",
+        "输出任何 .systemTransition/.customTransition/.customNavContentTransition/.disableAnimation 配置"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "text_output",
+      "runtime_assertions": [
+        "输出包含「文件路径不存在」提示",
+        "输出不包含任何配置方案或框架代码",
+        "输出请求提供有效文件路径"
+      ],
+      "pass_evidence": "输出文本包含无法处理提示 + 无任何配置方案"
+    },
+    "regression_watchlist": [
+      "是否因文件名中含 'Page' 而臆造文件内容",
+      "是否误将不存在的文件路径当作有效路径处理"
+    ]
+  },
+  {
+    "case_id": "NT-REAL-003",
+    "layer": "real-world",
+    "title": "异常处理 — 文件无目标组件",
+    "phase": "DEV",
+    "bug_id": "demo.md#BENCH-015",
+    "user_prompt": "给 NavDestination 配置系统转场",
+    "input_file": "src/main/ets/pages/EmptyPage.ets",
+    "intent": "验证 AC-1.2 异常处理：文件存在但不含 NavDestination/Navigation 组件时输出无法处理提示",
+    "expected": {
+      "primary_scene": "exception",
+      "exception_type": "no_target_component",
+      "decision_path": "文件存在但无 NavDestination/Navigation → 异常处理 → 提示未找到目标组件"
+    },
+    "problem_profile": {
+      "symptom": "开发者提供的文件存在但不含 NavDestination 或 Navigation 组件，Skill 无法在文件中定位转场动画配置目标",
+      "root_cause": "EmptyPage.ets 仅包含 Column + Text 组件，无 NavDestination/Navigation 组件",
+      "fix_strategy": "输出无法处理提示，请求提供含 NavDestination/Navigation 的文件"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "不产出任何配置方案/框架代码",
+        "输出明确的无法处理提示",
+        "请求补充输入（请求提供含 NavDestination/Navigation 的文件）",
+        "提示指向具体缺失项（文件中未找到 NavDestination/Navigation 组件）"
+      ],
+      "should_reuse_resources": [],
+      "forbidden_patterns": [
+        "在 Column 组件上强行附加 systemTransition 属性",
+        "假设文件中隐含 NavDestination 组件",
+        "臆造 NavDestination 组件并生成配置方案"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "text_output",
+      "runtime_assertions": [
+        "输出包含「未找到 NavDestination/Navigation 组件」提示",
+        "输出不包含任何配置方案或框架代码",
+        "输出请求提供含目标组件的文件"
+      ],
+      "pass_evidence": "输出文本包含无法处理提示 + 无任何配置方案"
+    },
+    "regression_watchlist": [
+      "是否因需求描述中含 'NavDestination' 而假设文件中有该组件",
+      "是否在非 NavDestination 组件上附加转场属性"
+    ]
+  },
+  {
+    "case_id": "NT-REAL-004",
+    "layer": "real-world",
+    "title": "异常处理 — 需求描述为空",
+    "phase": "DEV",
+    "bug_id": "demo.md#BENCH-016",
+    "user_prompt": "",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 AC-1.2 异常处理：需求描述为空时输出无法处理提示并请求补充输入",
+    "expected": {
+      "primary_scene": "exception",
+      "exception_type": "empty_description",
+      "decision_path": "需求描述为空 → 异常处理 → 提示需求描述为空"
+    },
+    "problem_profile": {
+      "symptom": "开发者提供了有效文件路径但未提供需求描述，Skill 无法判断转场动画类型",
+      "root_cause": "需求描述为空值，未提供任何转场动画需求",
+      "fix_strategy": "输出无法处理提示，请求提供转场动画需求描述"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "不产出任何配置方案/框架代码",
+        "输出明确的无法处理提示",
+        "请求补充输入（请求提供转场需求描述）",
+        "提示指向具体缺失项（需求描述为空）"
+      ],
+      "should_reuse_resources": [],
+      "forbidden_patterns": [
+        "默认猜测为 systemTransition 并输出配置方案",
+        "默认猜测为 customTransition 并输出框架代码",
+        "任何未基于需求描述的臆造方案"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "text_output",
+      "runtime_assertions": [
+        "输出包含「需求描述为空」提示",
+        "输出不包含任何配置方案或框架代码",
+        "输出请求提供转场需求描述"
+      ],
+      "pass_evidence": "输出文本包含无法处理提示 + 无任何配置方案"
+    },
+    "regression_watchlist": [
+      "是否因文件含 NavDestination 而默认猜测为 systemTransition",
+      "是否因文件路径有效而忽略需求描述为空的检查"
+    ]
+  },
+  {
+    "case_id": "NT-REAL-005",
+    "layer": "real-world",
+    "title": "异常处理 — 需求与转场无关",
+    "phase": "DEV",
+    "bug_id": "demo.md#BENCH-017",
+    "user_prompt": "帮我修改按钮颜色",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 AC-1.2 异常处理：需求描述与转场动画无关时输出无法处理提示",
+    "expected": {
+      "primary_scene": "exception",
+      "exception_type": "irrelevant_request",
+      "decision_path": "需求描述与转场无关 → 异常处理 → 提示需求与转场无关"
+    },
+    "problem_profile": {
+      "symptom": "开发者提供了有效文件路径和需求描述，但需求描述与转场动画无关（如修改按钮颜色）",
+      "root_cause": "需求描述「帮我修改按钮颜色」与 Navigation/NavDestination 转场动画无关",
+      "fix_strategy": "输出无法处理提示，请求提供与转场动画相关的需求描述"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "不产出任何配置方案/框架代码",
+        "输出明确的无法处理提示",
+        "请求补充输入（请求提供与转场动画相关的需求描述）",
+        "提示指向具体缺失项（需求描述与转场动画无关）"
+      ],
+      "should_reuse_resources": [],
+      "forbidden_patterns": [
+        "将「修改按钮颜色」曲解为转场相关的动画需求",
+        "产出任何转场配置方案或框架代码",
+        "在 NavDestination 上强行附加不相关的属性配置"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "text_output",
+      "runtime_assertions": [
+        "输出包含「需求与转场动画无关」提示",
+        "输出不包含任何配置方案或框架代码",
+        "输出请求提供转场相关需求描述"
+      ],
+      "pass_evidence": "输出文本包含无法处理提示 + 无任何配置方案"
+    },
+    "regression_watchlist": [
+      "是否因需求中含「颜色」而臆造为颜色渐变转场动画",
+      "是否因文件含 NavDestination 而强行附加转场配置"
+    ]
+  }
+]

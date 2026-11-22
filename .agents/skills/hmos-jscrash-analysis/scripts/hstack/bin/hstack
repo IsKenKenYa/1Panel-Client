@@ -1,0 +1,25 @@
+# Copyright Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+
+#!/usr/bin/env bash
+
+# Check if node is installed
+if ! which node > /dev/null 2>&1; then
+    echo "Could not find Node.js.Please install Node.js first"
+	exit 1
+fi
+
+SHELLDIR=$(cd "$(dirname "$0")";pwd)
+WORKDIR=$(dirname "$SHELLDIR")
+INDEXPATH=$WORKDIR/lib/index.js
+
+node "$INDEXPATH" "$@"
+res=$?
+
+# Print fail information.Darwin means that now is in MacOS environment
+
+if [ $res -eq 1 -o $res -eq 127 -o $res -eq 255 ]; then
+	exit 1
+else
+	exit 0
+
+fi

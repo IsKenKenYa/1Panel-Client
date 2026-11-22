@@ -1,0 +1,190 @@
+{
+  "stage": {
+    "inventory_count": 23,
+    "items": {
+      "@ohos.notificationManager#publish": {
+        "bucket": "full_direct",
+        "occurrences": 2,
+        "reason_contains": "双源一致"
+      },
+      "@ohos.markedonly#onlyFn": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "单源（SDK）"
+      },
+      "@ohos.mockSinglePlatform#mockAndroidOnlyApi": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "单源（规则表"
+      },
+      "@ohos.mockSinglePlatform#mockIosOnlyApi": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "单源（规则表"
+      },
+      "@ohos.mockConflict2#*dynamic*": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "单源（规则表"
+      },
+      "@ohos.router#router": {
+        "bucket": "reduced_direct",
+        "occurrences": 1,
+        "reason_contains": "双源一致"
+      },
+      "@ohos.geoLocationManager#getCurrentLocation": {
+        "bucket": "reduced_direct",
+        "occurrences": 1,
+        "reason_contains": "单源（规则表"
+      },
+      "@ohos.vibrator#startVibration": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "docs 实证"
+      },
+      "@ohos.account.osAccount#getAccountManager": {
+        "bucket": "platform_trim",
+        "occurrences": 1,
+        "reason_contains": "双源一致"
+      },
+      "@hms.map#MapComponent": {
+        "bucket": "business_decision",
+        "occurrences": 1,
+        "suggested_alternative_contains": "@ohos.map"
+      },
+      "@ohos.mockConflict#doWork": {
+        "bucket": "unknown",
+        "occurrences": 1,
+        "reason_contains": "双源冲突"
+      },
+      "@ohos.brandnew.module#brandNewFn": {
+        "bucket": "unknown",
+        "occurrences": 1,
+        "reason_contains": "判定依据未覆盖"
+      },
+      "@ohos.libx#*module-ref*": {
+        "bucket": "unknown",
+        "occurrences": 1,
+        "reason_contains": "判定依据未覆盖"
+      },
+      "ace/xcomponent/native_interface_xcomponent.h#*include*": {
+        "bucket": "full_direct",
+        "occurrences": 1,
+        "reason_contains": "C-API 判定源为规则表"
+      },
+      "ace/xcomponent/native_interface_xcomponent.h#OH_NativeXComponent": {
+        "bucket": "full_direct",
+        "occurrences": 2,
+        "reason_contains": "C-API 判定源为规则表"
+      },
+      "ace/xcomponent/native_interface_xcomponent.h#OH_NativeXComponent_GetXComponentSize": {
+        "bucket": "full_direct",
+        "occurrences": 1
+      },
+      "ace/xcomponent/native_interface_xcomponent.h#OH_NativeXComponent_RegisterCallback": {
+        "bucket": "full_direct",
+        "occurrences": 1
+      },
+      "hilog/log.h#*include*": {
+        "bucket": "equivalent_bridge",
+        "occurrences": 1,
+        "reason_contains": "C-API 判定源为规则表"
+      },
+      "native_media/avcodec.h#*include*": {
+        "bucket": "unknown",
+        "occurrences": 1,
+        "reason_contains": "判定依据未覆盖"
+      },
+      "native_media/avcodec.h#OH_AVEncoder_Create": {
+        "bucket": "unknown",
+        "occurrences": 1
+      },
+      "libblend.z.so#*dlopen*": {
+        "bucket": "unknown",
+        "occurrences": 1
+      }
+    },
+    "dynamic_loading": {
+      "report_contains": "存在不可静态解析的动态加载",
+      "hint_kinds": [
+        "dynamic-import",
+        "dlopen"
+      ]
+    },
+    "platform_ratio": "2/9（22%）"
+  },
+  "fa": {
+    "project_model": "fa",
+    "inventory_count": 0,
+    "all_buckets_empty": true,
+    "exit_code": 3
+  },
+  "unknown_model": {
+    "exit_code": 3
+  },
+  "degraded": {
+    "no_sdk_field": true,
+    "exit_code": 0,
+    "@ohos.geoLocationManager#getCurrentLocation": {
+      "bucket": "reduced_direct",
+      "reason_contains": "单源（规则表"
+    }
+  },
+  "demo": {
+    "unknown_ratio_max": 20,
+    "unknown_attribution": {
+      "native_media/avcodec.h#*include*": "规则表未覆盖（C-API）"
+    }
+  },
+  "capi": {
+    "inventory_count": 12,
+    "items": {
+      "@ohos.file.picker#save": {
+        "bucket": "platform_trim",
+        "reason_contains": "单源（规则表"
+      },
+      "@ohos.window#on": {
+        "bucket": "platform_trim",
+        "reason_contains": "单源（规则表"
+      },
+      "arkui/native_node.h#*include*": {
+        "bucket": "full_direct",
+        "reason_contains": "官方收录"
+      },
+      "arkui/native_dialog.h#*include*": {
+        "bucket": "full_direct",
+        "reason_contains": "官方收录"
+      },
+      "ace/xcomponent/native_interface_xcomponent.h#*include*": {
+        "bucket": "full_direct"
+      },
+      "rawfile/raw_file_manager.h#*include*": {
+        "bucket": "full_direct",
+        "reason_contains": "参考收录"
+      },
+      "rawfile/raw_file_manager.h#OH_ResourceManager_OpenRawFile": {
+        "bucket": "full_direct"
+      },
+      "napi/native_api.h#*include*": {
+        "bucket": "full_direct"
+      },
+      "node_api.h#*include*": {
+        "bucket": "full_direct"
+      },
+      "plugin_utils.h#*include*": {
+        "bucket": "full_direct",
+        "reason_contains": "Android JNI"
+      },
+      "native_drawing/native_drawing.h#*include*": {
+        "bucket": "unknown",
+        "reason_contains": "判定依据未覆盖"
+      },
+      "ohos_init.h#*include*": {
+        "bucket": "unknown",
+        "reason_contains": "判定依据未覆盖"
+      }
+    },
+    "platform_ratio": "2/2（100%）",
+    "unknown_count": 2
+  }
+}

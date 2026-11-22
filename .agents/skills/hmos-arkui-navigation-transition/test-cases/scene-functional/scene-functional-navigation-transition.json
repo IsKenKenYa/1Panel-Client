@@ -1,0 +1,475 @@
+[
+  {
+    "case_id": "NT-FUNC-001",
+    "layer": "scene-functional",
+    "title": "系统默认转场 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "请协助给这个 NavDestination 页面添加系统默认转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "基于 systemTransition 场景要求，为 NavDestination 配置系统默认转场动画",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "decision_path": "关键词 '系统' + '默认' + 'NavDestination' → L3 系统转场 → systemTransition"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 .systemTransition(NavigationSystemTransitionType.DEFAULT) 配置方案",
+        "接入位置在 NavDestination 组件声明上（链式调用）",
+        "枚举取值以 references/navigation-transition-api.md 的 .d.ts 枚举值为准",
+        "方案与 ArkUI 官方开发指南逐条一致"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#systemTransition",
+        "templates/systemTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "使用 pageTransition 方法替代 systemTransition",
+        "枚举值拼写错误或使用不存在的枚举常量"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "NavDestination 页面 push/pop 时播放系统默认转场动画",
+        "编译无 ArkTS:10505001 错误"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示系统默认转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-002",
+    "layer": "scene-functional",
+    "title": "系统转场 — 口语化描述",
+    "phase": "DEV",
+    "user_prompt": "我想用系统自带的转场效果",
+    "input_file": "src/main/ets/pages/ProfilePage.ets",
+    "intent": "验证口语化描述「系统自带」也能正确分流到 systemTransition",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "decision_path": "关键词 '系统' + '自带' + 'NavDestination' → L3 系统转场 → systemTransition"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 .systemTransition(NavigationSystemTransitionType.DEFAULT) 配置方案",
+        "接入位置在 NavDestination 组件声明上",
+        "枚举取值正确"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#systemTransition",
+        "templates/systemTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "因口语化描述而误分流到 customTransition"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "ProfilePage push/pop 时播放系统默认转场动画"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示系统默认转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-003",
+    "layer": "scene-functional",
+    "title": "系统转场 — 指定枚举值",
+    "phase": "DEV",
+    "user_prompt": "添加系统转场，枚举用默认值",
+    "input_file": "src/main/ets/pages/NewsDetail.ets",
+    "intent": "验证开发者指定枚举值时输出与指定值一致",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "decision_path": "关键词 '系统' + '枚举' + '默认值' → L3 系统转场 → systemTransition"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 .systemTransition(NavigationSystemTransitionType.DEFAULT) 配置方案",
+        "枚举取值与开发者指定值一致（DEFAULT 对应默认值枚举常量）",
+        "接入位置在 NavDestination 组件声明上"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#systemTransition",
+        "templates/systemTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "忽略开发者指定的枚举值，使用其他枚举"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "NewsDetail push/pop 时播放 DEFAULT 枚举对应的系统转场动画"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示指定枚举转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-004",
+    "layer": "scene-functional",
+    "title": "自定义转场 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "请给 NavDestination 添加自定义转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "基于 customTransition 场景要求，生成返回 NavDestinationTransition 数组的框架代码",
+    "expected": {
+      "primary_scene": "customTransition",
+      "decision_path": "关键词 '自定义' + 'NavDestination' + 无 '交互' → L3 自定义转场 → customTransition（无交互）"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生成返回 NavDestinationTransition 数组的框架代码",
+        "代理函数签名为 (operation: NavigationOperation, isEnter: boolean) => Array<NavDestinationTransition> | undefined",
+        "回调结构完整：含 event 闭包、duration、curve、onTransitionEnd",
+        ".customTransition(delegate) 链式调用，delegate 作为参数传入",
+        "动画初始值在 customTransition 回调体内同步赋值（delegate 执行时、返回数组前，对驱动动画的 @State 变量赋初值）",
+        "动画结束值在 event 闭包内直接赋值（event 本身运行在动画执行上下文，等价于 animateTo 的 event 闭包语义，无需再包裹 animateTo）",
+        "框架代码可编译"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customTransition",
+        "templates/customTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "在 struct 中定义名为 pageTransition 的方法并使用 NavDestinationTransitionDelegate 签名（ArkTS:10505001）",
+        "使用通用属性保留名（scale/opacity/translate/rotate 等）作为 struct 成员变量名",
+        "event 闭包内调用 animateTo（event 已在动画执行上下文中，二次包裹会破坏系统转场动画上下文）",
+        "无交互诉求时引导至 customNavContentTransition"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "NavDestination push 入场时播放自定义转场动画",
+        "NavDestination pop 退场时播放自定义转场动画",
+        "编译无 ArkTS:10505001 错误"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示自定义转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-005",
+    "layer": "scene-functional",
+    "title": "自定义转场 — 缩放淡入效果",
+    "phase": "DEV",
+    "user_prompt": "给页面加一个缩放+淡入的转场动画",
+    "input_file": "src/main/ets/pages/ProductDetail.ets",
+    "intent": "验证自定义转场框架代码中体现缩放与淡入效果逻辑",
+    "expected": {
+      "primary_scene": "customTransition",
+      "decision_path": "关键词 '缩放' + '淡入' + 'NavDestination' → L3 自定义转场 → customTransition（无交互）"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生成返回 NavDestinationTransition 数组的框架代码",
+        "缩放与淡入的初始值在 customTransition 回调体内同步赋值，结束值在 event 闭包内直接赋值（操作 scaleValue/opacityValue 状态变量）",
+        "状态变量名使用业务语义前缀（如 scaleValue/opacityValue），避免通用属性保留名",
+        "回调结构完整",
+        ".customTransition(delegate) 链式调用"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customTransition",
+        "templates/customTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "使用 @State scale: number 或 @State opacity: number（通用属性保留名冲突）",
+        "event 闭包中不修改任何 UI 状态",
+        "event 闭包内调用 animateTo（event 已在动画执行上下文中，二次包裹会破坏系统转场动画上下文）"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "push 入场时页面元素缩放+淡入",
+        "pop 退场时页面元素缩放+淡出",
+        "编译无 ArkTS:10505001 错误"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示缩放淡入转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-006",
+    "layer": "scene-functional",
+    "title": "自定义转场 — 排除系统描述",
+    "phase": "DEV",
+    "user_prompt": "页面转场用自定义动画，不要系统的",
+    "input_file": "src/main/ets/pages/FeedbackPage.ets",
+    "intent": "验证排除系统描述也能正确分流到 customTransition，且无交互时不引导至 customNavContentTransition",
+    "expected": {
+      "primary_scene": "customTransition",
+      "decision_path": "关键词 '自定义' + '不要系统' + 'NavDestination' → L3 自定义转场 → customTransition（无交互）"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生成返回 NavDestinationTransition 数组的框架代码",
+        "回调结构完整",
+        ".customTransition(delegate) 链式调用",
+        "动画初始值在 customTransition 回调体内同步赋值，结束值在 event 闭包内直接赋值",
+        "无交互诉求时不引导至 customNavContentTransition"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customTransition",
+        "templates/customTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "因「不要系统的」描述而误分流到 disableAnimation",
+        "event 闭包内调用 animateTo（event 已在动画执行上下文中，二次包裹会破坏系统转场动画上下文）",
+        "无交互诉求时引导至 customNavContentTransition"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "FeedbackPage push/pop 时播放自定义转场动画",
+        "编译无 ArkTS:10505001 错误"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示自定义转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-007",
+    "layer": "scene-functional",
+    "title": "可交互转场 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "我要实现转场过程中可交互的动画",
+    "input_file": "src/main/ets/pages/NavigationHome.ets",
+    "intent": "基于 customNavContentTransition 场景要求，生成 NavigationAnimatedTransition 框架代码并给出注册建议",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "decision_path": "关键词 '可交互' + 'Navigation' → L2 整体可交互 → customNavContentTransition"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生成 NavigationAnimatedTransition 框架代码",
+        "含 transition 回调（接收 NavigationTransitionProxy 参数）",
+        "transition 回调中调用 transitionProxy.finishTransition() 结束转场",
+        "给出 transition 注册建议（全局注册或单例可访问）",
+        "注册建议明确全局/单例二选一并说明取舍"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customNavContentTransition",
+        "templates/customNavContentTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "使用 onTransitionFrom/onTransitionTo（实际 API 不存在，from/to 通过 proxy 获取）",
+        "transition 回调中不调用 finishTransition() 导致超时"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "Navigation push/pop 时播放自定义可交互转场动画",
+        "转场动画完成后自动结束（finishTransition 被调用）",
+        "编译无错误"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示可交互转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-008",
+    "layer": "scene-functional",
+    "title": "可交互转场 — Navigation 配置描述",
+    "phase": "DEV",
+    "user_prompt": "给 Navigation 配置可交互转场",
+    "input_file": "src/main/ets/pages/MainNavigation.ets",
+    "intent": "验证 Navigation 配置描述也能正确分流到 customNavContentTransition",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "decision_path": "关键词 'Navigation' + '可交互' → L2 整体可交互 → customNavContentTransition"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生成 NavigationAnimatedTransition 框架代码",
+        "含 transition 回调（接收 NavigationTransitionProxy 参数）",
+        "给出 transition 注册建议",
+        "注册建议明确全局/单例二选一并说明取舍"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#customNavContentTransition",
+        "templates/customNavContentTransition.ets"
+      ],
+      "forbidden_patterns": [
+        "将 customNavContentTransition 配置在 NavDestination 上而非 Navigation 上"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "MainNavigation push/pop 时播放可交互转场动画",
+        "转场动画完成后自动结束"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示可交互转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-009",
+    "layer": "scene-functional",
+    "title": "单页禁用 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "请禁用这个 NavDestination 的转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "基于 disableAnimation 场景要求，输出 NavDestination 单页禁用配置指导",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "single-page",
+      "decision_path": "关键词 '禁用' + 'NavDestination' → L1 禁用分支 → 单页禁用"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 NavDestination 单页禁用配置指导",
+        "单页禁用通过 systemTransition(NavigationSystemTransitionType.NONE) 实现",
+        "指导明确作用域为单页（NavDestination）",
+        "与全局禁用（Navigation）明确区分"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#disableAnimation",
+        "templates/disableAnimation.ets"
+      ],
+      "forbidden_patterns": [
+        "单页禁用时使用 NavPathStack.disableAnimation(true)（那是全局禁用）",
+        "未说明作用域区别"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "DetailPage push/pop 时无转场动画",
+        "其他页面 push/pop 时仍有转场动画（单页禁用不影响全局）"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示该页面无转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-010",
+    "layer": "scene-functional",
+    "title": "单页禁用 — NavDestination 排除描述",
+    "phase": "DEV",
+    "user_prompt": "这个 NavDestination 不要转场效果",
+    "input_file": "src/main/ets/pages/ProductDetail.ets",
+    "intent": "验证排除描述也能正确分流到单页禁用",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "single-page",
+      "decision_path": "关键词 '不要' + '转场' + 'NavDestination' → L1 禁用分支 → 单页禁用"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 NavDestination 单页禁用配置指导",
+        "指导明确作用域为单页（NavDestination）",
+        "与全局禁用明确区分"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#disableAnimation",
+        "templates/disableAnimation.ets"
+      ],
+      "forbidden_patterns": [
+        "因「不要转场」描述而误分流到 systemTransition(NONE) 以外的方案"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "ProductDetail push/pop 时无转场动画",
+        "其他页面仍有转场动画"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示该页面无转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-011",
+    "layer": "scene-functional",
+    "title": "全局禁用 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "请禁用 Navigation 的转场动画",
+    "input_file": "src/main/ets/pages/MainNavigation.ets",
+    "intent": "基于 disableAnimation 场景要求，输出 Navigation 全局禁用配置指导",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "global",
+      "decision_path": "关键词 '禁用' + 'Navigation' → L1 禁用分支 → 全局禁用"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 Navigation 全局禁用配置指导",
+        "全局禁用通过 NavPathStack.disableAnimation(true) 实现",
+        "指导明确作用域为全局（Navigation）",
+        "与单页禁用（NavDestination）明确区分"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#disableAnimation",
+        "templates/disableAnimation.ets"
+      ],
+      "forbidden_patterns": [
+        "全局禁用时仅在单个 NavDestination 上设置 systemTransition(NONE)",
+        "未说明作用域区别"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "MainNavigation 中所有页面 push/pop 时均无转场动画",
+        "调用 disableAnimation(false) 后恢复转场动画"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示所有页面无转场动画"
+    }
+  },
+  {
+    "case_id": "NT-FUNC-012",
+    "layer": "scene-functional",
+    "title": "全局禁用 — 全局关闭描述",
+    "phase": "DEV",
+    "user_prompt": "全局关闭转场",
+    "input_file": "src/main/ets/pages/AppNavigation.ets",
+    "intent": "验证全局关闭描述也能正确分流到全局禁用",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "global",
+      "decision_path": "关键词 '全局' + '关闭' + 'Navigation' → L1 禁用分支 → 全局禁用"
+    },
+    "solution_contract": {
+      "must_cover": [
+        "输出 Navigation 全局禁用配置指导",
+        "指导明确作用域为全局（Navigation）",
+        "与单页禁用明确区分"
+      ],
+      "should_reuse_resources": [
+        "references/navigation-transition-api.md#disableAnimation",
+        "templates/disableAnimation.ets"
+      ],
+      "forbidden_patterns": [
+        "因「全局关闭」描述而误分流到单页禁用"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "code_generation",
+      "compile_command_template": "hvigorw assembleHap",
+      "test_command_template": "hdc shell aa start -a EntryAbility",
+      "runtime_assertions": [
+        "AppNavigation 中所有页面 push/pop 时均无转场动画"
+      ],
+      "pass_evidence": "编译通过 + push/pop 操作录屏显示所有页面无转场动画"
+    }
+  }
+]

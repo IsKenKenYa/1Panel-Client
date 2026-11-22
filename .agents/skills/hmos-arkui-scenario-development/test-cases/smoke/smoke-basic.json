@@ -1,0 +1,363 @@
+[
+  {
+    "case_id": "SMOKE-BASIC-001",
+    "layer": "smoke",
+    "title": "@BuilderParam UI 占位",
+    "phase": "DEV",
+    "user_prompt": "我现在要做一个通用弹窗组件，页面上的各种弹窗都打算用它。弹窗分成标题区、内容区、底部按钮区三块，组件自带一套默认样子：占位标题、一段占位文案、底部「取消/确定」两个按钮，直接就能用。但落到不同业务场景上，则需要可定制标题区、内容区、底部按钮区三块内容。输出可落到工程中的开发方案。",
+    "intent": "验证「@BuilderParam UI 占位」能稳定命中 ARKUI-01，并路由到 basic-ui.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-ui.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-002",
+    "layer": "smoke",
+    "title": "组件单元封装选型",
+    "phase": "DEV",
+    "user_prompt": "做一个任务管理页面：页面中间是任务卡片列表，每张卡片能独立切换完成状态、调整优先级（普通/重要/紧急）；页面顶部有「全部标记完成」开关，打开后所有任务卡片要同步变成完成态，同时每张卡片的完成、优先级变化也要能汇总回页面（例如统计未完成数量）；页面底部固定一排操作入口（新建、批量删除、按优先级排序、导出），每个入口是图标加文字的固定结构，点击后由页面执行对应动作。输出可落到工程中的开发方案。",
+    "intent": "验证「组件单元封装选型」能稳定命中 ARKUI-01，并路由到 basic-ui.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-ui.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-003",
+    "layer": "smoke",
+    "title": "组件样式复用",
+    "phase": "DEV",
+    "user_prompt": "做一个电商商品卡片列表，页面上反复出现下面这些样式：卡片容器（白底、圆角、内边距）、顶部标题栏、价格文字、商品标题、商品图、主操作按钮。希望这些反复出现的样式能集中维护在一处，以后改样式只改一次、所有用到的地方都跟着变，而不是每个卡片里各写一遍、改一处要满世界找。其中一部分样式固定不变（卡片容器、标题栏），另一部分会随场景变化——价格、标题、图片、按钮在不同卡片上的字号、颜色、圆角各不相同，需要能按情况给不同的值。请说明这些样式分别该怎么集中管理和使用，输出可落到工程中的开发方案。",
+    "intent": "验证「组件样式复用」能稳定命中 ARKUI-01，并路由到 basic-ui.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-ui.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-004",
+    "layer": "smoke",
+    "title": "组件工厂动态分发",
+    "phase": "DEV",
+    "user_prompt": "做一个新闻信息流列表，列表里有多种不同样式的条目：纯文字、单图、三图、视频，每种长得不一样。条目类型是数据里带的字段（比如后端下发的类型标记），页面要根据这个标记显示对应的卡片样式。而且以后还会陆续新增别的卡片类型（比如广告卡、投票卡），希望新增一种类型时，只在统一的一处加上，整个列表就能识别并显示新样式，不用去改用到这个列表的各个地方。输出可落到工程中的开发方案。",
+    "intent": "验证「组件工厂动态分发」能稳定命中 ARKUI-01，并路由到 basic-extension.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-extension.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-005",
+    "layer": "smoke",
+    "title": "自定义布局容器",
+    "phase": "DEV",
+    "user_prompt": "做一个双列瀑布流图片墙（类似 Pinterest 的卡片墙）：图片卡片高度各不相同，新卡片逐个进来时要自动追加到当前较短的那一列，让两列尽量等高、视觉平衡。整个卡片墙的总高度要跟着最长的那一列动态变化，并且能把实际算出来的总高度告诉外层容器、让它跟着撑高，而不是高度固定写死。普通的横向/纵向排列或网格排版都满足不了这种「按列高选短边追加」的排版方式。输出可落到工程中的开发方案。",
+    "intent": "验证「自定义布局容器」能稳定命中 ARKUI-01，并路由到 basic-extension.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/ROUTE.md",
+        "references/arkui-basic/basic-extension.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-006",
+    "layer": "smoke",
+    "title": "单类型列表项滚动复用",
+    "phase": "DEV",
+    "user_prompt": "做一个新闻列表页面，每条新闻的样式都一样（标题、来源、发布时间，部分带一张缩略图），用户上下滑动不断加载、浏览更多。输出可落到工程中的开发方案。",
+    "intent": "验证「单类型列表项滚动复用」能稳定命中 ARKUI-01，并路由到 basic-reuse.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-reuse.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-007",
+    "layer": "smoke",
+    "title": "组合型列表项复用",
+    "phase": "DEV",
+    "user_prompt": "做一个多类型的信息流列表，列表项有三种：单图、三图、视频。这三种的顶部标题区和底部信息区长得完全一样，只有中间的内容区不一样（单图放一张图、三图放三张、视频放封面加播放标识）。输出可落到工程中的开发方案。",
+    "intent": "验证「组合型列表项复用」能稳定命中 ARKUI-01，并路由到 basic-reuse.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-reuse.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-008",
+    "layer": "smoke",
+    "title": "跨列表全局复用（手动池）",
+    "phase": "DEV",
+    "user_prompt": "做一个出行/打车页面，主体是一块地图区域（地图组件），展示当前位置、路线和附近车辆。地图组件初始化较重，希望在用户进入页面前就提前把它预热好，打开页面时地图能立刻显示、不用等初始化。输出可落到工程中的开发方案。",
+    "intent": "验证「跨列表全局复用（手动池）」能稳定命中 ARKUI-01，并路由到 basic-reuse.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-reuse.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-009",
+    "layer": "smoke",
+    "title": "if 条件分支显隐复用",
+    "phase": "DEV",
+    "user_prompt": "商品详情列表页中，每张商品卡片自带一组实拍配图（数量较多，进入可视区时按需加载）。卡片默认只显示商品标题与价格；用户点击卡片可展开下方的实拍图墙，滚动浏览全部配图，再次点击收起。用户经常反复点开同一张卡片来回对比图片，要求展开后已加载完成的配图在收起、再展开时直接显示、不重复请求，展开收起整体保持流畅。请输出可落到工程中的开发方案。",
+    "intent": "验证「if 条件分支显隐复用」能稳定命中 ARKUI-01，并路由到 basic-reuse.md 的 SCENE-05。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-reuse.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-05"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-BASIC-010",
+    "layer": "smoke",
+    "title": "跨列表全局复用池（reusePool）",
+    "phase": "DEV",
+    "user_prompt": "做一个类似腾讯视频的页面：顶部一排频道 Tab（推荐、电视剧、电影、综艺、动漫等），每个 Tab 下是一列视频卡片列表（封面图、标题、播放量、角标），在不同tab间复用视频卡片。输出可落到工程中的开发方案。",
+    "intent": "验证「跨列表全局复用池（reusePool）」能稳定命中 ARKUI-01，并路由到 basic-reuse.md 的 SCENE-04。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-01"
+      ],
+      "next_scene_refs": [
+        "references/arkui-basic/basic-reuse.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-04"
+      ],
+      "forbidden_scenes": [
+      ]
+    }
+  }
+]

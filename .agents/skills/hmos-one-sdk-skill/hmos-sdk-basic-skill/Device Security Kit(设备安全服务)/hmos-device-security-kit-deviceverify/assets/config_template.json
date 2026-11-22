@@ -1,0 +1,72 @@
+{
+  "deviceVerifyConfig": {
+    "bundleName": "com.huawei.myapplication",
+    "serverUrls": {
+      "checkDeviceToken": "https://connect-api.cloud.huawei.com/api/rms/v1/deviceVerify/checkDeviceToken",
+      "getDeviceStatus": "https://connect-api.cloud.huawei.com/api/rms/v1/deviceVerify/getDeviceStatus",
+      "setDeviceStatus": "https://connect-api.cloud.huawei.com/api/rms/v1/deviceVerify/setDeviceStatus",
+      "delDeviceStatus": "https://connect-api.cloud.huawei.com/api/rms/v1/deviceVerify/delDeviceStatus"
+    },
+    "mode": {
+      "applicationLevel": 1,
+      "developerLevel": 2,
+      "default": 1
+    },
+    "bitDefinitions": {
+      "bit0": {
+        "description": "Device first install status",
+        "true": "Device has installed the app before",
+        "false": "Device is new to the app"
+      },
+      "bit1": {
+        "description": "Coupon received status",
+        "true": "User has received coupon on this device",
+        "false": "User has not received coupon on this device"
+      }
+    },
+    "tokenConfig": {
+      "validityPeriod": 3600,
+      "maxRetryCount": 3,
+      "retryDelay": 1000
+    },
+    "networkConfig": {
+      "connectTimeout": 10000,
+      "readTimeout": 10000,
+      "maxConcurrentRequests": 10
+    },
+    "storageConfig": {
+      "statusValidityPeriod": 720,
+      "statusValidityUnit": "days",
+      "lastUpdateTimePrecision": "monthly"
+    },
+    "errorHandling": {
+      "fallbackEnabled": true,
+      "alternativeRiskControlMethods": [
+        "IP address check",
+        "User account verification",
+        "Device model detection"
+      ]
+    }
+  },
+  "serviceAccountConfig": {
+    "projectId": "your-project-id",
+    "keyId": "your-key-id",
+    "subAccount": "your-sub-account",
+    "authUri": "https://oauth-login.cloud.huawei.com/oauth2/v3/authorize",
+    "tokenUri": "https://oauth-login.cloud.huawei.com/oauth2/v3/token",
+    "authProviderCertUri": "https://oauth-login.cloud.huawei.com/oauth2/v3/certs",
+    "clientCertUri": "https://oauth-login.cloud.huawei.com/oauth2/v3/x509?client_id=your-client-id"
+  },
+  "supportedDevices": [
+    "Phone",
+    "Tablet",
+    "PC/2in1",
+    "Wearable",
+    "TV"
+  ],
+  "apiVersions": {
+    "minVersion": "5.0.0(12)",
+    "metaServiceVersion": "5.0.2(14)",
+    "tvSupportVersion": "5.1.1(19)"
+  }
+}

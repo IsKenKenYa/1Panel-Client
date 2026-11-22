@@ -1,0 +1,14 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/B07CheckedAndTabs",
+    "pages/B08Checkbox",
+    "pages/B09FavoriteIcon",
+    "pages/B10LineChart",
+    "pages/B11Dashboard",
+    "pages/B13FocusCard",
+    "pages/B16DefaultFocus",
+    "pages/B20HoverText",
+    "pages/B23ThemeList"
+  ]
+}

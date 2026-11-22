@@ -1,0 +1,61 @@
+{
+  "module": {
+    "name": "wifi_sta_module",
+    "type": "entry",
+    "description": "Wi-Fi STA mode functionality module",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$media:pages_config",
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_WIFI_INFO",
+        "reason": "用于查询Wi-Fi状态和获取Wi-Fi连接信息",
+        "usedScene": {
+          "ability": "WifiStaAbility",
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.SET_WIFI_INFO",
+        "reason": "用于添加候选网络配置和连接Wi-Fi网络",
+        "usedScene": {
+          "ability": "WifiStaAbility",
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.GET_WIFI_LOCAL_MAC",
+        "reason": "用于获取设备真实MAC地址（可选，仅API 16+ PC设备支持）",
+        "usedScene": {
+          "ability": "WifiStaAbility",
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.GET_WIFI_PEERS_MAC",
+        "reason": "用于获取热点真实BSSID地址（可选）",
+        "usedScene": {
+          "ability": "WifiStaAbility",
+          "when": "always"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "name": "WifiStaAbility",
+        "srcEntry": "./ets/wifi_sta/WifiStaAbility.ets",
+        "description": "Wi-Fi STA mode ability",
+        "icon": "$media:icon",
+        "label": "$string:wifi_sta_label",
+        "launchType": "standard",
+        "orientation": "unspecified",
+        "type": "page",
+        "visible": true
+      }
+    ]
+  }
+}

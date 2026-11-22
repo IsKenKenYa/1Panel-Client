@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MigrationState（编排器为契约 owner）",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stages",
+    "current_stage",
+    "decisions",
+    "checkpoints"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "stages": {
+      "type": "object",
+      "required": [
+        "scan",
+        "skeleton",
+        "bridge",
+        "report"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scan": {
+          "$ref": "#/definitions/stage"
+        },
+        "skeleton": {
+          "$ref": "#/definitions/stage"
+        },
+        "bridge": {
+          "$ref": "#/definitions/stage"
+        },
+        "report": {
+          "$ref": "#/definitions/stage"
+        }
+      }
+    },
+    "current_stage": {
+      "type": "string",
+      "enum": [
+        "scan",
+        "skeleton",
+        "bridge",
+        "report",
+        "done"
+      ]
+    },
+    "interrupted_at": {
+      "type": "string"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/decision"
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/checkpoint"
+      }
+    }
+  },
+  "definitions": {
+    "stage": {
+      "type": "object",
+      "required": [
+        "status",
+        "artifacts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "running",
+            "done",
+            "skipped",
+            "failed"
+          ]
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exit_code": {
+          "type": "integer"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "point",
+        "question",
+        "options"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "point": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "chosen": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "ohos-unique",
+            "hms-closed",
+            "kit-closed",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "required": [
+        "stage",
+        "snapshot",
+        "at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": [
+            "scan",
+            "skeleton",
+            "bridge",
+            "report"
+          ]
+        },
+        "snapshot": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

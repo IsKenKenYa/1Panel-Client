@@ -1,0 +1,51 @@
+{
+  "module": {
+    "name": "imageoverlay_demo",
+    "type": "entry",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$media:starting_pages",
+    "abilities": [
+      {
+        "name": "ImageOverlayDemo",
+        "srcEntry": "./ets/ImageOverlayDemo.ets",
+        "description": "Map ImageOverlay demonstration",
+        "icon": "$media:icon",
+        "label": "ImageOverlay Demo",
+        "visible": true,
+        "skills": [
+          {
+            "actions": [
+              "action.system.home"
+            ],
+            "entities": [
+              "entity.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.LOCATION",
+        "reason": "Used for map location services",
+        "usedScene": {
+          "ability": "ImageOverlayDemo",
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "Used for map data loading",
+        "usedScene": {
+          "ability": "ImageOverlayDemo",
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

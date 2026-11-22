@@ -1,0 +1,178 @@
+# 来电场景
+---
+# 来电场景
+#### 场景介绍
+应用接收到来自网络的音/视频通话，称为来电场景。
+来电场景的效果图展示如下：
+| **语音来电** | **视频来电** | **视频来电（不支持语音接听**） |
+| --- | --- | --- |
+|  |  |  |
+| **通话中** | **锁屏语音来电** | **锁屏视频来电** |
+|  |  |  |
+#### 约束与限制
+来电场景支持Phone、Tablet设备，并从6.0(20)版本开始支持Wearable设备，6.1.1(24)版本开始支持PC/2in1设备。
+#### 业务流程
+#### 来电场景：接听流程图
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/6b/v3/CBz6lIPiQTu8tG2VrKNWVQ/zh-cn_image_0000002628701624.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105147Z&HW-CC-Expire=86400&HW-CC-Sign=83E4BD9DC09FA6F6CB2D94931A5BCBCEABCF3E4A443707646F97FD35587E535B)
+#### 来电场景：拒接流程图
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/13/v3/vTomFrySSf-d7ja9n18DDQ/zh-cn_image_0000002659100853.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105147Z&HW-CC-Expire=86400&HW-CC-Sign=443533FEDA558E1CE13EEF4751A731B682EF416831B27F3F78E60B10D19867F2)
+#### 接口说明
+来电场景的接口，由 [voipCall](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 提供。更多接口信息详见 [接口文档](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 。
+| 接口名 | 描述 |
+| --- | --- |
+| on(type: 'voipCallUiEvent', callback: Callback<VoipCallUiEventInfo>): void | 订阅voipCallUiEvent事件。 |
+| off(type: 'voipCallUiEvent', callback?: Callback<VoipCallUiEventInfo>): void | 取消订阅voipCallUiEvent事件。 |
+| reportIncomingCall(voipCallAttribute: VoipCallAttribute): Promise<ErrorReason> | 上报来电。 |
+| reportCallAudioEventChange(callId: string, callAudioEvent: CallAudioEvent): Promise<void> | 上报音频事件。 |
+| reportCallStateChange(callId: string, callState: VoipCallState): Promise<void> | 上报通话状态改变。 |
+| reportCallStateChange(callId: string, callState: VoipCallState, callType: VoipCallType): Promise<void> | 上报通话状态改变，并指定通话类型。 |
+#### 开发步骤
+1.
+导入相关依赖。
+```typescript
+import { voipCall } from '@kit.CallServiceKit';
+import { image } from '@kit.ImageKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
+```
+2.
+为了感知到用户在横幅通知上做的接听、挂断、静音与解除静音等操作，应用需要注册voipCallUiEvent事件。建议在上报来电之前注册。
+示例代码如下：
+```typescript
+// 注册voipCallUiEvent事件
+voipCall.on('voipCallUiEvent', callback => {
+  hilog.info(0x0000, 'CallDemo', 'Succeeded in registering voipCallUiEvent');
+});
+```
+3.
+应用内部建立通话连接之后，需要向Call Service Kit上报来电，并携带通话信息，详见 [VoipCallAttribute](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 。
+如果当时应用在后台，系统会展示来电横幅。
+示例代码如下：
+```typescript
+// 构造上报来电的参数
+let voipCallAttribute: voipCall.VoipCallAttribute = {
+  callId: '1234567890',
+  voipCallType: voipCall.VoipCallType.VOIP_CALL_VOICE,
+  userName: 'Callman',
+  userProfile: image.createPixelMapSync(new ArrayBuffer(100), { size: { width: 90, height: 90 } }),
+  abilityName: 'VoipCallAbility',
+  voipCallState: voipCall.VoipCallState.VOIP_CALL_STATE_RINGING,
+  showBannerForIncomingCall: true
+};
+// 上报来电
+voipCall.reportIncomingCall(voipCallAttribute).then(errorReason => {
+  if (errorReason == voipCall.ErrorReason.ERROR_NONE) {
+    hilog.info(0x0000, 'CallDemo', 'Succeeded in reporting the incoming call');
+  } else {
+    hilog.error(0x0000, 'CallDemo', 'Failed to report the incoming call: %{public}d', errorReason);
+  }
+});
+```
+对于视频通话，可以通过参数 [isVoiceAnswerSupported](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 指定是否允许语音接听，示例代码如下：
+```typescript
+// 构造上报来电的参数
+let voipCallAttribute: voipCall.VoipCallAttribute = {
+  callId: '1234567890',
+  voipCallType: voipCall.VoipCallType.VOIP_CALL_VIDEO,
+  userName: 'Jack',
+  userProfile: image.createPixelMapSync(new ArrayBuffer(100), { size: { width: 90, height: 90 } }),
+  abilityName: 'VoipCallAbility',
+  voipCallState: voipCall.VoipCallState.VOIP_CALL_STATE_RINGING,
+  showBannerForIncomingCall: true,
+  isVoiceAnswerSupported: false  // 视频通话不支持语音接听
+};
+```
+4.
+接收到来电之后，用户可以选择接听或拒接。
+接听有两种开发方式：上报两次状态、只上报一次状态。
+-
+上报两次状态（推荐）。
+以语音通话为例，应用在接收到 [VOIP_CALL_EVENT_VOICE_ANSWER](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 事件回调之后，立即向Call Service Kit上报 [VOIP_CALL_STATE_ANSWERED](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 状态，并同时执行应用内接听。
+在完成应用内接听之后，再向Call Service Kit上报 [VOIP_CALL_STATE_ACTIVE](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 状态，系统会更新通话横幅。
+示例代码如下：
+```typescript
+voipCall.on('voipCallUiEvent', callback => {
+  if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_VOICE_ANSWER) {
+    // 立即向Call Service Kit上报answered状态
+    voipCall.reportCallStateChange(callback.callId, voipCall.VoipCallState.VOIP_CALL_STATE_ANSWERED);
+    // ...在应用内完成接听
+    // 应用内接听后，向Call Service Kit上报active状态
+    voipCall.reportCallStateChange(callback.callId, voipCall.VoipCallState.VOIP_CALL_STATE_ACTIVE);
+  }
+});
+```
+接听过程的效果图展示如下：
+| **正在接通** | **接通后** |
+| --- | --- |
+|  |  |
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/27/v3/4ps1g8QfSlapuphUbHQhGA/note_3.0-zh-cn.png?HW-CC-KV=V1&HW-CC-Date=20260701T105147Z&HW-CC-Expire=86400&HW-CC-Sign=E77F400A08AD76398FC76E0E100737D839729BD5C282E0F6FFD84ABC5915C635)
+通话接听时，上报两次状态的好处是：
+因为网络等原因，从用户点击接听，到通话真正被接通的时间间隔可能比较长（比如，1s左右）。这段时间，如果横幅通知的样式不变，一直停留在来电状态，用户可能认为点击接听无响应，体验不好。
+上报两次状态，可以在接听的过程中，在界面上给用户以反馈。
+-
+只上报一次状态。
+以语音通话为例，应用在接收到 [VOIP_CALL_EVENT_VOICE_ANSWER](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 事件回调之后，执行应用内接听。
+一直到完成应用内接听后，再向Call Service Kit上报 [VOIP_CALL_STATE_ACTIVE](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 状态。
+示例代码如下：
+```typescript
+voipCall.on('voipCallUiEvent', callback => {
+  if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_VOICE_ANSWER) {
+    // ...在应用内完成接听
+    // 应用内接听后，向Call Service Kit上报通话状态
+    voipCall.reportCallStateChange(callback.callId, voipCall.VoipCallState.VOIP_CALL_STATE_ACTIVE);
+  }
+});
+```
+如果用户在横幅通知上点击拒接，则应用在接收到 [VOIP_CALL_EVENT_REJECT](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 事件回调之后，在应用内完成拒接，然后向Call Service Kit 上报 [VOIP_CALL_STATE_DISCONNECTED](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 状态，系统会取消横幅通知。
+拒接之后，应用可跳过5、6步，直接看第7步。
+拒接的示例代码如下：
+```typescript
+voipCall.on('voipCallUiEvent', callback => {
+  if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_REJECT) {
+    // ...应用内完成拒接
+    // 向Call Service Kit上报通话状态
+    voipCall.reportCallStateChange(callback.callId, voipCall.VoipCallState.VOIP_CALL_STATE_DISCONNECTED);
+  }
+});
+```
+5.
+在通话过程中，用户可以根据需要，可以静音或解除静音。
+以静音为例，用户在横幅上点击静音，Call Service Kit会给应用回调 [VOIP_CALL_EVENT_MUTED](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 事件。
+应用在完成静音后，应向Call Service Kit上报 [AUDIO_EVENT_MUTED](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 音频状态。
+示例代码如下：
+```typescript
+voipCall.on('voipCallUiEvent', callback => {
+  if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_MUTED) {
+    // 向Call Service Kit上报静音
+    voipCall.reportCallAudioEventChange(callback.callId, voipCall.CallAudioEvent.AUDIO_EVENT_MUTED);
+  } else if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_UNMUTED) {
+    // 向Call Service Kit上报解除静音
+    voipCall.reportCallAudioEventChange(callback.callId, voipCall.CallAudioEvent.AUDIO_EVENT_UNMUTED);
+  }
+});
+```
+静音、解除静音的横幅通知效果图展示如下：
+| **静音** | **解除静音** |
+| --- | --- |
+|  |  |
+6.
+用户在横幅点击挂断，Call Service Kit会给应用回调 [VOIP_CALL_EVENT_HANGUP](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 事件。
+应用收到该事件后，应在应用内完成挂断，然后，向Call Service Kit上报 [VOIP_CALL_STATE_DISCONNECTED](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Call Service Kit（通话服务）/ArkTS API/call-voipcall.md) 状态，系统会取消横幅通知。
+示例代码如下：
+```typescript
+voipCall.on('voipCallUiEvent', callback => {
+  if (callback?.voipCallUiEvent == voipCall.VoipCallUiEvent.VOIP_CALL_EVENT_HANGUP) {
+    // ...应用内完成挂断
+    // 向Call Service Kit上报通话状态
+    voipCall.reportCallStateChange(callback.callId, voipCall.VoipCallState.VOIP_CALL_STATE_DISCONNECTED);
+  }
+});
+```
+7.
+通话结束后，应用不再需要感知到用户在通话横幅上的操作，可以解除voipCallUiEvent事件。
+示例代码如下：
+```typescript
+// 解除voipCallUiEvent事件
+voipCall.off('voipCallUiEvent', callback => {
+  hilog.info(0x0000, 'CallDemo', `Succeeded in unRegistering voipCallUiEvent, callId: ${callback.callId}`);
+});
+```

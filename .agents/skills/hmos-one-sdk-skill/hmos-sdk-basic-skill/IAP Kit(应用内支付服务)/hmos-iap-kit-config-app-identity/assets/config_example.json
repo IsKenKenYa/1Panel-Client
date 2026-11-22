@@ -1,0 +1,27 @@
+{
+  "app_config": {
+    "bundleName": "com.huawei.iap.demo",
+    "client_id": "123456789012345678",
+    "description": "IAP Kit配置示例 - 用于应用内支付服务身份鉴权"
+  },
+  "notes": {
+    "bundleName": "必须与AppGallery Connect平台创建应用时的包名保持一致",
+    "client_id": "从AppGallery Connect平台获取：项目设置 > 常规 > 应用 > Client ID",
+    "sdk_requirement": "如果compatibleSdkVersion>=14，则不要求配置应用身份信息"
+  },
+  "files_to_configure": [
+    {
+      "file": "AppScope/app.json5",
+      "field": "app.bundleName",
+      "example_value": "com.huawei.iap.demo"
+    },
+    {
+      "file": "entry/src/main/module.json5",
+      "field": "module.metadata[0]",
+      "example_value": {
+        "name": "client_id",
+        "value": "123456789012345678"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2423 @@
+[
+  {
+    "case_id": "STATE-FUNC-001",
+    "layer": "scene-functional",
+    "title": "V1父子组件单向与双向状态同步开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿外卖APP购物车页面改造首页：父组件管理菜品信息（菜名、单价、份数、辣度标签），包含两个子组件——菜品展示卡片（只读展示菜名和辣度）和份数选择器（可加减份数）。父组件可随时修改菜名和辣度，展示卡片跟随更新；份数选择器修改份数后同步回父组件计算小计。",
+    "intent": "验证 ARKUI-03 场景中 @State 管理父组件状态 + @Prop 单向同步只读数据 + @Link 双向同步可修改数据的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @State 装饰父组件的 dishName、unitPrice、count、spicyLevel 四个状态变量。",
+        "必须使用 @Prop 在菜品展示卡片子组件中单向同步 dishName 和 spicyLevel，子组件不可反向修改。",
+        "必须使用 @Link 在份数选择器子组件中双向同步 count，子组件加减操作同步回父组件。",
+        "父组件修改 dishName 或 spicyLevel 时必须自动同步到 @Prop 子组件并刷新 UI。",
+        "@Link 子组件修改 count 后必须同步回父组件，父组件的小计计算（unitPrice × count）自动更新。",
+        "@Link 变量禁止本地初始化，必须由父组件传入。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 @Prop 子组件中尝试反向修改父组件数据。",
+        "@Link 变量设置本地初始值而非由父组件传入。",
+        "使用 @State 装饰子组件的状态变量而非 @Prop/@Link。",
+        "父组件不使用 @State 导致修改后 UI 不刷新。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "父组件修改菜名后，菜品展示卡片的菜名自动更新。",
+        "父组件修改辣度后，菜品展示卡片的辣度标签自动更新。",
+        "份数选择器点击加号后 count 同步回父组件，小计金额自动更新。",
+        "父组件点击重置份数后，份数选择器的显示同步更新。",
+        "@Prop 子组件无法反向修改父组件的菜名和辣度。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "菜品展示卡片截图（菜名和辣度正确显示）",
+        "份数选择器加减操作截图（份数和小计同步更新）",
+        "父组件修改数据后子组件同步更新截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-002",
+    "layer": "scene-functional",
+    "title": "V2父子组件单向、回调双向与初始化同步开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿外卖APP购物车页面改造首页：父组件管理菜品信息（菜名、单价、份数、辣度标签、餐厅ID），包含三个子组件——菜品展示卡片（只读展示菜名和辣度）、份数选择器（可加减份数通过回调同步）、餐厅标签（仅初始化时接收餐厅ID，后续不跟随更新）。",
+    "intent": "验证 ARKUI-03 场景中 @Local 管理父组件状态 + @Param 单向同步 + @Param+@Event 回调双向同步 + @Param+@Once 仅初始化同步一次的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Local 装饰父组件的 dishName、unitPrice、count、spicyLevel、restaurantId 五个状态变量。",
+        "必须使用 @Param 在菜品展示卡片子组件中单向同步 dishName 和 spicyLevel，子组件中不允许直接修改（编译期报错）。",
+        "必须使用 @Param + @Event 在份数选择器子组件中实现双向同步：@Param 接收当前 count（只读），@Event 声明 onCountChange 回调通知父组件修改数据源。",
+        "必须使用 @Param + @Once 在餐厅标签子组件中实现仅初始化同步一次：初始化时接收 restaurantId，后续父组件修改不再同步。",
+        "份数选择器中不能直接修改 @Param count，必须通过 @Event 回调通知父组件。",
+        "父组件修改 @Local 变量后必须自动同步到对应的 @Param 子组件。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 子组件中直接修改 @Param 变量而非通过 @Event 回调。",
+        "@Once 未搭配 @Param 使用。",
+        "使用 @State 等 V1 装饰器装饰 @ComponentV2 组件的状态变量。",
+        "@Event 回调方法名不符合 $ + 属性名的命名规范。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "父组件修改菜名后，菜品展示卡片的菜名自动更新。",
+        "份数选择器点击加号后通过 @Event 回调通知父组件，父组件修改 count 后 @Param 同步回子组件。",
+        "父组件修改 restaurantId 后，餐厅标签组件不跟随更新，仍显示初始值。",
+        "@Param 子组件中尝试直接修改 count 会触发编译期报错。",
+        "父组件修改 @Local 变量后所有对应 @Param 子组件自动同步。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "菜品展示卡片截图（菜名和辣度正确同步）",
+        "份数选择器回调同步截图（加减后份数和小计正确更新）",
+        "餐厅标签快照截图（父组件修改 restaurantId 后标签不更新）"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-003",
+    "layer": "scene-functional",
+    "title": "V1跨组件层级双向状态同步开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿音乐播放器应用改造首页：根组件维护当前播放状态（播放/暂停），中间有多层无关的布局组件（如底部导航栏、页面容器），最底层的播放控制按钮需要直接读写该播放状态，无需逐层传递参数。",
+    "intent": "验证 ARKUI-03 场景中 @Provide + @Consume 跨层级双向同步的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Provide 在根组件中装饰 isPlaying 变量，提供给所有后代组件。",
+        "必须使用 @Consume 在底层播放控制按钮组件中通过相同变量名绑定 @Provide。",
+        "中间层组件不需要声明任何参数来传递 isPlaying，数据自动穿透。",
+        "后代组件修改 @Consume 变量必须同步回根组件的 @Provide。",
+        "根组件修改 @Provide 变量必须自动同步到所有 @Consume 后代组件。",
+        "@Consume 不允许从外部传入初始化，仅通过变量名或别名匹配祖先组件的 @Provide。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "中间层组件声明参数传递 isPlaying，未利用 @Provide/@Consume 的跨层级穿透能力。",
+        "@Consume 变量从外部传入初始化。",
+        "使用别名时 @Provide 和 @Consume 的别名不匹配。",
+        "在非 @Component 组件中使用 @Provide 或 @Consume。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "根组件点击播放/暂停按钮后，底层播放控制按钮的显示状态同步更新。",
+        "底层播放控制按钮点击后，根组件的播放状态同步更新。",
+        "中间层组件无需任何数据传递，数据自动穿透。",
+        "多个 @Consume 后代组件同时绑定同一 @Provide 时，任一处修改全部同步。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "根组件播放状态截图（播放中）",
+        "底层控制按钮截图（状态同步）",
+        "底层按钮点击后根组件状态同步更新截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-004",
+    "layer": "scene-functional",
+    "title": "V2跨组件层级双向状态同步开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿音乐播放器应用改造首页：根组件维护当前播放状态（播放/暂停），中间有多层无关的布局组件，最底层的播放控制按钮需要跨层级双向同步播放状态。",
+    "intent": "验证 ARKUI-03 场景中 @Provider + @Consumer 跨层级双向同步的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Provider() 在根组件中装饰 isPlaying 变量，未定义 aliasName 时使用属性名作为 aliasName。",
+        "必须使用 @Consumer() 在底层播放控制按钮组件中通过相同 aliasName 向上查找最近的 @Provider。",
+        "@Consumer 必须本地初始化（设默认值），当找不到匹配的 @Provider 时使用本地默认值。",
+        "中间层组件不需要声明任何参数来传递数据。",
+        "后代组件修改 @Consumer 变量必须同步回根组件的 @Provider。",
+        "@Provider 和 @Consumer 只能在 @ComponentV2 中使用。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中使用 @Provide/@Consume（V1 装饰器）而非 @Provider/@Consumer。",
+        "@Consumer 未设默认值，找不到 @Provider 时使用 undefined。",
+        "在 @Component（V1）组件中使用 @Provider 或 @Consumer。",
+        "中间层组件声明参数传递 isPlaying。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "根组件修改播放状态后，底层播放控制按钮同步更新。",
+        "底层播放控制按钮修改后，根组件的播放状态同步更新。",
+        "@Consumer 找不到匹配 @Provider 时使用本地默认值，不崩溃。",
+        "中间层组件无需任何数据传递，数据自动穿透。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "根组件播放状态截图",
+        "底层控制按钮状态同步截图",
+        "双向同步操作录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-005",
+    "layer": "scene-functional",
+    "title": "V1嵌套类对象属性变化观测开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿通讯录APP联系人详情页改造首页：联系人(Contact)包含家庭地址(Address)和电话号码列表(PhoneItem[])。@State 只能观察第一层变化，无法直接观察嵌套对象的属性变化（如修改地址的街道名称、修改某个电话号码的备注）。需要使用 @Observed + @ObjectLink 拆分子组件观测深层属性变化，并使用 @Track 实现属性级精准更新。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Observed 装饰内层类 + @ObjectLink 在子组件中接收内层对象 + @Track 实现属性级精准更新的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Observed 装饰 Address 和 PhoneItem 内层类，外层 Contact 也需要 @Observed 装饰。",
+        "必须使用 @Track 装饰需要精准观测的属性（如 Address 的 street/city、PhoneItem 的 number/label）。",
+        "必须使用 @ObjectLink 在子组件中接收 @Observed 装饰的内层类实例，观测其属性变化。",
+        "@ObjectLink 变量本身只读（不允许整体赋值），只能修改其属性。",
+        "必须使用 ForEach + @ObjectLink 遍历电话号码数组，每个数组项由子组件观测属性变化。",
+        "未被 @Track 装饰的属性不能在 UI 中使用（运行时报错），但可在事件回调中使用。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "仅使用 @State 试图观察嵌套对象的深层属性变化（@State 只能观察第一层）。",
+        "内层类未使用 @Observed 装饰导致 @ObjectLink 无法观测属性变化。",
+        "未被 @Track 装饰的属性在 UI 中使用导致运行时报错。",
+        "@ObjectLink 变量被整体赋值而非修改其属性。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "修改地址的街道名称后，地址卡片子组件的 UI 正确刷新。",
+        "修改某个电话号码的备注后，对应电话项子组件的 UI 正确刷新。",
+        "@Track 精准更新：修改电话号码时仅刷新号码 UI，不刷新备注 UI。",
+        "@State 可以观察第一层变化（数组 push/pop），但无法观察第二层属性变化。",
+        "通过 @ObjectLink 子组件可以观测到第二层属性变化。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "联系人详情页截图（地址和电话列表正确显示）",
+        "修改地址属性后子组件刷新截图",
+        "修改电话号码属性后精准刷新截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-006",
+    "layer": "scene-functional",
+    "title": "V2嵌套类对象属性变化观测开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿通讯录APP联系人详情页改造首页：联系人包含家庭地址和电话号码列表，地址中还有嵌套的区域信息（省/市）。需要观测多层嵌套对象的属性变化，如修改地址的街道名称、区域的省份、某个电话号码的备注。使用 V2 装饰器实现，无需拆分子组件。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @ObservedV2 装饰内层类 + @Trace 装饰需要观测的属性 + 直接在父组件中观测多层嵌套属性变化的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ObservedV2 装饰 Region、Address、PhoneItem 内层类，外层 Contact 不需要任何装饰器。",
+        "必须使用 @Trace 装饰需要观测的属性（如 Region 的 province/city、Address 的 street、PhoneItem 的 number/label）。",
+        "必须直接在父组件中使用嵌套属性（如 contact.address.region.province），@Trace 使变化可观测。",
+        "无需拆分子组件即可观测多层嵌套属性变化，修改即刷新。",
+        "@Trace 自带属性级精准更新能力，修改某属性时仅刷新引用该属性的 UI。",
+        "对于多层嵌套（如 Region 作为 Address 的内层对象），只需在最内层的类上使用 @ObservedV2 + @Trace。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中使用 @Observed + @ObjectLink 逐层拆分子组件（V2 无需拆分）。",
+        "外层类使用 @ObservedV2 装饰（V2 中外层类不需要任何装饰器）。",
+        "需要观测的属性未使用 @Trace 装饰导致修改后 UI 不刷新。",
+        "在 V2 中使用 @Track 装饰属性（@Track 是 V1 装饰器）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "修改地址街道名称后，父组件中引用该属性的 UI 正确刷新。",
+        "修改区域省份后，父组件中多层嵌套属性 contact.address.region.province 的 UI 正确刷新。",
+        "修改电话号码数组的某项属性后，对应项的 UI 正确刷新。",
+        "@Trace 精准更新：修改号码时仅刷新号码 UI，不刷新备注 UI。",
+        "无需拆分子组件即可观测任意深度嵌套属性变化。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "联系人详情页截图（多层嵌套属性正确显示）",
+        "修改深层嵌套属性后 UI 刷新截图",
+        "精准更新截图（仅变化的属性 UI 刷新）"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-007",
+    "layer": "scene-functional",
+    "title": "V1状态变量变化监听开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿记账APP改造首页：多个账户（现金、银行卡、支付宝）的余额变化时自动计算总资产，不同账户余额变化时统一判断是否触发低余额预警。账户列表变化时重新计算净资产。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Watch 监听状态变量变化并触发回调 + 多变量共享回调通过 propName 区分 + @Link + @Watch 组合使用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @State @Watch('onAccountChange') 装饰多个账户余额变量（cashBalance、bankBalance、alipayBalance），绑定同一个回调方法名。",
+        "回调方法 onAccountChange(propName: string) 必须通过 propName 参数区分是哪个变量发生了变化。",
+        "回调中必须重新计算总资产和判断是否触发低余额预警。",
+        "必须使用 @Link + @Watch 在子组件中监听账户列表变化，触发回调重新计算净资产。",
+        "@Watch 在第一次初始化时不会被调用，只在后续状态改变时触发。",
+        "@Watch 回调在状态变量变更之后同步执行。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "每个账户余额变量绑定不同的回调方法名而非共享同一回调。",
+        "回调中不使用 propName 区分变量来源导致无法差异化处理。",
+        "@Watch 回调中尝试获取变化前的值（V1 @Watch 不支持）。",
+        "@Watch 在初始化时期望被调用。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "修改任一账户余额后，总资产自动重新计算并更新。",
+        "低余额预警在余额低于阈值时正确触发。",
+        "多个账户余额变化时通过 propName 区分来源，日志正确输出。",
+        "账户列表变化后子组件 @Link + @Watch 回调正确触发，净资产重新计算。",
+        "@Watch 回调在初始化时不触发。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "账户余额变化后总资产更新截图",
+        "低余额预警触发截图",
+        "多变量共享回调日志截图（propName 正确区分）"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-008",
+    "layer": "scene-functional",
+    "title": "V2状态变量变化精准监听与变化前后值获取开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿记账APP首页改造首页：账户余额或收支类别变化时需要自动计算总资产并获取变化前的值（如显示“余额从 ¥5000 变为 ¥4500”），账户对象的属性变化需要精准监听，嵌套的账户明细（如开户行信息）属性变化也需要触发回调。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Monitor 监听状态变量修改 + 获取变化前后的值 + 监听 @ObservedV2 类属性变化和深层属性路径的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Monitor('balance', 'category') 同时监听多个变量，monitor.dirty 返回变化的属性路径列表。",
+        "必须通过 monitor.value(path)?.before 和 monitor.value(path)?.now 获取变化前后的值。",
+        "必须使用 @ObservedV2 + @Trace 装饰账户类，@Monitor 在类中监听 @Trace 属性变化。",
+        "必须使用 @Monitor('account.bankInfo.bankName') 监听深层属性路径变化。",
+        "@Monitor 装饰回调方法，直接声明监听的变量名（区别于 V1 @Watch 装饰状态变量）。",
+        "@Monitor 在事件处理函数结束后异步触发，同一事件中多次变更只触发一次。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 @Watch（V1 装饰器）监听 V2 状态变量变化。",
+        "@Monitor 中尝试获取变化前的值使用 V1 @Watch 的方式（V1 不支持）。",
+        "未被 @Trace 装饰的属性期望被 @Monitor 监听。",
+        "在 @Component（V1）中使用 @Monitor。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "余额变化后 @Monitor 回调正确触发，变化日志显示前后值。",
+        "多个变量同时变化时 monitor.dirty 返回所有变化路径。",
+        "账户对象的 @Trace 属性变化后类内 @Monitor 回调正确触发。",
+        "深层嵌套属性（如 account.bankInfo.bankName）变化后 @Monitor 回调正确触发。",
+        "@Monitor 在事件结束后异步触发，多次变更只触发一次。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "余额变化前后值日志截图",
+        "多变量监听 dirty 路径列表截图",
+        "深层属性路径监听回调日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-009",
+    "layer": "scene-functional",
+    "title": "V2状态变量同步监听与通配符监听开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿股票行情APP改造首页：股价连续变化时需要立即同步回调（如连续修改价格时每次变化都立即触发，而非等所有变化结束后才触发一次），股票数据对象的任意属性变化都需要触发数据刷新提醒。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @SyncMonitor 同步监听状态变量修改 + 获取变化前后值 + 通配符模糊监听和深层属性监听的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @SyncMonitor('price', 'volume') 同步监听多个变量，每次变化立即触发回调（区别于 @Monitor 异步触发一次）。",
+        "必须通过 monitor.value(path)?.before/now 获取变化前后的值。",
+        "必须使用 @SyncMonitor('stockData.*') 通配符监听股票数据对象的任意 @Trace 属性变化。",
+        "@SyncMonitor 在属性变化后立即同步触发回调，同一事件中多次变化时每次都触发。",
+        "通配符只能出现在路径末尾，不能出现在开头或中间。",
+        "通配符监听时 monitor.value() 的 before 和 now 均为 undefined。",
+        "必须在 @ObservedV2 类中使用 @SyncMonitor 监听 @Trace 属性变化。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 @Monitor 期望每次变化都立即触发（@Monitor 是异步触发一次）。",
+        "通配符出现在路径开头或中间（如 *.prop 或 arr.*.prop）。",
+        "通配符监听时期望获取 before/now 值（均为 undefined）。",
+        "未被 @Trace 装饰的属性期望被 @SyncMonitor 监听。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "股价连续变化时 @SyncMonitor 每次都立即触发回调（如 10→11→12 触发 2 次）。",
+        "@Monitor 在同一事件中只触发一次（对比 @SyncMonitor 的多次触发）。",
+        "通配符监听 stockData.* 在任意 @Trace 属性变化时触发数据刷新提醒。",
+        "通配符监听时 before/now 均为 undefined。",
+        "类内 @SyncMonitor 正确监听 @Trace 属性变化。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "同步监听多次触发日志截图（每次变化都触发）",
+        "通配符监听触发日志截图",
+        "前后值获取截图（非通配符场景）"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-010",
+    "layer": "scene-functional",
+    "title": "V2状态变量动态监听与取消监听开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿导航APP改造首页：用户开始导航时需要动态添加GPS信号强度监听回调（配置同步监听实现实时信号丢失报警），结束导航时需要清除监听。不同导航模式（步行/驾车）需要监听不同的数据指标。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 addMonitor 动态添加监听 + clearMonitor 动态取消监听 + 配置同步监听 + 数组路径批量监听的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须导入 UIUtils（import { UIUtils } from '@kit.ArkUI'）。",
+        "必须使用 UIUtils.addMonitor 动态添加监听回调，回调函数必须为命名方法，不能为匿名函数。",
+        "必须使用 UIUtils.addMonitor(this, 'gpsSignal', callback, { isSynchronous: true }) 配置同步监听实现实时报警。",
+        "必须使用 UIUtils.addMonitor 传入数组路径（如 ['distance', 'speed']）一次性监听多个属性。",
+        "必须使用 UIUtils.clearMonitor 动态清除监听，仅可删除 addMonitor 添加的回调。",
+        "isSynchronous 参数仅第一次设置有效，不能后续更改。",
+        "clearMonitor 可传具体回调函数删除指定监听，也可不传回调删除该 path 下所有 addMonitor 添加的监听。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "addMonitor 的回调函数使用匿名函数而非命名方法。",
+        "使用 clearMonitor 尝试删除 @Monitor 或 @SyncMonitor 的回调（仅可删除 addMonitor 添加的）。",
+        "在 addMonitor 后尝试修改 isSynchronous 参数。",
+        "未导入 UIUtils 就调用 addMonitor/clearMonitor。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "开始导航后 addMonitor 动态添加 GPS 监听，信号变化时立即触发回调（同步监听）。",
+        "结束导航后 clearMonitor 清除 GPS 监听，信号变化不再触发回调。",
+        "数组路径监听多个属性时，任一属性变化都触发回调。",
+        "isSynchronous: true 的监听每次变化立即触发，而非等事件结束。",
+        "clearMonitor 后该 path 下所有 addMonitor 添加的监听都被清除。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "开始导航后 GPS 监听触发日志截图",
+        "结束导航后监听清除截图（不再触发回调）",
+        "同步监听实时报警日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-011",
+    "layer": "scene-functional",
+    "title": "V2计算属性依赖驱动自动计算开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿记账APP月度统计页改造首页：账单包含多个收支条目（每条有金额和类型：收入/支出），需要自动计算每条小计、月度总收入、月度总支出、结余金额，结余变化时记录日志，并将计算结果传递给子组件展示。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Computed 装饰 getter 方法实现计算属性 + 依赖变化时只计算一次 + 链式依赖 + @Monitor 监听计算属性的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ObservedV2 + @Trace 装饰账单条目类，@Computed 在类中装饰 getter 方法计算每条小计。",
+        "必须使用 @Computed 在组件中装饰 getter 方法计算月度总收入、总支出和结余金额。",
+        "必须实现 @Computed 链式依赖：结余金额依赖总收入和总支出，总收入/总支出变化时结余自动重算。",
+        "必须使用 @Monitor('balance') 监听计算属性变化，获取变化前后值。",
+        "@Computed 计算结果为只读，不允许赋值。",
+        "即使 UI 中多处引用同一计算属性，也只计算一次并读取缓存值。",
+        "未被 @Trace 装饰的属性变化不会触发 @Computed 重算。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "对 @Computed 装饰的 getter 方法结果进行赋值。",
+        "@Computed 依赖未被 @Trace 装饰的属性，期望变化时触发重算。",
+        "在 V1 @Component 中使用 @Computed（仅支持 @ComponentV2 和 @ObservedV2）。",
+        "计算属性中存在副作用（如修改其他状态变量）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "修改账单条目金额后，每条小计自动重新计算。",
+        "修改任一条目后，月度总收入/总支出/结余金额自动重算。",
+        "@Computed 链式依赖正确：总收入变化→结余自动重算。",
+        "@Monitor 监听结余变化时正确获取前后值。",
+        "多处 UI 引用同一计算属性时只计算一次。",
+        "@Computed 结果尝试赋值时编译报错。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "月度统计页截图（收入/支出/结余正确显示）",
+        "修改金额后自动重算截图",
+        "@Monitor 监听计算属性变化日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-012",
+    "layer": "scene-functional",
+    "title": "V1页面级与应用级全局状态共享开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿电商APP改造：首页和商品详情页跨页面共享用户登录状态和购物车商品数量，点击进入商品详情页后可以加购和切换登录状态，两个页面间实时同步。商品详情页内部，搜索筛选条件可修改，顶部状态栏只读展示筛选状态和登录状态，这些仅在当前详情页内共享。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 AppStorage + @StorageLink/@StorageProp 实现应用级全局共享 + LocalStorage + @LocalStorageLink/@LocalStorageProp 实现页面级共享的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 AppStorage.setOrCreate 初始化应用级数据（loginStatus、cartCount）。",
+        "必须使用 @StorageLink 在首页和详情页双向同步应用级数据。",
+        "必须使用 @StorageProp 在状态栏子组件单向同步应用级数据（只读展示）。",
+        "必须使用 new LocalStorage() 创建页面级 LocalStorage 实例，@Entry(chatStorage) 分配给页面根组件。",
+        "必须使用 @LocalStorageLink 在详情页双向同步页面级数据（筛选条件）。",
+        "必须使用 @LocalStorageProp 在状态栏子组件单向同步页面级数据（只读展示筛选状态）。",
+        "页面销毁时 LocalStorage 随页面释放，筛选数据不残留到全局。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在非 @Entry 组件中直接创建 LocalStorage 实例而非通过 @Entry 参数传入。",
+        "@StorageProp 子组件本地修改期望同步回 AppStorage（单向同步不回写）。",
+        "页面级数据使用 AppStorage 导致跨页面残留。",
+        "未使用 AppStorage.setOrCreate 初始化直接使用 @StorageLink。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "首页修改登录状态后，详情页和状态栏同步更新。",
+        "详情页加购后，首页的购物车数量同步更新。",
+        "详情页修改筛选条件后，状态栏的筛选状态同步更新。",
+        "@StorageProp 状态栏本地修改不同步回 AppStorage，但 AppStorage 变化会覆盖本地。",
+        "页面销毁后 LocalStorage 释放，筛选数据不残留到全局。",
+        "同一页面同时使用 @StorageLink（应用级）和 @LocalStorageLink（页面级）不冲突。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "首页与详情页应用级数据同步截图",
+        "详情页内页面级数据共享截图",
+        "状态栏只读展示截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-013",
+    "layer": "scene-functional",
+    "title": "V2应用级class全局共享开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿电商APP改造：首页和商品详情页跨页面共享用户登录状态和购物车商品数量。使用 V2 装饰器实现应用级全局 class 共享，通过 AppStorageV2.connect 获取相同对象引用实现双向同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 AppStorageV2.connect 实现应用级全局 class 共享 + @Trace 属性变化触发同步的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ObservedV2 装饰共享数据类，@Trace 装饰需要观测的属性（loginStatus、cartCount）。",
+        "必须使用 AppStorageV2.connect<ChatState>(Class, () => new Class()) 创建或获取全局共享对象。",
+        "必须使用 @Local 接收 connect 返回的对象引用。",
+        "修改 @Trace 属性后必须触发 UI 刷新和全局同步。",
+        "非 @Trace 属性修改会同步回 AppStorageV2 但不触发 UI 刷新。",
+        "AppStorageV2 只支持 class 类型，不支持基本类型（string、number、boolean）。",
+        "多个页面 connect 同一个类必须获取相同的对象引用实现双向同步。",
+        "V2 没有专用的页面级存储方案（无 LocalStorage 对应物）。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 AppStorageV2.connect 传递基本类型（string/number/boolean）。",
+        "非 @Trace 属性修改后期望触发 UI 刷新。",
+        "在 V2 中使用 @StorageLink/@StorageProp（V1 装饰器）。",
+        "未使用 @Local 接收 connect 返回值。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "首页修改登录状态后，详情页同步更新。",
+        "详情页加购后，首页的购物车数量同步更新。",
+        "@Trace 属性变化后 UI 正确刷新且全局同步。",
+        "非 @Trace 属性变化不触发 UI 刷新。",
+        "多个页面 connect 同一个类获取相同对象引用。",
+        "connect 未指定 key 时默认使用类的构造器作为 key。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "首页与详情页全局共享截图",
+        "@Trace 属性变化同步截图",
+        "多页面 connect 双向同步截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-014",
+    "layer": "scene-functional",
+    "title": "V1持久化存储UI状态开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V1版本状态管理，仿阅读APP改造首页：主阅读页和设置页共享阅读配置（字体大小、夜间模式开关、书架排序方式、阅读进度），这些配置在应用退出后再次启动时仍然保留。书架排序方式指示器只读展示当前模式。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 PersistentStorage + AppStorage + @StorageLink/@StorageProp 实现状态持久化的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 PersistentStorage.persistProps 批量持久化多个属性（fontSize、nightMode、sortMode、readProgress）。",
+        "必须在使用 AppStorage 之前调用 persistProps（否则丢失上次持久化值）。",
+        "必须使用 @StorageLink 在主阅读页和设置页双向同步持久化数据。",
+        "必须使用 @StorageProp 在排序方式指示器子组件单向同步（只读展示）。",
+        "修改 @StorageLink 变量后必须自动同步回 AppStorage 并触发 PersistentStorage 写磁盘。",
+        "必须在 UI 初始化成功后（loadContent 回调中）调用 persistProps。",
+        "持久化数据建议小于 2kb，避免频繁变化的大型数据。",
+        "PersistentStorage 不支持嵌套对象持久化。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "先访问 AppStorage 再调用 persistProps（会丢失上次保存的值）。",
+        "持久化嵌套对象（PersistentStorage 不支持）。",
+        "在 UI 初始化前调用 persistProps（会导致持久化失败）。",
+        "@StorageProp 子组件本地修改期望同步回 AppStorage。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "主阅读页修改字体大小后，设置页同步更新。",
+        "设置页修改夜间模式后，主阅读页同步更新且自动持久化。",
+        "应用退出后再次启动，所有配置从磁盘恢复到上次保存的值。",
+        "排序方式指示器只读展示当前模式，本地修改不同步回 AppStorage。",
+        "persistProps 必须在 loadContent 回调中调用。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "阅读配置跨页面同步截图",
+        "应用重启后配置恢复截图",
+        "排序指示器只读展示截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-015",
+    "layer": "scene-functional",
+    "title": "V2持久化存储UI状态开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "当前应用为V2版本状态管理，仿阅读APP改造首页：阅读配置包含嵌套的翻页设置（翻页方向、翻页动画开关、滑动灵敏度），需要在应用退出后再次启动时保留。主阅读页和设置页通过 globalConnect 共享持久化数据，非 @Trace 属性需要手动保存。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 PersistenceV2.connect/globalConnect 实现状态持久化 + @Type 装饰器处理嵌套对象序列化的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ObservedV2 + @Trace 装饰阅读配置类和嵌套的翻页设置类。",
+        "必须使用 @Type(EqualizerSettings) 标注嵌套 class 类型属性，确保序列化/反序列化成功。",
+        "必须使用 PersistenceV2.connect 或 globalConnect 创建或从磁盘恢复数据。",
+        "必须使用 @Local 接收 connect/globalConnect 返回的引用。",
+        "修改 @Trace 属性后必须自动持久化到磁盘。",
+        "非 @Trace 属性修改后不会触发自动持久化，需要调用 PersistenceV2.save() 手动持久化。",
+        "推荐使用 globalConnect 替代 connect（应用级别存储路径，跨 module 安全）。",
+        "必须在 UI 初始化后（loadContent 回调中）调用 connect/globalConnect。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-v1v2-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "嵌套 class 属性未使用 @Type 标注导致反序列化失败。",
+        "非 @Trace 属性修改后期望自动持久化。",
+        "在 V2 中使用 PersistentStorage（V1 持久化方案）。",
+        "使用 connect 在多 module 场景下导致数据不一致（应使用 globalConnect）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "主阅读页修改字体大小后自动持久化，设置页同步更新。",
+        "设置页修改翻页设置（嵌套对象属性）后自动持久化。",
+        "应用退出后再次启动，所有 @Trace 属性从磁盘恢复。",
+        "非 @Trace 属性修改后调用 PersistenceV2.save() 手动持久化成功。",
+        "嵌套对象通过 @Type 正确序列化/反序列化。",
+        "globalConnect 跨 module 安全，多页面获取相同引用。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "嵌套翻页设置持久化截图",
+        "应用重启后配置恢复截图（含嵌套对象）",
+        "非 @Trace 属性手动 save 截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-016",
+    "layer": "scene-functional",
+    "title": "状态变量辅助接口增强状态管理能力开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿天气预报APP改造首页：天气数据来源于三方SDK（无法添加 @Trace），也支持从服务端 JSON 加载；页面开发中遇到 UI 不刷新问题需要调试定位；需要对天气属性变化做动态监听通知（如温度变化触发预警）；类型判断时需要获取代理前的原始对象。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 makeObserved 将三方数据变为可观察 + canBeObserved 调试 UI 不刷新 + getTarget 获取原始对象做类型判断的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 UIUtils.makeObserved 将三方SDK的天气数据类实例变为可观察数据。",
+        "必须使用 UIUtils.makeObserved 将 JSON.parse 返回的 Object 变为可观察数据。",
+        "makeObserved 返回值必须配合 @Monitor / @Computed / @Param 使用实现深度监听。",
+        "必须使用 UIUtils.canBeObserved 判断对象是否可被观察，获取关联组件信息定位 UI 不刷新问题。",
+        "必须使用 UIUtils.getTarget 获取代理前的原始对象做类型判断。",
+        "makeObserved 仅支持非空的对象类型传参，不支持 undefined/null/非 Object 类型。",
+        "makeObserved 不能和 V1 的状态变量装饰器（如 @State）配合使用。",
+        "整体赋值后需再次调用 makeObserved 以保持观察能力。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "对 undefined/null/非 Object 类型调用 makeObserved。",
+        "makeObserved 和 V1 装饰器（@State 等）配合使用导致运行时异常。",
+        "对 @ObservedV2/@Observed 装饰的类实例或已代理数据调用 makeObserved（防止双重代理）。",
+        "整体赋值后不再次调用 makeObserved 导致观察能力丢失。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "三方SDK天气数据通过 makeObserved 后属性变化可触发 UI 刷新。",
+        "JSON.parse 返回值通过 makeObserved 后属性变化可触发 UI 刷新。",
+        "canBeObserved 正确返回对象的可观察状态和关联组件信息。",
+        "getTarget 返回代理前的原始对象，修改原始对象不触发 UI 刷新。",
+        "makeObserved 返回值可被 @Monitor 深度监听和 @Computed 依赖。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "三方数据可观察截图（属性变化 UI 刷新）",
+        "canBeObserved 调试输出截图（isObserved/reason/decoratorInfo）",
+        "getTarget 原始对象截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-017",
+    "layer": "scene-functional",
+    "title": "同步刷新接口解决V2动效问题开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿股票行情APP：用户从自选股列表点击进入股票详情页时通过共享元素转场实现股票图标平滑放大；详情页中价格变化时数字位移动画不显示；批量更新行情数据后展开动画首帧错误。这些问题均源于 V2 异步标脏与 animateTo/共享元素转场的立即刷新机制冲突。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 applySync 同步刷新闭包内修改 + flushUpdates 同步刷新调用前所有修改 + flushUIUpdates 仅同步刷新 UI 节点的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 UIUtils.applySync 在 animateTo 闭包内同步刷新状态变量修改，解决动画首帧问题。",
+        "必须使用 UIUtils.flushUpdates 同步刷新调用前的所有批量修改。",
+        "必须使用 UIUtils.flushUIUpdates 仅同步刷新 UI 节点，不触发 @Monitor/@Computed 回调。",
+        "applySync 和 flushUpdates 会同步执行 @Computed 计算和 @Monitor 回调，flushUIUpdates 不触发。",
+        "在 @Monitor 回调中触发 animateTo 时必须在闭包内使用 applySync 同步刷新。",
+        "路由场景中必须使用 applySync 确保 sharedTransition 的 name 值在路由跳转前同步刷新生效。",
+        "applySync 闭包中嵌套调用 applySync 会被跳过并返回 undefined。",
+        "不支持在 @Computed getter 中调用这三个接口（运行时报错）。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 @Computed getter 中调用 applySync/flushUpdates/flushUIUpdates。",
+        "在 @Monitor 回调中调用 flushUpdates 或 flushUIUpdates（运行时报错）。",
+        "applySync 闭包中嵌套调用 applySync。",
+        "在 V2 中直接在 animateTo 闭包内修改状态变量而不使用 applySync（首帧错误）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "@Monitor 触发 animateTo 时使用 applySync 后动画正确显示。",
+        "批量更新行情数据后使用 flushUpdates 同步刷新，展开动画首帧正确。",
+        "flushUIUpdates 仅刷新 UI 节点，@Monitor 仅触发一次。",
+        "applySync 和 flushUpdates 触发 @Monitor 回调两次。",
+        "路由跳转时 sharedTransition 的 name 通过 applySync 同步刷新生效。",
+        "列表页跳转设置不匹配 name（无转场动效），详情页返回设置匹配 name（有转场动效）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "价格变化动画正确显示截图",
+        "批量更新后展开动画首帧正确截图",
+        "共享元素转场动效截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-018",
+    "layer": "scene-functional",
+    "title": "通过Environment获取系统环境变量开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿记账APP设置页：需要根据设备环境信息适配界面——根据系统语言显示本地化标签（中文/英文），根据深浅色模式切换页面配色。通过 Environment.envProp 将设备环境变量存入 AppStorage，组件通过 @StorageProp 单向同步获取。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 Environment.envProp 将设备环境变量存入 AppStorage + @StorageProp 在组件中单向同步获取（只读）的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Environment.envProp 将 languageCode 和 colorMode 存入 AppStorage，第二个参数为兜底默认值。",
+        "必须在 runScopedTask 中调用 envProp 明确 UIContext。",
+        "必须使用 @StorageProp 在组件中单向同步获取环境变量（只读）。",
+        "Environment 无响应式能力，系统环境变量变化时不会自动通知更新。",
+        "应用无法修改环境变量参数，应使用 @StorageProp（单向同步）获取。",
+        "envProp 的默认值仅在 AppStorage 中尚无对应 key 时生效。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不在 runScopedTask 中调用 envProp 导致无法查询设备环境数据。",
+        "使用 @StorageLink 而非 @StorageProp 获取环境变量（应用不应修改环境变量）。",
+        "期望 Environment 自动响应系统环境变量变化。",
+        "AppStorage 中已有对应 key 时期望 envProp 的默认值覆盖原有值。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "根据系统语言正确显示本地化标签（中文显示'设置'，英文显示'Settings'）。",
+        "根据深浅色模式正确切换页面配色（深色模式背景为深色，浅色模式为白色）。",
+        "@StorageProp 获取的环境变量为只读，本地修改不同步回 AppStorage。",
+        "envProp 必须在 runScopedTask 中调用才能正确查询设备环境数据。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "中文语言下设置页截图",
+        "英文语言下设置页截图",
+        "深色/浅色模式配色切换截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-019",
+    "layer": "scene-functional",
+    "title": "通过Ability接口获取系统环境变量开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿记账APP设置页：需要根据系统环境信息适配界面——根据系统语言显示本地化标签，根据深浅色模式切换页面配色。通过 UIAbility.context.config 在 Ability 生命周期中直接读取系统环境变量写入 AppStorage。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 UIAbility.context.config 读取系统环境变量写入 AppStorage + @StorageProp 单向同步获取的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须在 UIAbility.onCreate 中通过 this.context.config 读取系统环境变量。",
+        "必须使用 AppStorage.setOrCreate 将 config.language 和 config.colorMode 写入 AppStorage。",
+        "必须使用 @StorageProp 在组件中单向同步获取环境变量。",
+        "config.colorMode 使用 ConfigurationConstant.ColorMode 枚举值（COLOR_MODE_LIGHT=0/COLOR_MODE_DARK=1）。",
+        "必须在 onConfigurationUpdate 回调中感知系统配置变化并刷新 AppStorage。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不在 onCreate 中读取 context.config 而是在组件中直接读取。",
+        "使用 @StorageLink 而非 @StorageProp 获取环境变量。",
+        "不处理 config.colorMode 为 undefined 的情况。",
+        "不在 onConfigurationUpdate 中刷新 AppStorage 导致系统配置变化后 UI 不更新。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "根据系统语言正确显示本地化标签。",
+        "根据深浅色模式正确切换页面配色。",
+        "config.colorMode 为 undefined 时使用默认值不崩溃。",
+        "系统配置变化后 onConfigurationUpdate 刷新 AppStorage，UI 自动更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "设置页语言适配截图",
+        "深色/浅色模式切换截图",
+        "系统配置变化后 UI 更新截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-020",
+    "layer": "scene-functional",
+    "title": "$$实现系统组件参数双向绑定开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿备忘录APP编辑页：用户需要编辑笔记标题和内容，并支持底部高级格式设置弹窗等交互。需要通过 $$ 语法糖实现系统组件参数与状态变量的双向同步：用户操作控件时状态变量自动更新，状态变量变化时控件也同步显示最新值。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 $$ 语法糖实现系统组件参数与 V1 状态变量（@State）双向绑定的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @State 装饰笔记标题和内容状态变量。",
+        "必须使用 $$this.noteTitle 语法糖实现 TextInput 的 text 参数与状态变量双向同步。",
+        "必须使用 $$this.showSheet 语法糖实现 bindSheet 的 isShow 参数与状态变量双向同步。",
+        "用户输入时状态变量自动更新，状态变量变化时控件同步显示最新值。",
+        "$$ 仅支持系统组件参数双向绑定，不支持自定义组件间双向绑定。",
+        "$$ 推荐在 V1 状态管理中使用，V2 中推荐使用 !! 语法糖替代。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 $$ 在自定义组件间实现双向绑定（$$ 不支持自定义组件）。",
+        "在 V2 中使用 $$ 而非 !! 语法糖。",
+        "$$ 绑定的变量未使用 @State 装饰。",
+        "bindSheet 的 isShow 参数不使用 $$ 导致弹窗关闭时状态不同步。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "用户输入笔记标题后 @State 变量自动更新。",
+        "程序修改 @State 变量后 TextInput 控件同步显示最新值。",
+        "点击高级格式设置按钮后弹窗弹出，关闭弹窗后 @State showSheet 自动变为 false。",
+        "$$ 双向绑定在系统组件参数上正确工作。",
+        "笔记内容输入和状态变量保持同步。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "笔记编辑页截图（标题和内容正确显示）",
+        "弹窗弹出/关闭截图（状态同步）",
+        "双向绑定操作录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-021",
+    "layer": "scene-functional",
+    "title": "!!实现自定义组件间双向同步和系统组件参数双向绑定开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿备忘录APP编辑页：用户需要编辑笔记标题和笔记内容，笔记标题输入组件通过自定义子组件封装。需要通过 !! 语法糖实现：自定义组件间双向绑定（笔记标题输入组件与父组件双向同步）；系统组件参数双向绑定（TextInput、bindSheet 等）。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 !! 语法糖统一实现自定义组件间（简化 @Param+@Event）和系统组件参数双向绑定的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Local 装饰父组件的 noteTitle 和 noteContent 状态变量。",
+        "必须使用 !! 语法糖实现自定义组件间双向绑定：NoteTitleInput({ noteTitle: this.noteTitle!! })。",
+        "!! 等价于 @Param + @Event 的双向绑定写法，子组件中 @Event 方法名必须为 $ + @Param 属性名。",
+        "必须使用 !! 语法糖实现系统组件参数双向绑定：TextInput({ text: this.noteContent!! }) 和 bindSheet(this.showSheet!!)。",
+        "父组件修改状态变量后必须同步到子组件，子组件修改后必须通过 @Event 回调同步到父组件。",
+        "!! 不支持多层父子组件传递。",
+        "!! 不支持与 @Event 混用。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "!! 与 @Event 混用。",
+        "使用 3 个或更多感叹号（!!!）期望实现双向绑定。",
+        "在 V1 中使用 !! 而非 $$（!! 推荐 V2 使用）。",
+        "!! 用于多层父子组件传递。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "子组件中输入笔记标题后通过 @Event 回调同步到父组件。",
+        "父组件修改笔记标题后同步到子组件显示。",
+        "TextInput 的 text 参数通过 !! 双向同步。",
+        "bindSheet 的 isShow 参数通过 !! 双向同步。",
+        "!! 简化了 @Param + @Event 的双向绑定写法。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "自定义组件双向绑定截图（标题同步）",
+        "系统组件双向绑定截图（内容和弹窗同步）",
+        "双向绑定操作录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-022",
+    "layer": "scene-functional",
+    "title": "V1状态变量实现属性动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿计算器APP：点击数字按键时按键产生缩放反馈动画（按下缩小、松开恢复），运算符按键产生旋转反馈动画。使用 V1 @State 管理状态，animateTo 驱动属性动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @State 管理动画状态 + animateTo 闭包内修改状态变量驱动属性动画的完整开发方案能转成工程可编译、可验证的契约。V1 @State 修改后立即同步标脏，animateTo 闭包结束时修改已生效，动画首帧正确渲染。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @State 管理按键动画状态（如 isPressed、rotationAngle）。",
+        "必须使用 animateTo({ duration, curve }) 闭包内修改 @State 状态变量驱动属性动画。",
+        "V1 @State 修改后立即同步标脏，animateTo 闭包结束时修改立即生效，动画首帧正确渲染。",
+        "必须使用 .animation() 属性方法在状态变量变化时自动驱动动画。",
+        "数字按键使用缩放动画（scale），运算符按键使用旋转动画（rotate）。",
+        "V1 @State 与 animateTo 配合无需任何额外处理。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V1 中使用 UIUtils.applySync（V1 不需要同步刷新接口）。",
+        "不使用 animateTo 或 .animation() 期望状态变量变化自动产生动画。",
+        "animateTo 闭包内不修改状态变量而只做其他操作。",
+        "按键反馈动画 duration 过长影响用户体验。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击数字按键后按键产生缩放动画（按下缩小、松开恢复）。",
+        "点击运算符按键后按键产生旋转动画。",
+        "动画首帧正确渲染，无闪烁或跳帧。",
+        "V1 @State 修改后立即标脏，animateTo 闭包结束时修改已生效。",
+        "连续点击多个按键时每个按键动画独立播放。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "数字按键缩放动画截图",
+        "运算符按键旋转动画截图",
+        "按键反馈动画录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-023",
+    "layer": "scene-functional",
+    "title": "V2状态变量实现属性动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿计算器APP：点击数字按键时按键产生缩放反馈动画（按下缩小、松开恢复），运算符按键产生旋转反馈动画。使用 V2 @Local 管理状态，animateTo 驱动属性动画，并解决 V2 异步标脏与 animateTo 刷新机制不兼容导致的动画首帧问题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Local 管理动画状态 + animateTo 闭包内使用 UIUtils.applySync 同步刷新的完整开发方案能转成工程可编译、可验证的契约。V2 @Local 修改后异步标脏，需在 animateTo 闭包内调用 applySync 同步刷新。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Local 管理按键动画状态（如 isPressed、rotationAngle）。",
+        "必须在 animateTo 闭包内使用 UIUtils.applySync 同步刷新状态变量修改（API 22+）。",
+        "V2 @Local 修改后异步标脏，直接在 animateTo 闭包内修改会导致首帧错误。",
+        "必须导入 UIUtils（import { UIUtils } from '@kit.ArkUI'）。",
+        "API 22 前使用 animateToImmediately 替代 animateTo。",
+        "数字按键使用缩放动画，运算符按键使用旋转动画。",
+        "必须使用 .animation() 属性方法在状态变量变化时自动驱动动画。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中直接在 animateTo 闭包内修改 @Local 而不使用 applySync（首帧错误）。",
+        "在 V2 中使用 @State（V1 装饰器）。",
+        "未导入 UIUtils 就调用 applySync。",
+        "在 @Monitor 回调中调用 flushUpdates 或 flushUIUpdates（运行时报错）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击数字按键后按键产生缩放动画，首帧正确渲染。",
+        "点击运算符按键后按键产生旋转动画，首帧正确渲染。",
+        "V2 @Local 修改后异步标脏，使用 applySync 后动画首帧正确。",
+        "未使用 applySync 时动画首帧不正确（对比验证）。",
+        "连续点击多个按键时每个按键动画独立播放。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "数字按键缩放动画截图（首帧正确）",
+        "运算符按键旋转动画截图（首帧正确）",
+        "按键反馈动画录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-024",
+    "layer": "scene-functional",
+    "title": "V1状态变量实现组件复用功能开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交APP动态信息流：包含动态长列表（LazyForEach），动态卡片有纯文字、图文、视频三种结构，需通过 reuseId 区分。覆盖 @Reusable 基本使用（aboutToRecycle/aboutToReuse）、LazyForEach 懒加载配合复用、reuseId 区分不同结构。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @Reusable 装饰 @Component 自定义组件 + aboutToRecycle/aboutToReuse 生命周期 + .reuseId() 区分不同结构 + LazyForEach 懒加载配合复用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Reusable 装饰 @Component 自定义组件。",
+        "必须实现 aboutToRecycle 回调（组件被回收进入复用池时触发）。",
+        "必须实现 aboutToReuse(params: Record<string, ESObject>) 回调（组件从复用池取出重新使用时触发，需手动更新 @State）。",
+        "必须使用 .reuseId() 区分文字、图文、视频三种不同结构的动态卡片。",
+        "必须使用 LazyForEach 懒加载配合复用，设置 cachedCount 缓存。",
+        "aboutToReuse 中必须手动更新所有 @State 状态变量。",
+        "aboutToReuse 的参数类型不支持 any，需使用 Record<string, ESObject>。",
+        "不建议嵌套使用 @Reusable。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 ForEach 全量渲染而非 LazyForEach 懒加载（长列表性能差）。",
+        "不使用 .reuseId() 区分不同结构导致复用错误。",
+        "aboutToReuse 中不手动更新 @State 状态变量导致数据显示错误。",
+        "aboutToReuse 参数类型使用 any 而非 Record<string, ESObject>。",
+        "嵌套使用 @Reusable 增加内存降低复用效率。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "滚动动态列表时组件正确回收和复用，aboutToRecycle/aboutToReuse 日志正确输出。",
+        "文字、图文、视频三种结构的动态卡片通过 reuseId 正确区分，不混淆。",
+        "LazyForEach 懒加载仅渲染可见+缓存区域，长列表滚动流畅。",
+        "aboutToReuse 中手动更新 @State 后数据显示正确。",
+        "cachedCount 缓存配合复用池提升流畅度。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "动态信息流截图（多类型卡片正确显示）",
+        "滚动复用日志截图（aboutToRecycle/aboutToReuse 触发）",
+        "长列表滚动流畅录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-025",
+    "layer": "scene-functional",
+    "title": "V2状态变量实现组件复用功能开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿视频APP推荐流：包含视频列表（Repeat 懒加载），视频卡片有短视频和广告两种结构。覆盖 @ReusableV2 基本使用（无入参 aboutToReuse）、Repeat 懒加载复用、if 条件切换复用。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 @ReusableV2 装饰 @ComponentV2 自定义组件 + Repeat 替代 LazyForEach + aboutToReuse 无入参自动重置 + if 条件切换复用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ReusableV2 装饰 @ComponentV2 自定义组件。",
+        "必须实现 aboutToRecycle 回调和 aboutToReuse 回调（无入参，状态变量自动重置）。",
+        "aboutToReuse 无入参，@Local/@Param/@Event/@Provider/@Consumer/@Computed/@Monitor 自动重置。",
+        "必须使用 Repeat 替代 LazyForEach 实现懒加载/非懒加载复用。",
+        "必须使用 .reuse({ reuseId: () => 'id' }) 传回调函数区分不同结构（V2 语法）。",
+        "必须实现 if 条件切换复用场景。",
+        "V2 复用组件不能直接用于 Repeat 的 template 中，但可以用在 template 中的 V2 自定义组件内部。",
+        "不建议在 aboutToRecycle 中更改状态变量（因冻结机制修改不生效）。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中使用 @Reusable + @Component（V1 装饰器）而非 @ReusableV2 + @ComponentV2。",
+        "aboutToReuse 中尝试接收参数手动赋值（V2 无入参，自动重置）。",
+        "使用 LazyForEach 而非 Repeat（V2 推荐使用 Repeat）。",
+        "使用 .reuseId('id') 直接传 string 而非 .reuse({ reuseId: () => 'id' }) 传回调函数。",
+        "在 aboutToRecycle 中更改状态变量（冻结机制导致修改不生效）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "滚动视频列表时组件正确回收和复用，aboutToRecycle/aboutToReuse 日志正确输出。",
+        "aboutToReuse 无入参，状态变量自动重置后数据显示正确。",
+        "短视频和广告两种结构通过 reuse 回调函数正确区分。",
+        "Repeat 懒加载仅渲染可见+缓存区域，长列表滚动流畅。",
+        "if 条件切换时组件正确回收和复用。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "视频推荐流截图（多类型卡片正确显示）",
+        "滚动复用日志截图（aboutToRecycle/aboutToReuse 触发）",
+        "if 条件切换复用截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-026",
+    "layer": "scene-functional",
+    "title": "V1状态变量实现自定义组件冻结功能开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿邮箱APP：包含“收件箱”“已发送”“草稿箱”三个标签页，收件箱标签页内 Navigation 可跳转邮件详情子页面，邮件列表用 LazyForEach 渲染并配合 @Reusable 复用。标签页切换、页面跳转、列表滚动、组件复用时，非活跃组件的状态变量变化不应触发无效刷新。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 V1 使用 @Component({ freezeWhenInactive: true }) + @Watch 监听状态变化的完整开发方案能转成工程可编译、可验证的契约。非活跃标签页、非栈顶 NavDestination、缓存列表项、复用组件的 @Watch 不触发，解冻后触发。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @Component({ freezeWhenInactive: true }) 装饰自定义组件。",
+        "必须使用 @Watch 监听状态变化，非活跃组件的 @Watch 不触发。",
+        "入口组件始终活跃，@Watch 立即触发。",
+        "标签页切换时切走的标签页冻结，@Watch 不触发；切回时解冻批量触发积压的 @Watch。",
+        "Navigation 非栈顶 NavDestination 中的冻结子组件 @Watch 不触发；弹出解冻后触发。",
+        "LazyForEach + cachedCount 缓存项冻结，@Watch 仅可见项触发。",
+        "@Reusable + freezeWhenInactive 混用时复用解冻 @Watch 不触发（V1 关键特性）。",
+        "freezeWhenInactive 仅对自定义组件生效。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不配置 freezeWhenInactive: true 导致非活跃组件 @Watch 仍然触发无效刷新。",
+        "@Reusable + freezeWhenInactive 混用时期望复用解冻时 @Watch 触发（V1 中不触发）。",
+        "在非自定义组件上期望冻结生效。",
+        "不使用 @Watch 监听状态变化而期望冻结机制工作。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "标签页切换时切走的标签页 @Watch 不触发，切回时批量触发积压的 @Watch。",
+        "Navigation 推入新页面后非栈顶页面 @Watch 不触发，弹出后触发。",
+        "LazyForEach 缓存项 @Watch 不触发，仅可见项触发。",
+        "@Reusable + freezeWhenInactive 复用解冻时 @Watch 不触发。",
+        "入口组件始终活跃，@Watch 立即触发。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "标签页切换冻结/解冻日志截图",
+        "Navigation 页面路由冻结/解冻日志截图",
+        "LazyForEach 缓存项冻结日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-027",
+    "layer": "scene-functional",
+    "title": "V2状态变量实现自定义组件冻结功能开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿邮箱APP：包含“收件箱”“已发送”“草稿箱”三个标签页，收件箱标签页内 Navigation 可跳转邮件详情子页面，邮件列表用 Repeat 渲染并配合 @ReusableV2 复用。V2 使用 @ComponentV2 + @Monitor 替代 V1 的 @Component + @Watch。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 V2 使用 @ComponentV2({ freezeWhenInactive: true }) + @Monitor 监听变化的完整开发方案能转成工程可编译、可验证的契约。重点对比 @Monitor 获取变化前后值、Repeat 缓存节点冻结、@ReusableV2 自动冻结与复用解冻 @Monitor 触发、API 18+ 解冻精准刷新。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @ComponentV2({ freezeWhenInactive: true }) 装饰自定义组件。",
+        "必须使用 @Monitor 替代 V1 的 @Watch，可获取变化前后值（before/now）。",
+        "入口组件始终活跃，@Monitor 立即触发。",
+        "标签页切换时切走的标签页冻结，@Monitor 不触发；切回时解冻触发并显示 before→now。",
+        "Repeat + virtualScroll + cachedCount 配合 API 18+ 缓存节点冻结，@Monitor 仅可见项触发。",
+        "@ReusableV2 自动冻结，复用解冻时 @Monitor 会触发（与 V1 @Watch 不触发不同）。",
+        "API 18+ 解冻仅刷新屏上可见节点（V1 解冻所有子节点）。",
+        "不建议在 aboutToRecycle 中更改状态变量（冻结机制修改不生效）。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中使用 @Watch 而非 @Monitor。",
+        "使用 LazyForEach 而非 Repeat（V2 推荐使用 Repeat 配合冻结）。",
+        "@ReusableV2 时期望复用解冻时 @Monitor 不触发（V2 中会触发）。",
+        "在 aboutToRecycle 中更改状态变量期望生效。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "标签页切换时切走的标签页 @Monitor 不触发，切回时解冻触发并显示 before→now。",
+        "Repeat 缓存节点冻结，@Monitor 仅可见项触发。",
+        "@ReusableV2 自动冻结，复用解冻时 @Monitor 会触发（对比 V1 @Watch 不触发）。",
+        "API 18+ 解冻仅刷新屏上可见节点。",
+        "入口组件 @Monitor 立即触发并获取前后值。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "标签页冻结/解冻 @Monitor 日志截图（含 before→now）",
+        "Repeat 缓存节点冻结日志截图",
+        "@ReusableV2 复用解冻 @Monitor 触发日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-028",
+    "layer": "scene-functional",
+    "title": "@Builder支持状态变量刷新开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿股票自选股页面：页面展示多只股票的实时数据（股价、涨跌幅、成交量）。页面中多个数据卡片使用 @Builder 函数封装复用，需要实现：股价数据仅展示（父组件修改→@Builder 内刷新），涨跌幅数据可在 @Builder 内点击按钮修改并同步回父组件，股票数据对象（@ObservedV2+@Trace）在 @Builder 内修改属性并同步。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 UIUtils.makeBinding() 包装状态变量传入 @Builder 函数 + Binding<T> 实现只读刷新 + MutableBinding<T> 实现可读可写双向同步的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 UIUtils.makeBinding(() => this.stockPrice) 仅传读回调返回 Binding<T> 类型，支持 @Builder 内 UI 刷新但不支持修改。",
+        "必须使用 UIUtils.makeBinding(() => this.volume, (val) => { this.volume = val }) 传读回调+写回调返回 MutableBinding<T> 类型，支持 @Builder 内修改并同步回父组件。",
+        "必须使用 MutableBinding 传递 @ObservedV2+@Trace 类对象，在 @Builder 内修改 @Trace 属性并同步。",
+        "必须导入 Binding、MutableBinding、UIUtils（import { Binding, MutableBinding, UIUtils } from '@kit.ArkUI'）。",
+        "makeBinding 仅支持在 @ComponentV2 装饰的组件中使用（API 20+）。",
+        "Binding<T> 不支持 .value 赋值（运行时错误）。",
+        "MutableBinding<T> 必须传入写回调，否则在 @Builder 内触发 .value 赋值会造成运行时错误。",
+        "@Builder 内修改 @Trace 属性时需确保该属性被 @Trace 装饰才能触发 UI 刷新。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V1 @Component 中使用 makeBinding（仅支持 @ComponentV2）。",
+        "Binding<T> 尝试 .value 赋值（运行时错误）。",
+        "MutableBinding<T> 不传入写回调就在 @Builder 内修改 .value。",
+        "使用 makeBinding 时传递对象字面量而非状态变量。",
+        "@Builder 内修改未被 @Trace 装饰的属性期望触发 UI 刷新。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "父组件修改股价后 @Builder 内的股价卡片 UI 正确刷新（Binding 只读）。",
+        "@Builder 内点击涨跌幅按钮修改后通过 MutableBinding 写回调同步回父组件。",
+        "@Builder 内修改 @ObservedV2 对象的 @Trace 属性后同步回父组件且 UI 刷新。",
+        "Binding<T> 尝试 .value 赋值时触发运行时错误。",
+        "makeBinding 仅在 @ComponentV2 中可用。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "股价只读刷新截图（Binding）",
+        "涨跌幅双向同步截图（MutableBinding）",
+        "股票对象 @Trace 属性修改同步截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-029",
+    "layer": "scene-functional",
+    "title": "V1版本循环渲染开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿相册APP管理页：包含两部分——“收藏”相册短列表（<100 张），使用 ForEach 全量渲染，支持添加/删除/收藏/拖拽排序；“所有照片”瀑布流长列表（500+ 张），使用 LazyForEach 懒加载渲染，支持搜索/添加/删除/修改/移动/重载/拖拽排序。两类列表均使用 @Observed + @ObjectLink 实现照片子属性（isFavorite、photoName）的深层观测。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中短列表使用 ForEach 全量渲染 + @State 数组管理 + @Observed+@ObjectLink 子属性观测 + List .onMove 拖拽排序；长列表使用 LazyForEach 懒加载 + IDataSource 实现 + 5 种 notifyData* 方法通知更新 + @Observed+@ObjectLink 深层属性观测的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "短列表必须使用 ForEach 三参数（数组、子项生成函数、键值生成函数）全量渲染。",
+        "ForEach 的 keyGenerator 必须返回唯一且稳定的字符串（使用 item.id 作为键值）。",
+        "短列表必须使用 @State 装饰数组，push/splice 触发键值对比增量更新。",
+        "短列表必须使用 List .onMove 实现拖拽排序，onMove 回调中交换数组元素。",
+        "长列表必须使用 LazyForEach 懒加载 + IDataSource 接口实现（totalCount/getData/register/unregister）。",
+        "长列表必须实现 5 种 notifyData* 方法（notifyDataAdd/Delete/Change/Move/Reload）通知 UI 更新。",
+        "必须使用 @Observed + @ObjectLink 实现照片子属性（isFavorite、photoName）的深层观测。",
+        "长列表必须设置 cachedCount 缓存，仅渲染可见+缓存区域。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "短列表使用 LazyForEach 而非 ForEach（短列表无需懒加载）。",
+        "长列表使用 ForEach 全量渲染而非 LazyForEach（长列表性能差）。",
+        "ForEach 的 keyGenerator 返回不唯一或不稳定的键值。",
+        "IDataSource 不实现 notifyData* 方法导致 UI 不更新。",
+        "不使用 @Observed + @ObjectLink 导致子属性变化不刷新。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "短列表 ForEach 正确渲染，添加/删除/收藏/拖拽排序正常工作。",
+        "长列表 LazyForEach 懒加载仅渲染可见+缓存区域，滚动流畅。",
+        "长列表 5 种 notifyData* 方法正确通知 UI 更新（添加/删除/修改/移动/重载）。",
+        "@Observed + @ObjectLink 子属性变化（isFavorite、photoName）正确刷新 UI。",
+        "拖拽排序（.onMove）正确交换数组元素并增量更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "收藏相册短列表截图（ForEach 渲染）",
+        "所有照片长列表截图（LazyForEach 懒加载）",
+        "拖拽排序和子属性变化录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-030",
+    "layer": "scene-functional",
+    "title": "V2版本循环渲染开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿相册APP管理页：列表中展示不同类型的照片项目（普通照片、全景照片、视频动态），支持懒加载、节点复用、无限滚动、拖拽排序和精确属性观测。需要通过 V2 的 Repeat 链式 API 实现多类型模板渲染、按需加载和深层属性变化观测。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-03 场景中 Repeat 链式 API 实现循环渲染 + @ObservedV2+@Trace+@Param 实现深层属性精确观测 + @ReusableV2 实现节点复用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-03",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-04"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Repeat<T>(arr).each() 基本渲染（类似 ForEach，默认全量渲染）。",
+        "必须使用 .key() 指定键值生成器（唯一稳定字符串）。",
+        "必须使用 .template()/.templateId() 实现多类型模板渲染（普通照片/全景照片/视频动态）。",
+        "必须使用 .virtualScroll() 开启懒加载 + @ReusableV2 实现节点复用。",
+        "必须使用 .onLazyLoading() 实现精准懒加载（滚动接近末尾时自动加载）。",
+        "必须使用 .onMove() 实现拖拽排序。",
+        "必须使用 @ObservedV2 + @Trace + @Param 实现深层属性精确观测。",
+        "@ReusableV2 配合 Repeat 实现节点复用，同模板类型共享复用池。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-relative-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "在 V2 中使用 ForEach/LazyForEach 而非 Repeat。",
+        "不使用 .template() 实现多类型渲染而在 .each() 中手动 if/else 判断。",
+        "不使用 .virtualScroll() 导致全量渲染长列表性能差。",
+        "使用 @Observed + @ObjectLink 而非 @ObservedV2 + @Trace + @Param 实现深层观测。",
+        "不使用 @ReusableV2 导致节点不复用性能差。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "Repeat .each() 基本渲染正确显示照片列表。",
+        ".template()/.templateId() 正确区分普通照片/全景照片/视频动态三种类型。",
+        ".virtualScroll() 懒加载仅渲染可见+缓存区域，滚动流畅。",
+        ".onLazyLoading() 滚动接近末尾时自动加载更多数据。",
+        ".onMove() 拖拽排序正确交换数组元素位置。",
+        "@ObservedV2 + @Trace + @Param 深层属性变化正确触发 UI 刷新。",
+        "@ReusableV2 节点复用正确回收和复用组件。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "相册列表截图（多类型模板渲染）",
+        "懒加载和无限滚动截图",
+        "拖拽排序和深层属性观测录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-031",
+    "layer": "scene-functional",
+    "title": "V1中使用V2组件-API19前开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿旅行APP行程详情页：V1父组件管理行程信息（行程名、预算、目的地详情、行程标签），需要嵌入多个V2子组件展示不同维度的信息。由于API19前V1→V2传递数据存在类型限制，需针对不同数据类型采用不同的适配方案：简单类型直接传递、@ObservedV2类作为普通变量传递、@Observed类通过桥接组件中转、嵌套对象通过@ObjectLink拆分、内置类型只能去掉装饰器作为普通变量传递。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景中 API19前 V1→V2 仅支持简单类型直接传递 + @ObservedV2+@Trace 作为普通变量传递 + @Observed 类通过桥接组件中转 + 嵌套对象通过 @ObjectLink 拆分 + 内置类型去掉装饰器作为普通变量传递的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "V1中使用V2组件不传递变量时无任何限制。",
+        "传递简单类型（boolean/number/string/null/undefined）时V2使用 @Param 接收即可。",
+        "传递 @ObservedV2+@Trace 装饰的class时需去掉V1装饰器作为普通变量传递给V2 @Param。",
+        "传递 @Observed 装饰的class时需通过桥接组件模式中转（V1 @Watch → V2 @ObservedV2 单例 → V2组件使用单例）。",
+        "传递嵌套对象时通过 @ObjectLink 拆分子组件，内层 @ObservedV2+@Trace 对象传递给V2 @Param 实现深度观测。",
+        "传递内置类型（Array、Map、Set、Date）时去掉V1装饰器作为普通变量传递，V2无法观测变化。",
+        "@State 等 V1 装饰器装饰的 class 类型和内置类型传递给 V2 会导致编译报错。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-mixed-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "API19前传递 @State 装饰的 class 或内置类型给 V2 @Param 导致编译报错。",
+        "V1 装饰器（@State 等）和 @ObservedV2 一起使用导致编译报错。",
+        "不使用桥接组件模式直接传递 @Observed class 给 V2 @Param。",
+        "传递内置类型时期望 V2 能观测其变化（API19前不支持）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "V1中使用V2组件不传递变量时无限制，V2组件独立管理内部状态。",
+        "传递简单类型后V1修改数据V2组件同步更新。",
+        "传递 @ObservedV2+@Trace class 后 @Trace 属性变化在V1和V2中均触发UI刷新。",
+        "桥接组件模式正确中转 @Observed class 数据：V1修改→@Watch触发→V2单例更新→V2组件刷新。",
+        "嵌套对象通过 @ObjectLink 拆分后内层 @ObservedV2 对象传递给 V2 @Param 实现深度观测。",
+        "内置类型作为普通变量传递后V2无法观测变化（push/修改数组项不触发刷新）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "简单类型传递截图（V1修改后V2同步）",
+        "桥接组件模式截图（@Observed class 中转）",
+        "嵌套对象 @ObjectLink 拆分截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-032",
+    "layer": "scene-functional",
+    "title": "V1中使用V2组件-API19及以后开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿旅行APP行程详情页：V1父组件管理行程信息（行程名、预算、目的地详情、行程标签组），需要使用V2子组件展示行程详情和目的地信息。API19后通过 enableV2Compatibility 和 makeV1Observed 简化了V1→V2的数据传递，无需桥接组件。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景中 API19后使用 enableV2Compatibility 使V1状态变量在V2中可观察 + makeV1Observed 将普通对象包装为V1可观察对象的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "传递普通class时必须使用 enableV2Compatibility 使V1状态变量在V2的 @Param 中可观察第一层属性变化，建议在V2组件构造处调用。",
+        "传递 @Observed+@Track class 时必须使用 enableV2Compatibility（无需 makeV1Observed），@Track 属性V1/V2均可观察。",
+        "传递内置类型（Array）时必须使用 makeV1Observed 包装为V1状态变量 + enableV2Compatibility 使V2可观察，避免双重代理。",
+        "传递二维数组时必须用 makeV1Observed 逐层包装内层数组 + enableV2Compatibility。",
+        "传递嵌套类型时必须逐层 makeV1Observed 包装保证每层都是V1状态变量 + enableV2Compatibility 实现深度观测。",
+        "makeV1Observed 不会递归执行，仅包装第一层，内层需逐层手动包装。",
+        "新增数组元素必须用 makeV1Observed 包装以确保V2可观察。",
+        "不使用 enableV2Compatibility 和 makeV1Observed 会导致双重代理问题。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-mixed-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 enableV2Compatibility 直接传递 V1 状态变量给 V2 导致双重代理问题。",
+        "makeV1Observed 期望递归包装所有层级（仅包装第一层）。",
+        "新增数组元素不使用 makeV1Observed 包装导致V2无法观察。",
+        "在 @State 初始化时调用 enableV2Compatibility 而非在V2组件构造处调用（变量整体赋值时需再次手动调用）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "传递普通class后V1修改属性V2组件同步刷新（enableV2Compatibility 使第一层可观察）。",
+        "传递 @Observed+@Track class 后 @Track 属性变化在V1和V2中均可观察。",
+        "传递内置类型后V1和V2均可观察数组变化（makeV1Observed+enableV2Compatibility 避免双重代理）。",
+        "传递二维数组后内层数组变化V1和V2均可观察（逐层 makeV1Observed 包装）。",
+        "传递嵌套类型后深层属性变化V2可深度观测（逐层 makeV1Observed + enableV2Compatibility）。",
+        "新增数组元素用 makeV1Observed 包装后V2可观察。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "普通class传递截图（enableV2Compatibility）",
+        "内置类型传递截图（makeV1Observed+enableV2Compatibility）",
+        "嵌套类型深度观测截图"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-033",
+    "layer": "scene-functional",
+    "title": "V2中使用V1组件-API19前开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿健康管理APP：V2父组件管理健康数据（心率状态、体重信息、运动详情、健康标签），需要使用V1第三方组件展示健康详情。需解决V2向V1传递不同类型数据时的限制和适配方案。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景中 API19前 V2→V1 传递简单类型 V1 用 @State/@Prop/@Provide 接收 + 普通class 用 @State 接收 + @ObservedV2+@Trace class 作为普通变量 + 内置类型去掉 @Local 作为普通变量 + @Observed class 不支持的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "传递简单类型时V1仅可通过 @State、@Prop、@Provide 接收，不支持 @Link/@ObjectLink/@Consume 接收V2的状态变量。",
+        "传递普通class时V1使用 @State 接收，可观测一层类属性变化。",
+        "传递 @ObservedV2+@Trace class 时V1不能用装饰器接收（编译报错），需作为普通变量，依赖 @Trace 独立观测能力。",
+        "传递内置类型（Set等）时V2去掉 @Local 作为普通变量传递，V1用 @State/@Prop/@Provide 接收，V2无法观测变化。",
+        "传递 @Observed 装饰的class 不支持，V2装饰器不能和 @Observed 一起使用（编译报错），只能作为普通变量。",
+        "@Link 遵循其原本初始化规则，只能被V1状态变量初始化。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-mixed-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "V1使用 @Link/@ObjectLink/@Consume 接收V2的状态变量（不支持）。",
+        "V1使用 @State 接收 @ObservedV2 class 导致编译报错。",
+        "V2使用 @Local 装饰内置类型后传递给V1导致编译报错（互斥）。",
+        "传递 @Observed class 给V1时期望数据联动（API19前不支持）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "传递简单类型后V2修改数据V1组件同步刷新。",
+        "传递普通class后V1 @State 可观测一层属性变化并刷新。",
+        "传递 @ObservedV2+@Trace class 后 @Trace 属性变化在V1和V2中均触发UI刷新（依赖独立观测能力）。",
+        "传递内置类型后V1可接收但V2无法观测变化（修改不触发V2刷新）。",
+        "传递 @Observed class 只能作为普通变量，修改属性不触发UI刷新。",
+        "@Link 遵循其原本初始化规则，只能被V1状态变量初始化。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "简单类型传递截图（V1 @State 接收）",
+        "@ObservedV2 class 普通变量传递截图（@Trace 独立观测）",
+        "内置类型限制截图（V2无法观测变化）"
+      ]
+    }
+  },
+  {
+    "case_id": "STATE-FUNC-034",
+    "layer": "scene-functional",
+    "title": "V2中使用V1组件-API19及以后开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿健康管理APP：V2父组件管理健康数据（心率状态、体重信息、运动详情、健康标签组），需要使用V1第三方组件展示健康详情。API19及以后通过 enableV2Compatibility 和 makeV1Observed 简化了V2→V1的数据传递，实现双向数据联动。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-04 场景中 API19后使用 enableV2Compatibility+makeV1Observed 将数据同时具备V1和V2观察能力 + V1用 @ObjectLink 接收 + 嵌套类型逐层包装 + 多层 @ObjectLink 拆分实现深度观测的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-04",
+      "secondary_scenes": [
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "传递普通class时必须使用 enableV2Compatibility(makeV1Observed()) 使数据同时具备V1和V2观察能力，V1用 @ObjectLink 接收。",
+        "传递 @Observed+@Track class 时必须使用 enableV2Compatibility（无需 makeV1Observed），V1用 @ObjectLink 接收。",
+        "传递内置类型（Array）时必须使用 makeV1Observed 包装 + enableV2Compatibility 使V2可观察，V1用 @ObjectLink 接收。",
+        "传递二维数组时必须用 makeV1Observed 逐层包装内层数组 + enableV2Compatibility，V1用 @ObjectLink 接收内层。",
+        "传递嵌套类型时必须逐层 makeV1Observed 包装保证每层都是V1状态变量 + enableV2Compatibility 实现V2深度观测，V1需多层 @ObjectLink 拆分实现深度观测。",
+        "makeV1Observed 的返回值可初始化 @ObjectLink。",
+        "新增数据必须用 makeV1Observed 包装以确保V2可观察。",
+        "enableV2Compatibility 和 makeV1Observed 必须配合使用避免双重代理。"
+      ],
+      "should_reuse_resources": [
+        "./references/state-management/state-management-mixed-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 enableV2Compatibility 和 makeV1Observed 导致双重代理问题。",
+        "V1使用 @State 而非 @ObjectLink 接收 makeV1Observed 的返回值。",
+        "makeV1Observed 期望递归包装所有层级（仅包装第一层）。",
+        "新增数据不使用 makeV1Observed 包装导致V2无法观察。",
+        "嵌套类型V1中不使用多层 @ObjectLink 拆分导致无法深度观测。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "传递普通class后V1和V2双方修改都可观察并互相刷新（enableV2Compatibility+makeV1Observed 双向联动）。",
+        "传递 @Observed+@Track class 后 @Track 属性在V1和V2中均可观察。",
+        "传递内置类型后V1和V2双方修改双向同步（makeV1Observed+enableV2Compatibility 避免双重代理）。",
+        "传递二维数组后内层数组变化V1和V2均可观察（逐层 makeV1Observed 包装）。",
+        "传递嵌套类型后V2可深度观测，V1需多层 @ObjectLink 拆分实现深度观测。",
+        "新增数据用 makeV1Observed 包装后V1和V2均可观察。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "普通class双向联动截图（enableV2Compatibility+makeV1Observed）",
+        "内置类型双向同步截图",
+        "嵌套类型多层 @ObjectLink 拆分深度观测截图"
+      ]
+    }
+  }
+]

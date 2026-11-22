@@ -1,0 +1,6 @@
+{
+  "note": "三族产物 Schema 只读副本；来源与版本随各 Skill 演进同步更新",
+  "scan-report": { "source": "arkuix-interface-scan", "schema_version": 1 },
+  "skeleton-result": { "source": "arkuix-migration-skeleton", "schema_version": 1 },
+  "bridge-artifact": { "source": "arkuix-bridge-codegen", "schema_version": 1 }
+}

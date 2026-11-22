@@ -1,0 +1,1683 @@
+{
+  "meta": {
+    "rules_version": "1.9.3",
+    "curated_at": "2026-10-09",
+    "sources": [
+      {
+        "kind": "oh-sdk-crossplatform",
+        "version": "OpenHarmony SDK 26.0.0 (ets/api @crossplatform 标记机器初稿)"
+      },
+      {
+        "kind": "arkuix-docs",
+        "version": "gitcode.com/arkui-x/docs（zh-cn/application-dev/reference/apis/，语义精修：损益/桥接/裁剪理由与替代建议）"
+      },
+      {
+        "kind": "ndk-sysroot-verification",
+        "version": "OH SDK 26.0.0 native/sysroot/usr/include 核验（1992 个 .h 无系统性跨平台标注；C-API 判定源=规则表单源，2026-09-13 design 固化）"
+      },
+      {
+        "kind": "arkuix-docs-platform-extraction",
+        "version": "gitcode.com/arkui-x/docs@019da2e（zh-cn/application-dev/reference 全量普查：单平台自由文本标注 16 行→10 符号；Android/iOS 差异表 640 行另册归档，2026-09-20）"
+      },
+      {
+        "kind": "arkuix-docs-capi-survey",
+        "version": "gitcode.com/arkui-x/docs@019da2e（arkui-ts/README \"C API\" 段官方收录 16 头+arkui-x-capi-usage-guide 双平台 libace_ndk 指导+native-apis 参考收录 rawfile/plugin_utils+集成教程 Node-API 实证；sysroot 路径经 OH SDK 26.0.0 核对，2026-09-20）"
+      },
+      {
+        "kind": "oh-sdk-crossplatform-seed",
+        "version": "OH SDK 26.0.0 ets/api（模块级整标播种 54 条，幂等重跑）"
+      },
+      {
+        "kind": "arkuix-sdk-delivery",
+        "version": "ArkUI-X SDK 26.0.0 engine/lib/include 实际交付面核验（image/、native_window/ 在场；player_framework/ohaudio/native_buffer 等不在场，2026-09-27  策展）"
+      },
+      {
+        "kind": "arkuix-docs-media-support",
+        "version": "gitcode.com/arkui-x/docs js-apis-media.md 逐 API\"支持平台： Android、iOS\"实证（AVPlayer/AVRecorder/AVMetadataExtractor，2026-09-27 查证； 播放器族 equivalent_bridge 依据）"
+      },
+      {
+        "kind": "arkuix-docs-vibrator",
+        "version": "gitcode.com/arkui-x/docs arkts-apis-vibrator.md 逐 API\"支持平台： Android、iOS\"实证（vibrator 对齐依据，2026-09-27）"
+      }
+    ],
+    "note": "规则表为语义增强层：SDK 标记回答支持方向，本表提供细分（①full_direct ②reduced_direct ③equivalent_bridge ④degraded_bridge ⑤platform_trim）、理由与建议。@hms.* 条目仅承载替代建议。source=ndk（C-API）以本表为唯一判定源。单平台条目以符号级 platform 字段（android|ios）标注，命中即计入报告单平台占比。发现误判请更新条目并递增 rules_version。；（2026-10-09）：策展基线批量落地——docs 实证 9 条+audio/pasteboard 降②修正+telephony 家族 8 条+等价桥接 3 条+系统级裁剪 4 条；依据 curator-baseline 对账（本地 arkui-x/docs@e93eec3 单元格级平台标注解析）；等价映射批次标识 curated-2026-10-09，待实测复核。；（2026-10-09）：docs 基线同步（e93eec3→6d97a0e 2026-09-22）后批量实证——geoLocationManager 冲突裁决③→②、44 条①升 docs-verified、16 条①降②、新增 docs 实证条目若干"
+  },
+  "rules": [
+    {
+      "module": "@ohos.notificationManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植，首批接口自 API 12 支持跨平台（docs: js-apis-notificationManager）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.router",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "ArkUI-X 已移植 router，但部分能力（如部分页面转场参数）在 iOS/Android 表现有差异（docs: ArkUI 路由）",
+      "advice": "可直接使用；建议回归验证转场与返回栈行为",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.geoLocationManager",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 A1 裁决）：原机器播种 equivalent_bridge 与 SDK 211 处 @crossplatform 标记冲突（真扫必 unknown）。docs 实证（arkts-apis-geoLocationManager.md）：首批接口 API 22 起支持跨平台，20 处符号不支持——双源支持向一致，判②有损直用；不支持符号可走旧 API @ohos.geolocation 桥接或原生",
+      "advice": "按 docs 页内平台标注逐符号使用；不支持符号经 F4 裁决降出桥接",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.vibrator",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植振动能力（docs: arkts-apis-vibrator.md 逐 API 标注支持平台 Android、iOS，含 VibratePreset/VibrateFromFile/VibrateFromPattern 高级形态；Android 需在 AndroidManifest.xml 配置 android.permission.VIBRATE，2026-09-27 查证； 对齐——旧条目 degraded_bridge 系 docs 实证前的保守策展）",
+      "advice": "直接使用；Android 平台需补 VIBRATE 权限声明",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.account.osAccount",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "系统账号能力为 HarmonyOS 独有，ArkUI-X 无等价实现（docs: 平台差异清单）",
+      "advice": "迁移时裁剪该调用路径，或由 F4 引导业务决策",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.distributedKVStore",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "分布式数据能力依赖 HarmonyOS 分布式软总线，ArkUI-X 无等价实现",
+      "advice": "迁移时裁剪；如需跨端同步改用应用层方案",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.mockConflict",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "benchmark 冲突用例：规则表归⑤而 mini-SDK 声明跨平台支持（构造双源冲突）",
+      "advice": "人工确认两源结论",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.mockConflict2",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "benchmark 冲突用例：规则表归①而 mini-SDK 无标记（构造反向冲突）",
+      "advice": "人工确认两源结论",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.mockSinglePlatform",
+      "symbol": "mockAndroidOnlyApi",
+      "category": "full_direct",
+      "platform": "android",
+      "reason": "benchmark 单平台占比用例：仅支持 Android（platform 字段演示，待 arkui-x docs 策展确认）",
+      "advice": "直接使用（仅 Android）；iOS 侧需裁剪或替代",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.mockSinglePlatform",
+      "symbol": "mockIosOnlyApi",
+      "category": "full_direct",
+      "platform": "ios",
+      "reason": "benchmark 单平台占比用例：仅支持 iOS（platform 字段演示，待 arkui-x docs 策展确认）",
+      "advice": "直接使用（仅 iOS）；Android 侧需裁剪或替代",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@hms.map",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "@hms.*（闭源）默认业务决策：不开源、难直接迁移",
+      "advice": "评估改用开源地图方案或自行封装原生地图",
+      "suggested_alternative": "@ohos.map（Map Kit 开源侧能力，功能子集）"
+    },
+    {
+      "module": "@hms.push",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "@hms.*（闭源）默认业务决策",
+      "advice": "评估厂商推送通道（FCM/APNs）或统一推送服务",
+      "suggested_alternative": "需开发者评估"
+    },
+    {
+      "module": "@hms.iap",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "@hms.*（闭源）默认业务决策",
+      "advice": "评估 Google Play Billing / StoreKit 双通道内购",
+      "suggested_alternative": "需开发者评估"
+    },
+    {
+      "module": "ace/xcomponent/native_interface_xcomponent.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考 C API 段官方收录（native_interface_xcomponent.h）；ArkUI NDK 双平台交付（libace_ndk，arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 需按使用指导配置动态库链接；建议双平台回归验证事件回调时序",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "hilog/log.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "ArkUI-X 未内置 hilog C-API（docs C API 收录面无此头）；等价能力经原生日志通道桥接（Dev-faq-10 桥接方案）",
+      "advice": "由 F3 生成日志桥接（Android: __android_log_print；iOS: os_log）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.picker",
+      "symbol": "save",
+      "category": "platform_trim",
+      "platform": "android",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；picker 家族符号级实测仅 Android 可用（iOS 无系统文档选择器，photoAccessHelper 权限模型差异）",
+      "advice": "Android 直接使用；iOS 侧改用 Photo Picker（PHPickerViewController）或业务降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.picker",
+      "symbol": "DocumentSelectOptions",
+      "category": "platform_trim",
+      "platform": "android",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；picker 家族符号级实测仅 Android 可用（iOS 无系统文档选择器，photoAccessHelper 权限模型差异）",
+      "advice": "Android 直接使用；iOS 侧改用 Photo Picker（PHPickerViewController）或业务降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.picker",
+      "symbol": "DocumentSaveOptions",
+      "category": "platform_trim",
+      "platform": "android",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；picker 家族符号级实测仅 Android 可用（iOS 无系统文档选择器，photoAccessHelper 权限模型差异）",
+      "advice": "Android 直接使用；iOS 侧改用 Photo Picker（PHPickerViewController）或业务降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.picker",
+      "symbol": "AudioSelectOptions",
+      "category": "platform_trim",
+      "platform": "android",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；picker 家族符号级实测仅 Android 可用（iOS 无系统文档选择器，photoAccessHelper 权限模型差异）",
+      "advice": "Android 直接使用；iOS 侧改用 Photo Picker（PHPickerViewController）或业务降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.picker",
+      "symbol": "AudioSaveOptions",
+      "category": "platform_trim",
+      "platform": "android",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；picker 家族符号级实测仅 Android 可用（iOS 无系统文档选择器，photoAccessHelper 权限模型差异）",
+      "advice": "Android 直接使用；iOS 侧改用 Photo Picker（PHPickerViewController）或业务降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.window",
+      "symbol": "on",
+      "category": "platform_trim",
+      "platform": "ios",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；window 事件监听仅 iOS 实测可用（Android 侧暂无通知/返回对应事件）",
+      "advice": "iOS 直接使用；Android 侧以平台生命周期/返回事件（OnBackPressedDispatcher）桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.window",
+      "symbol": "off",
+      "category": "platform_trim",
+      "platform": "ios",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；window 事件监听仅 iOS 实测可用（Android 侧暂无通知/返回对应事件）",
+      "advice": "iOS 直接使用；Android 侧以平台生命周期/返回事件（OnBackPressedDispatcher）桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.window",
+      "symbol": "getWindowStatus",
+      "category": "platform_trim",
+      "platform": "ios",
+      "reason": " 口径统一：单平台符号条目唯一合法组合=platform_trim+platform（原 full_direct+platform 语义自相矛盾）；window 事件监听仅 iOS 实测可用（Android 侧暂无通知/返回对应事件）",
+      "advice": "iOS 直接使用；Android 侧以平台生命周期/返回事件（OnBackPressedDispatcher）桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/drag_and_drop.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/drawable_descriptor.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_animate.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_dialog.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_gesture.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_interface.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_interface_accessibility.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_interface_focus.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_key_event.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_node_napi.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_node.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_render.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/native_type.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/styled_string.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "arkui/ui_input_event.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs ArkTS 参考\"C API\"段官方收录（arkui-ts/README）；ArkUI NDK 双平台交付（Android libace_ndk.so / iOS libace_ndk.xcframework，见 arkui-x-capi-usage-guide）",
+      "advice": "直接使用；SDK≥7.0.0.33 起需按使用指导完成动态库按需加载配置",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "rawfile/raw_file_manager.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs native-apis 参考收录（rawfile 模块页，OH_ResourceManager_* 全 API 面）+教程高频实证",
+      "advice": "直接使用（资源访问跨平台一致）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "rawfile/raw_file.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs native-apis 参考收录（rawfile 模块页，OH_ResourceManager_* 全 API 面）+教程高频实证",
+      "advice": "直接使用（资源访问跨平台一致）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "rawfile/raw_dir.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs native-apis 参考收录（rawfile 模块页，OH_ResourceManager_* 全 API 面）+教程高频实证",
+      "advice": "直接使用（资源访问跨平台一致）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "napi/native_api.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 双平台交付 Node-API（Android libace_ndk；iOS libarkui_ios/include/napi，集成教程实证）",
+      "advice": "直接使用（JS/Native 互操作通道）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "node_api.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 双平台交付 Node-API（Android libace_ndk；iOS libarkui_ios/include/napi，集成教程实证）",
+      "advice": "直接使用（JS/Native 互操作通道）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "plugin_utils.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs native-apis 参考收录（ARKUI_X_Plugin_*：RunAsyncTask/Thread 双平台；GetJniEnv/RegisterJavaPlugin 为 Android JNI 形态）",
+      "advice": "直接使用；JNI 相关函数仅 Android 侧可用（iOS 走静态库同接口）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.app.ability.ConfigurationConstant",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.arkui.componentUtils",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.uiMaterial",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.bluetooth.constant",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.buffer",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.convertxml",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.curves",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.data.commonType",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.data.uniformTypeDescriptor",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.deviceInfo",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 E2E 编译实证，A2 闭环）：原机器播种 full_direct；ArkTS 编译器对 udid 符号显式报错 \"can't support crossplatform application\"——模块可导入但部分符号（如 udid）跨平台不支持，降②；符号级差异待 docs/运行时细分",
+      "advice": "可用但需逐符号确认（udid 等不可用符号需桥接/裁剪）",
+      "suggested_alternative": "N/A",
+      "evidence": "compile-e2e"
+    },
+    {
+      "module": "@ohos.fastbuffer",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.font",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.graphics.colorSpaceManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.graphics.common2D",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.hilog",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.hiTraceMeter",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.intl",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.matrix4",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.process",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.taskpool",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.uri",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.url",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.util",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.util.json",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.abilityAccessCtrl",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.accessibility",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 24 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.app.ability.AbilityConstant",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.app.ability.abilityDelegatorRegistry",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.app.ability.common",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.app.ability.errorManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.componentSnapshot",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.dragController",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 1 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.inspector",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.observer",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 2 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.a2dp",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.access",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 2 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.baseProfile",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.ble",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 30 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.connection",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 13 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bundle.bundleManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.commonEventManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.data.dataSharePredicates",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 复核降级（A 方案）：docs js-apis-data-dataSharePredicates.md 在收录面但未逐 API 复核；谓词随 RDB/分布式数据域支持面联动，未验证",
+      "advice": "随 @ohos.data.relationalStore 使用时主体可用；分布式谓词特性双平台验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.data.distributedKVStore",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 1 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.data.preferences",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.data.relationalStore",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 1 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.data.unifiedDataChannel",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.display",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 复核降级（A 方案）：docs js-apis-display.md 在收录面但未逐 API 复核；屏幕基础属性可获取，折叠/多屏等高级事件未验证",
+      "advice": "基础 display 属性可用；on(\"change\")/折叠屏事件双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.effectKit",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 复核降级（A 方案）：docs js-apis-effectKit.md 在收录面但未逐 API 复核；滤镜主链（Filter/blur）跨平台渲染域支持，高级效果未验证",
+      "advice": "主体可用；高级效果（自定义滤镜/颜色查找）双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.events.emitter",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 7 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.file.fs",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.file.hash",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.file.photoAccessHelper",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 复核降级（A 方案）：docs js-apis-photoAccessHelper.md 在收录面但未逐 API 复核；r9 实仓抽样 uncertain（图库资产访问对相册权限模型双平台差异大）",
+      "advice": "资产查询主体可用；写操作/相册授权流程需按平台（Android Photo Picker/SAF、iOS PHPhotoLibrary）验证或桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.file.statvfs",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.graphics.drawing",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.graphics.text",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 3 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.hiviewdfx.hiAppEvent",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.i18n",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.mediaquery",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.multimedia.audio",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09）：原机器播种 full_direct；docs 平台标注 87 处符号不支持（curator-baseline 单元格级解析），降为有损直用。原标注：SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本",
+      "advice": "按 docs 页内平台标注逐符号确认后使用（不支持符号需替代/裁剪）",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.multimedia.image",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 复核降级（A 方案）：docs js-apis-image.md 在 ArkUI-X 收录面（ArkUI-X-5.0.1-Release）但未逐 API 复核；SDK 播种标记不足为凭，按有损直用保守处理（部分能力可能平台受限，如个别解码格式）",
+      "advice": "主体可用（图像解码/编码/PixelMap 双平台交付，见 C-API image 家族）；关键路径双平台回归验证，个别高级能力按需降级",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.multimedia.media",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X docs 逐 API 实证（js-apis-media.md：AVPlayer/AVRecorder/AVMetadataExtractor 及全部枚举标注支持平台 Android、iOS，2026-09-27 查证； 复核自播种条目升格）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.net.connection",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.net.http",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 1 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.net.socket",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.net.webSocket",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.pasteboard",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09）：原机器播种 full_direct；docs 平台标注 17 处符号不支持（curator-baseline 单元格级解析），降为有损直用。原标注：SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本",
+      "advice": "按 docs 页内平台标注逐符号确认后使用（不支持符号需替代/裁剪）",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.promptAction",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.request",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 4 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.resourceManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.security.cert",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 2 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.security.cryptoFramework",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 1 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.systemDateTime",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.util.stream",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.web.webview",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 19 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.wifiManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "@ohos.worker",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "策展修正（2026-10-09 批量）：原机器播种 full_direct；docs 平台标注 3 处符号不支持，降为有损直用",
+      "advice": "按 docs 页内平台标注逐符号确认后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.xml",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.zlib",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "SDK @crossplatform 模块级标记播种（机器源：OH SDK 26.0.0 ets/api；标记≠ArkUI-X 已发布实测支持，人工策展可覆盖本条）；docs 实证 0 缺口（curator-baseline 2026-10-09 批量）",
+      "advice": "可直接使用（SDK 声明整模块跨平台）；建议对关键路径做双平台回归验证",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "multimedia/image_framework/image/image_source_native.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植图像解码源 C-API；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：image/ 与 native_window/ 目录头文件双平台在场（交付路径形态 image/<h>，sysroot 引用经 basename 兜底命中）",
+      "advice": "直接使用；与 OH 侧同 API 形态，建议双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/image_framework/image/pixelmap_native.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植 PixelMap C-API；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：image/ 与 native_window/ 目录头文件双平台在场（交付路径形态 image/<h>，sysroot 引用经 basename 兜底命中）",
+      "advice": "直接使用；建议双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/image_framework/image/image_common.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "图像 C-API 公共类型头（image_source/pixelmap 依赖）；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：image/ 与 native_window/ 目录头文件双平台在场（交付路径形态 image/<h>，sysroot 引用经 basename 兜底命中）",
+      "advice": "直接使用（随图像 API 家族交付）",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/image_framework/image/image_packer_native.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植图像打包 C-API；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：image/ 与 native_window/ 目录头文件双平台在场（交付路径形态 image/<h>，sysroot 引用经 basename 兜底命中）",
+      "advice": "直接使用；建议双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/image_framework/image/picture_native.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植 Picture C-API；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：image/ 与 native_window/ 目录头文件双平台在场（交付路径形态 image/<h>，sysroot 引用经 basename 兜底命中）",
+      "advice": "直接使用；建议双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "native_window/external_window.h",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "ArkUI-X 已移植外部窗口/本地窗口 C-API（VLE 实测靶场 Rules-1 增证）；ArkUI-X SDK 26.0.0 实际交付（engine/lib/include，macOS 本地核验）：native_window/external_window.h 双平台在场",
+      "advice": "直接使用；XComponent/纹理对接场景建议双平台回归验证",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/player_framework/native_avcodec_base.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "编解码器 C-API 未随 ArkUI-X 交付；等价能力经 ArkTS @ohos.multimedia.media（AVPlayer/AVRecorder）双平台支持，docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media（NAPI 桥接）或平台原生编解码（Android MediaCodec / iOS VideoToolbox）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avformat.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "媒体封装 C-API 未随 ArkUI-X 交付；等价能力同族（AVPlayer/AVMetadataExtractor）；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media 或平台原生（Android MediaExtractor / iOS AVAsset）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avcodec_videodecoder.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "视频解码 C-API 未交付；等价能力 AVPlayer 双平台支持；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media 或平台原生（Android MediaCodec / iOS VideoToolbox）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avcodec_videoencoder.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "视频编码 C-API 未交付；等价能力 AVRecorder 双平台支持；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media 或平台原生（Android MediaCodec / iOS VideoToolbox）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avcodec_audiocodec.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "音频编解码 C-API 未交付；等价能力 AVPlayer/AVRecorder 双平台支持；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media 或平台原生（Android MediaCodec / iOS AudioConverter）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avbuffer.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "编解码缓冲 C-API 未交付；缓冲管理随等价能力内部处理",
+      "advice": "改用 ArkTS media 数据流模型（dataSrc/fdSrc 回调）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avmuxer.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "封装器 C-API 未交付；等价能力 AVRecorder 双平台支持；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS AVRecorder 或平台原生（Android MediaMuxer / iOS AVAssetWriter）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avdemuxer.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "解封装 C-API 未交付；等价能力 AVMetadataExtractor 双平台支持；docs: js-apis-media.md（AVPlayer/AVRecorder/AVMetadataExtractor 逐 API 标注支持平台 Android、iOS，2026-09-27 查证）",
+      "advice": "改用 ArkTS media 或平台原生（Android MediaExtractor / iOS AVAsset）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avsource.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "媒体源 C-API 未交付；源管理随等价能力内部处理",
+      "advice": "改用 ArkTS media 的 url/fdSrc/dataSrc 输入模型",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "multimedia/player_framework/native_avcapability.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "编解码能力查询 C-API 未交付且无逐项等价（能力集因平台而异）",
+      "advice": "业务决策：按目标平台查询原生能力（Android MediaCodecList / iOS VTIsHardwareDecodeSupported）或固定支持清单降级",
+      "suggested_alternative": "平台原生能力查询 API"
+    },
+    {
+      "module": "ohaudio/native_audiostreambuilder.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "低时延音频 C-API 未随 ArkUI-X 交付；等价能力经 ArkTS @ohos.multimedia.audio（AudioRenderer 等）；docs: js-apis-audio.md 在 ArkUI-X API 参考收录面（ArkUI-X-5.0.1-Release）",
+      "advice": "改用 ArkTS audio（NAPI 桥接）或平台原生（Android Oboe/AAudio / iOS AVAudioEngine）",
+      "suggested_alternative": "@ohos.multimedia.audio"
+    },
+    {
+      "module": "ohaudio/native_audiostream_base.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "低时延音频基础类型头未交付；等价同族；docs: js-apis-audio.md 在 ArkUI-X API 参考收录面（ArkUI-X-5.0.1-Release）",
+      "advice": "改用 ArkTS audio 或平台原生音频栈",
+      "suggested_alternative": "@ohos.multimedia.audio"
+    },
+    {
+      "module": "ohaudio/native_audiorenderer.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "低时延音频渲染 C-API 未交付；等价能力 ArkTS AudioRenderer；docs: js-apis-audio.md 在 ArkUI-X API 参考收录面（ArkUI-X-5.0.1-Release）",
+      "advice": "改用 ArkTS AudioRenderer 或平台原生（Android AudioTrack/Oboe / iOS AVAudioEngine）",
+      "suggested_alternative": "@ohos.multimedia.audio"
+    },
+    {
+      "module": "multimedia/native_audio_channel_layout.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "声道布局定义头未交付且无直接等价（布局枚举随平台音频栈差异）",
+      "advice": "业务决策：按平台原生声道布局模型自行映射",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "native_buffer/buffer_common.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "NativeBuffer C-API 未随 ArkUI-X 交付；无官方等价（图形缓冲属平台图形栈私有）",
+      "advice": "业务决策：经已交付的 external_window/ohos-image C-API 对接渲染链，或平台原生缓冲（Android AHardwareBuffer / iOS CVPixelBuffer）桥接",
+      "suggested_alternative": "native_window/external_window.h"
+    },
+    {
+      "module": "native_buffer/native_buffer.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "同 native_buffer 家族：未交付、无官方等价",
+      "advice": "业务决策：平台原生缓冲桥接或改走 external_window 路径",
+      "suggested_alternative": "native_window/external_window.h"
+    },
+    {
+      "module": "native_image/native_image.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "NativeImage C-API 未交付；无官方等价（消费者纹理对接属平台图形栈）",
+      "advice": "业务决策：平台原生纹理流（Android ImageReader/SurfaceTexture / iOS CVPixelBuffer+MetalTexture）桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "native_color_space_manager/native_color_space_manager.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "色彩空间管理 C-API 未交付且无等价（docs colorSpaceManager 为 ArkTS 绘制域）",
+      "advice": "业务决策：按平台色彩管理（Android ColorSpace / iOS CGColorSpace）自行桥接",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "multimedia/video_processing_engine/video_processing.h",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "视频处理引擎 C-API 未交付且无等价（ArkTS media 无逐帧处理面）",
+      "advice": "业务决策：平台原生处理链（Android Media3 effect / iOS AVVideoComposition）或 GPU 着色器自实现",
+      "suggested_alternative": "N/A"
+    },
+    {
+      "module": "filemanagement/file_uri/oh_file_uri.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "文件 URI C-API 未交付；等价能力 ArkTS @ohos.file.fileuri 双平台收录；docs: js-apis-file-fileuri.md 在 ArkUI-X API 参考收录面（@ohos.file.fileuri）",
+      "advice": "改用 ArkTS fileuri（NAPI 桥接）获取 URI/路径互转",
+      "suggested_alternative": "@ohos.file.fileuri"
+    },
+    {
+      "module": "multimedia/player_framework/native_avmemory.h",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "编解码内存 C-API 未随 ArkUI-X 交付；等价能力经 ArkTS @ohos.multimedia.media（AVPlayer/AVRecorder，docs: js-apis-media.md 逐 API 标注支持平台 Android、iOS）",
+      "advice": "改用 ArkTS media 数据流模型（dataSrc/fdSrc 回调托管内存）",
+      "suggested_alternative": "@ohos.multimedia.media"
+    },
+    {
+      "module": "@ohos.application.BackupExtensionAbility",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "OH 专有备份扩展点（ArkUI-X 无扩展 Ability 机制；docs 仅收录 kv_store 数据级备份恢复，无本模块）",
+      "advice": "业务决策：跨平台侧以平台云同步（Android Auto Backup / iOS iCloud）替代，或业务层自实现数据导出",
+      "suggested_alternative": "平台云备份机制"
+    },
+    {
+      "module": "@ohos.app.ability.wantAgent",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "OH 专有通知代理（拉起 Ability 的 want 封装；ArkUI-X docs 无收录，跨平台无 Ability 拉起模型）",
+      "advice": "业务决策：按平台通知-路由机制重做（Android PendingIntent / iOS UNNotificationContentExtension+路由）",
+      "suggested_alternative": "平台通知机制"
+    },
+    {
+      "module": "@ohos.resourceschedule.backgroundTaskManager",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "OH 长时任务/延迟任务调度（系统能力；ArkUI-X docs 无收录）",
+      "advice": "业务决策：平台原生后台任务（Android WorkManager/Foreground Service / iOS BGTaskScheduler）",
+      "suggested_alternative": "平台后台任务框架"
+    },
+    {
+      "module": "@ohos.multimedia.avsession",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "音视频会话管控未随 ArkUI-X 交付（docs 无收录）；平台原生存在直接等价物",
+      "advice": "桥接平台原生会话（Android MediaSession/MediaSessionService / iOS AVAudioSession+MPNowPlayingInfoCenter），配合已支持的 @ohos.multimedia.media 播放",
+      "suggested_alternative": "Android MediaSession / iOS AVAudioSession"
+    },
+    {
+      "module": "@ohos.multimedia.audioHaptic",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "音频-振动协同 OH 特有封装（ArkUI-X docs 无收录；底层 audio 与 vibrator 双平台各自支持，协同调度需业务自组合）",
+      "advice": "业务决策：以 @ohos.multimedia.audio + @ohos.vibrator 自行协同调度（两者均已跨平台支持）",
+      "suggested_alternative": "@ohos.multimedia.audio + @ohos.vibrator"
+    },
+    {
+      "module": "@ohos.window",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": " 模块级补条：ArkUI-X 对 window 支持面有限——仅 3 个 API（on/off/getWindowStatus）跨平台且 iOS-only，整模块直用偏乐观故降有损直用；SDK 模块级 @crossplatform 标记存在但符号级实测覆盖极窄",
+      "advice": "窗口管理主链（创建/属性/生命周期）双平台不可用；仅窗口状态事件 iOS 可用，其余按平台原生窗口（Android Window/View、iOS UIWindow/UIWindowScene）桥接",
+      "suggested_alternative": "平台原生窗口 API",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@kit.PushKit",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "华为闭源推送生态 kit（OH SDK kits 不含，VideoExporter r8/r9 实证）；ArkUI-X 无推送服务",
+      "advice": "按平台接入推送：Android 侧评估华为 Push Kit（有 Android SDK）或 FCM；iOS 侧 APNs；或统一跨平台推送服务商",
+      "suggested_alternative": "HMS Push Kit (Android) / APNs (iOS)"
+    },
+    {
+      "module": "@kit.LiveViewKit",
+      "symbol": null,
+      "category": "business_decision",
+      "reason": "华为实况窗生态 kit（OH SDK kits 不含，VideoExporter r8/r9 实证）；实况窗为 HarmonyOS 特有实时卡片形态",
+      "advice": "业务决策：Android 侧以 Live View 华为 SDK 或通知卡片（remote views/widget）替代；iOS 侧 Live Activities 桥接",
+      "suggested_alternative": "iOS Live Activities / Android Widgets"
+    },
+    {
+      "module": "@ohos.accessibility.GesturePath",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 平台标注 24 处符号不支持（js-apis-accessibility.md，curator-baseline 单元格级解析）",
+      "advice": "按页内平台标注调整用法后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.accessibility.GesturePoint",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 平台标注 24 处符号不支持（同 GesturePath）",
+      "advice": "按页内平台标注调整用法后使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.bluetooth.socket",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 平台标注 0 缺口（js-apis-socket.md；先前 grep 误计为 1，单元格级解析修正）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.enterprise.bundleManager",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 收录且平台标注 0 缺口",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.file.fileuri",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 收录且平台标注 0 缺口（js-apis-file-fileuri.md）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.request.cacheDownload",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 平台标注 4 处符号不支持（js-apis-request.md）",
+      "advice": "按页内平台标注调整用法",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.util.Vector",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 收录（js-apis-util.md，无平台差异标注）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.window.floatView",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 平台标注 15 处符号不支持，悬浮窗 iOS 受限（js-apis-window.md）",
+      "advice": "悬浮窗能力按平台差异调整或裁剪",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.window.floatingBall",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "同 floatView（js-apis-window.md，15 处不支持）",
+      "advice": "按平台差异调整",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.telephony.call",
+      "symbol": null,
+      "category": "degraded_bridge",
+      "reason": "拨号 UI 层等价（Android Intent.ACTION_CALL / iOS tel: URL+CallKit 受限）；通话状态/录音管理等高级能力无等价",
+      "advice": "由 F3 生成降级桥接；高级通话管理建议裁剪",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.sms",
+      "symbol": null,
+      "category": "degraded_bridge",
+      "reason": "发送等价（Android SmsManager / iOS MFMessageComposeViewController 仅 UI）；读取短信双平台均不可（隐私红线）",
+      "advice": "由 F3 生成降级桥接（仅发送）",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.sim",
+      "symbol": null,
+      "category": "degraded_bridge",
+      "reason": "Android TelephonyManager 较全；iOS CTTelephonyInfo 仅 carrier 名等有限项且逐版本收紧",
+      "advice": "由 F3 生成降级桥接；iOS 侧等价面极窄，逐符号确认",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.observer",
+      "symbol": null,
+      "category": "degraded_bridge",
+      "reason": "网络状态部分等价（ConnectivityManager/NWPathMonitor）；通话事件订阅不可",
+      "advice": "由 F3 生成降级桥接（网络状态子集）",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.radio",
+      "symbol": null,
+      "category": "degraded_bridge",
+      "reason": "读信号可行（TelephonyManager/CTTelephonyInfo）；制式管理不可",
+      "advice": "由 F3 生成降级桥接（读取子集）",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.vcard",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "vCard 数据双平台联系人体系可承接（Android ContactsContract / iOS Contacts framework）",
+      "advice": "由 F3 生成等价桥接",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.data",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "蜂窝数据开关/管理：双平台均无应用级公开 API（系统设置域）",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.telephony.esim",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "eSIM 配置属系统管控域，无应用级等价",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.batteryInfo",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "ArkUI-X docs 无电池信息页；等价能力 Android BatteryManager.getIntProperty / iOS UIDevice.batteryLevel（映射见 F3 native-api-map，待实测复核）",
+      "advice": "由 F3 生成等价桥接",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.sensor",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "等价能力 Android SensorManager / iOS CoreMotion（待实测复核）",
+      "advice": "由 F3 生成等价桥接",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.geolocation",
+      "symbol": null,
+      "category": "equivalent_bridge",
+      "reason": "等价能力 Android LocationManager / iOS CoreLocation；新 API geoLocationManager 已裁决为②（2026-10-09，docs 部分支持）",
+      "advice": "由 F3 生成等价桥接；建议迁移到本模块或原生定位",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.power",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "电源管理：系统级无应用级等价（ArkUI-X docs 无收录页）",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.thermal",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "热管理：系统级无应用级等价（ArkUI-X docs 无收录页）",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.screenLock",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "锁屏控制：双平台系统域（ArkUI-X docs 无收录页）",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.settings",
+      "symbol": null,
+      "category": "platform_trim",
+      "reason": "系统设置项读写：跨平台等价面窄（Android Settings.Panel / iOS openSettings 受限）（ArkUI-X docs 无收录页）",
+      "advice": "裁剪；业务强依赖时经 F4 降出⑥决策",
+      "suggested_alternative": "N/A",
+      "evidence": "curated-2026-10-09"
+    },
+    {
+      "module": "@ohos.animator",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 实证（js-apis-animator.md，平台标注 0 处不支持，curator-baseline 2026-10-09）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.Prefetcher",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 实证（js-apis-arkui-Prefetcher.md，平台标注 0 处不支持，curator-baseline 2026-10-09）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.StateManagement",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 实证（js-apis-StateManagement.md，平台标注 2 处不支持，curator-baseline 2026-10-09）",
+      "advice": "按页内平台标注调整用法",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.UIContext",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 实证（js-apis-arkui-UIContext.md，平台标注 1 处不支持，curator-baseline 2026-10-09）",
+      "advice": "按页内平台标注调整用法",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.arkui.theme",
+      "symbol": null,
+      "category": "full_direct",
+      "reason": "docs 实证（js-apis-arkui-theme.md，平台标注 0 处不支持，curator-baseline 2026-10-09）",
+      "advice": "直接使用",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.measure",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 实证（js-apis-measure.md，平台标注 2 处不支持，curator-baseline 2026-10-09）",
+      "advice": "按页内平台标注调整用法",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.web.netErrorList",
+      "symbol": null,
+      "category": "reduced_direct",
+      "reason": "docs 实证（arkts-apis-netErrorList.md，平台标注 10 处不支持，curator-baseline 2026-10-09）",
+      "advice": "按页内平台标注调整用法",
+      "suggested_alternative": "N/A",
+      "evidence": "docs-verified"
+    },
+    {
+      "module": "@ohos.multimedia.camera",
+      "symbol": "*",
+      "reason": "ArkUI-X 未移植 camera 模块（CameraKit 管线类）",
+      "advice": "走 F3 桥接（Android Camera2 / iOS AVFoundation）或降级裁剪摄像头能力",
+      "source": "curated-2026-10-12 Windows 实战反馈",
+      "category": "degraded_bridge"
+    },
+    {
+      "module": "@ohos.commonEventManager",
+      "symbol": "Support",
+      "category": "reduced_direct",
+      "reason": "SDK 标记 @crossplatform 但枚举成员（COMMON_EVENT_SCREEN_OFF/ON 等）实测 11706007 编译被拒（Windows 实战实证）",
+      "advice": "事件常量用字面量替代（'usual.event.SCREEN_OFF'），或走 F3 桥接",
+      "source": "curated-2026-10-12 Windows 实战反馈"
+    },
+    {
+      "module": "@ohos.commonEventManager",
+      "symbol": "commonEventManager",
+      "category": "reduced_direct",
+      "reason": "SDK 标记 @crossplatform 但 publish/subscribe API 在 ArkUI-X 下待验证",
+      "advice": "基础 publish 可试用；事件常量用字面量替代；不行走 F3 桥接",
+      "source": "curated-2026-10-12 Windows 实战反馈"
+    }
+  ]
+}

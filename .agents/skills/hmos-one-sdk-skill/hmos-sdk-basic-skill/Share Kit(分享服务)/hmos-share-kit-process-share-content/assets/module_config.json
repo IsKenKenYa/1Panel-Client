@@ -1,0 +1,151 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "virtualWindow": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "BasicShareAbility",
+        "srcEntry": "./ets/shareability/BasicShareAbility.ets",
+        "description": "$string:share_ability_desc",
+        "icon": "$media:icon",
+        "label": "$string:share_ability_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "actions": [
+              "ohos.want.action.sendData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.text",
+                "maxFileSupported": 1
+              },
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 5
+              },
+              {
+                "scheme": "file",
+                "utd": "general.png",
+                "maxFileSupported": 5
+              },
+              {
+                "scheme": "file",
+                "utd": "general.jpeg",
+                "maxFileSupported": 5
+              },
+              {
+                "scheme": "file",
+                "utd": "general.video",
+                "maxFileSupported": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ContactShareAbility",
+        "srcEntry": "./ets/shareability/ContactShareAbility.ets",
+        "description": "$string:contact_share_ability_desc",
+        "icon": "$media:icon",
+        "label": "$string:contact_share_ability_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "actions": [
+              "ohos.want.action.sendData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.text",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 10
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RobustShareAbility",
+        "srcEntry": "./ets/shareability/RobustShareAbility.ets",
+        "description": "$string:robust_share_ability_desc",
+        "icon": "$media:icon",
+        "label": "$string:robust_share_ability_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "actions": [
+              "ohos.want.action.sendData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.text",
+                "maxFileSupported": 50
+              },
+              {
+                "scheme": "file",
+                "utd": "general.plain-text",
+                "maxFileSupported": 50
+              },
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 50
+              },
+              {
+                "scheme": "file",
+                "utd": "general.png",
+                "maxFileSupported": 50
+              },
+              {
+                "scheme": "file",
+                "utd": "general.jpeg",
+                "maxFileSupported": 50
+              },
+              {
+                "scheme": "file",
+                "utd": "general.video",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.audio",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.file",
+                "maxFileSupported": 10
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

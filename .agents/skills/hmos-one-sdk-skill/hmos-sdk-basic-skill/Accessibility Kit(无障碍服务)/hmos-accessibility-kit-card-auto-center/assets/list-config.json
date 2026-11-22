@@ -1,0 +1,92 @@
+{
+  "component": {
+    "name": "CardAutoCenterExample",
+    "description": "卡片自动居中示例组件配置",
+    "version": "1.0.0"
+  },
+  "list": {
+    "direction": "horizontal",
+    "space": 20,
+    "initialIndex": 0,
+    "scrollBar": false,
+    "scrollSnapAlign": "center",
+    "width": "90%",
+    "cardWidthRatio": "60%"
+  },
+  "dataSource": {
+    "type": "LazyForEach",
+    "interface": "IDataSource",
+    "methods": [
+      "totalCount",
+      "getData",
+      "registerDataChangeListener",
+      "unregisterDataChangeListener"
+    ],
+    "initialData": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  },
+  "scroller": {
+    "controller": "Scroller",
+    "methods": [
+      "scrollToIndex"
+    ],
+    "scrollToIndexConfig": {
+      "smooth": false,
+      "align": "CENTER",
+      "performanceNote": "smooth=false避免性能问题"
+    }
+  },
+  "accessibility": {
+    "event": "onAccessibilityFocus",
+    "callback": {
+      "parameter": "isFocus:boolean",
+      "triggerCondition": "无障碍服务开启时卡片聚焦",
+      "action": "scrollToIndex居中显示"
+    },
+    "apiVersion": "18+"
+  },
+  "styling": {
+    "cardHeight": 100,
+    "fontSize": 16,
+    "borderRadius": 10,
+    "backgroundColor": "#FFFFFF",
+    "containerBackgroundColor": "#DCDCDC",
+    "padding": {
+      "top": 5
+    }
+  },
+  "performance": {
+    "lazyLoading": true,
+    "dataBinding": "LazyForEach",
+    "animation": false,
+    "smoothScroll": false,
+    "optimizationNotes": [
+      "使用LazyForEach实现懒加载",
+      "smooth=false避免大量item加载性能问题",
+      "keyGenerator使用简单toString避免JSON.stringify性能问题"
+    ]
+  },
+  "errorHandling": {
+    "errorCodes": [
+      {
+        "code": 401,
+        "description": "参数错误",
+        "solution": "检查scrollToIndex参数类型和范围"
+      },
+      {
+        "code": 100004,
+        "description": "控制器未绑定",
+        "solution": "确认Scroller绑定到List组件"
+      }
+    ],
+    "fallbackStrategy": {
+      "invalidIndex": "保持当前滚动位置",
+      "emptyDataSource": "返回默认值0",
+      "scrollerUnbound": "提示错误并跳过滚动"
+    }
+  },
+  "dependencies": {
+    "@ohos.arkui": "latest",
+    "harmonyosSdk": "API 18+",
+    "devEcoStudio": "3.1+"
+  }
+}

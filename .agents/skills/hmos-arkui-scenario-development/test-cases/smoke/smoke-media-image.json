@@ -1,0 +1,72 @@
+[
+  {
+    "case_id": "SMOKE-MI-01",
+    "layer": "smoke",
+    "title": "商品主图多数据源加载+占位图",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品列表：商品卡片主图需支持三种数据源加载——本地资源图($r)、网络URL图、PixelMap图，每张图80x80圆角，加载失败显示默认占位图，加载完成回调获取图片实际宽高用于布局计算。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-15 场景路由分发稳定命中，覆盖 商品主图多数据源加载+占位图 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-15",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/media-image-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-MI-02",
+    "layer": "smoke",
+    "title": "直播礼物特效 ImageAnimator 逐帧播放",
+    "phase": "DEV",
+    "user_prompt": "仿直播App礼物特效：用户送出礼物时播放由几十张序列帧图片组成的特效动画（如烟花绽放），通过images设置每帧图片路径/尺寸/时长，支持播放/暂停/停止控制，豪华礼物无限循环播放。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-15 场景路由分发稳定命中，覆盖 直播礼物特效 ImageAnimator 逐帧播放 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-15",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/media-image-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  }
+]

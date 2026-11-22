@@ -1,0 +1,403 @@
+[
+  {
+    "api_name": "photoAccessHelper.getPhotoAccessHelper",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperGetPhotoAccessHelper (Cangjie foreign FFI → native media_library)",
+    "impl_func": "getPhotoAccessHelper(context: UIAbilityContext): PhotoAccessHelper",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "模块入口。FFI 返回 -1 时显式抛出 13900020。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.getAssets",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperGetAssets",
+    "impl_func": "PhotoAccessHelper.getAssets(options: FetchOptions): PhotoAssetResult",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "FetchOptions→CFetchOptions 转换后 FFI 调用；权限 READ_IMAGEVIDEO；errCode 经 checkRet。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.getBurstAssets",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperGetBurstAssets",
+    "impl_func": "PhotoAccessHelper.getBurstAssets(burstKey, options): PhotoAssetResult",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj"
+  },
+  {
+    "api_name": "PhotoAccessHelper.getAlbums",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperGetAlbums",
+    "impl_func": "PhotoAccessHelper.getAlbums(albumType, subtype, options!): AlbumResult",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "默认 options 取 ['uri','album_name']。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.registerChange",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperRegisterChange",
+    "impl_func": "PhotoAccessHelper.registerChange(uri, forChildUris, callback)",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "回调经 Callback1Param 包裹，记录于 callbackList；重复注册同一 callback 会被忽略。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.unregisterChange",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperUnRegisterChange",
+    "impl_func": "PhotoAccessHelper.unregisterChange(uri, callback!)",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "callback==None 时 funcId 传 -1 注销该 URI 全部监听。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperRelease",
+    "impl_func": "PhotoAccessHelper.release()",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "FFI 调用后额外 releaseFFIData(myDataId)。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.showAssetsCreationDialog",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAccessHelperShowAssetsCreationDialog",
+    "impl_func": "PhotoAccessHelper.showAssetsCreationDialog(srcFileUris, photoCreationConfigs, callback)",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "经 getSelfBundleInfo() 收集 bundleName/appName/appId 一并传入。"
+  },
+  {
+    "api_name": "PhotoAccessHelper.applyChanges",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "(分发) FfiMediaAlbumChangeRequestImplApplyChanges / FfiMediaAssetChangeRequestImplApplyChanges",
+    "impl_func": "PhotoAccessHelper.applyChanges(mediaChangeRequest)",
+    "impl_file": "ohos/file/photo_access_helper/photo_accesshelper.cj",
+    "notes": "match 分发：MediaAlbumChangeRequest→其 applyChanges；MediaAssetChangeRequest→其 applyChanges；其它抛 401。权限 WRITE_IMAGEVIDEO。"
+  },
+  {
+    "api_name": "PhotoAsset.get",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAssetUserFileMgrGet",
+    "impl_func": "PhotoAsset.get(member: String): MemberType",
+    "impl_file": "ohos/file/photo_access_helper/photo_asset.cj"
+  },
+  {
+    "api_name": "PhotoAsset.set",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAssetUserFileMgrSet",
+    "impl_func": "PhotoAsset.set(member: String, value: String)",
+    "impl_file": "ohos/file/photo_access_helper/photo_asset.cj"
+  },
+  {
+    "api_name": "PhotoAsset.commitModify",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAssetCommitModify",
+    "impl_func": "PhotoAsset.commitModify()",
+    "impl_file": "ohos/file/photo_access_helper/photo_asset.cj",
+    "notes": "权限 WRITE_IMAGEVIDEO。"
+  },
+  {
+    "api_name": "PhotoAsset.getThumbnail",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAssetGetThumbnail",
+    "impl_func": "PhotoAsset.getThumbnail(size!): PixelMap",
+    "impl_file": "ohos/file/photo_access_helper/photo_asset.cj",
+    "notes": "默认 Size(256,256)；返回 image 模块的 PixelMap 句柄。"
+  },
+  {
+    "api_name": "PhotoAsset.uri / photoType / displayName",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAssetGetFileUri / FfiPhotoAssetGetMediaType / FfiPhotoAssetGetFileDisplayName",
+    "impl_func": "PhotoAsset.prop uri/photoType/displayName (get)",
+    "impl_file": "ohos/file/photo_access_helper/photo_asset.cj"
+  },
+  {
+    "api_name": "AbsAlbum.getAssets",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAlbumGetAssets",
+    "impl_func": "AbsAlbum.getAssets(options: FetchOptions): PhotoAssetResult",
+    "impl_file": "ohos/file/photo_access_helper/album.cj",
+    "notes": "权限 READ_IMAGEVIDEO。"
+  },
+  {
+    "api_name": "Album.albumName (set)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAlbumSetAlbumName",
+    "impl_func": "AbsAlbum.albumName (mut set)",
+    "impl_file": "ohos/file/photo_access_helper/album.cj"
+  },
+  {
+    "api_name": "Album.commitModify",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiPhotoAlbumCommitModify",
+    "impl_func": "Album.commitModify()",
+    "impl_file": "ohos/file/photo_access_helper/album.cj",
+    "notes": "权限 WRITE_IMAGEVIDEO。"
+  },
+  {
+    "api_name": "FetchResult.getCount / isAfterLast / close",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiFetchResultGetCount / FfiFetchResultIsAfterLast / FfiFetchResultClose",
+    "impl_func": "FetchResult.getCount()/isAfterLast()/close()",
+    "impl_file": "ohos/file/photo_access_helper/fetch_result.cj",
+    "notes": "close() 直接用 myDataId 调 FFI 后 releaseFFIData。"
+  },
+  {
+    "api_name": "AlbumResult / PhotoAssetResult 遍历",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiFetchResultGetFirstObject / GetNextObject / GetLastObject / GetObjectAtPosition / GetAllObjects",
+    "impl_func": "AlbumResult/PhotoAssetResult 的 getFirstObject/getNextObject/getLastObject/getObjectByPosition/getAllObjects",
+    "impl_file": "ohos/file/photo_access_helper/fetch_result.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.createImageAssetRequest",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplCreateImageAssetRequest",
+    "impl_func": "MediaAssetChangeRequest.createImageAssetRequest(context, fileUri)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj",
+    "notes": "fileUri 须为应用沙箱目录 URI，否则抛 13900002。"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.createVideoAssetRequest",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplCreateVideoAssetRequest",
+    "impl_func": "MediaAssetChangeRequest.createVideoAssetRequest(context, fileUri)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.createAssetRequest",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplCreateAssetRequest",
+    "impl_func": "MediaAssetChangeRequest.createAssetRequest(context, photoType, extension, options!)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj",
+    "notes": "返回 RetDataI64(code+data)。"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.deleteAssets (PhotoAsset[])",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplDeleteAssetsByObject",
+    "impl_func": "MediaAssetChangeRequest.deleteAssets(context, assets: Array<PhotoAsset>)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj",
+    "notes": "权限 WRITE_IMAGEVIDEO；PhotoAsset→Int64 id 数组经 cjArr2CArr 转 CArrI64。"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.deleteAssets (String[])",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplDeleteAssetsByString",
+    "impl_func": "MediaAssetChangeRequest.deleteAssets(context, assets: Array<String>)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.getAsset / setTitle",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplGetAsset / FfiMediaAssetChangeRequestImplSetTitle",
+    "impl_func": "MediaAssetChangeRequest.getAsset()/setTitle(title)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.getWriteCacheHandler",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplGetWriteCacheHandler",
+    "impl_func": "MediaAssetChangeRequest.getWriteCacheHandler(): Int32",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj",
+    "notes": "权限 WRITE_IMAGEVIDEO；FFI 返回 -1 时转为 14000011。"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.addResource (fileUri)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplAddResourceByString",
+    "impl_func": "MediaAssetChangeRequest.addResource(resourceType, fileUri)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.addResource (buffer)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplAddResourceByBuffer",
+    "impl_func": "MediaAssetChangeRequest.addResource(resourceType, data: Array<Byte>)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.saveCameraPhoto / discardCameraPhoto",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplSaveCameraPhoto / FfiMediaAssetChangeRequestImplDiscardCameraPhoto",
+    "impl_func": "MediaAssetChangeRequest.saveCameraPhoto()/discardCameraPhoto()",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAssetChangeRequest.applyChanges",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAssetChangeRequestImplApplyChanges",
+    "impl_func": "MediaAssetChangeRequest.applyChanges() (protected)",
+    "impl_file": "ohos/file/photo_access_helper/media_asset_change_request.cj"
+  },
+  {
+    "api_name": "MediaAlbumChangeRequest (构造/getAlbum/setAlbumName)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAlbumChangeRequestImplConstructor / ImplGetAlbum / ImplSetAlbumName",
+    "impl_func": "MediaAlbumChangeRequest(album)/getAlbum()/setAlbumName(name)",
+    "impl_file": "ohos/file/photo_access_helper/media_album_change_request.cj"
+  },
+  {
+    "api_name": "MediaAlbumChangeRequest.addAssets / removeAssets",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAlbumChangeRequestImplAddAssets / ImplRemoveAssets",
+    "impl_func": "MediaAlbumChangeRequest.addAssets(assets)/removeAssets(assets)",
+    "impl_file": "ohos/file/photo_access_helper/media_album_change_request.cj",
+    "notes": "PhotoAsset→id CArrI64；不支持时抛 14000016。"
+  },
+  {
+    "api_name": "MediaAlbumChangeRequest.applyChanges",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts",
+    "napi_func": "FfiMediaAlbumChangeRequestImplApplyChanges",
+    "impl_func": "MediaAlbumChangeRequest.applyChanges() (protected)",
+    "impl_file": "ohos/file/photo_access_helper/media_album_change_request.cj"
+  },
+  {
+    "api_name": "camera.getCameraManager",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraManagerConstructor (Cangjie foreign FFI → native camera_framework)",
+    "impl_func": "getCameraManager(context): CameraManager",
+    "impl_file": "ohos/multimedia/camera/camera_manager.cj"
+  },
+  {
+    "api_name": "CameraManager.getSupportedCameras / getSupportedOutputCapability",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraManagerGetSupportedCameras / FfiCameraManagerGetSupportedOutputCapability",
+    "impl_func": "CameraManager.getSupportedCameras()/getSupportedOutputCapability(camera, mode)",
+    "impl_file": "ohos/multimedia/camera/camera_manager.cj"
+  },
+  {
+    "api_name": "CameraManager.createCameraInput",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraManagerCreateCameraInput*",
+    "impl_func": "CameraManager.createCameraInput(camera / position,type): CameraInput",
+    "impl_file": "ohos/multimedia/camera/camera_manager.cj",
+    "notes": "权限 ohos.permission.CAMERA。"
+  },
+  {
+    "api_name": "CameraManager.createPreviewOutput / createPhotoOutput / createVideoOutput",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraManagerCreatePreviewOutput* / CreatePhotoOutput* / CreateVideoOutput*",
+    "impl_func": "CameraManager.createPreviewOutput/createPhotoOutput/createVideoOutput",
+    "impl_file": "ohos/multimedia/camera/camera_manager.cj"
+  },
+  {
+    "api_name": "CameraManager.createSession",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraManagerCreateSession",
+    "impl_func": "CameraManager.createSession(mode: SceneMode): Session",
+    "impl_file": "ohos/multimedia/camera/camera_manager.cj"
+  },
+  {
+    "api_name": "CameraInput.open / close",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraInputOpen / FfiCameraInputClose",
+    "impl_func": "CameraInput.open()/close()",
+    "impl_file": "ohos/multimedia/camera/camera_input.cj",
+    "notes": "open(isSecureEnabled) 走 FfiCameraInputOpenWithIsEnableSecureCamera。"
+  },
+  {
+    "api_name": "Session.beginConfig / commitConfig / start / stop / release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraSessionBeginConfig / CommitConfig / Start / Stop / Release",
+    "impl_func": "Session.beginConfig()/commitConfig()/start()/stop()/release()",
+    "impl_file": "ohos/multimedia/camera/camera_session.cj"
+  },
+  {
+    "api_name": "Session.addInput / addOutput / removeInput / removeOutput",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraSessionAddInput / AddOutput / RemoveInput / RemoveOutput",
+    "impl_func": "Session.addInput/addOutput/removeInput/removeOutput",
+    "impl_file": "ohos/multimedia/camera/camera_session.cj"
+  },
+  {
+    "api_name": "PhotoOutput.capture",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraPhotoOutputCapture / FfiCameraPhotoOutputCaptureWithSettingV2",
+    "impl_func": "PhotoOutput.capture() / capture(setting)",
+    "impl_file": "ohos/multimedia/camera/photo_output.cj"
+  },
+  {
+    "api_name": "PhotoOutput.enableMovingPhoto",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraPhotoOutputEnableMovingPhoto",
+    "impl_func": "PhotoOutput.enableMovingPhoto(enabled)",
+    "impl_file": "ohos/multimedia/camera/photo_output.cj",
+    "notes": "权限 ohos.permission.MICROPHONE。"
+  },
+  {
+    "api_name": "Focus.setFocusMode / Flash.setFlashMode / Zoom.setZoomRatio",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.camera.d.ts",
+    "napi_func": "FfiCameraFocusSetFocusMode / FfiCameraFlashSetFlashMode / FfiCameraZoomSetZoomRatio",
+    "impl_func": "Focus.setFocusMode / Flash.setFlashMode / Zoom.setZoomRatio",
+    "impl_file": "ohos/multimedia/camera/camera_ability.cj"
+  },
+  {
+    "api_name": "image.createImageSource",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FfiOHOSCreateImageSourceByPath / ByFd / ByBuffer / ByRawFile (+ WithOption 变体) (Cangjie foreign FFI → native image_framework)",
+    "impl_func": "createImageSource(uri/fd/buf/rawfile[, options]): ImageSource",
+    "impl_file": "ohos/multimedia/image/image_source.cj"
+  },
+  {
+    "api_name": "image.createImagePacker",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FFiOHOSImagePackerConstructor",
+    "impl_func": "createImagePacker(): ImagePacker",
+    "impl_file": "ohos/multimedia/image/image_packer.cj"
+  },
+  {
+    "api_name": "image.createImageReceiver",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FfiOHOSCreateImageReceiver",
+    "impl_func": "createImageReceiver(...): ImageReceiver",
+    "impl_file": "ohos/multimedia/image/image_receiver.cj"
+  },
+  {
+    "api_name": "ImageSource.createPixelMap / getImageInfo",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FfiOHOSImageSourceCreatePixelMap(V2) / FfiOHOSImageSourceGetImageInfo(V2)",
+    "impl_func": "ImageSource.createPixelMap(options!)/getImageInfo(index!)",
+    "impl_file": "ohos/multimedia/image/image_source.cj"
+  },
+  {
+    "api_name": "ImagePacker.packToData / packToFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FfiOHOSImagePackerPackingPixelMap(V2) / PackingImageSource(V2) / PackPixelMapToFile(V2) / ImageSourcePackToFile(V2)",
+    "impl_func": "ImagePacker.packToData(source, options) / packToFile(source, fd, options)",
+    "impl_file": "ohos/multimedia/image/image_packer.cj"
+  },
+  {
+    "api_name": "PixelMap.readPixelsToBuffer / writeBufferToPixels / scale / crop / release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.image.d.ts",
+    "napi_func": "FfiOHOSReadPixelsToBuffer / WriteBufferToPixels / Scale / Crop / PixelMapRelease",
+    "impl_func": "PixelMap.readPixelsToBuffer/writeBufferToPixels/scale/crop/release",
+    "impl_file": "ohos/multimedia/image/pixel_map.cj",
+    "notes": "修改类接口对只读 PixelMap 抛 62980248 / 7600201。"
+  },
+  {
+    "api_name": "media.createAVImageGenerator",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.media.d.ts",
+    "napi_func": "FfiCreateAVImageGenerator (Cangjie foreign FFI → native player_framework)",
+    "impl_func": "createAVImageGenerator(): AVImageGenerator",
+    "impl_file": "ohos/multimedia/media/avimage_generator.cj"
+  },
+  {
+    "api_name": "AVImageGenerator.fetchFrameByTime",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.media.d.ts",
+    "napi_func": "FfiFetchFrameByTime",
+    "impl_func": "AVImageGenerator.fetchFrameByTime(timeUs, options, param): PixelMap",
+    "impl_file": "ohos/multimedia/media/avimage_generator.cj",
+    "notes": "需先设置 fdSrc；返回 image 模块 PixelMap。"
+  },
+  {
+    "api_name": "AVImageGenerator.fdSrc (get/set)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.media.d.ts",
+    "napi_func": "FfiAVImageGeneratorGetFdSrc / FfiAVImageGeneratorSetFdSrc",
+    "impl_func": "AVImageGenerator.fdSrc (prop get/set)",
+    "impl_file": "ohos/multimedia/media/avimage_generator.cj"
+  },
+  {
+    "api_name": "AVImageGenerator.release",
+    "d_ts_file": "interface_sdk-js/api/@ohos.multimedia.media.d.ts",
+    "napi_func": "FfiAVImageGeneratorRelease",
+    "impl_func": "AVImageGenerator.release()",
+    "impl_file": "ohos/multimedia/media/avimage_generator.cj"
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "accessibilitySettings": {
+    "pageManagement": {
+      "layers": [
+        {
+          "index": 0,
+          "id": "Layer_0",
+          "accessibilityLevel": "no",
+          "zIndex": 1,
+          "backgroundColor": "#FF0000",
+          "description": "顶层页面，可识别但子节点不自动隐藏"
+        },
+        {
+          "index": 1,
+          "id": "Layer_1",
+          "accessibilityLevel": "no-hide-descendants",
+          "zIndex": 0,
+          "backgroundColor": "#00FF00",
+          "description": "非顶层页面，隐藏所有子节点"
+        }
+      ],
+      "switchLogic": {
+        "type": "zIndexControl",
+        "topLayerState": "动态切换 (0 <-> 1)",
+        "eventSending": "页面切换完成后立即发送pageActive事件"
+      }
+    },
+    "eventInfo": {
+      "required": {
+        "type": "pageActive",
+        "bundleName": "com.samples.uiextensionandaccessibility",
+        "triggerAction": "common"
+      },
+      "optional": {
+        "customId": "Layer_${topLayer}",
+        "description": "用于精准聚焦，需与组件id一致"
+      }
+    },
+    "focusStrategy": {
+      "withCustomId": "从指定的根节点开始寻找首焦点",
+      "withoutCustomId": "从当前窗口根节点开始寻找首焦点"
+    },
+    "errorHandling": {
+      "strategy": "降级处理",
+      "description": "即使事件发送失败，页面切换功能仍正常工作",
+      "logLevel": "warn",
+      "impact": "不影响应用核心功能"
+    }
+  },
+  "accessibilityLevelValues": {
+    "no": {
+      "description": "组件可识别，但子节点不自动隐藏",
+      "usage": "用于顶层页面，屏幕朗读可识别但不隐藏子节点"
+    },
+    "no-hide-descendants": {
+      "description": "组件不可识别，且隐藏所有子节点",
+      "usage": "用于非顶层页面，完全隐藏避免干扰焦点管理"
+    },
+    "auto": {
+      "description": "自动模式，系统判断是否可识别",
+      "usage": "默认值，不推荐用于页面切换场景"
+    }
+  },
+  "bestPractices": {
+    "timing": "页面切换完成后立即发送事件",
+    "customIdManagement": "使用动态id（如Layer_${topLayer}）确保一致性",
+    "visibilityControl": "非顶层页面必须设置accessibilityLevel为'no-hide-descendants'",
+    "errorLogging": "记录错误但不影响页面切换",
+    "testing": "在屏幕朗读开启状态下验证焦点管理"
+  }
+}

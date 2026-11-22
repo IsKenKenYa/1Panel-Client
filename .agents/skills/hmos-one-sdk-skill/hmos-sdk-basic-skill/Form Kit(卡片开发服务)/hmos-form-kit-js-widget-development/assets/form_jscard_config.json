@@ -1,0 +1,32 @@
+{
+  "forms": [
+    {
+      "name": "WidgetJS",
+      "description": "$string:JSCardEntryAbility_desc",
+      "src": "./js/WidgetJS/pages/index/index",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2",
+        "2*4"
+      ],
+      "formConfigAbility": "ability://EntryFormAbility",
+      "formVisibleNotify": "true",
+      "metaData": {
+        "customizeData": [
+          {
+            "name": "widgetMetaData",
+            "value": "widgetMetaDataValue"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,728 @@
+[
+  {
+    "case_id": "BASIC-FUNC-001",
+    "layer": "scene-functional",
+    "title": "@BuilderParam UI 占位（可替换 + 兜底渲染）",
+    "phase": "DEV",
+    "user_prompt": "我现在要做一个通用弹窗组件，页面上的各种弹窗都打算用它。弹窗分成标题区、内容区、底部按钮区三块，组件自带一套默认样子：占位标题、一段占位文案、底部「取消/确定」两个按钮，直接就能用。但落到不同业务场景上，则需要可定制标题区、内容区、底部按钮区三块内容。输出可落到工程中的开发方案。",
+    "intent": "验证 @BuilderParam 占位场景能路由至 ARKUI-01（BASIC-01 基础 UI），方案覆盖 @BuilderParam 声明插槽并以组件内部 @Builder 作为默认兜底 + build() 中 this.xxx() 调用插槽 + 使用方按需覆盖默认值。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-07"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 @BuilderParam 声明插槽成员（类型签名统一为 () => void），初始化时绑定到组件内部的默认 @Builder 方法（如 @BuilderParam menu: () => void = this.titleExpansionMenu），使使用方不传参时自动走兜底渲染。",
+        "必须在组件内声明默认兜底的 @Builder 方法（空实现或含占位结构如 Text('Text')），作为使用方未传入插槽时的渲染。",
+        "必须在 build() 中通过 this.menu() / this.content() 调用插槽函数，调用位置即 UI 嵌入位置。",
+        "使用方实例化组件时：不传参则渲染默认 @Builder；传入新的 @Builder 函数则覆盖默认值，实现「可替换 + 有兜底」。",
+        "必须说明 @BuilderParam 与普通成员变量的区别：前者接收返回 UI 的构建函数、可承载任意 ArkUI 声明式子树（含状态/事件/子组件），普通成员变量只能承载数据或对象引用、无法承载 UI 片段。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "forbidden_patterns": [
+        "@BuilderParam 默认值不绑定内部 @Builder 而留空或未初始化，导致使用方不传参时插槽不渲染。",
+        "build() 中忘记 this.xxx() 调用插槽，传入的自定义 UI 不显示。",
+        "用普通成员变量承载 UI 片段（无法承载 UI 子树）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "使用方不传插槽时，标题区/内容区显示默认占位样式。",
+        "使用方传入自定义 @Builder 后，对应区域被整体替换。",
+        "传入的自定义 UI 内部的状态、事件、子组件均正常工作。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "默认兜底渲染截图",
+        "自定义插槽覆盖截图",
+        "@BuilderParam + 默认 @Builder 配置代码"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-002",
+    "layer": "scene-functional",
+    "title": "组件单元封装选型（@ComponentV2 有状态 vs @Builder/@LocalBuilder 无状态）",
+    "phase": "DEV",
+    "user_prompt": "做一个任务管理页面：页面中间是任务卡片列表，每张卡片能独立切换完成状态、调整优先级（普通/重要/紧急）；页面顶部有「全部标记完成」开关，打开后所有任务卡片要同步变成完成态，同时每张卡片的完成、优先级变化也要能汇总回页面（例如统计未完成数量）；页面底部固定一排操作入口（新建、批量删除、按优先级排序、导出），每个入口是图标加文字的固定结构，点击后由页面执行对应动作。输出可落到工程中的开发方案。",
+    "intent": "验证组件复用粒度选型场景能路由至 ARKUI-01（BASIC-01 基础 UI，联动 ARKUI-03 状态管理），方案覆盖 @Component/@ComponentV2（有状态独立单元） vs 全局 @Builder（跨文件无状态） vs @LocalBuilder（局部无状态）三选型决策 + V2 @Require @Param/@Local/@Event/@Monitor 实现；任务管理页中带内部状态、需父子双向同步的任务卡片与无内部状态、固定结构的底部操作入口，应分别落到不同复用方案，选型由方案自行论证（user_prompt 不点明谁用哪种）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-03"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-07"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须按「是否有内部状态」+「复用范围」两维度选型，并给出选型理由：任务卡片有完成/优先级等内部状态且需父子同步→用 @Component 或 @ComponentV2（新项目推荐 V2）；底部操作入口无内部状态、仅当前页使用→用 @LocalBuilder（struct 内成员方法）；若需跨文件复用的无状态片段→用全局 @Builder function。",
+        "必须说明 @Component 与 @ComponentV2 互斥（同一 struct 只能用其一）、作用对等但配套状态装饰器不同（V1 用 @State/@Prop/@Link，V2 用 @Local/@Param/@Event 等），不能跨版本混用。",
+        "任务卡片子组件（@ComponentV2）必须用 @Require @Param 接收 item 与 externalMarkAllDone、@Local 维护 done/priority、@Event 声明 onDoneChange/onPriorityChange 回调。",
+        "必须用 @Monitor('externalMarkAllDone')（V2）替代 V1 的 @Watch 监听父级「全部标记完成」开关变化并同步 done。",
+        "底部操作入口必须用 @LocalBuilder 声明为 struct 成员方法；带参 @LocalBuilder ActionItem(icon, label) 收敛各操作入口的重复结构；点击事件用箭头函数成员变量（点击后通知页面执行对应动作），禁止 bind(this)。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "forbidden_patterns": [
+        "给无内部状态的底部操作入口用 @Component/@ComponentV2（过度封装，应直接用 @LocalBuilder）。",
+        "给有内部状态的任务卡片用 @Builder/@LocalBuilder（二者无独立状态能力，无法承载父子同步）。",
+        "V1/V2 装饰器混用（如在 @ComponentV2 里用 @State/@Link）。",
+        "事件用匿名 function 或 bind(this) 而非箭头函数成员变量。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "任务卡片可独立切换完成状态、调整优先级，内部状态正确。",
+        "父级「全部标记完成」开关打开后，所有任务卡片 done 同步更新（@Monitor 生效）。",
+        "任务卡片完成/优先级变化正确上报页面聚合（如未完成数量统计准确）。",
+        "底部操作入口正常渲染、点击后触发页面对应动作。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "任务卡片状态交互录屏",
+        "全部标记完成下发同步截图",
+        "@LocalBuilder 底部操作入口代码",
+        "三选型（@ComponentV2/@Builder/@LocalBuilder）决策说明"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-003",
+    "layer": "scene-functional",
+    "title": "样式复用选型（@Styles 通用样式 vs @Extend 绑定组件+传参）",
+    "phase": "DEV",
+    "user_prompt": "做一个电商商品卡片列表，页面上反复出现下面这些样式：卡片容器（白底、圆角、内边距）、顶部标题栏、价格文字、商品标题、商品图、主操作按钮。希望这些反复出现的样式能集中维护在一处，以后改样式只改一次、所有用到的地方都跟着变，而不是每个卡片里各写一遍、改一处要满世界找。其中一部分样式固定不变（卡片容器、标题栏），另一部分会随场景变化——价格、标题、图片、按钮在不同卡片上的字号、颜色、圆角各不相同，需要能按情况给不同的值。请说明这些样式分别该怎么集中管理和使用，输出可落到工程中的开发方案。",
+    "intent": "验证样式复用选型场景能路由至 ARKUI-01（BASIC-01 基础 UI），方案覆盖 @Styles（通用、不传参、任意组件） vs @Extend(组件)（绑定特定组件、支持传参）选型 + 全局/组件内 @Styles 归属 + @Builder 内组合调用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-07"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须按「是否绑定特定组件」+「是否需要传参」两维度选型：卡片容器/标题栏是通用容器样式且固定→用 @Styles；价格/标题/图片/按钮绑定特定组件且按参数变化→用 @Extend(组件)。",
+        "@Styles 必须只使用通用属性（宽高/边距/背景/圆角/阴影等）、不支持传参、可应用到任意组件；@Extend(Text) 只能用在 Text 上、支持传参动态生成字号/颜色。",
+        "跨组件复用的 @Styles 声明为全局 @Styles function xxx()（struct 外）；仅当前页用的 @Styles 声明为组件内 @Styles xxx()（struct 内）。",
+        "组件内 @Styles 通过 .headerStyle() 直接链式调用，禁止 bind(this)。",
+        "必须在 @Builder 中组合调用全局 @Styles（.cardContainerStyle()）与多种 @Extend（如 .priceText(size, color) / .productImage(radius)）。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "forbidden_patterns": [
+        "用 @Styles 抽取需要传参的样式（@Styles 不支持传参，应改用 @Extend）。",
+        "把 @Extend(Text) 的样式应用到 Image/Button 上（@Extend 绑定特定组件，仅限该类）。",
+        "把绑定特定组件的专属样式误用全局 @Styles，导致组件类型不匹配。",
+        "组件内 @Styles 用 bind(this) 调用（应直接链式 .xxxStyle()）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "卡片容器、价格、标题、图片、按钮样式按抽取的 @Styles/@Extend 统一渲染。",
+        "价格/图片/按钮样式能按传入参数（字号/颜色/圆角）动态变化。",
+        "修改一处 @Styles/@Extend 定义，所有引用处样式同步更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "样式抽取前后对比截图",
+        "@Styles/@Extend 选型决策表",
+        "@Builder 内组合调用代码"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-004",
+    "layer": "scene-functional",
+    "title": "组件工厂动态分发（wrapBuilder + WrappedBuilder + ComponentFactory 注册表按 type 分发）",
+    "phase": "DEV",
+    "user_prompt": "做一个新闻信息流列表，列表里有多种不同样式的条目：纯文字、单图、三图、视频，每种长得不一样。条目类型是数据里带的字段（比如后端下发的类型标记），页面要根据这个标记显示对应的卡片样式。而且以后还会陆续新增别的卡片类型（比如广告卡、投票卡），希望新增一种类型时，只在统一的一处加上，整个列表就能识别并显示新样式，不用去改用到这个列表的各个地方。输出可落到工程中的开发方案。",
+    "intent": "验证组件工厂动态分发场景能路由至 ARKUI-01（BASIC-01 基础 UI，联动 ARKUI-07 组件构建页面），方案覆盖 wrapBuilder 把全局 @Builder 包装为可存储/传递的 WrappedBuilder<[P]> + 与业务解耦的泛型 ComponentFactory<K, P>（register 链式注册 / setDefault 兜底 / get 按 key 查表分发）+ data.type 作查找 key + 兜底降级 + 调用方组件不改代码即可新增类型（开闭原则）；新闻四类型按 type 显示对应变体、新增类型只在工厂注册表追加一行即生效，选型由方案自行论证（user_prompt 不点明用工厂还是 if/else）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须为每个变体声明全局 @Builder 函数（签名统一，如 (item: NewsItem) => void），并用 wrapBuilder 包装为 WrappedBuilder<[NewsItem]>；必须说明 @Builder 本身不能作为一等值存储/传递，wrapBuilder 把它变成可放入 Map、可传参、运行时按 key 取出后调 .builder(param) 的值，是工厂模式能在 ArkUI 落地的底层基础。",
+        "必须实现与业务解耦的泛型工厂类 ComponentFactory<K, P>：内部 Map<K, WrappedBuilder<[P]>> 注册表，提供 register（返回 this 支持链式）、setDefault（兜底）、get（按 key 查询、未命中返回 fallback）、has / unregister / clear / size。",
+        "必须构造业务工厂单例，在模块加载时（顶层语句）集中 register 全部变体并 setDefault 兜底构造器，保证页面 build 前注册表就绪；新增类型只需在此追加一行 register，不改调用方（开闭原则）。",
+        "数据模型必须含枚举 type 字段作为工厂查找 key；调用方组件从工厂 get(item.type) 取出 WrappedBuilder，在 build() 上下文调 .builder(item) 触发渲染；建议抽出独立 @Component 承载分发，使 item 变化精确触发 build 重算并落到正确变体。",
+        "必须给出选型决策：变体数量会持续增长、或需按运行时数据（如服务端下发 type）决定渲染→用组件工厂集中注册；变体类型固定且很少变化→直接 if/else 即可，无需引入工厂。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-ui.md"
+      ],
+      "forbidden_patterns": [
+        "用箭头函数或类成员方法充当 @Builder 传给 wrapBuilder（wrapBuilder 只能包装全局 @Builder function）。",
+        "调用方用 switch / if-else 硬编码 type→渲染映射（违背开闭，新增类型必须改调用方）。",
+        "未设置兜底构造器，未知或新增 type 命中失败时渲染空白 item。",
+        "在 build() 单一根节点直接写 if (wrapped) 而未包容器（ArkTS 规定 build() 根节点必须是容器，WrappedBuilder.builder() 须在容器内调用）。",
+        "把类型→构造器映射散落在多个组件里，未集中到工厂注册表，丧失单点扩展能力。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "四种类型按 data.type 正确显示对应变体（纯文字 / 单图 / 三图 / 视频）。",
+        "未知或未注册的 type 命中兜底构造器，不出现空白 item。",
+        "新增一种类型只需在工厂注册表追加一行 register，调用方组件无需任何改动即可识别并显示新类型。",
+        "模块加载时注册表已就绪，页面 build 前即可按 type 查询到对应构造器。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "四类型渲染截图",
+        "未知 type 兜底降级截图",
+        "ComponentFactory + wrapBuilder 包装 + 模块加载集中注册代码",
+        "新增类型不改调用方的演示"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-005",
+    "layer": "scene-functional",
+    "title": "自定义布局容器（@ComponentV2 + onMeasureSize + onPlaceChildren + @Param/@Event 回写总高）",
+    "phase": "DEV",
+    "user_prompt": "做一个双列瀑布流图片墙（类似 Pinterest 的卡片墙）：图片卡片高度各不相同，新卡片逐个进来时要自动追加到当前较短的那一列，让两列尽量等高、视觉平衡。整个卡片墙的总高度要跟着最长的那一列动态变化，并且能把实际算出来的总高度告诉外层容器、让它跟着撑高，而不是高度固定写死。普通的横向/纵向排列或网格排版都满足不了这种「按列高选短边追加」的排版方式。输出可落到工程中的开发方案。",
+    "intent": "验证自定义布局容器场景能路由至 ARKUI-01（BASIC-02 基础扩展，联动 ARKUI-03 状态管理），方案覆盖 @ComponentV2 + @BuilderParam 占位 build() + onMeasureSize(child.measure) 产尺寸 + onPlaceChildren(child.layout) 算位置 + @Param/@Event 单向回写总高 + 算法类(Planner)与框架解耦。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-03"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-extension.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 @ComponentV2 + @BuilderParam builder 接收调用方子树，自身 build() 只调 this.builder()；V2 用 @Param deviceCardHeight 接收父级传入的当前总高（只读）、@Event onHeightChange 反向回传（数据向下、事件向上）。",
+        "onMeasureSize 必须对每个 Measurable 子组件调 child.measure({}) 触发测量（否则 measureResult 为空、放置阶段读到 0），返回 SizeResult 决定容器自身尺寸。",
+        "必须把「列选择 + 坐标计算」抽成纯算法类（如 RowPlanner，用两列高度数组每次选较短列追加），onPlaceChildren 从 child.measureResult 读尺寸→喂给 planner→child.layout({ x, y }) 落位。",
+        "必须通过 @Event onHeightChange 把新总高回传父组件，由父组件更新 @Local 状态（子组件不直接写全局存储），下一帧 onMeasureSize 读到新值。",
+        "必须说明选型：能用系统容器(Row/Column/Grid/WaterFlow)解决就不要自造；需根据子组件实际测量结果动态算位置（如瀑布流选短边、流式换行）→必须走 onMeasureSize + onPlaceChildren。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-extension.md"
+      ],
+      "forbidden_patterns": [
+        "onMeasureSize 中未对子组件调 child.measure({})，导致 measureResult 为空、onPlaceChildren 读到 0 尺寸。",
+        "V2 中子组件直接写全局存储（@StorageLink）而非用 @Param + @Event 单向回写总高。",
+        "把布局算法写死在 onPlaceChildren 回调里（应抽成独立 Planner 类，便于单测与替换）。",
+        "能用系统 Grid/WaterFlow 满足却自造布局容器。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "卡片逐个插入时每次追加到当前较短列，两列尽量平衡。",
+        "容器总高度跟随最长列动态变化，并正确回写外层容器撑高。",
+        "子组件按测量结果正确落位（x/y 正确，无 0 尺寸错位）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "双列瀑布流排版截图",
+        "总高回写外层撑高录屏",
+        "onMeasureSize + onPlaceChildren + Planner 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-006",
+    "layer": "scene-functional",
+    "title": "单类型列表项滚动复用（@Reusable/@ReusableV2 + LazyForEach/Repeat + cachedCount）",
+    "phase": "DEV",
+    "user_prompt": "做一个新闻列表页面，每条新闻的样式都一样（标题、来源、发布时间，部分带一张缩略图），用户上下滑动不断加载、浏览更多。输出可落到工程中的开发方案。",
+    "intent": "验证单类型列表项复用场景能路由至 ARKUI-01（BASIC-03 基础复用，联动 ARKUI-07 组件构建页面），方案覆盖 @Reusable(V1)/@ReusableV2(V2) 标记 + reuseId(V1)/.reuse({reuseId})(V2) 划分复用池 + LazyForEach(IDataSource)/Repeat.virtualScroll 数据源 + cachedCount 控制预渲染 + V1 aboutToReuse(params) 手动赋值 vs V2 @Param 自动重置。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 @Reusable(V1)/@ReusableV2(V2，API 18+) 标记可复用子组件；V1 用 @State 声明随数据变化字段、重写 aboutToReuse(params) 手动赋值；V2 用 @Param 声明、复用时自动重置（aboutToReuse/aboutToRecycle 均无入参、仅做副作用）。",
+        "必须用 reuseId(V1 .reuseId('xxx'))/.reuse({ reuseId: () => 'xxx' })(V2) 指定复用池，相同 ID 共享一个池。",
+        "V1 必须用 LazyForEach(dataSource, ...) 且 dataSource 实现 IDataSource；V2 用 Repeat(items).virtualScroll().each(...) 且数据源为数组。",
+        "必须配 cachedCount(1) 控制预渲染范围，超出范围的组件实例进入对应复用池。",
+        "必须说明 V1/V2 复用回调差异：V1 的 aboutToReuse(params) 有入参、需手动更新 @State；V2 的 aboutToReuse() 无入参、@Param 自动更新、回调仅做日志/资源清理等副作用。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "forbidden_patterns": [
+        "V1 把普通数组直接传给 LazyForEach（必须实现 IDataSource）。",
+        "V2 用 @ReusableV2 却未用 .reuse({ reuseId }) 指定复用池，或误用 V1 的 reuseId API。",
+        "V1 的 aboutToReuse 不手动把新参数写回 @State（V1 不会自动重置）。",
+        "漏配 cachedCount，复用池不生效。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表滚动流畅，滚出可视区的组件进入复用池、再次进入可视区时复用而非新建。",
+        "复用时数据正确刷新（V1 手动赋值 / V2 自动重置）。",
+        "V1 的 IDataSource / V2 的 Repeat 数组数据源正确驱动列表。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "滚动复用录屏",
+        "@Reusable/@ReusableV2 + reuseId/.reuse 配置代码",
+        "V1/V2 复用回调差异对比"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-007",
+    "layer": "scene-functional",
+    "title": "组合型列表项复用（共享段 Top/Bottom 共享池 + 差异段 Middle 各自池）",
+    "phase": "DEV",
+    "user_prompt": "做一个多类型的信息流列表，列表项有三种：单图、三图、视频。这三种的顶部标题区和底部信息区长得完全一样，只有中间的内容区不一样（单图放一张图、三图放三张、视频放封面加播放标识）。输出可落到工程中的开发方案。",
+    "intent": "验证组合型列表项复用场景能路由至 ARKUI-01（BASIC-03 基础复用，联动 ARKUI-07 组件构建页面），方案覆盖把 item 拆成 Top/Middle/Bottom 多个 @Reusable 子组件 + 跨类型共享段用同一 reuseId + 差异段各自独立 reuseId + @Builder 按 type 组装。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须把 list item 拆成多个可复用子组件：跨类型重叠的 TopView（标题区）/BottomView（尾部区）+ 类型独有的 MiddleXxxView（内容区）。",
+        "跨类型共享的子组件（TopView/BottomView）必须用同一个 reuseId（如 'top_id'/'bottom_id'）让所有 type 共享同一批复用节点；类型独有子组件用各自独立 reuseId（如 'middle_image_id'/'middle_three_image_id'/'middle_video_id'）。",
+        "必须为每种 item.type 声明一个 @Builder，内部按 Top → Middle → Bottom 顺序调用对应子组件并设各自 reuseId，Middle 按类型切换不同子组件。",
+        "必须按 item.type 分派对应 @Builder 组装 list item；V1 用 LazyForEach(IDataSource) + @ObjectLink，V2 用 Repeat(数组).virtualScroll() + @Require @Param/@ObservedV2/@Trace。",
+        "必须说明与单类型/多类型复用的区别：单类型=整 item 一个 @Reusable 一个池；多类型=每类型独立完整组件互不复用；组合型=拆段、共享段跨 type 共享池、差异段各自池。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "forbidden_patterns": [
+        "给每种类型独立写一个完整 @Reusable 组件（重叠的标题/底部在各池重复创建，节点膨胀、复用率低）。",
+        "共享段 Top/Bottom 用不同 reuseId（无法跨 type 共享同一批复用节点）。",
+        "V1 共享/差异子组件未用 @ObjectLink 接收 @Observed 数据（或 V2 未用 @Param/@ObservedV2/@Trace），属性变化不精准驱动 UI 刷新。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "三种类型正确渲染，标题区/底部区跨类型共享复用节点（节点数不膨胀）。",
+        "中间内容区按类型切换正确（单图/三图/视频）。",
+        "滚动复用时共享段与差异段各自落入对应复用池。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "三类型渲染截图",
+        "节点复用对比录屏（共享段不重复创建）",
+        "拆分子组件 + reuseId 分配代码"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-008",
+    "layer": "scene-functional",
+    "title": "跨列表全局复用（BuilderNode + NodeContainer + 全局 NodePool 单例手动池）",
+    "phase": "DEV",
+    "user_prompt": "做一个出行/打车页面，主体是一块地图区域（地图组件），展示当前位置、路线和附近车辆。地图组件初始化较重，希望在用户进入页面前就提前把它预热好，打开页面时地图能立刻显示、不用等初始化。输出可落到工程中的开发方案。",
+    "intent": "验证跨列表全局复用场景（手动 NodePool 路线）能路由至 ARKUI-01（BASIC-03 基础复用，联动 ARKUI-07 组件构建页面），方案覆盖 BuilderNode + NodeContainer(NodeController) 占位 + 全局单例 NodePool(HashMap<type, LinkedList> 按 type 存取) + wrapBuilder 包装 + 占位组件 aboutToAppear 取/aboutToDisappear 还，突破 @Reusable 同父组件限制。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须说明 @Reusable/@ReusableV2 局部复用的限制：节点只能在「同一个父自定义组件的同一个 LazyForEach/List」内回收复用，跨列表（跨父组件）默认无效，故需自建全局池突破。",
+        "必须用 NodeContainer(NodeController) 作列表项占位：NodeController.makeNode() 首次 new BuilderNode + .build(wrappedBuilder, data) 创建节点，复用时 .reuse(data) 更新数据；占位组件 aboutToAppear 从池取节点、aboutToDisappear 调 aboutToRecycle 还回池。",
+        "必须实现全局单例 NodePool：内部 HashMap<string, LinkedList<NodeItem>> 按 type 分池；getNode() 遍历池优先取 getFrameNode().getParent() 为空（已卸载、可复用）的节点，找不到才新建；recycleNode() 清空数据并入池。",
+        "必须用 wrapBuilder(全局 @Builder) 包装为 WrappedBuilder 作为 BuilderNode.build() 的构建入口。",
+        "必须说明真实组件独立构建在 BuilderNode/NodeContainer 内时不能加 @ReusableV2（无 RecycleManager，build 时崩溃）。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "forbidden_patterns": [
+        "期望 @Reusable/@ReusableV2 直接实现跨列表复用（受限于同父组件，跨 Tab 无效）。",
+        "给构建在 NodeContainer 内的真实组件加 @ReusableV2（无 RecycleManager，build 时崩溃）。",
+        "NodePool 取节点时未判断父节点为空（取出仍在挂载、不可复用的节点）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "切换 Tab 后，新 Tab 列表复用旧 Tab 回收的节点（跨父组件复用生效）。",
+        "节点数据正确更新（复用而非新建）。",
+        "全局 NodePool 按 type 正确存取/回收，仅取父节点为空的可复用节点。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "跨 Tab 复用录屏",
+        "NodePool 单例 + BuilderNode + NodeContainer(NodeController) 配置代码",
+        "节点流转（回收/复用）日志"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-009",
+    "layer": "scene-functional",
+    "title": "if 条件分支动态显隐复用（@ReusableV2 + aboutToRecycle/aboutToReuse）",
+    "phase": "DEV",
+    "user_prompt": "商品详情列表页中，每张商品卡片自带一组实拍配图（数量较多，进入可视区时按需加载）。卡片默认只显示商品标题与价格；用户点击卡片可展开下方的实拍图墙，滚动浏览全部配图，再次点击收起。用户经常反复点开同一张卡片来回对比图片，要求展开后已加载完成的配图在收起、再展开时直接显示、不重复请求，展开收起整体保持流畅。请输出可落到工程中的开发方案。",
+    "intent": "验证 if 条件分支显隐复用场景能路由至 ARKUI-01（BASIC-03 基础复用，联动 ARKUI-03 状态管理），方案覆盖把 @Reusable/@ReusableV2 组件置于 if 分支内：条件 true→false 进复用池（V2 aboutToRecycle）、false→true 取出复用（V2 aboutToReuse 无参 / V1 aboutToReuse(params) 刷新）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-03"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须把 @Reusable(V1)/@ReusableV2(V2) 组件置于 if 条件分支内：条件 true→false 时组件进入复用池（V2 回调 aboutToRecycle()）；false→true 时从池中取出复用（V2 回调 aboutToReuse() 无参；V1 回调 aboutToReuse(params) 用新参数刷新 @State）。",
+        "V2 @ReusableV2 组件复用时 @Param/@Local 由框架自动处理，aboutToReuse/aboutToRecycle 均无入参、仅做副作用（日志/资源清理/状态重置）。",
+        "V1 @Reusable 组件必须在 aboutToReuse(params) 中手动把新参数写回 @State。",
+        "单个复用组件可不设 reuseId；存在多个时用 reuseId(V1)/.reuse({ reuseId })(V2) 区分复用池。",
+        "必须说明未加 @Reusable 时每次切 if 条件都销毁旧节点并新建节点；加 @Reusable 后节点回收复用、避免反复创建/销毁。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "forbidden_patterns": [
+        "if 分支内组件未加 @Reusable/@ReusableV2，每次显隐都销毁/新建节点。",
+        "V2 在 aboutToReuse 期望拿入参手动赋值（V2 无参，数据由 @Param 自动重置）。",
+        "V1 的 aboutToReuse(params) 不手动写回 @State（V1 不会自动重置）。",
+        "复用组件内缓存了上一轮的派生状态（如展开态、计数）未在复用时重置，导致状态串到下一次显示。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "收起（if→false）时组件进入复用池不销毁；展开（if→true）时复用旧实例而非新建。",
+        "V2 的 aboutToRecycle/aboutToReuse 在显隐时正确触发；V1 的 aboutToReuse(params) 正确刷新。",
+        "复用组件内状态正确重置，不串上一轮状态。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "显隐复用录屏",
+        "@ReusableV2 置于 if 分支的代码",
+        "aboutToRecycle/aboutToReuse 回调触发日志"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-010",
+    "layer": "scene-functional",
+    "title": "跨列表全局复用池（声明式 reusePool，@ComponentV2 祖先共享池 / API 26+）",
+    "phase": "DEV",
+    "user_prompt": "做一个类似腾讯视频的页面：顶部一排频道 Tab（推荐、电视剧、电影、综艺、动漫等），每个 Tab 下是一列视频卡片列表（封面图、标题、播放量、角标），在不同tab间复用视频卡片。输出可落到工程中的开发方案。",
+    "intent": "验证声明式全局复用池场景能路由至 ARKUI-01（BASIC-03 基础复用，联动 ARKUI-07 组件构建页面），方案覆盖在公共祖先 @ComponentV2({ reusePool: 'shared', poolAccepts, freezeWhenInactive }) 声明共享池 + 列表项用普通 @ReusableV2 + .reuse + 框架自动向上遍历祖先池回收/复用，突破 @Reusable 同父组件限制，是手动 NodePool 的声明式等价写法。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-02"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须说明 @Reusable/@ReusableV2 局部复用限制：节点只能在同一父自定义组件的同一个 LazyForEach/List 内回收复用，跨列表（跨父组件）默认无效；声明式全局复用池用于突破此限制。",
+        "必须在所有 Tab 列表的公共祖先（如页面组件）上声明共享池：@ComponentV2({ reusePool: 'shared', poolAccepts: [列表项组件], freezeWhenInactive: false })，reusePool 与 poolAccepts 成对配置，freezeWhenInactive 在启用全局复用池时必填。",
+        "列表项必须是普通 @ReusableV2 + @ComponentV2（用 @Require @Param 接收数据），复用时 @Param 自动重置、无需手动更新（可重写无参 aboutToReuse/aboutToRecycle 做副作用），并用 .reuse({ reuseId }) 指定复用池。",
+        "必须说明框架机制：可复用组件被回收（如 Tab 卸载、Swiper cachedCount(0) 切页）或创建时，框架自动向上遍历组件树，找到第一个 poolAccepts 接纳它的祖先共享池完成回收/复用；shared 池由引用计数管理生命周期（所有声明实例全部销毁时池才销毁）。",
+        "必须说明与手动 NodePool 的取舍：声明式代码更少、更声明式、列表项直接放 Repeat 无需占位组件与手动池；手动 NodePool 通用可控但样板代码多、列表项须独立构建在 NodeContainer 内且不能加 @ReusableV2。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "forbidden_patterns": [
+        "reusePool 与 poolAccepts 未成对配置，或启用全局复用池时漏配 freezeWhenInactive。",
+        "列表项用 .reuse 但组件本身未标记 @ReusableV2（无法进入复用池）。",
+        "poolAccepts 指向未声明 @ReusableV2 的组件（不会被接纳进池）。",
+        "误以为 shared 池在某一个 Tab 卸载时就销毁（实际由引用计数管理，所有声明实例销毁才销毁）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（声明式全局复用池需 API 26+）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "切换 Tab（Swiper cachedCount(0) 切页即卸载）后，新 Tab 列表复用旧 Tab 回收的列表项（跨父组件复用生效）。",
+        "列表项数据正确更新（复用而非新建），@Param 自动重置。",
+        "回收/复用由祖先共享池自动接管，无需手写占位组件/手动池。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "跨 Tab 声明式复用录屏",
+        "@ComponentV2({ reusePool, poolAccepts, freezeWhenInactive }) + @ReusableV2 列表项代码",
+        "节点回收/复用日志"
+      ]
+    }
+  },
+  {
+    "case_id": "BASIC-FUNC-011",
+    "layer": "scene-functional",
+    "title": "四类型新闻列表组件复用",
+    "phase": "DEV",
+    "user_prompt": "实现一个新闻列表页面，包括4种不同的列表项类型，纯文本、单张图文、多张图文、视频文本。",
+    "intent": "验证用户未明确提到 V1/V2、@Reusable、Repeat 等技术词时，系统仍能根据“新闻列表、多类型列表项、数据多、滑动流畅、避免反复创建”等信号路由至 ARKUI-01 基础语法，并进一步命中 arkui-basic/basic-reuse.md 的组件复用场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-01",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-05", "ARKUI-09", "ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须识别该需求属于多类型新闻信息流 + 长列表滚动复用场景，而不是普通静态列表。",
+        "必须定义新闻数据模型，包含 id、type、title、images、videoUrl/duration、source/time 等字段，并用 type 区分纯文本、单张图文、多张图文、视频文本四种列表项。",
+        "必须使用 List/ListItem 承载新闻信息流，保持四种类型按数据顺序混排展示。",
+        "必须说明不同 item 类型对应不同 UI 结构，应按 item.type 划分复用池，避免跨类型复用导致布局或状态串扰。",
+        "必须主动给出 ArkUI 组件复用实现方式：V1 项目可使用 LazyForEach + IDataSource + @Reusable + reuseId(item.type)，V2 项目可使用 Repeat + virtualScroll + @ReusableV2 + reuse({ reuseId: item.type })。",
+        "必须使用业务 id 作为稳定 key，不能用数组下标作为 key。",
+        "必须覆盖四种列表项的核心渲染逻辑：纯文本、单图、三图、视频封面/播放标识/时长。",
+        "必须说明滚动复用时如何避免状态串扰：稳定 key、按 type 分复用池、复用前后重置列表项内部临时状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-basic/ROUTE.md",
+        "./references/arkui-basic/basic-reuse.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "只把需求当成普通 List 布局问题，没有识别长列表复用诉求。",
+        "使用普通 ForEach 静态渲染大量新闻数据，没有体现滚动复用能力。",
+        "所有新闻类型使用同一个 reuseId，导致纯文本、图文、视频卡片跨类型复用。",
+        "使用数组下标 index 作为 key，插入、删除或刷新数据后导致列表项错位。",
+        "把四种新闻类型拆成四个独立列表渲染，破坏信息流顺序。",
+        "只给 UI 样式代码，不说明数据源、复用池、key、复用生命周期等关键点。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT ArkUI 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "新闻列表能按数据顺序混排展示纯文本、单张图文、多张图文、视频文本四种列表项。",
+        "长列表快速滚动后，列表项内容、图片数量、视频时长和播放标识不串位。",
+        "同类型列表项能够复用，不同类型列表项不会跨类型复用。",
+        "新增、删除或刷新新闻数据后，列表仍通过稳定 id 正确更新，不出现错位。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "四种新闻列表项同屏展示截图",
+        "快速滚动前后列表项无串位截图或录屏",
+        "reuseId 或 aboutToReuse/aboutToRecycle 相关日志",
+        "长列表数据源与组件复用核心代码"
+      ]
+    }
+  }
+]

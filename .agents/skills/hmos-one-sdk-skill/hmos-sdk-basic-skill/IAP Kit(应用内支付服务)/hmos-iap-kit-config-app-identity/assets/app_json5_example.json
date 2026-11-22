@@ -1,0 +1,13 @@
+{
+  "app": {
+    "bundleName": "com.huawei.iap.demo",
+    "vendor": {
+      "name": "Huawei",
+      "value": "Huawei Demo Application"
+    },
+    "versionCode": 1000000,
+    "versionName": "1.0.0",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "license": "",
+  "devDependencies": {},
+  "author": "",
+  "name": "multipath_example",
+  "description": "HarmonyOS Network Boost Kit多网并发示例",
+  "main": "",
+  "version": "1.0.0",
+  "dependencies": {
+    "@kit.NetworkBoostKit": "latest",
+    "@kit.BasicServicesKit": "latest",
+    "@kit.NetworkKit": "latest"
+  }
+}

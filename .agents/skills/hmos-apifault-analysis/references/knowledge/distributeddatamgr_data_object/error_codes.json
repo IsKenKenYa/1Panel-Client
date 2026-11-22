@@ -1,0 +1,289 @@
+[
+  {
+    "code": "201",
+    "message": "Permission verification failed. An attempt was made to join session forbidden by permission: ohos.permission.DISTRIBUTED_DATASYNC.",
+    "source_file": "frameworks/jskitsimpl/src/common/object_error.cpp",
+    "error_class": "PermissionError",
+    "description": "应用未声明或未获取 ohos.permission.DISTRIBUTED_DATASYNC 权限，或权限校验失败。在 createObjectSync、setSessionId 等需要分布式同步的 API 中触发。"
+  },
+  {
+    "code": "401",
+    "message": "Parameter error. The type of '<name>' must be '<wantType>'.",
+    "source_file": "frameworks/jskitsimpl/src/common/object_error.cpp",
+    "error_class": "ParametersType",
+    "description": "参数类型错误。NAPI 桥接层通过 ParametersType 抛出，用于 create、on/off、save、revokeSave、bindAssetStore、setSessionId 等 API 的参数校验。"
+  },
+  {
+    "code": "401",
+    "message": "Parameter error. Need <wantNum> parameters!",
+    "source_file": "frameworks/jskitsimpl/src/common/object_error.cpp",
+    "error_class": "ParametersNum",
+    "description": "参数数量不足。NAPI 桥接层通过 ParametersNum 抛出，用于 createObjectSync、on/off、recordCallback、deleteCallback 等 API 的参数个数校验。"
+  },
+  {
+    "code": "401",
+    "message": "The sessionId allows only letters, digits, and underscores(_), and cannot exceed 128 in length.",
+    "source_file": "interfaces/jskits/distributed_data_object.js",
+    "error_class": "JS_LAYER",
+    "description": "setSessionId 的 sessionId 参数不符合命名规则（仅允许字母、数字、下划线，最大128字符）。在 JS 层和 ANI 层（ohos.data.distributedDataObject.DataObject.cpp SetSessionIdWithCallbackSync）均有校验。"
+  },
+  {
+    "code": "401",
+    "message": "The device id is empty.",
+    "source_file": "frameworks/ets/taihe/ohos.data.distributedDataObject/src/ohos.data.distributedDataObject.DataObject.cpp",
+    "error_class": "AniError_ParameterCheck",
+    "description": "ANI 静态化层 save(deviceId) 时 deviceId 为空。"
+  },
+  {
+    "code": "801",
+    "message": "Capability not supported.",
+    "source_file": "frameworks/jskitsimpl/src/common/object_error.cpp",
+    "error_class": "DeviceNotSupportedError",
+    "description": "设备能力不支持。在 save、revokeSave、bindAssetStore API 中，当底层返回 ERR_PROCESSING 时通过 INVALID_API_THROW_ERROR 宏抛出此错误。"
+  },
+  {
+    "code": "15400001",
+    "message": "Failed to create the in-memory database. The possible reason is that other distributed data object has already set the same sessionId.",
+    "source_file": "frameworks/jskitsimpl/src/common/object_error.cpp",
+    "error_class": "DatabaseError",
+    "description": "创建内存数据库失败。通常因为同一 sessionId 已被另一个分布式数据对象占用（ERR_EXIST）。在 createObjectSync 和 ANI 层 JoinSession 中，当 CreateObject 返回 ERR_EXIST 时抛出。"
+  },
+  {
+    "code": "15400002",
+    "message": "Parameter error. Possible causes: 1. The assetKey is invalid, such as \"\"; 2. The uri is invalid, such as \"\".",
+    "source_file": "interfaces/jskits/distributed_data_object.js",
+    "error_class": "JS_LAYER",
+    "description": "setAsset/setAssets 参数错误。在 JS 层 getDefaultAsset、setAsset、setAssets 中校验，ANI 层（ani_error_utils.h AniError_ParameterError）同步实现。涵盖 assetKey/assetsKey 为空、uri 为空、uris 数组长度无效等场景。"
+  },
+  {
+    "code": "15400002",
+    "message": "The uri array of the set assets is not an array or the length is invalid.",
+    "source_file": "interfaces/jskits/distributed_data_object.js",
+    "error_class": "JS_LAYER",
+    "description": "setAssets 的 uris 参数非数组或长度不在 1~50 范围内。"
+  },
+  {
+    "code": "15400002",
+    "message": "Uri in assets array is invalid.",
+    "source_file": "interfaces/jskits/distributed_data_object.js",
+    "error_class": "JS_LAYER",
+    "description": "setAssets 的 uris 数组中存在空字符串元素。"
+  },
+  {
+    "code": "15400003",
+    "message": "The sessionId of the distributed object has been set.",
+    "source_file": "interfaces/jskits/distributed_data_object.js",
+    "error_class": "JS_LAYER",
+    "description": "setAsset/setAssets 在 sessionId 已设置后调用。必须先调用 setAsset/setAssets 再调用 setSessionId。在 JS 层 setAsset/setAssets 和 ANI 层（ani_error_utils.h AniError_SessionJoined）均有校验。"
+  },
+  {
+    "code": "0",
+    "message": "(InnerError, code=0)",
+    "source_file": "frameworks/jskitsimpl/include/common/object_error.h",
+    "error_class": "InnerError",
+    "description": "内部错误。EXCEPTION_INNER 常量为 0，用于 NAPI 桥接层中各种非预期错误场景（如 objectStore 为 null、napi 操作失败等）。不会作为公开错误码抛给应用。"
+  },
+  {
+    "code": "202",
+    "message": "Not system app.",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::NOT_SYSTEM_APP",
+    "description": "协作编辑模块：非系统应用调用受限 API。"
+  },
+  {
+    "code": "401",
+    "message": "Invalid argument (collaboration_edit).",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::INVALID_ARGUMENT",
+    "description": "协作编辑模块：参数错误。"
+  },
+  {
+    "code": "15410000",
+    "message": "Internal error (collaboration_edit).",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::INTERNAL_ERROR",
+    "description": "协作编辑模块：内部错误。错误基址 EDIT_ERROR_OFFSET = 15410000。"
+  },
+  {
+    "code": "15410001",
+    "message": "Unsupported operation (collaboration_edit).",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::UNSUPPORTED_OPERATION",
+    "description": "协作编辑模块：不支持的操作。"
+  },
+  {
+    "code": "15410002",
+    "message": "Index out of range (collaboration_edit).",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::INDEX_OUT_OF_RANGE",
+    "description": "协作编辑模块：索引越界。"
+  },
+  {
+    "code": "15410003",
+    "message": "Database error (collaboration_edit).",
+    "source_file": "frameworks/jskitsimpl/collaboration_edit/include/napi_errno.h",
+    "error_class": "CollaborationEdit::DB_ERROR",
+    "description": "协作编辑模块：数据库错误。"
+  },
+  {
+    "code": "1651 (internal)",
+    "message": "ERR_DB_SET_PROCESS - Database setup failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_SET_PROCESS",
+    "description": "内部错误码（BASE_ERR_OFFSET+1），数据库初始化失败。不直接抛给应用。"
+  },
+  {
+    "code": "1652 (internal)",
+    "message": "ERR_EXIST - Already exists.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_EXIST",
+    "description": "内部错误码（BASE_ERR_OFFSET+2），对象/资源已存在。在 createObjectSync 中映射为公开错误码 15400001。"
+  },
+  {
+    "code": "1653 (internal)",
+    "message": "ERR_DATA_LEN - Illegal data length.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DATA_LEN",
+    "description": "内部错误码（BASE_ERR_OFFSET+3），数据长度非法。"
+  },
+  {
+    "code": "1654 (internal)",
+    "message": "ERR_NOMEM - Memory allocation failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NOMEM",
+    "description": "内部错误码（BASE_ERR_OFFSET+4），内存分配失败。"
+  },
+  {
+    "code": "1655 (internal)",
+    "message": "ERR_DB_NOT_INIT - Database is not initialized.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_NOT_INIT",
+    "description": "内部错误码（BASE_ERR_OFFSET+5），数据库未初始化。"
+  },
+  {
+    "code": "1656 (internal)",
+    "message": "ERR_DB_GETKV_FAIL - Kvstore error.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_GETKV_FAIL",
+    "description": "内部错误码（BASE_ERR_OFFSET+6），KV 存储获取失败。"
+  },
+  {
+    "code": "1657 (internal)",
+    "message": "ERR_DB_NOT_EXIST - Database not exist.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_NOT_EXIST",
+    "description": "内部错误码（BASE_ERR_OFFSET+7），数据库不存在。"
+  },
+  {
+    "code": "1658 (internal)",
+    "message": "ERR_DB_GET_FAIL - Get database data failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_GET_FAIL",
+    "description": "内部错误码（BASE_ERR_OFFSET+8），数据库读数据失败。"
+  },
+  {
+    "code": "1659 (internal)",
+    "message": "ERR_DB_ENTRY_FAIL - Get database entry failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_DB_ENTRY_FAIL",
+    "description": "内部错误码（BASE_ERR_OFFSET+9），数据库 Entry 获取失败。"
+  },
+  {
+    "code": "1660 (internal)",
+    "message": "ERR_CLOSE_STORAGE - Close database failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_CLOSE_STORAGE",
+    "description": "内部错误码（BASE_ERR_OFFSET+10），关闭数据库失败。"
+  },
+  {
+    "code": "1661 (internal)",
+    "message": "ERR_NULL_OBJECT - The object is null.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NULL_OBJECT",
+    "description": "内部错误码（BASE_ERR_OFFSET+11），操作对象为空。"
+  },
+  {
+    "code": "1662 (internal)",
+    "message": "ERR_REGISTER - Registration failed.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_REGISTER",
+    "description": "内部错误码（BASE_ERR_OFFSET+12），注册监听失败。"
+  },
+  {
+    "code": "1663 (internal)",
+    "message": "ERR_NULL_OBJECTSTORE - The object store is null.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NULL_OBJECTSTORE",
+    "description": "内部错误码（BASE_ERR_OFFSET+13），对象存储为空。"
+  },
+  {
+    "code": "1664 (internal)",
+    "message": "ERR_GET_OBJECT - Get the object failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_GET_OBJECT",
+    "description": "内部错误码（BASE_ERR_OFFSET+14），获取对象失败。"
+  },
+  {
+    "code": "1665 (internal)",
+    "message": "ERR_NO_OBSERVER - Unregistered.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NO_OBSERVER",
+    "description": "内部错误码（BASE_ERR_OFFSET+15），未注册观察者。"
+  },
+  {
+    "code": "1666 (internal)",
+    "message": "ERR_UNREGISTER - Deregistration failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_UNREGISTER",
+    "description": "内部错误码（BASE_ERR_OFFSET+16），取消注册失败。"
+  },
+  {
+    "code": "1667 (internal)",
+    "message": "ERR_SINGLE_DEVICE - Only one device.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_SINGLE_DEVICE",
+    "description": "内部错误码（BASE_ERR_OFFSET+17），仅有单设备。"
+  },
+  {
+    "code": "1668 (internal)",
+    "message": "ERR_NULL_PTR - The pointer is null.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NULL_PTR",
+    "description": "内部错误码（BASE_ERR_OFFSET+18），空指针。"
+  },
+  {
+    "code": "1669 (internal)",
+    "message": "ERR_PROCESSING - Processing failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_PROCESSING",
+    "description": "内部错误码（BASE_ERR_OFFSET+19），处理失败。在 save/revokeSave/bindAssetStore 中映射为公开错误码 801（DeviceNotSupportedError）。"
+  },
+  {
+    "code": "1670 (internal)",
+    "message": "ERR_RESULTSET - ResultSet processing failure.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_RESULTSET",
+    "description": "内部错误码（BASE_ERR_OFFSET+20），ResultSet 处理失败。"
+  },
+  {
+    "code": "1671 (internal)",
+    "message": "ERR_INVALID_ARGS - Input parameters error.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_INVALID_ARGS",
+    "description": "内部错误码（BASE_ERR_OFFSET+21），输入参数错误。"
+  },
+  {
+    "code": "1672 (internal)",
+    "message": "ERR_IPC - Ipc error.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_IPC",
+    "description": "内部错误码（BASE_ERR_OFFSET+22），IPC 通信错误。"
+  },
+  {
+    "code": "1673 (internal)",
+    "message": "ERR_NO_PERMISSION - No DATA_SYNC permission.",
+    "source_file": "interfaces/innerkits/objectstore_errors.h",
+    "error_class": "ERR_NO_PERMISSION",
+    "description": "内部错误码（BASE_ERR_OFFSET+23），无 DISTRIBUTED_DATASYNC 权限。在 createObjectSync 和 ANI JoinSession 中映射为公开错误码 201。"
+  }
+]

@@ -1,0 +1,805 @@
+[
+  {
+    "case_id": "DM-FUNC-001",
+    "layer": "scene-functional",
+    "title": "删除操作 AlertDialog 二次确认开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器：用户点击删除按钮时弹出警告弹窗，标题\"删除确认\"，内容\"确定要删除该文件吗？删除后无法恢复。\"，提供取消和确定删除两个按钮，确定按钮为红色。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-08 弹窗/菜单场景中 AlertDialog.show() + primaryButton/secondaryButton + 按钮回调 + fontColor 红色警示的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-08",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 this.getUIContext().showAlertDialog() 弹出警告弹窗，不能直接用 alert() 或自定义组件代替。",
+        "必须设置 title（删除确认）和 message（确定要删除该文件吗？删除后无法恢复。）属性。",
+        "必须使用 primaryButton（取消）和 secondaryButton（确定删除）双按钮配置，不能用 confirm 单按钮。",
+        "确定删除按钮必须设置 fontColor('#e74c3c') 红色警示色区分取消按钮。",
+        "两个按钮必须分别绑定 action 回调：取消按钮关闭弹窗、确定按钮执行删除逻辑。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 @CustomDialog 自定义弹窗代替 AlertDialog，系统弹窗已满足需求且更简洁。",
+        "使用 confirm 单按钮代替 primaryButton+secondaryButton 双按钮配置。",
+        "确定删除按钮不设置红色 fontColor，无法从视觉上警示用户。",
+        "按钮不绑定 action 回调或回调中不执行实际删除/取消逻辑。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击删除按钮后弹出 AlertDialog 警告弹窗，标题和内容正确显示。",
+        "弹窗包含取消和确定删除两个按钮，确定删除按钮为红色字体。",
+        "点击取消按钮弹窗关闭不执行删除，点击确定删除按钮执行删除逻辑后弹窗关闭。",
+        "使用 this.getUIContext().showAlertDialog() 调用，非自定义弹窗组件。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "AlertDialog 弹窗截图（标题+内容+双按钮，确定按钮红色）",
+        "点击取消按钮弹窗关闭截图",
+        "点击确定删除按钮执行删除后截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-002",
+    "layer": "scene-functional",
+    "title": "分享渠道 ActionSheet 底部弹窗开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交动态分享：用户点击分享按钮时从底部弹出操作面板，标题\"分享到\"，列出微信、QQ、微博三个分享渠道供用户选择，每个渠道带图标和标题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 showActionSheet + sheets 数组 + SheetInfo + cancel 回调的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 this.getUIContext().showActionSheet() 弹出底部操作面板，不能用手动自定义底部弹窗代替。",
+        "必须设置 title（分享到）属性，可选设置 subtitle 和 message。",
+        "sheets 数组必须包含至少 3 个 SheetInfo 对象（微信/QQ/微博），每个含 title 和 action 回调。",
+        "必须设置 cancel 回调处理用户取消分享的操作。",
+        "sheets 数组必须声明类型为 Array<SheetInfo> 保证类型安全。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 @CustomDialog 手动实现底部面板代替 ActionSheet，系统组件已满足需求。",
+        "sheets 数组不声明 Array<SheetInfo> 类型导致编译警告。",
+        "不设置 cancel 回调，用户取消分享时无处理逻辑。",
+        "SheetInfo 对象只设 title 不绑定 action 回调，点击渠道无响应。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击分享按钮后从底部弹出 ActionSheet 操作面板，标题显示\"分享到\"。",
+        "面板列出微信、QQ、微博三个分享渠道，每个含图标和标题。",
+        "点击某个渠道后执行对应分享逻辑并关闭面板。",
+        "点击蒙层或取消区域触发 cancel 回调关闭面板。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "ActionSheet 弹窗截图（底部弹出，标题+三渠道列表）",
+        "点击渠道执行分享截图",
+        "取消分享截图（面板关闭）"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-003",
+    "layer": "scene-functional",
+    "title": "日期/学历选择器弹窗开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿用户注册表单：生日字段点击后弹出日期选择器弹窗（范围1900-2030），学历字段点击后弹出文本选择器弹窗（高中/大专/本科/硕士/博士）。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 DatePickerDialog + TextPickerDialog + start/end 范围 + onAccept 回调的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "生日字段必须使用 this.getUIContext().showDatePickerDialog() 弹出日期选择器，不能用手动自定义滚轮组件。",
+        "DatePickerDialog 必须设置 start（1900-01-01）和 end（2030-12-31）范围限制可选日期。",
+        "DatePickerDialog 必须设置 selected 默认选中日期（如 new Date()）和 onDateAccept 回调获取选中日期。",
+        "学历字段必须使用 this.getUIContext().showTextPickerDialog() 弹出文本选择器，range 数组为 ['高中','大专','本科','硕士','博士']。",
+        "TextPickerDialog 必须设置 onAccept 回调获取选中文本，并设置 onCancel 处理取消选择。",
+        "两个选择器弹窗都必须设置 onCancel 回调处理用户取消操作。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 @CustomDialog 手动实现滚轮选择器代替系统 DatePickerDialog/TextPickerDialog。",
+        "DatePickerDialog 不设置 start/end 范围，用户可选任意日期。",
+        "选择器不绑定 onAccept/onDateAccept 回调，选择后无法获取结果。",
+        "不设置 onCancel 回调，用户取消选择时无处理。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击生日字段弹出 DatePickerDialog 日期选择器，可滚动选择年月日。",
+        "日期选择范围限制在 1900-2030 之间，超出范围不可选。",
+        "点击学历字段弹出 TextPickerDialog 文本选择器，列出 5 个学历选项。",
+        "选择后通过 onAccept/onDateAccept 回调将选中值填入对应表单字段。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "DatePickerDialog 截图（日期滚轮选择器，范围1900-2030）",
+        "TextPickerDialog 截图（文本滚轮选择器，5个学历选项）",
+        "选择后表单字段填充截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-004",
+    "layer": "scene-functional",
+    "title": "倒计时广告弹窗 openCustomDialog+ComponentContent 动态更新开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商促销：弹出广告弹窗显示限时特惠倒计时，倒计时5秒结束后动态更新弹窗内容——倒计时数字消失、按钮文案从\"等待倒计时\"变为\"立即抢购\"。要求弹窗内容可动态更新且不依赖特定组件上下文。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 openCustomDialog + ComponentContent + wrapBuilder + content.update() + closeCustomDialog + dispose() 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定义参数类（如 CountdownParams）包含 countdownText、buttonText、onButton、onClose 字段供 ComponentContent 传递。",
+        "必须使用 @Builder 函数构建弹窗内容 UI，通过 wrapBuilder() 包装后传入 ComponentContent。",
+        "必须使用 new ComponentContent(uiContext, wrapBuilder(builder), params) 创建弹窗内容对象。",
+        "必须使用 this.getUIContext().getPromptAction().openCustomDialog(content, options) 打开弹窗，返回 Promise。",
+        "倒计时必须通过 setInterval 定时器每秒调用 content.update(newParams) 动态更新弹窗内容（倒计时数字和按钮文案）。",
+        "必须实现 closeDialog() 方法调用 closeCustomDialog(content) 关闭弹窗，并在 aboutToDisappear 中调用 content.dispose() 释放资源。",
+        "必须清理定时器（clearInterval）防止内存泄漏。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 @CustomDialog + CustomDialogController 代替 openCustomDialog，无法动态更新弹窗内容。",
+        "不使用 ComponentContent.update() 而是销毁重建弹窗实现内容更新，性能差且闪烁。",
+        "不调用 content.dispose() 释放资源导致内存泄漏。",
+        "不清理 setInterval 定时器导致组件销毁后定时器仍在运行。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "弹窗弹出后显示倒计时数字（5秒）和\"等待倒计时\"按钮。",
+        "倒计时每秒递减，弹窗内容通过 content.update() 动态更新不闪烁。",
+        "倒计时结束后按钮文案变为\"立即抢购\"，倒计时数字消失。",
+        "关闭弹窗后定时器已清理、ComponentContent 已 dispose 释放。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "弹窗倒计时进行中截图（倒计时数字+等待倒计时按钮）",
+        "倒计时结束后截图（数字消失+立即抢购按钮）",
+        "关闭弹窗后无内存泄漏截图（DevEco Studio 内存分析）"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-005",
+    "layer": "scene-functional",
+    "title": "商品规格选择 @CustomDialog+CustomDialogController 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿商品详情页：点击\"选择规格\"按钮从底部弹出自定义弹窗，包含颜色选择（黑色/白色/蓝色/红色）、尺码选择（S/M/L/XL）、数量调节（+/-按钮）、取消和加入购物车两个操作按钮。要求弹窗与父组件共享状态。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-08 弹窗/菜单场景中 @CustomDialog 装饰器 + CustomDialogController + builder + alignment(Bottom) + customStyle + 父组件状态共享的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-08",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 @CustomDialog 装饰器定义 SpecDialog 弹窗组件，含 controller: CustomDialogController 属性。",
+        "弹窗内必须包含颜色选择（Flex+ForEach 渲染黑色/白色/蓝色/红色按钮，选中高亮）、数量调节（Row+减号/数字/加号）、操作按钮（取消/加入购物车）。",
+        "颜色和数量必须使用 @State 管理弹窗内状态，加入购物车按钮通过 onResult 回调将选中结果传回父组件。",
+        "必须使用 CustomDialogController 配置 builder: SpecDialog(...) + alignment: DialogAlignment.Bottom + customStyle: true 从底部弹出自定义样式弹窗。",
+        "取消按钮必须调用 this.controller.close() 关闭弹窗，加入购物车按钮必须在调用 onResult 后关闭弹窗。",
+        "加入购物车按钮必须设置 enabled 条件（颜色和尺码均已选择）防止未选择就提交。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 openCustomDialog + ComponentContent 代替 @CustomDialog，场景不需要动态更新内容且需要父组件状态共享。",
+        "不使用 CustomDialogController 而是手动管理弹窗显隐，无法使用 alignment/customStyle 等配置。",
+        "颜色选择按钮不绑定 onClick 或选中状态不高亮，用户无法知道当前选择。",
+        "加入购物车按钮不设 enabled 条件，未选规格即可提交。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击\"选择规格\"按钮后从底部弹出 @CustomDialog 自定义弹窗。",
+        "弹窗包含颜色选择（4色按钮，选中高亮）、数量调节（+/-按钮，数字显示）、取消和加入购物车按钮。",
+        "加入购物车按钮在未选颜色时禁用，选中颜色后启用。",
+        "点击加入购物车后通过 onResult 回调将选中颜色和数量传回父组件并关闭弹窗。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "底部弹窗截图（颜色选择+数量调节+操作按钮）",
+        "颜色选中高亮截图",
+        "加入购物车后父组件收到结果截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-006",
+    "layer": "scene-functional",
+    "title": "多弹窗层级管理 levelOrder 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿多任务编辑器：已打开基础设置弹窗（层级50）的情况下，需要在其之上弹出\"未保存提醒\"弹窗（层级200），确保提醒弹窗始终覆盖在设置弹窗之上。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 openCustomDialog + levelOrder + LevelOrder.clamp() + 多弹窗覆盖顺序的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 openCustomDialog + ComponentContent 分别创建低层级弹窗（levelOrder: 50）和高层级弹窗（levelOrder: 200）。",
+        "低层级弹窗必须设置 levelOrder: LevelOrder.clamp(50) 确保层级为 50。",
+        "高层级弹窗必须设置 levelOrder: LevelOrder.clamp(200) 确保层级为 200，高于低层级弹窗。",
+        "两个弹窗必须使用不同的 ComponentContent 对象和 @Builder 函数构建内容。",
+        "高层级弹窗弹出后必须视觉上覆盖在低层级弹窗之上，低层级弹窗不可交互。",
+        "必须分别管理两个弹窗的关闭和资源释放（closeCustomDialog + dispose）。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不设置 levelOrder 导致两个弹窗层级不确定，可能出现低层级弹窗覆盖高层级的情况。",
+        "用 zIndex 或 Position 绝对定位代替 levelOrder 管理弹窗层级，不适用于弹窗系统。",
+        "两个弹窗共用同一个 ComponentContent 对象导致内容冲突。",
+        "只关闭高层级弹窗不关闭低层级弹窗，或关闭后不 dispose 释放资源。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "先弹出低层级设置弹窗（levelOrder: 50），再弹出高层级提醒弹窗（levelOrder: 200）。",
+        "高层级提醒弹窗视觉上覆盖在低层级设置弹窗之上。",
+        "低层级弹窗被高层级弹窗蒙层遮挡，不可交互。",
+        "关闭高层级弹窗后低层级弹窗恢复可交互。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "低层级弹窗截图（设置弹窗单独显示）",
+        "高层级弹窗截图（提醒弹窗覆盖在设置弹窗之上）",
+        "关闭高层级弹窗后低层级弹窗恢复截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-007",
+    "layer": "scene-functional",
+    "title": "搜索建议弹窗 focusable:false 焦点管理开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿搜索页：用户在搜索框输入文字时实时弹出搜索建议/联想词弹窗，弹窗不能关闭软键盘，焦点保持在输入框中让用户继续输入，同时点击建议词可选中。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 openCustomDialog + focusable(false) + isModal(false) + 软键盘不收起 + 搜索建议交互的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 openCustomDialog + ComponentContent 创建搜索建议弹窗，不能用手动浮层组件代替。",
+        "必须设置 focusable: false 确保弹窗不获取焦点，软键盘不收起，焦点保持在搜索框中。",
+        "必须设置 isModal: false 非模态弹窗，允许用户与蒙层外组件（搜索框）交互。",
+        "必须设置 alignment: DialogAlignment.Top 将弹窗定位到顶部（搜索框下方）。",
+        "弹窗内容必须通过 @Builder + ComponentContent 动态渲染搜索建议列表（ForEach 遍历建议词数组）。",
+        "点击建议词必须通过回调将选中词填入搜索框并关闭弹窗，不影响软键盘状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不设置 focusable: false 导致弹窗获取焦点，软键盘收起，用户无法继续输入。",
+        "使用 isModal: true 模态弹窗，蒙层遮挡搜索框导致无法交互。",
+        "用 bindMenu 或 bindPopup 代替 openCustomDialog，无法精确控制焦点行为。",
+        "建议词不绑定点击回调或点击后不关闭弹窗。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "用户在搜索框输入文字时弹出搜索建议弹窗，软键盘不收起。",
+        "弹窗定位在顶部（搜索框下方），使用 alignment: Top。",
+        "用户可继续在搜索框输入文字，弹窗内容实时更新建议词列表。",
+        "点击建议词后选中词填入搜索框并关闭弹窗，软键盘保持打开状态。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "搜索输入时弹窗截图（建议词列表显示，软键盘未收起）",
+        "继续输入时弹窗内容更新截图",
+        "点击建议词后搜索框填充截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-008",
+    "layer": "scene-functional",
+    "title": "支付确认+新手引导弹窗蒙层控制开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿支付流程：支付确认弹窗需要禁止点击蒙层关闭防止误触；同时需要一个新手引导弹窗，蒙层只遮挡顶部10%区域实现局部高亮，范围外事件可透传。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 autoCancel(false) 防误触 + isModal(false) 非模态 + maskRect 局部蒙层的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "支付确认弹窗必须使用 openCustomDialog 并设置 autoCancel: false 禁止点击蒙层关闭，强制用户通过按钮操作。",
+        "支付确认弹窗必须设置 isModal: true 模态弹窗，蒙层遮挡全屏阻止背景交互。",
+        "新手引导弹窗必须使用 openCustomDialog 并设置 maskRect: { x: 0, y: 0, width: '100%', height: '10%' } 只遮挡顶部10%区域。",
+        "新手引导弹窗必须设置 isModal: true + autoCancel: true，蒙层区域内点击可关闭、区域外事件透传可交互。",
+        "两个弹窗必须使用不同的 ComponentContent 和 @Builder 构建各自内容。",
+        "支付确认弹窗必须提供确认和取消按钮，只有点击按钮才能关闭弹窗。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "支付确认弹窗使用 autoCancel: true 默认值，用户误触蒙层即关闭弹窗。",
+        "新手引导弹窗不设置 maskRect 导致蒙层全屏遮挡，无法实现局部高亮。",
+        "用 visibility 控制自定义浮层代替 openCustomDialog + maskRect，无法使用蒙层区域控制。",
+        "支付确认弹窗不提供按钮只靠 autoCancel 关闭，用户无法主动操作。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "支付确认弹窗弹出后点击蒙层不关闭，必须点击确认或取消按钮才能关闭。",
+        "支付确认弹窗为模态（isModal: true），背景不可交互。",
+        "新手引导弹窗蒙层只遮挡顶部10%区域，底部90%区域可正常交互。",
+        "新手引导弹窗点击蒙层区域（顶部10%）可关闭，区域外事件透传。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "支付确认弹窗截图（点击蒙层不关闭）",
+        "新手引导弹窗截图（蒙层仅顶部10%，底部可交互）",
+        "点击支付确认按钮后弹窗关闭截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-009",
+    "layer": "scene-functional",
+    "title": "表单提交异步确认 showDialog 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿表单提交流程：用户点击提交按钮后弹出异步确认弹窗，标题\"提交确认\"，内容\"确认提交当前表单数据？提交后不可修改。\"，提供取消和确认两个按钮，需要根据用户异步选择的按钮索引决定是否执行提交逻辑。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 promptAction.showDialog + Promise 异步返回 + result.index 按钮索引 + try/catch 错误处理的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 this.getUIContext().getPromptAction().showDialog() 弹出异步确认弹窗，不能用手动自定义弹窗或 AlertDialog 代替。",
+        "必须设置 title（提交确认）和 message（确认提交当前表单数据？提交后不可修改。）属性。",
+        "buttons 数组必须包含至少 2 个按钮对象（取消/确认），每个含 text 和 color 属性，确认按钮使用蓝色（#007DFF）区分取消按钮（#999）。",
+        "必须使用 async/await 或 .then() 处理 showDialog 返回的 Promise，通过 result.index 判断用户点击的按钮。",
+        "必须在 result.index === 确认按钮索引时执行提交逻辑，否则取消提交。",
+        "必须使用 try/catch 包裹 showDialog 调用，catch 中处理弹窗关闭或异常情况。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 AlertDialog 代替 showDialog，AlertDialog 是同步 action 回调，无法异步返回按钮索引。",
+        "不使用 async/await 或 .then() 处理 Promise，导致无法获取 result.index。",
+        "不检查 result.index 直接执行提交逻辑，用户点击取消也会提交。",
+        "不使用 try/catch 包裹调用，弹窗关闭或异常时无错误处理。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击提交按钮后弹出 showDialog 异步确认弹窗，标题和内容正确显示。",
+        "弹窗包含取消和确认两个按钮，按钮颜色有区分（取消灰色、确认蓝色）。",
+        "点击确认按钮后执行提交逻辑（result.index === 确认索引），点击取消按钮不执行提交。",
+        "弹窗关闭或异常时 try/catch 正确捕获，不导致未处理异常。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "showDialog 弹窗截图（标题+内容+双按钮，颜色区分）",
+        "点击确认按钮后执行提交截图",
+        "点击取消按钮后不执行提交截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-010",
+    "layer": "scene-functional",
+    "title": "更多操作 showActionMenu 操作菜单开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿内容详情页：点击右上角\"更多\"按钮弹出操作菜单，包含编辑、删除、分享、收藏四个选项，删除选项为红色警示，需要根据用户异步选择的菜单项索引执行对应操作。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 promptAction.showActionMenu + buttons 数组 + Promise 异步返回 + result.index 菜单索引 + try/catch 错误处理的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 this.getUIContext().getPromptAction().showActionMenu() 弹出操作菜单，不能用 bindMenu 或自定义底部弹窗代替。",
+        "必须设置 title（更多操作）属性。",
+        "buttons 数组必须包含至少 4 个按钮对象（编辑/删除/分享/收藏），每个含 text 和 color 属性。",
+        "删除按钮必须设置 color: '#e74c3c' 红色警示色与其他选项区分。",
+        "必须使用 async/await 或 .then() 处理 showActionMenu 返回的 Promise，通过 result.index 映射到对应操作。",
+        "必须将 buttons 数组与操作映射表（如 actions 数组）对应，根据 result.index 执行对应操作。",
+        "必须使用 try/catch 包裹 showActionMenu 调用，catch 中处理用户取消菜单或异常情况。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 bindMenu 代替 showActionMenu，bindMenu 是同步 onClick 回调，无法异步返回按钮索引。",
+        "不使用 async/await 或 .then() 处理 Promise，导致无法获取 result.index。",
+        "不将 result.index 映射到操作，用户选择菜单项后无响应。",
+        "删除按钮不设置红色警示色，无法从视觉上区分危险操作。",
+        "不使用 try/catch 包裹调用，用户取消菜单时无错误处理。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击\"更多\"按钮后弹出 showActionMenu 操作菜单，标题显示\"更多操作\"。",
+        "菜单列出编辑、删除、分享、收藏四个选项，删除选项为红色字体。",
+        "点击某个选项后通过 result.index 映射执行对应操作并关闭菜单。",
+        "用户取消菜单（点击蒙层或返回）时 try/catch 正确捕获，不执行任何操作。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "showActionMenu 菜单截图（标题+四选项，删除红色）",
+        "点击编辑选项执行对应操作截图",
+        "取消菜单后无异常截图"
+      ]
+    }
+  },
+  {
+    "case_id": "DM-FUNC-011",
+    "layer": "scene-functional",
+    "title": "节日活动弹窗 transition 自定义过渡动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿节日活动弹窗：弹窗需要自定义淡入动画效果，弹窗和蒙层整体以3秒缓慢渐显方式出现增强视觉氛围，同时提供一个快速淡入（1秒）的变体方案和一个滑动+淡入组合动画变体。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 弹窗进阶场景中 openCustomDialog + transition + TransitionEffect.OPACITY + .animation({ duration }) + .combine() 组合动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 this.getUIContext().getPromptAction().openCustomDialog(content, options) 打开弹窗，通过 transition 参数设置自定义过渡动画。",
+        "必须使用 ComponentContent + wrapBuilder + @Builder 构建弹窗内容，不能直接用字符串内容。",
+        "必须提供慢速淡入方案：transition: TransitionEffect.OPACITY.animation({ duration: 3000 }) 实现3秒缓慢渐显。",
+        "必须提供快速淡入变体方案：transition: TransitionEffect.OPACITY.animation({ duration: 1000 }) 实现1秒快速渐显。",
+        "必须提供滑动+淡入组合动画变体：transition: TransitionEffect.translate({ y: 300 }).combine(TransitionEffect.OPACITY).animation({ duration: 800 })。",
+        "必须设置 alignment、isModal、autoCancel 等基础弹窗属性。",
+        "必须实现 closeDialog() 方法调用 closeCustomDialog(content) 关闭弹窗，并在 aboutToDisappear 中调用 content.dispose() 释放资源。"
+      ],
+      "should_reuse_resources": [
+        "./references/dialog-menu-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 @CustomDialog + CustomDialogController 代替 openCustomDialog，CustomDialogController 不支持 transition 参数。",
+        "不使用 TransitionEffect 而是手动用 animateTo 或 animation 修饰器实现弹窗动画，无法作用于弹窗过渡。",
+        "只提供一个动画方案不提供变体，无法满足3秒慢速和1秒快速两种需求。",
+        "不调用 content.dispose() 释放 ComponentContent 资源导致内存泄漏。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "弹窗以3秒缓慢渐显方式出现（慢速淡入方案），弹窗和蒙层整体渐显。",
+        "切换为快速淡入方案后弹窗以1秒渐显方式出现。",
+        "切换为组合动画方案后弹窗从下方滑入并同时淡入（800ms）。",
+        "关闭弹窗后 ComponentContent 已 dispose 释放，无内存泄漏。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "慢速淡入弹窗截图（3秒渐显过程中）",
+        "快速淡入弹窗截图（1秒渐显完成后）",
+        "组合动画弹窗截图（滑入+淡入完成后）"
+      ]
+    }
+  }
+]

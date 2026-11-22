@@ -1,0 +1,31 @@
+/**
+ * SDK version strings for HarmonyOS products in project-level build-profile.json5.
+ * Do NOT copy this file into the host project. Merge the matching product fields only.
+ *
+ * From API 26.0.0 the kit version format changed (SemVer X.Y.Z).
+ * API 20 / 22 still use HarmonyOS version (API) strings.
+ *
+ * Forbidden for API 26+: "7.0.0(26)", "6.0.0(26)", 26, "26".
+ */
+{
+  // 仅链接：API 20+（旧写法）
+  "linkApi20": {
+    "compatibleSdkVersion": "6.0.0(20)",
+    "targetSdkVersion": "6.0.0(20)",
+    "runtimeOS": "HarmonyOS"
+  },
+
+  // 含文件、不要精准：API 22+（旧写法）
+  "fileApi22": {
+    "compatibleSdkVersion": "6.0.2(22)",
+    "targetSdkVersion": "6.0.2(22)",
+    "runtimeOS": "HarmonyOS"
+  },
+
+  // 含文件、要精准 / 任意 API 26+：新写法 SemVer，无括号
+  "fileApi26": {
+    "compatibleSdkVersion": "26.0.0",
+    "targetSdkVersion": "26.0.0",
+    "runtimeOS": "HarmonyOS"
+  }
+}

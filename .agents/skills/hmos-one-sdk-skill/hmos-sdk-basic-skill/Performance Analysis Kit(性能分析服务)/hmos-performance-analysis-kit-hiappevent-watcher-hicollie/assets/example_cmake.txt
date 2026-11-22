@@ -1,0 +1,39 @@
+# CMakeLists.txt - HiCollie定时器检测示例
+
+cmake_minimum_required(VERSION 3.4.1)
+project(entry)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 添加源文件
+add_library(entry SHARED
+    napi_init.cpp
+)
+
+# 关键：链接HiCollie检测库
+target_link_libraries(entry PUBLIC
+    libace_napi.z.so      # NAPI基础接口库
+    libhilog_ndk.z.so     # HiLog日志输出库
+    libohhicollie.so      # HiCollie线程检测库（必需）
+)
+
+# 包含头文件目录
+target_include_directories(entry PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# 编译选项
+target_compile_options(entry PRIVATE
+    -Wall
+    -Wextra
+    -Werror
+    -fvisibility=hidden
+)
+
+# 说明：
+# 1. libohhicollie.so 提供OH_HiCollie_SetTimer和OH_HiCollie_CancelTimer接口
+# 2. 该库在HarmonyOS SDK中，API version >= 12支持
+# 3. 必须链接此库才能使用HiCollie定时器检测功能
+# 4. 确保SDK路径配置正确，否则编译时找不到库文件

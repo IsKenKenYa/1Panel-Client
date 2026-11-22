@@ -1,0 +1,8 @@
+{
+  "app": {
+    "bundleName": "com.example.skeleton",
+    "vendor": "benchvendor",
+    "versionCode": 2000000,
+    "versionName": "2.0.0"
+  }
+}

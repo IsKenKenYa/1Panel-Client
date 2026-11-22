@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "rules_version": "1.4.0",
+    "curated_at": "2026-10-19",
+    "sources": [
+      {
+        "name": "arkui-x docs 仓接口指导（策展初稿）",
+        "version": "master 2026-10"
+      }
+    ],
+    "notes": " 反馈轮补 @ohos.multimedia.camera 模块通配（camera2/AVFoundation，建议等价待复核）；：随 F2 规则表  策展批同步——新增模块通配 batteryInfo/sensor/geolocation/vcard；：条目可选 min_android/min_ios（字符串，如 \"API 21+\"/\"iOS 9+\"）标注映射原生 API 的最低系统版本——渲染进④⑤围栏注释并透传 bridge-artifact（F4 适用版本澄清消费）；未标注条目适用 F1 platform_baseline 工程基线，策展时经 javap/官方文档验证后填入（宁缺毋错）；min_android/min_ios 按平台官方文档标注最低系统版本（2026-10-26 填充首批 5 模块）。"
+  },
+  "mappings": [
+    {
+      "module": "@ohos.batteryInfo",
+      "symbol": "batterySOC",
+      "android": "android.os.BatteryManager.getIntProperty(BATTERY_PROPERTY_CAPACITY)",
+      "ios": "UIDevice.currentDevice.batteryLevel（需开启 batteryMonitoring，取值 0~1 换算百分比）",
+      "notes": "等价能力：电量百分比",
+      "min_android": "API 21+",
+      "min_ios": "iOS 3+"
+    },
+    {
+      "module": "@ohos.batteryInfo",
+      "symbol": "*",
+      "android": "android.os.BatteryManager.getIntProperty(BATTERY_PROPERTY_CAPACITY)",
+      "ios": "ios UIDevice.currentDevice.batteryLevel（需 batteryMonitoring，0~1 换算百分比）",
+      "notes": "模块通配：电量信息",
+      "min_android": "API 21+",
+      "min_ios": "iOS 3+"
+    },
+    {
+      "module": "@ohos.sensor",
+      "symbol": "*",
+      "android": "android.hardware.SensorManager（registerListener 各传感器类型）",
+      "ios": "ios CoreMotion（CMMotionManager/CMAltimeter 等）",
+      "notes": "模块通配：传感器",
+      "min_android": "API 3+",
+      "min_ios": "iOS 4+"
+    },
+    {
+      "module": "@ohos.geolocation",
+      "symbol": "*",
+      "android": "android.location.LocationManager（requestLocationUpdates）",
+      "ios": "ios CoreLocation（CLLocationManager）",
+      "notes": "模块通配：定位（旧 API；geoLocationManager 双源冲突待裁决）",
+      "min_android": "API 1+",
+      "min_ios": "iOS 4+"
+    },
+    {
+      "module": "@ohos.telephony.vcard",
+      "symbol": "*",
+      "android": "android.provider.ContactsContract（StructuredName/Phone 数据列构造）",
+      "ios": "ios Contacts framework（CNMutableContact+CNContactVCardSerialization）",
+      "notes": "模块通配：vCard 联系人数据",
+      "min_android": "API 5+",
+      "min_ios": "iOS 9+"
+    },
+    {
+      "module": "@ohos.multimedia.camera",
+      "symbol": "*",
+      "android": "android.hardware.camera2.*（CameraManager.openCamera / CameraDevice.createCaptureSession / CaptureRequest.Builder）",
+      "ios": "AVFoundation（AVCaptureSession / AVCaptureDevice / AVCaptureInput / AVCapturePhotoOutput）",
+      "notes": " 策展：等价能力为平台相机栈（会话生命周期/输入输出管线语义对齐）；映射为建议等价，待 E2E 实测复核",
+      "min_android": "API 21+",
+      "min_ios": "iOS 7+"
+    }
+  ]
+}

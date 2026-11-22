@@ -1,0 +1,51 @@
+{
+  "network": {
+    "defaultTimeout": 10000,
+    "retryAttempts": 3,
+    "retryDelay": 2000,
+    "monitoring": {
+      "enableDefault": true,
+      "enableWifi": false,
+      "enableCellular": false,
+      "wifiTimeout": 10000,
+      "cellularTimeout": 5000
+    },
+    "capabilities": {
+      "required": [
+        "NET_CAPABILITY_INTERNET",
+        "NET_CAPABILITY_VALIDATED"
+      ],
+      "optional": [
+        "NET_CAPABILITY_NOT_METERED",
+        "NET_CAPABILITY_NOT_VPN"
+      ]
+    },
+    "bearers": {
+      "preferred": [
+        "BEARER_WIFI",
+        "BEARER_ETHERNET",
+        "BEARER_CELLULAR"
+      ]
+    },
+    "socket": {
+      "connectionTimeout": 6000,
+      "reconnectOnNetworkChange": true,
+      "maxRetries": 3
+    }
+  },
+  "dns": {
+    "timeout": 5000,
+    "maxAddresses": 10
+  },
+  "logging": {
+    "level": "INFO",
+    "domain": "0x0000",
+    "tag": "NetConnectionManager"
+  },
+  "errorHandling": {
+    "fallbackToCache": true,
+    "notifyUserOnDisconnect": true,
+    "autoRetryOnServiceError": true,
+    "maxRetryDelay": 30000
+  }
+}

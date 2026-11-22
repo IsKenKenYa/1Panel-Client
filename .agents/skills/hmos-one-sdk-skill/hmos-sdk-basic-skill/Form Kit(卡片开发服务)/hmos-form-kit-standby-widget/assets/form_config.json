@@ -1,0 +1,26 @@
+{
+  "forms": [
+    {
+      "name": "standby_weather_widget",
+      "displayName": "$string:widget_display_name",
+      "description": "$string:widget_desc",
+      "src": "./ets/widget/pages/WidgetCard.ets",
+      "uiSyntax": "arkts",
+      "isDynamic": true,
+      "isDefault": true,
+      "updateEnabled": false,
+      "scheduledUpdateTime": "10:30",
+      "renderingMode": "autoColor",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2"
+      ],
+      "standby": {
+        "isSupported": true,
+        "isAdapted": true,
+        "isPrivacySensitive": false
+      }
+    }
+  ]
+}

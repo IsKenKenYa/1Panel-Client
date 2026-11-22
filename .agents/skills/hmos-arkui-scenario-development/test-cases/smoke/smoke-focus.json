@@ -1,0 +1,212 @@
+[
+  {
+    "case_id": "SMOKE-FOCUS-001",
+    "layer": "smoke",
+    "title": "浮动标签获焦上浮",
+    "phase": "DEV",
+    "user_prompt": "做一个收货地址详情表单：姓名、电话、地址、详细地址四个输入项。每个输入项未输入且未聚焦时，占位标签以原始大小显示在输入框内；输入框获取焦点时标签缩小并上浮到输入框上方，配合平滑过渡动画。用户失焦后若该框没有内容则标签恢复原样，有内容则保持缩小。输出可落到工程中的开发方案。",
+    "intent": "验证「浮动标签获焦上浮」能稳定命中 ARKUI-10，并路由到 focus-event.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-event.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-FOCUS-002",
+    "layer": "smoke",
+    "title": "弹窗默认焦点",
+    "phase": "DEV",
+    "user_prompt": "做一个评论输入弹窗：弹窗里有一个输入框和「发布」按钮。弹窗一打开，输入框就要自动获得焦点并弹出输入法，用户可以直接开始输入评论，不需要再手动点一下输入框。点「发布」后关闭弹窗并把评论内容传回主页面。输出可落到工程中的开发方案。",
+    "intent": "验证「弹窗默认焦点」能稳定命中 ARKUI-10，并路由到 focus-event.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-event.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-FOCUS-003",
+    "layer": "smoke",
+    "title": "获焦框样式",
+    "phase": "DEV",
+    "user_prompt": "做一个大屏/TV 端的内容卡片列表：一行卡片 + 底部一个主操作按钮。设计稿对获焦框有统一规范：普通卡片获焦时要显示品牌色（蓝色）的实心描边，描边宽度 4vp、与卡片之间留 10vp 间距；而底部主操作按钮获焦时要用一套更显眼的红色虚线带圆角描边来突出。输出可落到工程中的开发方案。",
+    "intent": "验证「获焦框样式」能稳定命中 ARKUI-10，并路由到 focus-event.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-event.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-FOCUS-004",
+    "layer": "smoke",
+    "title": "主动跳焦",
+    "phase": "DEV",
+    "user_prompt": "做一个四位验证码输入：四个独立输入框，每个框只允许输入 1 个字符。要求：(1) 页面加载后自动聚焦第一个输入框并弹出输入法；(2) 当前框输满 1 个字符后自动跳到下一个框；(3) 当前框已经为空时再按删除键，清空上一个框并聚焦回上一个框；(4) 点击输入框外的空白区域，收起输入法并清除所有焦点。输出可落到工程中的开发方案。",
+    "intent": "验证「主动跳焦」能稳定命中 ARKUI-10，并路由到 focus-event.md 的 SCENE-04。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-event.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-04"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-FOCUS-005",
+    "layer": "smoke",
+    "title": "Snackbar Tab 走焦闭环",
+    "phase": "DEV",
+    "user_prompt": "做一个常驻提示条：用户点「关注」按钮后弹出一个不会自动消失的 Snackbar（右侧是文字按钮 + 关闭按钮），用户用键盘 Tab 键能从「关注」按钮走焦进入 Snackbar 的文字按钮触发动作，Snackbar 关闭后焦点要回到原来的「关注」按钮。输出可落到工程中的开发方案。",
+    "intent": "验证「Snackbar Tab 走焦闭环」能稳定命中 ARKUI-10，并路由到 focus-move.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-move.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-FOCUS-006",
+    "layer": "smoke",
+    "title": "List 循环走焦",
+    "phase": "DEV",
+    "user_prompt": "做一个设置项列表（WLAN、蓝牙、显示与亮度、声音、存储），用方向键上下在列表项之间导航。要求：在末尾项按「下」方向键焦点循环回到首项，在首项按「上」方向键焦点跳到末尾项，形成环形导航；同时希望键盘用户也能用 Tab / Shift+Tab 循环。当前获焦项要有明显的背景色/字色视觉反馈。输出可落到工程中的开发方案。",
+    "intent": "验证「List 循环走焦」能稳定命中 ARKUI-10，并路由到 focus-move.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] next_scene_refs对应参考文档内部定义的子场景编号（如 basic-ui.md / gesture-control.md 等的 SCENE-xx），必须先读取文档后确定，禁止填入场景级 ID（ARKUI-xx）",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-10"
+      ],
+      "next_scene_refs": [
+        "references/arkui-focus/focus-move.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  }
+]

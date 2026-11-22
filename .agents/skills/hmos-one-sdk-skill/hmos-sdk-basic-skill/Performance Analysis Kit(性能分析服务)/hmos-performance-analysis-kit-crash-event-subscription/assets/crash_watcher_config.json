@@ -1,0 +1,96 @@
+{
+  "watcher": {
+    "name": "crashEventWatcher",
+    "description": "Application crash event observer",
+    "eventFilters": [
+      {
+        "domain": "OS",
+        "eventNames": ["APP_CRASH"]
+      }
+    ]
+  },
+  "customParams": {
+    "maxCount": 64,
+    "maxParamNameLength": 32,
+    "maxParamValueLength": 1024,
+    "suggestedParams": {
+      "user_id": "string",
+      "operation_step": "string",
+      "app_version": "string",
+      "device_model": "string",
+      "network_type": "string",
+      "battery_level": "number"
+    }
+  },
+  "logConfig": {
+    "apiVersionMinimum": 20,
+    "parameters": {
+      "extend_pc_lr_printing": {
+        "type": "boolean",
+        "default": false,
+        "description": "Enable extended printing of memory values near pc and lr registers"
+      },
+      "log_file_cutoff_sz_bytes": {
+        "type": "number",
+        "minValue": 0,
+        "maxValue": 5242880,
+        "default": 0,
+        "description": "Truncate crash log size in bytes (0 means no truncation)"
+      },
+      "simplify_vma_printing": {
+        "type": "boolean",
+        "default": false,
+        "description": "Simplify maps printing to reduce log size"
+      }
+    }
+  },
+  "pageSwitchLog": {
+    "apiVersionMinimum": 24,
+    "enabled": false,
+    "description": "Enable page switch log collection for crash events"
+  },
+  "logFileManagement": {
+    "maxTotalSize": "5MB",
+    "maxTotalSizeWithMinidump": "35MB",
+    "storagePath": "/data/storage/el2/log/hiappevent/",
+    "cleanupRecommendation": "Delete log files after processing to prevent space exhaustion"
+  },
+  "crashTypes": {
+    "NativeCrash": {
+      "description": "Native code crash detected by POSIX signal mechanism",
+      "collectionMode": "out-of-process",
+      "averageCollectionTime": "2 seconds",
+      "exceptionFields": ["message", "signal", "thread_name", "tid", "frames"]
+    },
+    "JsError": {
+      "description": "ArkTS/JS code exception",
+      "collectionMode": "in-process",
+      "averageCollectionTime": "real-time",
+      "exceptionFields": ["name", "message", "stack", "thread_name"]
+    }
+  },
+  "callbackTiming": {
+    "unhandledCrash": "Next app startup",
+    "handledCrash": "Before app exit",
+    "recommendation": "Add watcher in EntryAbility.onCreate to capture all crashes"
+  },
+  "errorHandling": {
+    "commonErrors": [
+      {
+        "code": 11100001,
+        "name": "Function disabled",
+        "solution": "Call hiAppEvent.configure({disable: false})"
+      },
+      {
+        "code": 11102001,
+        "name": "Invalid watcher name",
+        "solution": "Ensure name starts with letter, ends with digit/letter, length <= 32"
+      },
+      {
+        "code": 11101004,
+        "name": "Invalid param string length",
+        "solution": "Ensure param value length <= 1024 characters"
+      }
+    ]
+  }
+}

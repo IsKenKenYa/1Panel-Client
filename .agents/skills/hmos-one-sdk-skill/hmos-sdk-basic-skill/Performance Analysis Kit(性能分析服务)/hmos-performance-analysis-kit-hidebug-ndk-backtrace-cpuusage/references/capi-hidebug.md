@@ -1,0 +1,11 @@
+# HiDebug
+---
+# HiDebug
+#### 概述
+提供调试功能。本模块函数可用于获取cpu usage、memory、heap、capture trace等。
+**起始版本：** 12
+#### 文件汇总
+| 名称 | 描述 |
+| --- | --- |
+| [hidebug.h](D:/code/APIDevice/output/md_output/harmonyos-references/系统/调测调优/Performance Analysis Kit（性能分析服务）/C API/头文件/capi-hidebug-h.md) | 定义HiDebug模块的调试功能。 |
+| [hidebug_type.h](D:/code/APIDevice/output/md_output/harmonyos-references/系统/调测调优/Performance Analysis Kit（性能分析服务）/C API/头文件/capi-hidebug-type-h.md) | HiDebug模块代码结构体定义。 |

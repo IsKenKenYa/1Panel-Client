@@ -1,0 +1,62 @@
+// 锁屏卡片form_config.json配置示例
+// 文件路径: entry/src/main/resources/base/profile/form_config.json
+// API version 18及以上版本配置方式
+
+{
+  "forms": [
+    {
+      "name": "lockscreen_widget",
+      "displayName": "$string:lockscreen_widget_display_name",
+      "description": "$string:lockscreen_widget_desc",
+      "src": "./ets/widget/pages/WidgetCard.ets",
+      "uiSyntax": "arkts",
+      "isDynamic": true,
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "renderingMode": "autoColor",
+      "defaultDimension": "1*2",
+      "supportDimensions": [
+        "1*1",
+        "1*2"
+      ]
+    }
+  ]
+}
+
+// 注意事项:
+// 1. renderingMode必须配置为"singleColor"或"autoColor"(锁屏卡片强制要求)
+// 2. supportDimensions必须包含"1*1"或"1*2"(锁屏卡片强制要求)
+// 3. displayName和description建议使用字符串资源索引,支持多语言
+// 4. isDynamic设置为true表示动态卡片,支持数据更新
+// 5. updateEnabled设置为true表示支持定时刷新
+
+// API version 18以下版本的配置方式(已废弃,不推荐使用)
+// {
+//   "forms": [
+//     {
+//       "name": "lockscreen_widget",
+//       "displayName": "$string:lockscreen_widget_display_name",
+//       "description": "$string:lockscreen_widget_desc",
+//       "src": "./ets/widget/pages/WidgetCard.ets",
+//       "uiSyntax": "arkts",
+//       "isDynamic": true,
+//       "isDefault": true,
+//       "updateEnabled": true,
+//       "scheduledUpdateTime": "10:30",
+//       "updateDuration": 1,
+//       "defaultDimension": "1*2",
+//       "supportDimensions": [
+//         "1*1",
+//         "1*2"
+//       ],
+//       "metadata": [
+//         {
+//           "name": "renderingMode",
+//           "value": "2" // "2"代表"singleColor","0"代表"autoColor"
+//         }
+//       ]
+//     }
+//   ]
+// }

@@ -1,0 +1,55 @@
+# CMake配置示例
+# Network Boost Kit - 业务场景设置
+
+# 设置最低CMake版本
+cmake_minimum_required(VERSION 3.16)
+
+# 设置项目名称
+project(NetworkBoostSetSceneDesc CXX)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 设置编译目标
+set(TARGET_NAME entry)
+
+# 添加头文件路径
+# HMOS_SDK_NATIVE: HarmonyOS Native SDK路径,通常在DevEco Studio中自动设置
+target_include_directories(${TARGET_NAME} PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+)
+
+# 添加动态库路径
+target_link_directories(${TARGET_NAME} PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos
+)
+
+# 链接依赖库
+target_link_libraries(${TARGET_NAME} PUBLIC 
+    libnetwork_boost.so    # Network Boost Kit核心库
+    libc.so                # C标准库
+)
+
+# 添加源文件
+add_executable(${TARGET_NAME} 
+    src/example_set_scene_desc.cpp
+)
+
+# 设置编译选项
+target_compile_options(${TARGET_NAME} PRIVATE 
+    -Wall                  # 开启所有警告
+    -Wextra                # 开启额外警告
+    -O2                    # 优化级别2
+)
+
+# 设置输出目录
+set_target_properties(${TARGET_NAME} PROPERTIES 
+    OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin
+)
+
+# 注意事项:
+# 1. HMOS_SDK_NATIVE环境变量需要在DevEco Studio中正确设置
+# 2. libnetwork_boost.so需要在HarmonyOS SDK 6.0.2及以上版本中提供
+# 3. 需要确保编译目标架构为aarch64-linux-ohos
+# 4. 建议使用Ninja编译器以提高编译速度

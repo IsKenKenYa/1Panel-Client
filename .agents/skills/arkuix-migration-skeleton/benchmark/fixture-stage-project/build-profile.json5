@@ -1,0 +1,8 @@
+{
+  "app": {
+    // 签名配置（配置迁移白名单面——benchmark yes 场景数据源）
+    "signingConfigs": [{ "name": "default", "material": { "certpath": "certs/app.cer" } }],
+    "products": [{ "name": "default", "signingConfig": "default", "deliveryWithHap": true, "compatibleSdkVersion": "5.0.5(17)" }]
+  },
+  "modules": [{ "name": "entry", "srcPath": "./entry" }]
+}

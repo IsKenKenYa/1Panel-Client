@@ -1,0 +1,331 @@
+[
+  {
+    "api_name": "distributedKVStore.createKVManager",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::CreateKVManager",
+    "impl_func": "JsKVManager::New",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.getKVStore",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::GetKVStore",
+    "impl_func": "DistributedKvDataManager::GetSingleKvStore",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.closeKVStore",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::CloseKVStore",
+    "impl_func": "DistributedKvDataManager::CloseKvStore",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.deleteKVStore",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::DeleteKVStore",
+    "impl_func": "DistributedKvDataManager::DeleteKvStore",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.getAllKVStoreId",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::GetAllKVStoreId",
+    "impl_func": "DistributedKvDataManager::GetAllKvStoreId",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.on",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::On",
+    "impl_func": "DistributedKvDataManager::RegisterKvStoreServiceDeathRecipient",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.KVManager.off",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsKVManager::Off",
+    "impl_func": "DistributedKvDataManager::UnRegisterKvStoreServiceDeathRecipient",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_kv_manager.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.put",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Put",
+    "impl_func": "SingleKvStore::Put",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.get",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Get",
+    "impl_func": "SingleKvStore::Get",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.delete",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Delete",
+    "impl_func": "SingleKvStore::Delete / SingleKvStore::DeleteBatch",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.putBatch",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::PutBatch",
+    "impl_func": "SingleKvStore::PutBatch",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.deleteBatch",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::DeleteBatch",
+    "impl_func": "SingleKvStore::DeleteBatch",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.getEntries",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::GetEntries",
+    "impl_func": "SingleKvStore::GetEntries",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.getResultSet",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::GetResultSet",
+    "impl_func": "SingleKvStore::GetResultSet",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.closeResultSet",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::CloseResultSet",
+    "impl_func": "SingleKvStore::CloseResultSet",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.getResultSize",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::GetResultSize",
+    "impl_func": "SingleKvStore::GetCount",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.startTransaction",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::StartTransaction",
+    "impl_func": "SingleKvStore::StartTransaction",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.commit",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Commit",
+    "impl_func": "SingleKvStore::Commit",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.rollback",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Rollback",
+    "impl_func": "SingleKvStore::Rollback",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.enableSync",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::EnableSync",
+    "impl_func": "SingleKvStore::SetCapabilityEnabled",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.setSyncRange",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::SetSyncRange",
+    "impl_func": "SingleKvStore::SetCapabilityRange",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.backup",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Backup",
+    "impl_func": "SingleKvStore::Backup",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.backupEx",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::BackupEx",
+    "impl_func": "SingleKvStore::Backup",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.restore",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Restore",
+    "impl_func": "SingleKvStore::Restore",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.restoreEx",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::RestoreEx",
+    "impl_func": "SingleKvStore::Restore",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.deleteBackup",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::DeleteBackup",
+    "impl_func": "SingleKvStore::DeleteBackup",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.deleteBackupEx",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::DeleteBackupEx",
+    "impl_func": "SingleKvStore::DeleteBackup",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.rekey",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Rekey",
+    "impl_func": "SingleKvStore::Rekey",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.removeDeviceData",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::RemoveDeviceData",
+    "impl_func": "SingleKvStore::RemoveDeviceData",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.sync",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::Sync",
+    "impl_func": "SingleKvStore::Sync",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.setSyncParam",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::SetSyncParam",
+    "impl_func": "SingleKvStore::SetSyncParam",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.getSecurityLevel",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::GetSecurityLevel",
+    "impl_func": "SingleKvStore::GetSecurityLevel",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.on",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::OnEvent",
+    "impl_func": "JsSingleKVStore::OnDataChange (SubscribeKvStore) / JsSingleKVStore::OnSyncComplete (RegisterSyncCallback)",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.SingleKVStore.off",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsSingleKVStore::OffEvent",
+    "impl_func": "JsSingleKVStore::OffDataChange (UnSubscribeKvStore) / JsSingleKVStore::OffSyncComplete (UnRegisterSyncCallback)",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_single_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.DeviceKVStore.get",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsDeviceKVStore::Get",
+    "impl_func": "SingleKvStore::Get (with device-prefixed key)",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_device_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.DeviceKVStore.getEntries",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsDeviceKVStore::GetEntries",
+    "impl_func": "SingleKvStore::GetEntries",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_device_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.DeviceKVStore.getResultSet",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsDeviceKVStore::GetResultSet",
+    "impl_func": "SingleKvStore::GetResultSet",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_device_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.DeviceKVStore.getResultSize",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsDeviceKVStore::GetResultSize",
+    "impl_func": "SingleKvStore::GetCount",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_device_kv_store.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.constructor",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::New",
+    "impl_func": "JsQuery::New",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.reset",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::Reset",
+    "impl_func": "DataQuery::Reset",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.equalTo",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::EqualTo",
+    "impl_func": "DataQuery::EqualTo",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.notEqualTo",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::NotEqualTo",
+    "impl_func": "DataQuery::NotEqualTo",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.greaterThan",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::GreaterThan",
+    "impl_func": "DataQuery::GreaterThan",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.lessThan",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::LessThan",
+    "impl_func": "DataQuery::LessThan",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.like",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::Like",
+    "impl_func": "DataQuery::Like",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.prefixKey",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::PrefixKey",
+    "impl_func": "DataQuery::KeyPrefix",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  },
+  {
+    "api_name": "distributedKVStore.Query.getSqlLike",
+    "d_ts_file": "@ohos.data.distributedKVStore.d.ts",
+    "napi_func": "JsQuery::GetSqlLike",
+    "impl_func": "DataQuery::GetSqlLike / Sqlify",
+    "impl_file": "frameworks/jskitsimpl/distributedkvstore/src/js_query.cpp"
+  }
+]

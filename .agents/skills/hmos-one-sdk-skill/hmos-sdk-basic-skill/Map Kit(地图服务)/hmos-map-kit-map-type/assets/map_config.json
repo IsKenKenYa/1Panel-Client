@@ -1,0 +1,52 @@
+{
+  "mapConfig": {
+    "defaultMapType": "STANDARD",
+    "supportedMapTypes": [
+      {
+        "type": "STANDARD",
+        "name": "标准地图",
+        "description": "展示道路、建筑物以及河流等重要的自然特征",
+        "apiVersion": "4.1.0(11)",
+        "deviceSupport": "all"
+      },
+      {
+        "type": "NONE",
+        "name": "空地图",
+        "description": "没有加载任何数据的地图",
+        "apiVersion": "4.1.0(11)",
+        "deviceSupport": "all"
+      },
+      {
+        "type": "TERRAIN",
+        "name": "地形图",
+        "description": "呈现完整清晰描绘地形走势的标准地图",
+        "apiVersion": "4.1.0(11)",
+        "deviceSupport": "non-wearable",
+        "optimalZoomRange": {
+          "min": 5,
+          "max": 14
+        }
+      },
+      {
+        "type": "SATELLITE",
+        "name": "卫星图",
+        "description": "显示卫星照片的地图，只支持中国",
+        "apiVersion": "6.0.0(20)",
+        "deviceSupport": "all",
+        "regionSupport": "China"
+      },
+      {
+        "type": "HYBRID",
+        "name": "混合地图",
+        "description": "在显示卫星照片的同时也显示路网信息",
+        "apiVersion": "6.0.0(20)",
+        "deviceSupport": "all"
+      }
+    ],
+    "fallbackConfig": {
+      "unsupportedVersionFallback": "STANDARD",
+      "unsupportedDeviceFallback": "STANDARD",
+      "zoomOutOfRangeWarning": true
+    }
+  }
+}

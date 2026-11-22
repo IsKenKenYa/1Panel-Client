@@ -1,0 +1,80 @@
+{
+  "timezone": {
+    "defaultTimezoneId": "Asia/Shanghai",
+    "preferredTimezones": [
+      "Asia/Shanghai",
+      "America/New_York",
+      "Europe/London",
+      "Asia/Tokyo",
+      "Australia/Sydney"
+    ],
+    "locale": "zh-Hans",
+    "displayFormat": {
+      "dateStyle": "long",
+      "timeStyle": "long",
+      "hour12": false
+    },
+    "updateInterval": 60000,
+    "enableDSTNotification": true
+  },
+  "apiRequirements": {
+    "minimumApiVersion": 7,
+    "recommendedApiVersion": 20,
+    "features": {
+      "basicTimezone": 7,
+      "locationTimezone": 10,
+      "timezoneTransition": 20
+    }
+  },
+  "errorHandling": {
+    "fallbackTimezone": "Asia/Shanghai",
+    "maxRetryAttempts": 3,
+    "retryDelay": 1000,
+    "enableLogging": true,
+    "logLevel": "info"
+  },
+  "performance": {
+    "maxTimezoneListSize": 50,
+    "cacheExpiryTime": 3600000,
+    "enableAsyncLoading": true,
+    "batchSize": 10
+  },
+  "userPreferences": {
+    "allowUserSelection": true,
+    "savePreferences": true,
+    "maxPreferredTimezones": 10,
+    "defaultCityList": [
+      "Shanghai",
+      "Beijing",
+      "Tokyo",
+      "New York",
+      "London"
+    ]
+  },
+  "validation": {
+    "timezoneIdRegex": "^[A-Za-z_]+/[A-Za-z_]+$",
+    "cityIdRegex": "^[A-Za-z ]+$",
+    "coordinateRange": {
+      "longitude": {
+        "min": -180,
+        "max": 179.9
+      },
+      "latitude": {
+        "min": -90,
+        "max": 89.9
+      }
+    }
+  },
+  "localization": {
+    "supportedLocales": [
+      "zh-Hans",
+      "zh-Hant",
+      "en-US",
+      "en-GB",
+      "ja-JP",
+      "ko-KR"
+    ],
+    "fallbackLocale": "en-US",
+    "useSystemLocale": true
+  }
+}

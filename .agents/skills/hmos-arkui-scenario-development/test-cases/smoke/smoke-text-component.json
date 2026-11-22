@@ -1,0 +1,212 @@
+[
+  {
+    "case_id": "SMOKE-TC-01",
+    "layer": "smoke",
+    "title": "新闻文章正文展示+超长省略+展开收起",
+    "phase": "DEV",
+    "user_prompt": "仿新闻阅读App：文章正文以多段落展示，标题使用大字体加粗并自定义行高，正文支持自定义字体大小、行间距、字间距，正文超长时默认显示3行后以省略号截断，点击\"展开全文\"按钮显示完整内容且按钮文案切换为\"收起\"，再次点击恢复省略状态，并对促销词添加删除线装饰。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 新闻文章正文展示+超长省略+展开收起 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-TC-02",
+    "layer": "smoke",
+    "title": "用户注册表单多种输入类型验证",
+    "phase": "DEV",
+    "user_prompt": "仿用户注册页：包含用户名（普通文本键盘）、密码（密码模式遮蔽显示）、邮箱（邮箱键盘含@符号）、手机号（数字键盘）四个输入框，每种拉起对应类型键盘，placeholder 设置占位提示文本，maxLength 限制输入长度，并实现 onChange 回调实时表单验证。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 用户注册表单多种输入类型验证 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-TC-03",
+    "layer": "smoke",
+    "title": "论坛发帖富文本编辑加粗斜体颜色",
+    "phase": "DEV",
+    "user_prompt": "仿社区论坛发帖页：用户在 RichEditor 编辑区输入文字并支持对选中文本设置加粗、斜体、下划线、颜色样式，工具栏提供 B/I 按钮和颜色选择圆点切换后续输入样式，支持插入表情图片实现图文混合编辑，placeholder 提示\"在这里输入文本...\"。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 论坛发帖富文本编辑加粗斜体颜色 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-TC-04",
+    "layer": "smoke",
+    "title": "系统设置页SymbolGlyph开关图标",
+    "phase": "DEV",
+    "user_prompt": "仿系统设置页：WiFi/蓝牙/飞行模式/定位等开关按钮使用系统预置 Symbol 图标，开启状态图标为蓝色、关闭状态图标为灰色，点击切换时图标带系统级弹跳动效过渡，使用 sys.symbol.ohos_wifi 等系统资源。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 系统设置页SymbolGlyph开关图标 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-TC-05",
+    "layer": "smoke",
+    "title": "搜索结果关键字高亮MutableStyledString",
+    "phase": "DEV",
+    "user_prompt": "仿商品搜索结果列表：搜索\"手机\"时结果列表中商品名称匹配的\"手机\"二字高亮变色显示，同一段文本中不同关键词（如\"手机\"红色、\"华为\"蓝色）使用不同高亮颜色和加粗样式，通过 MutableStyledString 构建属性字符串并设置到 Text 组件渲染。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 搜索结果关键字高亮MutableStyledString 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-TC-06",
+    "layer": "smoke",
+    "title": "Text+Span+ImageSpan图文行内混排",
+    "phase": "DEV",
+    "user_prompt": "仿商品详情页促销横幅：文字\"限时特惠 立减50元 今日下单送赠品\"中间嵌入促销时钟图标和赠品小图片，图片与文字在同一行内混合排列，图片垂直居中对齐，每个文本片段独立设置字号、粗细、颜色，整体红色背景圆角容器。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-17 场景路由分发稳定命中，覆盖 Text+Span+ImageSpan图文行内混排 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-17",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/text-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  }
+]

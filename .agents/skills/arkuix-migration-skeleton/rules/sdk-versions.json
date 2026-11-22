@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "rules_version": "1.0.0",
+    "curated_at": "2026-10-19",
+    "sources": [
+      {
+        "kind": "arkui-x-ace-tools-on-table",
+        "version": "ArkUI-X SDK 26.0.0 toolchains ace_tools.js ON() 版本映射表实测提取（2026-10-19；perl 直解 bundle）——与 ace create 的 Compile SDK 菜单全集一致（插入序=菜单序 1..16）"
+      }
+    ],
+    "notes": "key=版本键（ace 菜单项）；apiLevel=主版本号；无 25 键（ON 表 24 之后直接 26.0.0，与 ace 一致）。runtimeOS 与版本选择正交（ace create 第 3 题独立应答；本 Skill 恒 OpenHarmony 形态）——ON 表的 runtimeOS 字段为 HarmonyOS 形态默认值，不采用。OpenHarmony 形态 build-profile 的 compileSdkVersion/compatibleSdkVersion 写法（ace modifyOpenHarmonyOSConfig 实证）：apiLevel<26 写数字 apiLevel（如 24），仅 26.0.0 写字符串 \"26.0.0\"。hvigor-config：modelVersion=ON.modelVersion、@ohos/hvigor-ohos-arkui-x-plugin=ON.hvigorPlugin。新 SDK 版本发布时按同法策展追加并递增 rules_version。"
+  },
+  "versions": [
+    { "key": "10", "apiLevel": 10, "devEcoVersion": "4.0.0", "compileSdkVersion": "4.0.0(10)", "compatibleSdkVersion": "4.0.0(10)", "modelVersion": "4.0.0", "hvigorPlugin": "3.1.1" },
+    { "key": "11", "apiLevel": 11, "devEcoVersion": "4.1.0", "compileSdkVersion": "4.1.0(11)", "compatibleSdkVersion": "4.1.0(11)", "modelVersion": "4.1.0", "hvigorPlugin": "3.1.1" },
+    { "key": "12", "apiLevel": 12, "devEcoVersion": "5.0.3", "compileSdkVersion": "5.0.0(12)", "compatibleSdkVersion": "5.0.0(12)", "modelVersion": "5.0.0", "hvigorPlugin": "4.2.3" },
+    { "key": "13", "apiLevel": 13, "devEcoVersion": "5.0.5", "compileSdkVersion": "5.0.1(13)", "compatibleSdkVersion": "5.0.1(13)", "modelVersion": "5.0.1", "hvigorPlugin": "4.2.4" },
+    { "key": "14", "apiLevel": 14, "devEcoVersion": "5.0.7", "compileSdkVersion": "5.0.2(14)", "compatibleSdkVersion": "5.0.2(14)", "modelVersion": "5.0.2", "hvigorPlugin": "4.2.7" },
+    { "key": "15", "apiLevel": 15, "devEcoVersion": "5.0.9", "compileSdkVersion": "5.0.3(15)", "compatibleSdkVersion": "5.0.3(15)", "modelVersion": "5.0.3", "hvigorPlugin": "4.2.12" },
+    { "key": "16", "apiLevel": 16, "devEcoVersion": "5.0.11", "compileSdkVersion": "5.0.4(16)", "compatibleSdkVersion": "5.0.4(16)", "modelVersion": "5.0.4", "hvigorPlugin": "4.2.22" },
+    { "key": "17", "apiLevel": 17, "devEcoVersion": "5.0.13", "compileSdkVersion": "5.0.5(17)", "compatibleSdkVersion": "5.0.5(17)", "modelVersion": "5.0.5", "hvigorPlugin": "4.2.27" },
+    { "key": "18", "apiLevel": 18, "devEcoVersion": "5.1.0", "compileSdkVersion": "5.1.0(18)", "compatibleSdkVersion": "5.1.0(18)", "modelVersion": "5.1.0", "hvigorPlugin": "4.2.17" },
+    { "key": "19", "apiLevel": 19, "devEcoVersion": "5.1.1", "compileSdkVersion": "5.1.1(19)", "compatibleSdkVersion": "5.1.1(19)", "modelVersion": "5.1.1", "hvigorPlugin": "4.19.2" },
+    { "key": "20", "apiLevel": 20, "devEcoVersion": "6.0.0", "compileSdkVersion": "6.0.0(20)", "compatibleSdkVersion": "6.0.0(20)", "modelVersion": "6.0.0", "hvigorPlugin": "4.20.3" },
+    { "key": "21", "apiLevel": 21, "devEcoVersion": "6.0.1", "compileSdkVersion": "6.0.1(21)", "compatibleSdkVersion": "6.0.1(21)", "modelVersion": "6.0.1", "hvigorPlugin": "4.21.0" },
+    { "key": "22", "apiLevel": 22, "devEcoVersion": "6.0.2", "compileSdkVersion": "6.0.2(22)", "compatibleSdkVersion": "6.0.2(22)", "modelVersion": "6.0.2", "hvigorPlugin": "4.22.3" },
+    { "key": "23", "apiLevel": 23, "devEcoVersion": "6.1.0", "compileSdkVersion": "6.1.0(23)", "compatibleSdkVersion": "6.1.0(23)", "modelVersion": "6.1.0", "hvigorPlugin": "4.23.6" },
+    { "key": "24", "apiLevel": 24, "devEcoVersion": "6.1.1", "compileSdkVersion": "6.1.1(24)", "compatibleSdkVersion": "6.1.1(24)", "modelVersion": "6.1.1", "hvigorPlugin": "4.24.2" },
+    { "key": "26.0.0", "apiLevel": 26, "devEcoVersion": "26.0.0", "compileSdkVersion": "26.0.0", "compatibleSdkVersion": "26.0.0", "modelVersion": "26.0.0", "hvigorPlugin": "4.24.2" }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": ["default"],
+    "srcEntry": "./ets/Application/AbilityStage.ets"
+  }
+}

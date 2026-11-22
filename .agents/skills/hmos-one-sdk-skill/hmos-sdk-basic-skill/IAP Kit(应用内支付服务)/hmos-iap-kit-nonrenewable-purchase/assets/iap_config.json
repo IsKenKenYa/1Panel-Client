@@ -1,0 +1,63 @@
+{
+  "app_info": {
+    "app_id": "123456789",
+    "package_name": "com.example.iapdemo",
+    "version": "1.0.0"
+  },
+  "iap_config": {
+    "environment": "production",
+    "supported_regions": ["CN"],
+    "api_version": "5.0.2"
+  },
+  "products": [
+    {
+      "product_id": "ohos_nonrenewable_001",
+      "product_name": "月度订阅",
+      "product_type": "NONRENEWABLE",
+      "price": 1000,
+      "currency": "CNY",
+      "duration": "P1M",
+      "status": "VALID"
+    },
+    {
+      "product_id": "ohos_nonrenewable_002",
+      "product_name": "季度订阅",
+      "product_type": "NONRENEWABLE",
+      "price": 2800,
+      "currency": "CNY",
+      "duration": "P3M",
+      "status": "VALID"
+    },
+    {
+      "product_id": "ohos_nonrenewable_003",
+      "product_name": "年度订阅",
+      "product_type": "NONRENEWABLE",
+      "price": 9900,
+      "currency": "CNY",
+      "duration": "P1Y",
+      "status": "VALID"
+    }
+  ],
+  "security_config": {
+    "public_key_path": "/config/iap_public_key.pem",
+    "signature_verification_enabled": true,
+    "server_notification_enabled": true
+  },
+  "purchase_settings": {
+    "max_query_products": 200,
+    "max_quantity": 10,
+    "retry_attempts": 3,
+    "retry_delay_ms": 1000
+  },
+  "error_handling": {
+    "auto_retry_errors": [1001860005, 1001860004],
+    "skip_delivery_errors": [1001860000],
+    "check_delivery_errors": [1001860051, 1001860001]
+  },
+  "logging": {
+    "level": "info",
+    "log_purchase_flow": true,
+    "log_errors": true,
+    "log_api_calls": true
+  }
+}

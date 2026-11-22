@@ -1,0 +1,30 @@
+{
+  "dialogConfig": {
+    "modal": {
+      "width": 300,
+      "height": 250,
+      "alignment": "DialogAlignment.Center",
+      "showInSubWindow": true,
+      "autoCancel": true,
+      "isModal": true
+    },
+    "nonModal": {
+      "width": 300,
+      "height": 250,
+      "alignment": "DialogAlignment.Center",
+      "showInSubWindow": true,
+      "autoCancel": true,
+      "isModal": false
+    }
+  },
+  "focusConfig": {
+    "modalFocusLocked": true,
+    "nonModalFocusCanMoveOut": true,
+    "focusResponseTime": 100
+  },
+  "accessibilityConfig": {
+    "screenReaderEnabled": true,
+    "accessibilityTextEnabled": true,
+    "accessibilityDescriptionEnabled": true
+  }
+}

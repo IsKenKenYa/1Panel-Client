@@ -1,0 +1,8 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": ["default"],
+    "abilities": [{ "name": "EntryAbility", "srcEntry": "./ets/EntryAbility.ets" }]
+  }
+}

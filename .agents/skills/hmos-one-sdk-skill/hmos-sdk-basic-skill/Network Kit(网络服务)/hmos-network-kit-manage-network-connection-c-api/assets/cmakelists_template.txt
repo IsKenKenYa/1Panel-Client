@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.4.1)
+project(NetManagerExample)
+
+set(NAPI_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../ohos/external/napi)
+
+include_directories(
+    ${NAPI_LIB_PATH}/native/include
+    ${NAPI_LIB_PATH}/include
+)
+
+add_library(entry SHARED
+    native_netmanager_example.cpp
+)
+
+target_link_libraries(entry PUBLIC
+    libace_napi.z.so
+    libnet_connection.so
+)

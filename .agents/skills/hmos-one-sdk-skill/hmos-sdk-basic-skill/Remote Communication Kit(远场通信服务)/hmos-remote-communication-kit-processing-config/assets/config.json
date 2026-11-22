@@ -1,0 +1,35 @@
+{
+  "apiVersion": "5.0.0(12)",
+  "kitName": "Remote Communication Kit",
+  "skillName": "hmos-remote-communication-kit-processing-config",
+  "supportedDevices": [
+    "Phone",
+    "2in1",
+    "Tablet",
+    "Wearable",
+    "TV (from 5.1.1(19))",
+    "Car (from 6.1.0(23))"
+  ],
+  "dependencies": {
+    "@kit.RemoteCommunicationKit": ">=5.0.0",
+    "@kit.BasicServicesKit": ">=5.0.0"
+  },
+  "validationConfig": {
+    "defaultTimeout": {
+      "connectMs": 5000,
+      "transferMs": 10000
+    },
+    "maxValidationTime": 1000,
+    "supportedValidationTypes": [
+      "statusCode",
+      "headers",
+      "body",
+      "json"
+    ]
+  },
+  "errorHandling": {
+    "validationFailure": "triggerCatchMethod",
+    "networkError": "closeSession",
+    "timeoutError": "logAndRetry"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "bluetoothpairdemo",
+  "version": "1.0.0",
+  "description": "Traditional Bluetooth pairing and connection demo",
+  "main": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kit.ConnectivityKit": "^1.0.0",
+    "@kit.BasicServicesKit": "^1.0.0",
+    "@kit.AbilityKit": "^1.0.0"
+  },
+  "devDependencies": {
+    "@ohos/hypium": "1.0.6"
+  },
+  "overrides": {}
+}

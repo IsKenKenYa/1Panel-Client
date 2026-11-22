@@ -1,0 +1,205 @@
+[
+  {
+    "case_id": "NT-SMOKE-001",
+    "layer": "smoke",
+    "title": "冒烟：systemTransition DEV路由 — 系统默认转场标准描述",
+    "phase": "DEV",
+    "user_prompt": "请协助给这个 NavDestination 页面添加系统默认转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 systemTransition DEV 路由命中，覆盖 NT-FUNC-001 系统默认转场",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "covered_cases": ["NT-FUNC-001"],
+      "decision_path": "关键词 '系统' + '默认' + 'NavDestination' → L3 系统转场 → systemTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-002",
+    "layer": "smoke",
+    "title": "冒烟：systemTransition DEV路由 — 口语化描述",
+    "phase": "DEV",
+    "user_prompt": "我想用系统自带的转场效果",
+    "input_file": "src/main/ets/pages/ProfilePage.ets",
+    "intent": "验证 systemTransition DEV 路由命中（口语化变体），覆盖 NT-FUNC-002",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "covered_cases": ["NT-FUNC-002"],
+      "decision_path": "关键词 '系统' + '自带' + 'NavDestination' → L3 系统转场 → systemTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-003",
+    "layer": "smoke",
+    "title": "冒烟：systemTransition DEV路由 — 指定枚举值",
+    "phase": "DEV",
+    "user_prompt": "添加系统转场，枚举用默认值",
+    "input_file": "src/main/ets/pages/NewsDetail.ets",
+    "intent": "验证 systemTransition DEV 路由命中（指定枚举值变体），覆盖 NT-FUNC-003",
+    "expected": {
+      "primary_scene": "systemTransition",
+      "covered_cases": ["NT-FUNC-003"],
+      "decision_path": "关键词 '系统' + '枚举' + '默认值' → L3 系统转场 → systemTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-004",
+    "layer": "smoke",
+    "title": "冒烟：customTransition DEV路由 — 标准需求描述",
+    "phase": "DEV",
+    "user_prompt": "请给 NavDestination 添加自定义转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 customTransition DEV 路由命中（无交互），覆盖 NT-FUNC-004 自定义转场框架代码",
+    "expected": {
+      "primary_scene": "customTransition",
+      "covered_cases": ["NT-FUNC-004"],
+      "decision_path": "关键词 '自定义' + 'NavDestination' + 无 '交互' → L3 自定义转场 → customTransition（无交互）"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-005",
+    "layer": "smoke",
+    "title": "冒烟：customTransition DEV路由 — 缩放淡入效果",
+    "phase": "DEV",
+    "user_prompt": "给页面加一个缩放+淡入的转场动画",
+    "input_file": "src/main/ets/pages/ProductDetail.ets",
+    "intent": "验证 customTransition DEV 路由命中（缩放淡入变体），覆盖 NT-FUNC-005",
+    "expected": {
+      "primary_scene": "customTransition",
+      "covered_cases": ["NT-FUNC-005"],
+      "decision_path": "关键词 '缩放' + '淡入' + 'NavDestination' → L3 自定义转场 → customTransition（无交互）"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-006",
+    "layer": "smoke",
+    "title": "冒烟：customTransition DEV路由 — 排除系统描述",
+    "phase": "DEV",
+    "user_prompt": "页面转场用自定义动画，不要系统的",
+    "input_file": "src/main/ets/pages/FeedbackPage.ets",
+    "intent": "验证 customTransition DEV 路由命中（排除系统变体），覆盖 NT-FUNC-006",
+    "expected": {
+      "primary_scene": "customTransition",
+      "covered_cases": ["NT-FUNC-006"],
+      "decision_path": "关键词 '自定义' + '不要系统' + 'NavDestination' → L3 自定义转场 → customTransition（无交互）"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-007",
+    "layer": "smoke",
+    "title": "冒烟：customNavContentTransition DEV路由 — 标准可交互描述",
+    "phase": "DEV",
+    "user_prompt": "我要实现转场过程中可交互的动画",
+    "input_file": "src/main/ets/pages/NavigationHome.ets",
+    "intent": "验证 customNavContentTransition DEV 路由命中，覆盖 NT-FUNC-007 可交互转场框架",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "covered_cases": ["NT-FUNC-007"],
+      "decision_path": "关键词 '可交互' + 'Navigation' → L2 整体可交互 → customNavContentTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-008",
+    "layer": "smoke",
+    "title": "冒烟：customNavContentTransition DEV路由 — Navigation配置描述",
+    "phase": "DEV",
+    "user_prompt": "给 Navigation 配置可交互转场",
+    "input_file": "src/main/ets/pages/MainNavigation.ets",
+    "intent": "验证 customNavContentTransition DEV 路由命中（Navigation 配置变体），覆盖 NT-FUNC-008",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "covered_cases": ["NT-FUNC-008"],
+      "decision_path": "关键词 'Navigation' + '可交互' → L2 整体可交互 → customNavContentTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-009",
+    "layer": "smoke",
+    "title": "冒烟：customTransition→customNavContentTransition 边界引导 — 含交互诉求",
+    "phase": "DEV",
+    "user_prompt": "给 NavDestination 配自定义转场，转场中要能交互",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 AC-3.2 边界引导路由命中：customTransition 含交互诉求 → 引导至 customNavContentTransition，覆盖 NT-REAL-001",
+    "expected": {
+      "primary_scene": "customNavContentTransition",
+      "secondary_scenes": ["customTransition"],
+      "boundary_trigger": "关键词 '自定义' + '交互' → L3 自定义转场 → 含交互诉求 → AC-3.2 引导 → customNavContentTransition",
+      "covered_cases": ["NT-REAL-001"],
+      "decision_path": "关键词 '自定义' + 'NavDestination' + '交互' → L3 自定义转场 → 含交互诉求 → AC-3.2 引导 → customNavContentTransition"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-010",
+    "layer": "smoke",
+    "title": "冒烟：disableAnimation DEV路由 — 单页禁用标准描述",
+    "phase": "DEV",
+    "user_prompt": "请禁用这个 NavDestination 的转场动画",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证 disableAnimation 单页禁用路由命中，覆盖 NT-FUNC-009 单页禁用指导",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "single-page",
+      "covered_cases": ["NT-FUNC-009"],
+      "decision_path": "关键词 '禁用' + 'NavDestination' → L1 禁用分支 → 单页禁用（NavDestination）"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-011",
+    "layer": "smoke",
+    "title": "冒烟：disableAnimation DEV路由 — 单页禁用排除描述",
+    "phase": "DEV",
+    "user_prompt": "这个 NavDestination 不要转场效果",
+    "input_file": "src/main/ets/pages/ProductDetail.ets",
+    "intent": "验证 disableAnimation 单页禁用路由命中（排除变体），覆盖 NT-FUNC-010",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "single-page",
+      "covered_cases": ["NT-FUNC-010"],
+      "decision_path": "关键词 '不要' + '转场' + 'NavDestination' → L1 禁用分支 → 单页禁用"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-012",
+    "layer": "smoke",
+    "title": "冒烟：disableAnimation DEV路由 — 全局禁用标准描述",
+    "phase": "DEV",
+    "user_prompt": "请禁用 Navigation 的转场动画",
+    "input_file": "src/main/ets/pages/MainNavigation.ets",
+    "intent": "验证 disableAnimation 全局禁用路由命中，覆盖 NT-FUNC-011 全局禁用指导",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "global",
+      "covered_cases": ["NT-FUNC-011"],
+      "decision_path": "关键词 '禁用' + 'Navigation' → L1 禁用分支 → 全局禁用（Navigation）"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-013",
+    "layer": "smoke",
+    "title": "冒烟：disableAnimation DEV路由 — 全局关闭描述",
+    "phase": "DEV",
+    "user_prompt": "全局关闭转场",
+    "input_file": "src/main/ets/pages/AppNavigation.ets",
+    "intent": "验证 disableAnimation 全局禁用路由命中（全局关闭变体），覆盖 NT-FUNC-012",
+    "expected": {
+      "primary_scene": "disableAnimation",
+      "scope": "global",
+      "covered_cases": ["NT-FUNC-012"],
+      "decision_path": "关键词 '全局' + '关闭' + 'Navigation' → L1 禁用分支 → 全局禁用"
+    }
+  },
+  {
+    "case_id": "NT-SMOKE-016",
+    "layer": "smoke",
+    "title": "冒烟：异常路由 — 需求描述为空",
+    "phase": "DEV",
+    "user_prompt": "",
+    "input_file": "src/main/ets/pages/DetailPage.ets",
+    "intent": "验证异常处理路由命中（需求描述为空），覆盖 NT-REAL-004",
+    "expected": {
+      "primary_scene": "exception",
+      "exception_type": "empty_description",
+      "covered_cases": ["NT-REAL-004"],
+      "decision_path": "需求描述为空 → 异常处理 → 提示需求描述为空"
+    }
+  }
+]

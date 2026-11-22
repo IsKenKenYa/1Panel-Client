@@ -1,0 +1,24 @@
+{
+  "audioRendererInfo": {
+    "usage": "music",
+    "rendererFlags": 0,
+    "contentType": "content_type_music",
+    "streamUsage": "stream_usage_music"
+  },
+  "audioStreamInfo": {
+    "samplingRate": 48000,
+    "channels": 2,
+    "sampleFormat": "sample_format_f32",
+    "encodingType": "encoding_type_raw"
+  },
+  "jankTriggerConfig": {
+    "invalidCountThreshold": 30,
+    "description": "Number of INVALID returns to trigger audio jank event"
+  },
+  "watcherConfig": {
+    "name": "audioJankWatcher",
+    "domain": "OS",
+    "eventName": "AUDIO_JANK_FRAME",
+    "apiVersion": "21+"
+  }
+}

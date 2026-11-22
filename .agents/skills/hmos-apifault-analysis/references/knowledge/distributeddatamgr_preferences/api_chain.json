@@ -1,0 +1,332 @@
+[
+  {
+    "api_name": "preferences.getPreferences",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "GetPreferences (napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "异步获取 Preferences 实例。NAPI 层解析 context + name/dataGroupId/storageType，构造 Options 后调用 PreferencesHelper::GetPreferences。同步版本 getPreferencesSync 复用同一 NAPI 函数（DECLARE_NAPI_FUNCTION_WITH_DATA SYNC）。"
+  },
+  {
+    "api_name": "preferences.getPreferencesSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "GetPreferences (SYNC mode, napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "同步获取 Preferences 实例。与 getPreferences 共用 NAPI 函数 GetPreferences，通过 DECLARE_NAPI_FUNCTION_WITH_DATA 第二参数区分 ASYNC/SYNC。"
+  },
+  {
+    "api_name": "preferences.deletePreferences",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "DeletePreferences (napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::DeletePreferences",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "异步删除 Preferences 文件及缓存。失败时返回 15500010。"
+  },
+  {
+    "api_name": "preferences.deletePreferencesSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "DeletePreferences (SYNC mode, napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::DeletePreferences",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "同步删除 Preferences 文件及缓存。"
+  },
+  {
+    "api_name": "preferences.removePreferencesFromCache",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "RemovePreferencesFromCache (napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::RemovePreferencesFromCache",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "异步从缓存中移除 Preferences 实例（不删除文件）。移除后再操作会触发 E_OBJECT_NOT_ACTIVE。"
+  },
+  {
+    "api_name": "preferences.removePreferencesFromCacheSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "RemovePreferencesFromCache (SYNC mode, napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::RemovePreferencesFromCache",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "同步从缓存中移除 Preferences 实例。"
+  },
+  {
+    "api_name": "preferences.put",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::SetValue (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Put -> PreferencesImpl::Put",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步写入 key-value。NAPI 层先 ParseKey (key<=1024) + ParseDefValue，然后 exec 调用 instance->Put。内部 PreferencesImpl::Put 先 CheckKey + CheckValue，再更新内存缓存 valuesCache_。需 flush 才落盘。"
+  },
+  {
+    "api_name": "preferences.putSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::SetValue (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Put -> PreferencesImpl::Put",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步写入 key-value。与 put 共用 SetValue 函数。"
+  },
+  {
+    "api_name": "preferences.get",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::GetValue (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Get -> PreferencesImpl::Get",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步读取 key 对应的值。exec 调用 instance->Get(key, defValue)。未找到时返回默认值。"
+  },
+  {
+    "api_name": "preferences.getSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::GetValue (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Get -> PreferencesImpl::Get",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步读取 key 对应的值。"
+  },
+  {
+    "api_name": "preferences.getAll",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::GetAll (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::GetAllDatas -> PreferencesImpl::GetAllDatas",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步获取所有键值对。exec 调用 instance->GetAllDatas()，返回 unordered_map。NAPI output 层转换为 JS object。"
+  },
+  {
+    "api_name": "preferences.getAllSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::GetAll (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::GetAllDatas -> PreferencesImpl::GetAllDatas",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步获取所有键值对。"
+  },
+  {
+    "api_name": "preferences.delete",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Delete (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Delete -> PreferencesImpl::Delete",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步删除指定 key。exec 调用 instance->Delete(key)。内部先 CheckKey，再从 valuesCache_ 中 erase。"
+  },
+  {
+    "api_name": "preferences.deleteSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Delete (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Delete -> PreferencesImpl::Delete",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步删除指定 key。"
+  },
+  {
+    "api_name": "preferences.clear",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Clear (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Clear -> PreferencesImpl::Clear",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步清除所有键值对。exec 调用 instance->Clear()，设置 isCleared_ = true。需 flush 才落盘生效。"
+  },
+  {
+    "api_name": "preferences.clearSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Clear (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::Clear -> PreferencesImpl::Clear",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步清除所有键值对。"
+  },
+  {
+    "api_name": "preferences.has",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::HasKey (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::HasKey -> PreferencesImpl::HasKey",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步检查是否包含指定 key。exec 调用 instance->HasKey(key)，返回 boolean。"
+  },
+  {
+    "api_name": "preferences.hasSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::HasKey (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::HasKey -> PreferencesImpl::HasKey",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步检查是否包含指定 key。"
+  },
+  {
+    "api_name": "preferences.flush",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Flush (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::FlushSync -> PreferencesImpl::FlushSync (注意：NAPI flush 调用的是 FlushSync)",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "异步将内存数据持久化到磁盘。NAPI 层 exec 调用 instance->FlushSync()（注意 JS flush 异步接口实际调用 inner FlushSync 同步写盘函数）。内部 WriteToDiskFile 通过 PreferencesXmlUtils::WriteSettingXml 写 XML。"
+  },
+  {
+    "api_name": "preferences.flushSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::Flush (SYNC mode, napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::FlushSync -> PreferencesImpl::FlushSync",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "同步将内存数据持久化到磁盘。"
+  },
+  {
+    "api_name": "preferences.on('change')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::RegisterObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::RegisterObserver -> PreferencesImpl::RegisterObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "注册本地数据变更监听。registerMode='change' 映射 RegisterMode::LOCAL_CHANGE。通过 RegisteredObserver -> instance->RegisterObserver(observer, LOCAL_CHANGE)。"
+  },
+  {
+    "api_name": "preferences.on('multiProcessChange')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::RegisterObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::RegisterObserver -> PreferencesImpl::RegisterObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "注册多进程数据变更监听。registerMode='multiProcessChange' 映射 RegisterMode::MULTI_PRECESS_CHANGE。"
+  },
+  {
+    "api_name": "preferences.on('dataChange')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::RegisterDataObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::RegisterDataObserver -> PreferencesImpl::RegisterDataObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "注册按 key 的数据变更监听。需 3 参数：registerMode + keys(Array<string>) + callback。调用 RegisteredDataObserver -> instance->RegisterDataObserver(observer, keys)。"
+  },
+  {
+    "api_name": "preferences.off('change')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::UnRegisterObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::UnRegisterObserver -> PreferencesImpl::UnRegisterObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "取消本地数据变更监听。"
+  },
+  {
+    "api_name": "preferences.off('multiProcessChange')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::UnRegisterObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::UnRegisterObserver -> PreferencesImpl::UnRegisterObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "取消多进程数据变更监听。"
+  },
+  {
+    "api_name": "preferences.off('dataChange')",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "PreferencesProxy::UnRegisterDataObserver (napi_preferences.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences.cpp",
+    "impl_func": "Preferences::UnRegisterDataObserver -> PreferencesImpl::UnRegisterDataObserver",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "取消按 key 的数据变更监听。需 keys 参数。"
+  },
+  {
+    "api_name": "storage.getStorage",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.storage.d.ts",
+    "napi_func": "GetStorage / GetStorageSync (napi_storage_helper.cpp)",
+    "napi_file": "frameworks/js/napi/storage/src/napi_storage_helper.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "legacy @ohos.data.storage API。获取 Storage 实例（包装 Preferences）。内部复用 PreferencesHelper::GetPreferences。"
+  },
+  {
+    "api_name": "storage.put/putSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.storage.d.ts",
+    "napi_func": "StorageProxy::SetValue/SetValueSync (napi_storage.cpp)",
+    "napi_file": "frameworks/js/napi/storage/src/napi_storage.cpp",
+    "impl_func": "Preferences::Put -> PreferencesImpl::Put",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "legacy Storage 的 put 操作。内部复用 PreferencesImpl::Put。"
+  },
+  {
+    "api_name": "storage.get/getSync",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.storage.d.ts",
+    "napi_func": "StorageProxy::GetValue/GetValueSync (napi_storage.cpp)",
+    "napi_file": "frameworks/js/napi/storage/src/napi_storage.cpp",
+    "impl_func": "Preferences::Get -> PreferencesImpl::Get",
+    "impl_file": "frameworks/native/src/preferences_impl.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences.h",
+    "description": "legacy Storage 的 get 操作。内部复用 PreferencesImpl::Get。"
+  },
+  {
+    "api_name": "system.storage.get",
+    "d_ts_file": "interface_sdk-js/api/@system.storage.d.ts",
+    "napi_func": "Get (napi_system_storage.cpp)",
+    "napi_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences + Preferences::GetString",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "旧 system API @system.storage.get。key 限 32 字符，value/default 限 128 字符。使用 success/fail/complete 回调模式。错误码为负数（-1006/-1016/-1017/-1018）。"
+  },
+  {
+    "api_name": "system.storage.set",
+    "d_ts_file": "interface_sdk-js/api/@system.storage.d.ts",
+    "napi_func": "Set (napi_system_storage.cpp)",
+    "napi_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences + Preferences::PutString + Flush",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "旧 system API @system.storage.set。key 限 32，value 限 128。写入后自动 flush。"
+  },
+  {
+    "api_name": "system.storage.delete",
+    "d_ts_file": "interface_sdk-js/api/@system.storage.d.ts",
+    "napi_func": "Delete (napi_system_storage.cpp)",
+    "napi_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "impl_func": "PreferencesHelper::GetPreferences + Preferences::Delete + Flush",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "旧 system API @system.storage.delete。删除后自动 flush。"
+  },
+  {
+    "api_name": "preferences.isStorageTypeSupported",
+    "d_ts_file": "interface_sdk-js/api/@ohos.data.preferences.d.ts",
+    "napi_func": "IsStorageTypeSupported (napi_preferences_helper.cpp)",
+    "napi_file": "frameworks/js/napi/preferences/src/napi_preferences_helper.cpp",
+    "impl_func": "PreferencesHelper::IsStorageTypeSupported",
+    "impl_file": "frameworks/native/src/preferences_helper.cpp",
+    "inner_header": "interfaces/inner_api/include/preferences_helper.h",
+    "description": "检查指定 StorageType（XML/GSKV）是否被当前系统支持。"
+  }
+]

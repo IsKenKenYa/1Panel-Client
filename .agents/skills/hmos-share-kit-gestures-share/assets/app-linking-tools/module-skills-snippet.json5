@@ -1,0 +1,35 @@
+// 【App Linking 必须配置为独立的 skill 对象，禁止并入 home 入口条目】
+// - 官方要求：skills 数组默认有一个标识应用入口的 skill 对象（home 入口），
+//   应用跳转链接不能配置在该对象里，必须创建独立 skill 对象，否则配置无法生效
+// - 下方对象 1 = 宿主已有 home 入口条目（保留原样，仅供对照，勿改动）；
+//   对象 2 = 本片段要新增的 App Linking 条目，整条追加进 skills 数组
+// - host 必须替换为已通过 AGC 域名关联校验的真实域名，禁止占位域名上线
+// - path 为可选属性（另有 pathStartWith / pathRegex）：应用只处理特定路径时才配置，
+//   避免应用不能处理的链接也被引流进应用；不做路径限制则省略 path
+{
+  "skills": [
+    {
+      "entities": [
+        "entity.system.home"
+      ],
+      "actions": [
+        "ohos.want.action.home"
+      ]
+    },
+    {
+      "entities": [
+        "entity.system.browsable"
+      ],
+      "actions": [
+        "ohos.want.action.viewData"
+      ],
+      "uris": [
+        {
+          "scheme": "https",
+          "host": "REPLACE_WITH_VERIFIED_DOMAIN"
+        }
+      ],
+      "domainVerify": true
+    }
+  ]
+}

@@ -1,0 +1,374 @@
+[
+  {
+    "code": "15700000",
+    "message": "Inner error.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "内部错误。可能原因: 1.内部状态异常; 2.错误地使用接口; 3.权限配置错误; 4.系统错误(空指针/内存不足/数据服务异常重启/I/O错误/IPC异常/JS引擎异常)。处理步骤: 1.排查对象关闭后再使用; 2.排查是否按文档正确使用接口; 3.排查权限配置; 4.尝试重试, 提示用户重启应用/升级应用/升级设备版本"
+  },
+  {
+    "code": "15700010",
+    "message": "The DataShareHelper fails to be initialized.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "创建DataShareHelper工具类异常。可能原因: 1.createDataShareHelper入参uri不正确; 2.createDataShareHelper入参context不正确; 3.客户端从后台拉起DataShareExtension未配置后台拉起权限。处理步骤: 1.咨询DataShare服务端提供者获取正确的uri路径; 2.检查context是否为Stage模型context; 3.检查客户端是否有数据的读/写权限(通过bm dump查看DataShareExtension配置中的readPermission/writePermission)"
+  },
+  {
+    "code": "15700011",
+    "message": "The URI does not exist.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "URI不存在。可能原因: 1.入参uri路径不正确; 2.入参uri格式不正确。处理步骤: 咨询DataShare服务端提供者获取正确的uri路径"
+  },
+  {
+    "code": "15700012",
+    "message": "The data area does not exist.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "数据区不存在。可能原因: 接口publish的入参bundleName不正确。处理步骤: 咨询DataShare服务端提供者获取正确的bundleName"
+  },
+  {
+    "code": "15700013",
+    "message": "The DataShareHelper instance is already closed.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "DataShareHelper实例被关闭后继续使用。可能原因: 调用close接口关闭了DataShareHelper实例后继续使用该实例。处理步骤: 重新创建DataShareHelper实例再使用"
+  },
+  {
+    "code": "15700014",
+    "message": "The parameter format is incorrect or the value range is invalid.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "配置共享参数错误。可能原因: 1.URI长度超过256字节; 2.proxyData的value长度超过4096字节; 3.URI数组长度超过32; 4.proxyData数组长度超过32; 5.URI格式校验失败。处理步骤: 1.检查URI长度<=256字节; 2.检查proxyData value长度<=4096字节; 3.检查数组长度<=32; 4.检查URI格式为datashareproxy://{bundleName}/{path}"
+  },
+  {
+    "code": "15700015",
+    "message": "No permission to access the data specified by the URI.",
+    "source_file": "docs/.../errorcode-datashare.md + frameworks/js/napi/common/include/datashare_error.h",
+    "description": "没有权限访问URI所指定的数据。可能原因: 未申请访问指定数据所需的权限。处理步骤: 咨询数据提供方访问指定数据所需的权限"
+  },
+  {
+    "code": "401",
+    "message": "Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameters types.",
+    "source_file": "frameworks/js/napi/common/include/datashare_error.h + 通用错误码",
+    "description": "参数检查失败。可能原因: 1.必选参数未指定; 2.参数类型不正确。处理步骤: 检查API调用的参数数量和类型是否符合接口文档要求"
+  },
+  {
+    "code": "202",
+    "message": "Permission verification failed. A non-system application calls a system API.",
+    "source_file": "frameworks/js/napi/common/include/datashare_error.h + 通用错误码",
+    "description": "权限验证失败, 非系统应用调用了系统API。处理步骤: 确认调用方是否为系统应用, 或确认对应API是否已转为公开API"
+  },
+  {
+    "code": "E_OK",
+    "message": "E_OK",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "操作成功 (内部码=0)"
+  },
+  {
+    "code": "E_ERROR",
+    "message": "E_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "通用异常错误码 (内部码=1001)"
+  },
+  {
+    "code": "E_REGISTERED_REPEATED",
+    "message": "E_REGISTERED_REPEATED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "重复注册异常 (内部码=1002)"
+  },
+  {
+    "code": "E_UNREGISTERED_EMPTY",
+    "message": "E_UNREGISTERED_EMPTY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "注销时无注册项 (内部码=1003)"
+  },
+  {
+    "code": "E_INVALID_STATEMENT",
+    "message": "E_INVALID_STATEMENT",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的SQL语句 (内部码=1007)"
+  },
+  {
+    "code": "E_INVALID_COLUMN_INDEX",
+    "message": "E_INVALID_COLUMN_INDEX",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的列索引 (内部码=1008)"
+  },
+  {
+    "code": "E_INVALID_OBJECT_TYPE",
+    "message": "E_INVALID_OBJECT_TYPE",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的对象类型 (内部码=1020)"
+  },
+  {
+    "code": "E_INVALID_PARCEL",
+    "message": "E_INVALID_PARCEL",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的Parcel (内部码=1042)"
+  },
+  {
+    "code": "E_VERSION_NOT_NEWER",
+    "message": "E_VERSION_NOT_NEWER",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "发布数据版本号小于已有版本 (内部码=1045)"
+  },
+  {
+    "code": "E_TEMPLATE_NOT_EXIST",
+    "message": "E_TEMPLATE_NOT_EXIST",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "找不到模板 (内部码=1046)"
+  },
+  {
+    "code": "E_SUBSCRIBER_NOT_EXIST",
+    "message": "E_SUBSCRIBER_NOT_EXIST",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "找不到订阅者 (内部码=1047)"
+  },
+  {
+    "code": "E_URI_NOT_EXIST",
+    "message": "E_URI_NOT_EXIST",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "找不到URI (内部码=1048), 对应公开码15700011"
+  },
+  {
+    "code": "E_BUNDLE_NAME_NOT_EXIST",
+    "message": "E_BUNDLE_NAME_NOT_EXIST",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "找不到bundleName (内部码=1049), 对应公开码15700012"
+  },
+  {
+    "code": "E_BMS_NOT_READY",
+    "message": "E_BMS_NOT_READY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "BMS(Bundle Manager Service)未就绪 (内部码=1050)"
+  },
+  {
+    "code": "E_METADATA_NOT_EXISTS",
+    "message": "E_METADATA_NOT_EXISTS",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "元数据不存在 (内部码=1051)"
+  },
+  {
+    "code": "E_SILENT_PROXY_DISABLE",
+    "message": "E_SILENT_PROXY_DISABLE",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "静默代理已禁用 (内部码=1052)"
+  },
+  {
+    "code": "E_TOKEN_EMPTY",
+    "message": "E_TOKEN_EMPTY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "Token为空 (内部码=1053)"
+  },
+  {
+    "code": "E_EXT_URI_INVALID",
+    "message": "E_EXT_URI_INVALID",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "Extension URI为空或无效 (内部码=1054)"
+  },
+  {
+    "code": "E_DATA_SHARE_NOT_READY",
+    "message": "E_DATA_SHARE_NOT_READY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "DataShare服务未就绪 (内部码=1055)"
+  },
+  {
+    "code": "E_DB_ERROR",
+    "message": "E_DB_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "数据库错误 (内部码=1056)"
+  },
+  {
+    "code": "E_DATA_SUPPLIER_ERROR",
+    "message": "E_DATA_SUPPLIER_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "数据提供方错误 (内部码=1057)"
+  },
+  {
+    "code": "E_MARSHAL_ERROR",
+    "message": "E_MARSHAL_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "序列化(Marshal)错误 (内部码=1058)"
+  },
+  {
+    "code": "E_UNMARSHAL_ERROR",
+    "message": "E_UNMARSHAL_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "反序列化(Unmarshal)错误 (内部码=1059)"
+  },
+  {
+    "code": "E_WRITE_TO_PARCE_ERROR",
+    "message": "E_WRITE_TO_PARCE_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "写入Parcel数据错误 (内部码=1060)"
+  },
+  {
+    "code": "E_RESULTSET_BUSY",
+    "message": "E_RESULTSET_BUSY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "结果集繁忙 (内部码=1061)"
+  },
+  {
+    "code": "E_APPINDEX_INVALID",
+    "message": "E_APPINDEX_INVALID",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的appIndex (内部码=1062)"
+  },
+  {
+    "code": "E_NULL_OBSERVER",
+    "message": "E_NULL_OBSERVER",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "观察者为空指针 (内部码=1063)"
+  },
+  {
+    "code": "E_HELPER_DIED",
+    "message": "E_HELPER_DIED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "DataShareHelper实例已释放或服务端已死亡 (内部码=1064)"
+  },
+  {
+    "code": "E_DATA_OBS_NOT_READY",
+    "message": "E_DATA_OBS_NOT_READY",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "数据观察客户端未就绪 (内部码=1065)"
+  },
+  {
+    "code": "E_PROVIDER_NOT_CONNECTED",
+    "message": "E_PROVIDER_NOT_CONNECTED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无法连接数据提供方 (内部码=1066)"
+  },
+  {
+    "code": "E_PROVIDER_CONN_NULL",
+    "message": "E_PROVIDER_CONN_NULL",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "数据提供方连接为空 (内部码=1067)"
+  },
+  {
+    "code": "E_INVALID_USER_ID",
+    "message": "E_INVALID_USER_ID",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的用户ID (内部码=1068)"
+  },
+  {
+    "code": "E_NOT_SYSTEM_APP",
+    "message": "E_NOT_SYSTEM_APP",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "非系统应用 (内部码=1069), 对应公开码202"
+  },
+  {
+    "code": "E_REGISTER_ERROR",
+    "message": "E_REGISTER_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "注册观察者内部错误 (内部码=1070)"
+  },
+  {
+    "code": "E_NOTIFYCHANGE_ERROR",
+    "message": "E_NOTIFYCHANGE_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "通知数据变更内部错误 (内部码=1071)"
+  },
+  {
+    "code": "E_TIMEOUT_ERROR",
+    "message": "E_TIMEOUT_ERROR",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "超时内部错误 (内部码=1072)"
+  },
+  {
+    "code": "E_ERROR_OVER_LIMIT_TASK",
+    "message": "E_ERROR_OVER_LIMIT_TASK",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "超限任务, 接口繁忙 (内部码=1073)"
+  },
+  {
+    "code": "E_EXECUTOR_POOL_IS_NULL",
+    "message": "E_EXECUTOR_POOL_IS_NULL",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "执行线程池为空 (内部码=1074)"
+  },
+  {
+    "code": "E_NOT_HAP",
+    "message": "E_NOT_HAP",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "非HAP应用 (内部码=1075)"
+  },
+  {
+    "code": "E_GET_BUNDLEINFO_FAILED",
+    "message": "E_GET_BUNDLEINFO_FAILED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "获取BundleInfo失败 (内部码=1076)"
+  },
+  {
+    "code": "E_NOT_DATASHARE_EXTENSION",
+    "message": "E_NOT_DATASHARE_EXTENSION",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "非DataShare Extension (内部码=1077)"
+  },
+  {
+    "code": "E_DATASHARE_INVALID_URI",
+    "message": "E_DATASHARE_INVALID_URI",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "无效的URI (内部码=1078)"
+  },
+  {
+    "code": "E_VERIFY_FAILED",
+    "message": "E_VERIFY_FAILED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "验证失败 (内部码=1079)"
+  },
+  {
+    "code": "E_DATASHARE_PERMISSION_DENIED",
+    "message": "E_DATASHARE_PERMISSION_DENIED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "权限被拒绝 (内部码=1080), 对应公开码15700015"
+  },
+  {
+    "code": "E_EMPTY_URI",
+    "message": "E_EMPTY_URI",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "URI为空 (内部码=1081)"
+  },
+  {
+    "code": "E_NOT_IN_TRUSTS",
+    "message": "E_NOT_IN_TRUSTS",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "URI不在信任列表中 (内部码=1082)"
+  },
+  {
+    "code": "E_GET_CALLER_NAME_FAILED",
+    "message": "E_GET_CALLER_NAME_FAILED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "获取调用者名称失败 (内部码=1083)"
+  },
+  {
+    "code": "E_NULL_OBSERVER_CLIENT",
+    "message": "E_NULL_OBSERVER_CLIENT",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "观察者客户端为空指针 (内部码=1084)"
+  },
+  {
+    "code": "E_UNIMPLEMENT",
+    "message": "E_UNIMPLEMENT",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "虚函数尚未实现 (内部码=1085)"
+  },
+  {
+    "code": "E_DATASHARE_TYPE",
+    "message": "E_DATASHARE_TYPE",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "DataShare静默/非静默类型错误 (内部码=1086)"
+  },
+  {
+    "code": "E_FIELD_ILLEGAL",
+    "message": "E_FIELD_ILLEGAL",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "谓词字段非法 (内部码=1087)"
+  },
+  {
+    "code": "E_FIELD_INVALID",
+    "message": "E_FIELD_INVALID",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "谓词字段无效 (内部码=1088)"
+  },
+  {
+    "code": "E_SYSTEM_ABILITY_OPERATE_FAILED",
+    "message": "E_SYSTEM_ABILITY_OPERATE_FAILED",
+    "source_file": "interfaces/inner_api/common/include/datashare_errno.h",
+    "description": "系统能力管理器操作失败 (内部码=1089)"
+  }
+]

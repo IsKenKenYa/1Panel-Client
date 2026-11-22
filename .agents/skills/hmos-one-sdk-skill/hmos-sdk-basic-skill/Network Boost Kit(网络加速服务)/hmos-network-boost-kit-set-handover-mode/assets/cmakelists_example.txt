@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.16)
+project(NetworkBoostHandoverModeDemo)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(entry set_handover_mode_example.cpp)
+
+target_include_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+)
+
+target_link_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos
+)
+
+target_link_libraries(entry PUBLIC 
+    libnetwork_boost.so
+)
+
+message(STATUS "Network Boost Kit Handover Mode Demo Configuration")
+message(STATUS "Include Path: ${HMOS_SDK_NATIVE}/sysroot/usr/include")
+message(STATUS "Link Path: ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos")
+message(STATUS "Linked Library: libnetwork_boost.so")

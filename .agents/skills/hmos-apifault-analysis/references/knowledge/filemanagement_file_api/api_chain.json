@@ -1,0 +1,408 @@
+[
+  {
+    "api_name": "fs.open",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Open::Async",
+    "impl_func": "Open::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/open.cpp"
+  },
+  {
+    "api_name": "fs.openSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Open::Sync",
+    "impl_func": "Open::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/open.cpp"
+  },
+  {
+    "api_name": "fs.read",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::Read",
+    "impl_func": "PropNExporter::Read / ReadExec (uv_fs_read)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.readSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::ReadSync",
+    "impl_func": "PropNExporter::ReadSync (uv_fs_read)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.write",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::Write",
+    "impl_func": "PropNExporter::Write / WriteExec (uv_fs_write)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.writeSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::WriteSync",
+    "impl_func": "PropNExporter::WriteSync (uv_fs_write)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.close",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Close::Async",
+    "impl_func": "Close::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/close.cpp"
+  },
+  {
+    "api_name": "fs.closeSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Close::Sync",
+    "impl_func": "Close::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/close.cpp"
+  },
+  {
+    "api_name": "fs.copyFile",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CopyFile::Async",
+    "impl_func": "CopyFile::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/copy_file.cpp"
+  },
+  {
+    "api_name": "fs.copyFileSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CopyFile::Sync",
+    "impl_func": "CopyFile::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/copy_file.cpp"
+  },
+  {
+    "api_name": "fs.copy",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Copy::Async",
+    "impl_func": "Copy::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/copy.cpp"
+  },
+  {
+    "api_name": "fs.copyDir",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CopyDir::Async",
+    "impl_func": "CopyDir::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/copydir.cpp"
+  },
+  {
+    "api_name": "fs.moveFile",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Move::Async",
+    "impl_func": "Move::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/move.cpp"
+  },
+  {
+    "api_name": "fs.moveFileSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Move::Sync",
+    "impl_func": "Move::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/move.cpp"
+  },
+  {
+    "api_name": "fs.moveDir",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "MoveDir::Async",
+    "impl_func": "MoveDir::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/movedir.cpp"
+  },
+  {
+    "api_name": "fs.rename",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Rename::Async",
+    "impl_func": "Rename::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/rename.cpp"
+  },
+  {
+    "api_name": "fs.unlink",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::Unlink",
+    "impl_func": "PropNExporter::Unlink (uv_fs_unlink)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.mkdir",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::Mkdir",
+    "impl_func": "PropNExporter::Mkdir / MkdirExec",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.rmdir",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Rmdirent::Async",
+    "impl_func": "Rmdirent::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/rmdirent.cpp"
+  },
+  {
+    "api_name": "fs.access",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "PropNExporter::Access",
+    "impl_func": "PropNExporter::Access / AccessCore (uv_fs_access)",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/prop_n_exporter.cpp"
+  },
+  {
+    "api_name": "fs.stat",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Stat::Async",
+    "impl_func": "Stat::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/stat.cpp"
+  },
+  {
+    "api_name": "fs.statSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Stat::Sync",
+    "impl_func": "Stat::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/stat.cpp"
+  },
+  {
+    "api_name": "fs.listFile",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ListFile::Async",
+    "impl_func": "ListFile::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/listfile.cpp"
+  },
+  {
+    "api_name": "fs.listFileSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ListFile::Sync",
+    "impl_func": "ListFile::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/listfile.cpp"
+  },
+  {
+    "api_name": "fs.createStream",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CreateStream::Async",
+    "impl_func": "CreateStream::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/create_stream.cpp"
+  },
+  {
+    "api_name": "fs.createStreamSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CreateStream::Sync",
+    "impl_func": "CreateStream::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/create_stream.cpp"
+  },
+  {
+    "api_name": "fs.createReadStream",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CreateStreamRw::Read",
+    "impl_func": "CreateStreamRw::Read",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/create_streamrw.cpp"
+  },
+  {
+    "api_name": "fs.createWriteStream",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "CreateStreamRw::Write",
+    "impl_func": "CreateStreamRw::Write",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/create_streamrw.cpp"
+  },
+  {
+    "api_name": "fs.fdopenStream",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "FdopenStream::Async",
+    "impl_func": "FdopenStream::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/fdopen_stream.cpp"
+  },
+  {
+    "api_name": "fs.mmap",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "MmapNapi::Async",
+    "impl_func": "MmapNapi::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/napi/mmap_napi.cpp"
+  },
+  {
+    "api_name": "fs.mmapSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "MmapNapi::Sync",
+    "impl_func": "MmapNapi::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/napi/mmap_napi.cpp"
+  },
+  {
+    "api_name": "fs.lseek",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Lseek::Sync",
+    "impl_func": "Lseek::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/lseek.cpp"
+  },
+  {
+    "api_name": "fs.symlink",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Symlink::Async",
+    "impl_func": "Symlink::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/symlink.cpp"
+  },
+  {
+    "api_name": "fs.readText",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ReadText::Async",
+    "impl_func": "ReadText::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/read_text.cpp"
+  },
+  {
+    "api_name": "fs.readTextSync",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ReadText::Sync",
+    "impl_func": "ReadText::Sync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/read_text.cpp"
+  },
+  {
+    "api_name": "fs.readLines",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ReadLines::Async",
+    "impl_func": "ReadLines::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/read_lines.cpp"
+  },
+  {
+    "api_name": "fs.createWatcher",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Watcher::CreateWatcher",
+    "impl_func": "Watcher::CreateWatcher",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/watcher.cpp"
+  },
+  {
+    "api_name": "fs.connectDfs",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "ConnectDfs::Async",
+    "impl_func": "ConnectDfs::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/connectdfs.cpp"
+  },
+  {
+    "api_name": "fs.disconnectDfs",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "DisconnectDfs::Async",
+    "impl_func": "DisconnectDfs::Async",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/disconnectdfs.cpp"
+  },
+  {
+    "api_name": "fs.setxattr",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Xattr::SetAsync",
+    "impl_func": "Xattr::SetAsync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/xattr.cpp"
+  },
+  {
+    "api_name": "fs.getxattr",
+    "d_ts_file": "@ohos.file.fs.d.ts",
+    "napi_func": "Xattr::GetAsync",
+    "impl_func": "Xattr::GetAsync",
+    "impl_file": "interfaces/kits/js/src/mod_fs/properties/xattr.cpp"
+  },
+  {
+    "api_name": "hash.hash",
+    "d_ts_file": "@ohos.file.hash.d.ts",
+    "napi_func": "Hash::Async",
+    "impl_func": "Hash::Async (DistributedFS::HashFile::HashWithMD5/SHA1/SHA256)",
+    "impl_file": "interfaces/kits/js/src/mod_hash/hash.cpp"
+  },
+  {
+    "api_name": "hash.createHash",
+    "d_ts_file": "@ohos.file.hash.d.ts",
+    "napi_func": "CreateStreamHash::Hash",
+    "impl_func": "CreateStreamHash::Hash",
+    "impl_file": "interfaces/kits/js/src/mod_hash/create_streamhash.cpp"
+  },
+  {
+    "api_name": "statvfs.getFreeSize",
+    "d_ts_file": "@ohos.file.statvfs.d.ts",
+    "napi_func": "GetFreeSize",
+    "impl_func": "GetFreeSize (statvfs)",
+    "impl_file": "interfaces/kits/js/src/mod_statvfs/statvfs_n_exporter.cpp"
+  },
+  {
+    "api_name": "statvfs.getFreeSizeSync",
+    "d_ts_file": "@ohos.file.statvfs.d.ts",
+    "napi_func": "GetFreeSizeSync",
+    "impl_func": "GetFreeSizeSync (statvfs)",
+    "impl_file": "interfaces/kits/js/src/mod_statvfs/statvfs_n_exporter.cpp"
+  },
+  {
+    "api_name": "statvfs.getTotalSize",
+    "d_ts_file": "@ohos.file.statvfs.d.ts",
+    "napi_func": "GetTotalSize",
+    "impl_func": "GetTotalSize (statvfs)",
+    "impl_file": "interfaces/kits/js/src/mod_statvfs/statvfs_n_exporter.cpp"
+  },
+  {
+    "api_name": "statvfs.getTotalSizeSync",
+    "d_ts_file": "@ohos.file.statvfs.d.ts",
+    "napi_func": "GetTotalSizeSync",
+    "impl_func": "GetTotalSizeSync (statvfs)",
+    "impl_file": "interfaces/kits/js/src/mod_statvfs/statvfs_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getStorageDataDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetStorageDataDir",
+    "impl_func": "GetStorageDataDir",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getUserDataDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetUserDataDir",
+    "impl_func": "GetUserDataDir",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getUserDownloadDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetUserDownloadDir",
+    "impl_func": "GetUserDownloadDir (需 READ_WRITE_DOWNLOAD_DIRECTORY 权限)",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getUserDesktopDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetUserDesktopDir",
+    "impl_func": "GetUserDesktopDir (需 READ_WRITE_DESKTOP_DIRECTORY 权限)",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getUserDocumentDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetUserDocumentDir",
+    "impl_func": "GetUserDocumentDir (需 READ_WRITE_DOCUMENTS_DIRECTORY 权限)",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getUserHomeDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetUserHomeDir",
+    "impl_func": "GetUserHomeDir",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "environment.getExternalStorageDir",
+    "d_ts_file": "@ohos.file.environment.d.ts",
+    "napi_func": "GetExternalStorageDir",
+    "impl_func": "GetExternalStorageDir",
+    "impl_file": "interfaces/kits/js/src/mod_environment/environment_n_exporter.cpp"
+  },
+  {
+    "api_name": "securityLabel.setSecurityLabel",
+    "d_ts_file": "@ohos.file.securityLabel.d.ts",
+    "napi_func": "SetSecurityLabel",
+    "impl_func": "SetSecurityLabel (SecurityLabel::SetSecurityLabel, s0~s4)",
+    "impl_file": "interfaces/kits/js/src/mod_securitylabel/securitylabel_n_exporter.cpp"
+  },
+  {
+    "api_name": "securityLabel.setSecurityLabelSync",
+    "d_ts_file": "@ohos.file.securityLabel.d.ts",
+    "napi_func": "SetSecurityLabelSync",
+    "impl_func": "SetSecurityLabelSync",
+    "impl_file": "interfaces/kits/js/src/mod_securitylabel/securitylabel_n_exporter.cpp"
+  },
+  {
+    "api_name": "securityLabel.getSecurityLabel",
+    "d_ts_file": "@ohos.file.securityLabel.d.ts",
+    "napi_func": "GetSecurityLabel",
+    "impl_func": "GetSecurityLabel (SecurityLabel::GetSecurityLabel)",
+    "impl_file": "interfaces/kits/js/src/mod_securitylabel/securitylabel_n_exporter.cpp"
+  },
+  {
+    "api_name": "securityLabel.getSecurityLabelSync",
+    "d_ts_file": "@ohos.file.securityLabel.d.ts",
+    "napi_func": "GetSecurityLabelSync",
+    "impl_func": "GetSecurityLabelSync",
+    "impl_file": "interfaces/kits/js/src/mod_securitylabel/securitylabel_n_exporter.cpp"
+  }
+]

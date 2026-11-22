@@ -1,0 +1,176 @@
+[
+  {
+    "code": "201",
+    "message": "Permission verification failed, usually the result returned by VerifyAccessToken.",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "调用方缺少 ohos.permission.BACKUP 权限或 VerifyAccessToken 校验失败"
+  },
+  {
+    "code": "202",
+    "message": "Permission verification failed, application which is not a system application uses system API.",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "非系统应用调用了系统 API（备份相关 API 均为 systemapi）"
+  },
+  {
+    "code": "401",
+    "message": "Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2. Incorrect parameter types. 3.Parameter verification failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "参数错误：必填参数缺失、类型不符或校验失败（如 appendBundles 数组为空、fd 无效等）"
+  },
+  {
+    "code": "801",
+    "message": "Capability not supported.",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "设备/系统不支持该能力（SysCap 未启用）"
+  },
+  {
+    "code": "13500001",
+    "message": "The application is not added to the backup or restore",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "应用未被加入备份/恢复任务列表（历史等价码 500001，onBundleBegin 回调常见）"
+  },
+  {
+    "code": "13500002",
+    "message": "Failed to start application extension Procedure",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "启动应用的 BackupExtensionAbility 失败（历史等价码 500002，扩展未配置或启动异常）"
+  },
+  {
+    "code": "13500003",
+    "message": "Backup or restore timed out",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "备份/恢复超时（历史等价码 500003，可通过 updateTimer 调整超时）"
+  },
+  {
+    "code": "13500004",
+    "message": "Application extension death",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "应用扩展进程死亡（历史等价码 500004，onBundleEnd 回调常见）"
+  },
+  {
+    "code": "13500006",
+    "message": "Tar error",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "备份打包（tar）失败（历史等价码 500006，onProcess 回调常见）"
+  },
+  {
+    "code": "13500008",
+    "message": "Untar error",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "恢复解包（untar）失败（历史等价码 500008，onProcess 回调常见）"
+  },
+  {
+    "code": "13600001",
+    "message": "IPC error",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "IPC 通信错误（历史等价码 600001，backup_sa SA 5203 未启动或代理获取失败）"
+  },
+  {
+    "code": "13900001",
+    "message": "Operation not permitted",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "操作不允许（对应 errno EPERM，历史等价码 900001）"
+  },
+  {
+    "code": "13900005",
+    "message": "I/O error",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "I/O 错误（对应 errno EIO，历史等价码 900005）"
+  },
+  {
+    "code": "13900011",
+    "message": "Out of memory",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "内存不足（对应 errno ENOMEM，历史等价码 900011）"
+  },
+  {
+    "code": "13900020",
+    "message": "Invalid argument",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "参数无效（对应 errno EINVAL，历史等价码 900020，fileshare 中表现为 Invalid tokenID）"
+  },
+  {
+    "code": "13900025",
+    "message": "No space left on device",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "设备无剩余空间（对应 errno ENOSPC，历史等价码 900025）"
+  },
+  {
+    "code": "13900042",
+    "message": "Unknown error",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "未知/内部错误（备份会话中常表现为 Internal error，历史等价码 900042）"
+  },
+  {
+    "code": "13500011",
+    "message": "Cancel failed",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "cancel 返回失败码（SessionBackup/SessionRestore.cancel 返回值，13500011 表示取消失败）"
+  },
+  {
+    "code": "13500012",
+    "message": "No such task",
+    "source_file": "interface_sdk-js/api/@ohos.file.backup.d.ts",
+    "description": "cancel 返回码，表示该 bundleName 没有正在执行的备份/恢复任务"
+  },
+  {
+    "code": "14300001",
+    "message": "IPC error",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare IPC 通信错误（与 13600001 同义，不同错误码段）"
+  },
+  {
+    "code": "300001",
+    "message": "IPC error",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 旧版 IPC 错误码（grantUriPermission 中数据分享连接失败时抛出）"
+  },
+  {
+    "code": "300002",
+    "message": "Invalid uri",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 传入的 URI 格式无效（grantUriPermission 校验 URI 失败）"
+  },
+  {
+    "code": "900001",
+    "message": "Operation not permitted",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，操作不允许（对应 errno EPERM / 13900001）"
+  },
+  {
+    "code": "900002",
+    "message": "No such file or directory",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，文件不存在（对应 errno ENOENT）"
+  },
+  {
+    "code": "900005",
+    "message": "I/O error",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，I/O 错误（对应 errno EIO / 13900005）"
+  },
+  {
+    "code": "900011",
+    "message": "Out of memory",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，内存不足（对应 errno ENOMEM / 13900011）"
+  },
+  {
+    "code": "900012",
+    "message": "Permission denied",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，权限拒绝（grantUriPermission 需系统应用）"
+  },
+  {
+    "code": "900020",
+    "message": "Invalid argument",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，参数无效或 Invalid tokenID（对应 errno EINVAL / 13900020）"
+  },
+  {
+    "code": "900042",
+    "message": "Unknown error",
+    "source_file": "interface_sdk-js/api/@ohos.fileshare.d.ts",
+    "description": "fileshare 历史等价码，未知错误/Out of memory（对应 13900042）"
+  }
+]

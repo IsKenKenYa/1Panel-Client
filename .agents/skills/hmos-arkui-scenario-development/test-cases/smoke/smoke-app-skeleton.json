@@ -1,0 +1,74 @@
+[
+  {
+    "case_id": "SMOKE-AS-01",
+    "layer": "smoke",
+    "title": "垂类App基础骨架 Navigation+断点+Tabs",
+    "phase": "DEV",
+    "user_prompt": "仿资讯/电商垂类App：使用Navigation作为根容器管理页面栈，结合断点系统（WidthBreakpoint/HeightBreakpoint）实现多设备动态适配，手机端底部TabBar单栏、平板端侧边导航双栏/三栏布局，内容区按断点切换List lanes列数和GridRow栅格列数，顶部搜索栏按设备形态切换紧凑/聚合/分行布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-11 场景路由分发稳定命中，覆盖 垂类App基础骨架 Navigation+断点+Tabs 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-11",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/app-skeleton-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-AS-02",
+    "layer": "smoke",
+    "title": "地图导航综合页面 Stack层叠+浮动面板+抽屉",
+    "phase": "DEV",
+    "user_prompt": "仿地图导航App综合页面：使用Stack作为根容器实现层叠布局，底层全屏地图支持单指拖动平移和双指缩放，顶部毛玻璃浮动导航栏，右下角控制按钮组（缩放/图层/定位），底部抽屉面板支持拖拽手柄三档高度吸附，各浮层通过状态变量独立控制显隐并适配安全区。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-11 场景路由分发稳定命中，覆盖 地图导航综合页面 Stack层叠+浮动面板+抽屉 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-11",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/app-skeleton-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  }
+]

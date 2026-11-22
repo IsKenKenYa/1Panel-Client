@@ -1,0 +1,59 @@
+{
+  "network-security-config": {
+    "base-config": {
+      "trust-anchors": [
+        {
+          "certificates": "/etc/security/certificates"
+        }
+      ],
+      "cleartextTrafficPermitted": true
+    },
+    "domain-config": [
+      {
+        "domains": [
+          {
+            "include-subdomains": true,
+            "name": "example.com"
+          }
+        ],
+        "trust-anchors": [
+          {
+            "certificates": "/data/storage/el1/bundle/entry/resources/resfile"
+          }
+        ],
+        "pin-set": {
+          "expiration": "2024-12-31",
+          "pin": [
+            {
+              "digest-algorithm": "sha256",
+              "digest": "FEDCBA9876543210ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890"
+            },
+            {
+              "digest-algorithm": "sha256",
+              "digest": "ABCDEF1234567890FEDCBA9876543210FEDCBA9876543210FEDCBA9876543210"
+            }
+          ]
+        },
+        "cleartextTrafficPermitted": false
+      },
+      {
+        "domains": [
+          {
+            "include-subdomains": false,
+            "name": "test.example.com"
+          }
+        ],
+        "cleartextTrafficPermitted": true
+      }
+    ],
+    "component-config": {
+      "Request": true,
+      "Network Kit": true,
+      "ArkWeb": false,
+      "Media Kit": false,
+      "Remote Communication Kit": false
+    }
+  },
+  "trust-global-user-ca": false,
+  "trust-current-user-ca": false
+}

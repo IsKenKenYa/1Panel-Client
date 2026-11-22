@@ -1,0 +1,260 @@
+﻿[
+  {
+    "code": "E_OK",
+    "message": "E_OK",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Operation successful (value 0)"
+  },
+  {
+    "code": "E_ERROR",
+    "message": "E_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Generic error (value 1)"
+  },
+  {
+    "code": "E_WRITE_PARCEL_ERROR",
+    "message": "E_WRITE_PARCEL_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Failed to write Parcel during IPC serialization (offset UDMF_ERR_OFFSET = ErrCodeOffset(13,7))"
+  },
+  {
+    "code": "E_READ_PARCEL_ERROR",
+    "message": "E_READ_PARCEL_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Failed to read Parcel during IPC deserialization"
+  },
+  {
+    "code": "E_IPC",
+    "message": "E_IPC",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "IPC communication failure, service unavailable or proxy error"
+  },
+  {
+    "code": "E_NO_PERMISSION",
+    "message": "E_NO_PERMISSION",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Caller does not have the required permission (e.g. ohos.permission.MANAGE_UDMF_APP_SHARE_OPTION)"
+  },
+  {
+    "code": "E_INVALID_PARAMETERS",
+    "message": "E_INVALID_PARAMETERS",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Invalid parameters: intention illegal, UnifiedData type mismatch, key format invalid, missing mandatory parameters"
+  },
+  {
+    "code": "E_DB_ERROR",
+    "message": "E_DB_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Database operation error (KVDB read/write failure)"
+  },
+  {
+    "code": "E_FS_ERROR",
+    "message": "E_FS_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "File system error (file copy, path resolution failure)"
+  },
+  {
+    "code": "E_NOT_FOUND",
+    "message": "E_NOT_FOUND",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Data not found for the specified key or intention"
+  },
+  {
+    "code": "E_SETTINGS_EXISTED",
+    "message": "E_SETTINGS_EXISTED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Share option settings already exist; must remove before reconfiguring. Maps to business error 20400001"
+  },
+  {
+    "code": "E_NO_SYSTEM_PERMISSION",
+    "message": "E_NO_SYSTEM_PERMISSION",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Caller is not a system application but called a system API. Maps to business error 202"
+  },
+  {
+    "code": "E_SYNC_FAILED",
+    "message": "E_SYNC_FAILED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Data synchronization across devices failed"
+  },
+  {
+    "code": "E_COPY_FILE_FAILED",
+    "message": "E_COPY_FILE_FAILED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "File copy operation failed during data retrieval"
+  },
+  {
+    "code": "E_IDEMPOTENT_ERROR",
+    "message": "E_IDEMPOTENT_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Idempotent operation error (duplicate request)"
+  },
+  {
+    "code": "E_COPY_CANCELED",
+    "message": "E_COPY_CANCELED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "File copy was canceled"
+  },
+  {
+    "code": "E_DB_CORRUPTED",
+    "message": "E_DB_CORRUPTED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "Database file is corrupted"
+  },
+  {
+    "code": "E_JSON_CONVERT_FAILED",
+    "message": "E_JSON_CONVERT_FAILED",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "JSON serialization/deserialization failed"
+  },
+  {
+    "code": "E_FORMAT_ERROR",
+    "message": "E_FORMAT_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "TypeDescriptor format invalid. Maps to business error 20400002"
+  },
+  {
+    "code": "E_CONTENT_ERROR",
+    "message": "E_CONTENT_ERROR",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "TypeDescriptor content violates rules. Maps to business error 20400003"
+  },
+  {
+    "code": "E_INVALID_TYPE_ID",
+    "message": "E_INVALID_TYPE_ID",
+    "source_file": "interfaces/innerkits/common/error_code.h",
+    "description": "TypeId is invalid or does not exist. Maps to business error 20400004"
+  },
+  {
+    "code": "UDMF_E_OK",
+    "message": "UDMF_E_OK",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API operation successful (value 0)"
+  },
+  {
+    "code": "UDMF_ERR",
+    "message": "UDMF_ERR",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API Common exception (value 20400000)"
+  },
+  {
+    "code": "UDMF_E_INVALID_PARAM",
+    "message": "UDMF_E_INVALID_PARAM",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API invalid parameters (value 20400001)"
+  },
+  {
+    "code": "UDMF_FINISHED",
+    "message": "UDMF_FINISHED",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: task completed (since 15)"
+  },
+  {
+    "code": "UDMF_PROCESSING",
+    "message": "UDMF_PROCESSING",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: task still processing"
+  },
+  {
+    "code": "UDMF_INNER_ERROR",
+    "message": "UDMF_INNER_ERROR",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: internal error occurred"
+  },
+  {
+    "code": "UDMF_INVALID_PARAMETERS",
+    "message": "UDMF_INVALID_PARAMETERS",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: GetDataParams contains invalid parameters"
+  },
+  {
+    "code": "UDMF_DATA_NOT_FOUND",
+    "message": "UDMF_DATA_NOT_FOUND",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: no data obtained"
+  },
+  {
+    "code": "UDMF_SYNC_FAILED",
+    "message": "UDMF_SYNC_FAILED",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: synchronization process error"
+  },
+  {
+    "code": "UDMF_COPY_FILE_FAILED",
+    "message": "UDMF_COPY_FILE_FAILED",
+    "source_file": "interfaces/xxx/data/udmf_err_code.h",
+    "description": "Native API ListenerStatus: file copy error occurred"
+  },
+  {
+    "code": "401",
+    "message": "BusinessError: 401",
+    "source_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "description": "Parameter error: mandatory parameters unspecified, incorrect parameter types, or parameter verification failed. Thrown by insertData, updateData, queryData, deleteData, setAppShareOptions, removeAppShareOptions, convertRecordsToEntries, UnifiedData constructor, addRecord, hasType, UnifiedRecord constructor, addEntry, getEntry"
+  },
+  {
+    "code": "201",
+    "message": "BusinessError: 201",
+    "source_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "description": "Permission denied. Caller does not have permission ohos.permission.MANAGE_UDMF_APP_SHARE_OPTION. Thrown by setAppShareOptions and removeAppShareOptions (since 14). Also thrown by uniformTypeDescriptor.registerTypeDescriptors and unregisterTypeDescriptors for ohos.permission.MANAGE_DYNAMIC_UTD_TYPE"
+  },
+  {
+    "code": "202",
+    "message": "BusinessError: 202",
+    "source_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "description": "Permission verification failed: non-system application called system API. Thrown by setAppShareOptions and removeAppShareOptions (since 12-13). Also thrown by registerTypeDescriptors and unregisterTypeDescriptors"
+  },
+  {
+    "code": "20400001",
+    "message": "BusinessError: 20400001",
+    "source_file": "@ohos.data.unifiedDataChannel.d.ts",
+    "description": "Share option settings already exist. Thrown by setAppShareOptions. Corresponds to C++ E_SETTINGS_EXISTED"
+  },
+  {
+    "code": "20400002",
+    "message": "BusinessError: 20400002",
+    "source_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "description": "The format of one or more typeDescriptors are invalid. Thrown by registerTypeDescriptors. Corresponds to C++ E_FORMAT_ERROR"
+  },
+  {
+    "code": "20400003",
+    "message": "BusinessError: 20400003",
+    "source_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "description": "The content of one or more typeDescriptors violate rules. Thrown by registerTypeDescriptors. Corresponds to C++ E_CONTENT_ERROR"
+  },
+  {
+    "code": "20400004",
+    "message": "BusinessError: 20400004",
+    "source_file": "@ohos.data.uniformTypeDescriptor.d.ts",
+    "description": "One or more typeIds are invalid or do not exist. Thrown by unregisterTypeDescriptors. Corresponds to C++ E_INVALID_TYPE_ID"
+  },
+  {
+    "code": "801",
+    "message": "BusinessError: 801",
+    "source_file": "@ohos.data.intelligence.d.ts",
+    "description": "Capability not supported (device does not support intelligence features). Thrown by intelligence module APIs"
+  },
+  {
+    "code": "31300000",
+    "message": "BusinessError: 31300000",
+    "source_file": "@ohos.data.intelligence.d.ts",
+    "description": "Intelligence inner error. Thrown by intelligence module APIs (image/text embedding)"
+  },
+  {
+    "code": "PARAM_EXCEPTION",
+    "message": "TsErrCode::PARAM_EXCEPTION (401)",
+    "source_file": "interfaces/jskits/intelligence/aip_napi_error.h",
+    "description": "Intelligence module parameter exception. Maps to business error 401"
+  },
+  {
+    "code": "DEVICE_EXCEPTION",
+    "message": "TsErrCode::DEVICE_EXCEPTION (801)",
+    "source_file": "interfaces/jskits/intelligence/aip_napi_error.h",
+    "description": "Intelligence module device capability not supported. Maps to business error 801"
+  },
+  {
+    "code": "INNER_ERROR",
+    "message": "TsErrCode::INNER_ERROR (31300000)",
+    "source_file": "interfaces/jskits/intelligence/aip_napi_error.h",
+    "description": "Intelligence module inner error. Maps to business error 31300000"
+  }
+]

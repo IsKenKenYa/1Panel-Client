@@ -1,0 +1,68 @@
+# CMakeLists.txt示例配置
+# 用于HiAppEvent订阅任务执行超时事件项目
+
+cmake_minimum_required(VERSION 3.4.1)
+project(entry)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+
+# 添加entry动态库
+add_library(entry SHARED napi_init.cpp)
+
+# 添加系统库依赖
+target_link_libraries(entry PUBLIC 
+    libace_napi.z.so          # NAPI接口库
+    libhilog_ndk.z.so         # 日志输出库
+    libohhicollie.so          # HiCollie检测库
+    libhiappevent_ndk.z.so    # HiAppEvent订阅库
+)
+
+# 配置jsoncpp三方库
+# 假设jsoncpp源码包位于thirdparty/jsoncpp/src/jsoncpp-1.9.6.tar.gz
+set(GZ_FILE "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jsoncpp/src/jsoncpp-1.9.6.tar.gz")
+set(DEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../build")
+
+# 检查并创建build目录
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${DEST_DIR})
+
+# 解压jsoncpp源码包到build目录
+execute_process(
+    COMMAND tar -xzf ${GZ_FILE} -C ${DEST_DIR}
+    WORKING_DIRECTORY ${DEST_DIR}
+)
+
+# 链接jsoncpp库(根据OHOS_ARCH自动选择架构)
+target_link_libraries(entry PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jsoncpp/${OHOS_ARCH}/lib/libjsoncpp.so
+)
+
+# 添加jsoncpp头文件路径
+target_include_directories(entry PRIVATE 
+    ${DEST_DIR}/jsoncpp-1.9.6/include/json
+)
+
+# 添加其他头文件路径
+target_include_directories(entry PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# 设置编译选项
+target_compile_options(entry PRIVATE 
+    -Wall
+    -Wextra
+    -Werror
+    -fvisibility=hidden
+)
+
+# 设置链接选项
+target_link_options(entry PRIVATE 
+    -Wl,--gc-sections
+    -Wl,--exclude-libs,ALL
+)
+
+# 注意事项:
+# 1. 确保jsoncpp库文件已正确放置在thirdparty/jsoncpp/${OHOS_ARCH}/lib目录
+# 2. OHOS_ARCH变量由编译系统自动设置(如arm64-v8a, armeabi-v7a等)
+# 3. libohhicollie.so和libhiappevent_ndk.z.so为系统库,无需手动提供
+# 4. libhilog_ndk.z.so为日志系统库,用于打印调试信息

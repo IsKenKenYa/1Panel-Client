@@ -1,0 +1,50 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "Network Boost Kit Handover Mode Demo",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$media:ability_media",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ts",
+        "description": "Network Boost Kit Demo Entry",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "launchType": "singleton",
+        "orientation": "unspecified",
+        "visible": true,
+        "startWindowIcon": "$media:startWindowIcon",
+        "startWindowBackground": "$color:startWindowBackground"
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "用于获取设备网络信息和设置连接迁移模式",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "允许应用访问网络",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "always"
+        }
+      }
+    ]
+  }
+}

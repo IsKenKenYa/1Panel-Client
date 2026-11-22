@@ -1,0 +1,7 @@
+{
+  "name": "hmos-sdk-skill",
+  "version": "1.0.0",
+  "description": "HarmonyOS SDK documentation BM25 retrieval tool",
+  "type": "module",
+  "private": true
+}

@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "rules_version": "1.0.0",
+    "curated_at": "2026-10-09",
+    "notes": "决策点→子 Skill 非交互参数映射（声明式常量）；参数面对齐同族 CLI 先例（scan.js:41~43 / skeleton.js:33~57）"
+  },
+  "decisionPoints": {
+    "skeleton_mode": {
+      "question": "骨架生成模式（默认建议 modify）",
+      "options": [
+        "modify",
+        "new"
+      ],
+      "default": "modify",
+      "inject": {
+        "stage": "skeleton",
+        "args": [
+          {
+            "value": "modify"
+          },
+          {
+            "value": "new"
+          }
+        ]
+      }
+    },
+    "overwrite": {
+      "question": "目标输出目录已存在且非空，覆盖策略",
+      "options": [
+        "skip",
+        "overwrite",
+        "abort"
+      ],
+      "default": "abort",
+      "inject": {
+        "stage": "skeleton",
+        "flag": "--confirm-overwrite"
+      }
+    },
+    "incompatibility": {
+      "question": "不兼容接口处理方式",
+      "options": [
+        "bridge",
+        "degrade",
+        "trim"
+      ],
+      "default": "bridge",
+      "inject": null
+    },
+    "bridge_codegen": {
+      "question": "桥接件已生成，是否继续进行平台代码生成（agent 按 F3 adaptation-guide 代填④⑤围栏内实现并编译验证）",
+      "options": [
+        "skip",
+        "proceed"
+      ],
+      "default": "skip"
+    },
+    "sdk": {
+      "question": "OpenHarmony SDK 判定源（路径+版本——scan 阶段呈报候选后由开发者确认，不自动选定）",
+      "options": [],
+      "default": null,
+      "inject": {
+        "stage": "scan",
+        "flag": "--sdk-dir"
+      }
+    },
+    "force_no_kits": {
+      "question": "SDK 无 kits 后果确认（@kit.* 全部归⑥业务决策——质量门显式放行开关）",
+      "options": [
+        "1"
+      ],
+      "default": null,
+      "inject": {
+        "stage": "scan",
+        "flag": "--force-no-kits"
+      }
+    },
+    "modify_entry": {
+      "question": "多模块 modify 的 entry 模块（skeleton 阶段 ace modify 二级交互应答；缺省自动推导=优先 entry 命名模块，否则首个模块）",
+      "options": [],
+      "default": null,
+      "inject": null
+    },
+    "migrate_configs": {
+      "question": "new 模式是否将源工程配置文件合并迁入 scaffold（白名单：signingConfigs/products/oh-package 依赖/app.json5 标量；hvigorfile/hvigor-config/entry build-profile 恒保留模板；含遗漏/多改双向校验，失败自动回滚）",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "default": null,
+      "inject": {
+        "stage": "skeleton",
+        "flag": "--migrate-configs"
+      }
+    },
+    "compile_sdk": {
+      "question": "new 模式 Compile SDK 版本（scaffold 编译基线，ace create 同款语义；支持清单=F1 固化版本表 10~24/26.0.0，推荐：最高 26.0.0，其次源工程版本）",
+      "options": [],
+      "default": null,
+      "inject": {
+        "stage": "skeleton",
+        "flag": "--compile-sdk"
+      }
+    }
+  },
+  "sixDecision": {
+    "ohos-unique": {
+      "question": "该 @ohos.* 接口为系统独有（从⑤降出⑥），处理方式",
+      "options": [
+        "删除",
+        "重新设计实现"
+      ]
+    },
+    "hms-closed": {
+      "question": "该 @hms.* 闭源接口（⑥），处理方式",
+      "options": [
+        "降级为OH替代",
+        "降级为平台原生桥接",
+        "自行实现",
+        "裁剪"
+      ]
+    },
+    "kit-closed": {
+      "question": "该闭源 Kit/未知来源接口（⑥），处理方式",
+      "options": [
+        "降级为OH替代",
+        "降级为平台原生桥接",
+        "自行实现",
+        "裁剪"
+      ]
+    },
+    "notes": "降级为OH替代=在 OpenHarmony/ArkUI-X 跨平台层找等价 API（无桥接）；降级为平台原生桥接=经 F3 Bridge 桥接 Android/iOS 原生等价能力——选择后该项从⑥移入④degraded_bridge 桶，bridge 阶段自动生成六件套骨架"
+  },
+  "unknownDecision": {
+    "question": "该接口判定依据未覆盖（unknown），处理方式",
+    "options": [
+      "equivalent_bridge",
+      "degraded_bridge",
+      "platform_trim",
+      "keep_unknown"
+    ],
+    "optionLabels": {
+      "equivalent_bridge": "③ 等价桥接",
+      "degraded_bridge": "④ 降级桥接",
+      "platform_trim": "⑤ 平台裁剪",
+      "keep_unknown": "显式搁置（保持 unknown，进未解决段）"
+    },
+    "notes": "F4 编排裁决：unknown 项由开发者显式确认归属后回写 ScanReport；keep_unknown 须明确选择，缺预设=中止不代答"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "HuaweiIDSample"
+    },
+    {
+      "name": "hwid_no_internet_connect",
+      "value": "网络未连接，请检查网络设置。"
+    },
+    {
+      "name": "hwid_text_button_known",
+      "value": "知道了"
+    },
+    {
+      "name": "agree",
+      "value": "已阅读并同意"
+    },
+    {
+      "name": "and",
+      "value": ""
+    },
+    {
+      "name": "end",
+      "value": "。"
+    },
+    {
+      "name": "cancel",
+      "value": "取消"
+    },
+    {
+      "name": "close",
+      "value": "关闭"
+    },
+    {
+      "name": "other_login_models",
+      "value": "其他方式登录"
+    },
+    {
+      "name": "user_agreement",
+      "value": "《XXXX用户协议》"
+    },
+    {
+      "name": "privacy_policy",
+      "value": "《XXXX隐私政策》"
+    },
+    {
+      "name": "huaweiId_user_authentication_protocol",
+      "value": "《华为账号用户认证协议》"
+    },
+    {
+      "name": "user_agreement_and_privacy_policy",
+      "value": "用户协议与隐私条款"
+    },
+    {
+      "name": "protocol_separator",
+      "value": ""
+    },
+    {
+      "name": "service_error",
+      "value": "服务或网络异常，请稍后重试"
+    },
+    {
+      "name": "agree_and_sign_in",
+      "value": "同意并登录"
+    },
+    {
+      "name": "not_login_in",
+      "value": "华为账号未登录，请重试"
+    },
+    {
+      "name": "scope_not_supported",
+      "value": "该scopes或permissions不支持"
+    },
+    {
+      "name": "get_network_info_reason",
+      "value": "点击隐私协议前查询设置网络状态。"
+    },
+    {
+      "name": "internet_reason",
+      "value": "用于访问外部链接"
+    },
+    {
+      "name": "internet_permission_reason",
+      "value": "用于调用一键登录组件。"
+    },
+    {
+      "name": "get_network_info_permission_reason",
+      "value": "用于跳转华为账号用户认证协议页面前判断当前设备是否连接网络。"
+    },
+    {
+      "name": "login_success",
+      "value": "登录成功"
+    },
+    {
+      "name": "agreement_not_accepted_toast",
+      "value": "请先阅读并同意用户协议与隐私条款"
+    }
+  ]
+}

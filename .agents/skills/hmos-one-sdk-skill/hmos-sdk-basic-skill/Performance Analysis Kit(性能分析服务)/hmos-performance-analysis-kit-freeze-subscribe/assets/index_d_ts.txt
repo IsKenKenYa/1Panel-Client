@@ -1,0 +1,43 @@
+// ArkTS接口类型定义文件
+// 文件: index.d.ts
+
+/**
+ * 订阅应用冻屏事件API接口
+ * 
+ * 功能说明:
+ * - registerWatcher: 注册冻屏事件观察者，开始监听应用冻屏事件
+ * - removeWatcher: 移除冻屏事件观察者，停止监听事件
+ * - destroyWatcher: 销毁冻屏事件观察者，释放内存资源
+ * 
+ * 使用示例:
+ * ```typescript
+ * import freezeNapi from 'libentry.so';
+ * 
+ * // 在应用启动时注册观察者
+ * freezeNapi.registerWatcher();
+ * 
+ * // 在应用退出时销毁观察者
+ * freezeNapi.destroyWatcher();
+ * ```
+ */
+
+/**
+ * 注册冻屏事件观察者
+ * 创建并添加观察者，开始监听应用冻屏事件(APP_FREEZE)
+ * 当应用发生冻屏(主线程阻塞超过6秒)时，将通过回调函数接收事件数据
+ */
+export const registerWatcher: () => void;
+
+/**
+ * 移除冻屏事件观察者
+ * 停止监听应用冻屏事件，但观察者仍常驻内存
+ * 注意: 仅停止监听，未释放内存，需要调用destroyWatcher彻底销毁
+ */
+export const removeWatcher: () => void;
+
+/**
+ * 销毁冻屏事件观察者
+ * 先移除观察者，然后销毁并释放内存资源
+ * 建议在应用退出时调用，防止内存泄漏
+ */
+export const destroyWatcher: () => void;

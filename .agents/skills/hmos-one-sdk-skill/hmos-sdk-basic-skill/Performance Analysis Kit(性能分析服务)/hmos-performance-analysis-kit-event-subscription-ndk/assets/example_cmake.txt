@@ -1,0 +1,68 @@
+# CMake配置示例:HiAppEvent事件订阅项目
+
+cmake_minimum_required(VERSION 3.10)
+project(HiAppEventWatcher)
+
+# 设置OHOS架构变量
+set(OHOS_ARCH "arm64-v8a")
+
+# 设置jsoncpp库路径
+set(GZ_FILE "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jsoncpp/src/jsoncpp-1.9.6.tar.gz")
+set(DEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../build")
+
+# 创建build目录
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DEST_DIR}
+)
+
+# 解压jsoncpp-1.9.6.tar.gz到entry/build
+execute_process(
+    COMMAND tar -xzf ${GZ_FILE} -C ${DEST_DIR}
+    WORKING_DIRECTORY ${DEST_DIR}
+)
+
+# 定义动态库
+add_library(entry SHARED 
+    napi_init.cpp
+    example_crash_watcher.cpp
+    example_click_watcher.cpp
+    example_write_event.cpp
+)
+
+# 链接HarmonyOS NDK库
+target_link_libraries(entry PUBLIC 
+    libace_napi.z.so           # NAPI接口库
+    libhilog_ndk.z.so          # 日志输出库
+    libhiappevent_ndk.z.so     # HiAppEvent事件订阅库
+)
+
+# 链接jsoncpp第三方库(用于解析事件JSON数据)
+target_link_libraries(entry PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jsoncpp/${OHOS_ARCH}/lib/libjsoncpp.so
+)
+
+# 添加头文件路径
+target_include_directories(entry PRIVATE 
+    ${DEST_DIR}/jsoncpp-1.9.6/include/json  # jsoncpp头文件路径
+    ${CMAKE_CURRENT_SOURCE_DIR}/include      # 项目头文件路径
+)
+
+# 编译选项
+target_compile_options(entry PRIVATE 
+    -Wall
+    -Wextra
+    -Werror
+    -std=c++17
+)
+
+# 链接选项
+target_link_options(entry PRIVATE 
+    -Wl,--gc-sections
+    -Wl,-z,noexecstack
+)
+
+# 输出信息
+message(STATUS "HiAppEvent watcher project configuration:")
+message(STATUS "  - OHOS_ARCH: ${OHOS_ARCH}")
+message(STATUS "  - jsoncpp path: ${DEST_DIR}/jsoncpp-1.9.6")
+message(STATUS "  - HiAppEvent library: libhiappevent_ndk.z.so")

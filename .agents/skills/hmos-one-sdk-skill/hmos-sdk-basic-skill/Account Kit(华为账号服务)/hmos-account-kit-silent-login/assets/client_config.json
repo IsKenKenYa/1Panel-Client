@@ -1,0 +1,18 @@
+{
+  "client_id": "<your_client_id_from_agc>",
+  "client_secret": "<your_client_secret_from_agc>",
+  "project_id": "<your_project_id_from_agc>",
+  "app_id": "<your_app_id_from_agc>",
+  "redirect_uri": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/account-client-id",
+  "oauth_url": "https://oauth-login.cloud.huawei.com/oauth2/v3/token",
+  "api_url": "https://oauth-api.cloud.huawei.com/rest.php?nsp_fmt=JSON&nsp_svc=huawei.oauth2.user.getTokenInfo",
+  "support_alg": "PS256",
+  "token_expire_threshold": 600,
+  "refresh_token_expire_days": 180,
+  "authorization_code_expire_minutes": 5,
+  "state_length": 255,
+  "nonce_length": 255,
+  "network_timeout": 30000,
+  "max_retry_times": 3,
+  "retry_interval": 2000
+}

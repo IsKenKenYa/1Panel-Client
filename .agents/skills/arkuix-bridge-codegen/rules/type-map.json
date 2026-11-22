@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "rules_version": "1.0.0",
+    "curated_at": "2026-10-09",
+    "notes": "ArkTS↔Java↔ObjC 三端类型映射；ambiguous=true 表示映射歧义，签名比对输出'需人工'"
+  },
+  "types": [
+    { "arkts": "string", "java": "String", "objc": "NSString*", "ambiguous": false },
+    { "arkts": "number", "java": "double", "objc": "double", "ambiguous": false },
+    { "arkts": "boolean", "java": "boolean", "objc": "BOOL", "ambiguous": false },
+    { "arkts": "ArrayBuffer", "java": "byte[]", "objc": "NSData*", "ambiguous": true },
+    { "arkts": "null", "java": "null", "objc": "nil", "ambiguous": false },
+    { "arkts": "Array<number>", "java": "double[]", "objc": "NSArray<NSNumber*>*", "ambiguous": false },
+    { "arkts": "Array<boolean>", "java": "boolean[]", "objc": "NSArray<NSNumber*>*", "ambiguous": false },
+    { "arkts": "Array<string>", "java": "String[]", "objc": "NSArray<NSString*>*", "ambiguous": false },
+    { "arkts": "Record<string, T>", "java": "org.json.JSONObject", "objc": "NSDictionary*", "ambiguous": true }
+  ]
+}

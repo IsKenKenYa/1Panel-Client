@@ -1,0 +1,124 @@
+{
+  "main": {
+    "exitCode": 0,
+    "artifactCount": 4,
+    "unmapped_native_apis": [
+      "@ohos.deviceInfo::udid",
+      "@ohos.nonsense::mysteryApi",
+      "@ohos.vibrator::startVibration"
+    ],
+    "items": {
+      "DeviceInfoUdid": {
+        "category": "equivalent_bridge",
+        "local_status": "migrated",
+        "unmapped": true,
+        "local_contains": [
+          "deviceInfo.udid",
+          "const udid"
+        ],
+        "interface_contains": [
+          "udid(): Promise<Bridge.ResultValue>;"
+        ],
+        "arkux_contains": [
+          "createBridge('DeviceInfoUdid')",
+          "DeviceInfoUdidArkUIX.bridgeImpl.callMethod('udid'"
+        ],
+        "android_contains": [
+          "unmapped_native_apis"
+        ],
+        "iosh_contains": [
+          "@interface BridgeDeviceInfoUdid : BridgePlugin"
+        ],
+        "iosm_contains": [
+          "unmapped_native_apis"
+        ],
+        "android_fence_pairs": 1,
+        "todo_annotation": null
+      },
+      "NonsenseMysteryApi": {
+        "category": "equivalent_bridge",
+        "local_status": "migrated",
+        "unmapped": true,
+        "android_contains": [
+          "unmapped_native_apis"
+        ],
+        "iosm_contains": [
+          "unmapped_native_apis"
+        ],
+        "todo_annotation": {
+          "interface": "NonsenseMysteryApi",
+          "platform": "ios",
+          "category": "equivalent_bridge"
+        },
+        "local_contains": []
+      },
+      "VibratorStartVibration": {
+        "category": "degraded_bridge",
+        "local_status": "migrated",
+        "local_contains": [
+          "startVibration",
+          "haptic.clock.timer"
+        ],
+        "android_contains": [
+          "降级说明：振幅精细化控制在 ArkUI-X 侧不可用"
+        ],
+        "todo_annotation": {
+          "interface": "VibratorStartVibration",
+          "platform": "android",
+          "category": "degraded_bridge"
+        }
+      },
+      "BatteryInfoBatterySOC": {
+        "category": "equivalent_bridge",
+        "local_status": "migrated",
+        "unmapped": false,
+        "local_contains": [
+          "batteryInfo.batterySOC"
+        ],
+        "android_contains": [
+          "BatteryManager.getIntProperty(BATTERY_PROPERTY_CAPACITY)"
+        ],
+        "iosm_contains": [
+          "batteryLevel"
+        ],
+        "android_fence_pairs": 1
+      }
+    },
+    "aggregation": {
+      "DeviceInfoUdid_files_interface_count": 1
+    },
+    "interface_truth_source": {
+      "udid_params": 1,
+      "getCurrentLocation_not_in_contract": true
+    },
+    "incremental": {
+      "target": "BatteryInfoBatterySOC",
+      "handoffKept": "// 开发者手改：真机调通",
+      "localKept": "// 开发者已调整 Local 实现",
+      "skeletonIdempotentMarker": "ARKUIX-BRIDGE-HANDOFF BEGIN"
+    }
+  },
+  "empty": {
+    "exitCode": 0,
+    "stdoutContains": "无需桥接接口",
+    "artifactCount": 0
+  },
+  "broken": {
+    "exitCode": 3,
+    "stderrContains": "ScanReport格式异常"
+  },
+  "usage": {
+    "exitCode": 2
+  },
+  "incremental": {
+    "handoffKept": "// 开发者手改：真机调通",
+    "localKept": "// 开发者已调整 Local 实现",
+    "skeletonIdempotentMarker": "ARKUIX-BRIDGE-HANDOFF BEGIN"
+  },
+  "offline": {
+    "netHits": 0
+  },
+  "determinism": {
+    "runs": 3
+  }
+}

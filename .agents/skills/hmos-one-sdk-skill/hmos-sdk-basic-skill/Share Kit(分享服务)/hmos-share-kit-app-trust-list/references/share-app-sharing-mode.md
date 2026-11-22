@@ -1,0 +1,59 @@
+# 配置目标应用名单（仅对企业应用开放）
+---
+# 配置目标应用名单（仅对企业应用开放）
+#### 场景介绍
+该功能仅对企业应用开放。6.0.1(21)版本开始，支持宿主应用配置目标应用名单列表（最多支持50个应用）。配置成功后，仅名单内的目标可出现在系统分享面板的分享推荐区和分享方式区。
+#### 申请权限
+当前能力受限开放，需要申请受限开放权限ohos.permission.SET_SYSTEMSHARE_APPLAUNCHTRUSTLIST。
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/db/v3/3YKL23CcS4mL-ZUP2uudXQ/note_3.0-zh-cn.png?HW-CC-KV=V1&HW-CC-Date=20260701T105316Z&HW-CC-Expire=86400&HW-CC-Sign=C19FDBED030CA185D284680E8FBEC5520D5E2BEC8B03E719ADA120C2824F08DA)
+该权限用于限制应用分享范围，仅支持企业应用限制内部数据分享到企业集团信任的应用。
+申请权限时，需要在reasonPrompt里面填写企业应用的信息和管控场景。如：用于XXX集团应用管控内部资料仅限于企业内部分享。
+申请方式请参考： [申请使用受限权限](D:/code/APIDevice/output/md_output/harmonyos-guides/系统/安全/程序访问控制/应用权限管控/申请应用权限/申请受限权限/declare-permissions-in-acl.md) 。
+#### 示例代码
+1.
+应用必须在module.json5配置文件的requestPermissions标签中声明权限。参考： [声明权限](D:/code/APIDevice/output/md_output/harmonyos-guides/系统/安全/程序访问控制/应用权限管控/申请应用权限/声明权限/declare-permissions.md) 。
+```json
+{
+  "module": {
+    // ...
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.SET_SYSTEMSHARE_APPLAUNCHTRUSTLIST",
+        "reason": '$string:permission_reason_set_system_share_app_launch_trust_list'
+      },
+    ]
+  }
+}
+```
+2.
+启动分享面板时，通过配置appLaunchTrustInfo参数，指定目标应用的范围。
+```typescript
+import { common } from '@kit.AbilityKit';
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor as utd } from '@kit.ArkData';
+@Component
+export struct ShareAppTrustInfo {
+  build() {
+    Button('share').onClick(() => {
+      this.share();
+    })
+  }
+  private share() {
+    // 构造ShareData，需配置一条有效数据信息
+    let data: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.PLAIN_TEXT,
+      content: 'Hello HarmonyOS'
+    });
+    let uiContext: UIContext = this.getUIContext();
+    // 构建ShareController
+    let controller: systemShare.ShareController = new systemShare.ShareController(data);
+    let context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
+    // 进行分享面板显示
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DEFAULT,
+      selectionMode: systemShare.SelectionMode.SINGLE,
+      appLaunchTrustInfo: ['5765880207853060000', '1171817433862770000'], // 此值仅为示例. 目标应用 appidentifier
+    })
+  }
+}
+```

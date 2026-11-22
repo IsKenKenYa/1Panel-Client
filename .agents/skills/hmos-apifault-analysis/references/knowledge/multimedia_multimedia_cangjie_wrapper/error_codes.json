@@ -1,0 +1,308 @@
+[
+  {
+    "code": "201",
+    "message": "Permission denied",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper.cj (及 camera 各处 @!APILevel permission)",
+    "description": "调用方缺少所需权限。相册模块对应 ohos.permission.READ_IMAGEVIDEO / WRITE_IMAGEVIDEO；相机模块对应 ohos.permission.CAMERA / MICROPHONE。需在 module.json5 声明权限并动态申请用户授权。"
+  },
+  {
+    "code": "401",
+    "message": "Parameter error.",
+    "source_file": "ohos/file/photo_access_helper/media_asset_change_request.cj / media_album_change_request.cj",
+    "description": "参数错误。仓颉封装在匹配 MediaChangeRequest 类型失败、getAsset/getAlbum 返回空句柄(id==0) 等场景内联抛出 BusinessException(401, \"Parameter error.\")。"
+  },
+  {
+    "code": "13900002",
+    "message": "No such file or directory",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (BASIC_FILE_IO_ERROR_CODES)",
+    "description": "文件不存在。createImageAssetRequest/createVideoAssetRequest/addResource(fileUri) 在传入的 fileUri 不在应用沙箱目录时抛出。"
+  },
+  {
+    "code": "13900011",
+    "message": "Out of memory",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_ffi.cj (CPhotoCreationConfigs/FfiBundleInfo init)",
+    "description": "内存分配失败。CString/C 结构 malloc 失败时抛出（注意：与媒体错误码 14000011 含义不同）。"
+  },
+  {
+    "code": "13900012",
+    "message": "Permission denied",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (BASIC_FILE_IO_ERROR_CODES)",
+    "description": "基础文件 IO 层面的权限拒绝。registerChange/unregisterChange/getThumbnail 在 @throws 中声明此码（注意相册监听接口声明 13900012 而非 201）。"
+  },
+  {
+    "code": "13900020",
+    "message": "Invalid argument",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper.cj (INVALID_ARGUMENT_ERROR) / photo_accesshelper_utils.cj",
+    "description": "参数非法。getPhotoAccessHelper 在 context 获取失败(ret==-1) 时显式抛出；checkRet 拦截 FFI 返回的 13900020。相册各枚举 parse()/value 在未知取值时也抛出此码。是相册模块最高频错误码。"
+  },
+  {
+    "code": "14000001",
+    "message": "Invalid file name",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_DATA_MANAGEMENT_ERROR_CODES)",
+    "description": "文件名非法（PhotoAsset.commitModify 提交非法 display_name 时由底层返回）。"
+  },
+  {
+    "code": "14000002",
+    "message": "Invalid URI",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_DATA_MANAGEMENT_ERROR_CODES)",
+    "description": "URI 非法或不存在。deleteAssets(Array<String>) / getAssets 等接口传入错误 URI 时抛出。"
+  },
+  {
+    "code": "14000003",
+    "message": "Invalid file name extension",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_DATA_MANAGEMENT_ERROR_CODES)",
+    "description": "文件扩展名非法（createAssetRequest 传入不支持的 extension 时由底层返回）。"
+  },
+  {
+    "code": "14000011",
+    "message": "System inner fail",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_DATA_MANAGEMENT_ERROR_CODES) / media_asset_change_request.cj (SYSTEM_INNER_FAIL)",
+    "description": "系统内部失败。几乎贯穿相册所有接口（getAssets/getAlbums/release/commitModify/createImageAssetRequest/getWriteCacheHandler 等）。getWriteCacheHandler 在 FFI 返回 -1 时显式转换为 14000011。"
+  },
+  {
+    "code": "14000014",
+    "message": "Member is not a valid PhotoKey",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_DATA_MANAGEMENT_ERROR_CODES)",
+    "description": "PhotoAsset.get(member)/set(member,...) 传入的 member 不是合法 PhotoKey 属性名时抛出。"
+  },
+  {
+    "code": "14000016",
+    "message": "Operation Not Support",
+    "source_file": "ohos/file/photo_access_helper/media_asset_change_request.cj / media_album_change_request.cj (@throws)",
+    "description": "操作不支持。addResource/getWriteCacheHandler/saveCameraPhoto/discardCameraPhoto/MediaAlbumChangeRequest.addAssets/removeAssets 等场景，底层拒绝该操作。"
+  },
+  {
+    "code": "14300001",
+    "message": "IPC error",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_FILE_ACCESS_ERROR_CODES)",
+    "description": "用户文件访问 IPC 通信错误。"
+  },
+  {
+    "code": "14300002",
+    "message": "Invalid URI",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper_utils.cj (USER_FILE_ACCESS_ERROR_CODES)",
+    "description": "用户文件访问层 URI 非法。"
+  },
+  {
+    "code": "16000050",
+    "message": "Internal error.",
+    "source_file": "ohos/file/photo_access_helper/photo_accesshelper.cj / photo_asset.cj",
+    "description": "仓颉封装兜底内部错误。getBurstAssets / PhotoAsset.get 在 unsafe 块尾部作为不可达分支内联抛出，正常不应触发。"
+  },
+  {
+    "code": "7400101",
+    "message": "Parameter missing or parameter type incorrect.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：参数缺失或类型错误。对应 SDK CameraErrorCode.INVALID_ARGUMENT。"
+  },
+  {
+    "code": "7400102",
+    "message": "Operation not allowed.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：操作不允许。细分码：74001021 会话未就绪、74001022 特性/模式不支持、74001023 设备不可用。"
+  },
+  {
+    "code": "7400103",
+    "message": "Session not config.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：会话未配置（未 beginConfig/commitConfig 即 start）。"
+  },
+  {
+    "code": "7400104",
+    "message": "Session not running.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：会话未运行（start 之前调用 stop/能力接口）。"
+  },
+  {
+    "code": "7400105",
+    "message": "Session config locked.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：会话配置已锁定，无法再修改。"
+  },
+  {
+    "code": "7400106",
+    "message": "Device setting locked.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：设备设置已锁定。"
+  },
+  {
+    "code": "7400107",
+    "message": "Can not use camera cause of conflict.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：因冲突（设备已被其它应用占用并启动）无法使用。"
+  },
+  {
+    "code": "7400108",
+    "message": "Camera disabled cause of security reason.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：因安全原因被禁用（如安全策略）。"
+  },
+  {
+    "code": "7400109",
+    "message": "Can not use camera cause of preempted.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：被抢占（更高优先级应用抢占相机）。"
+  },
+  {
+    "code": "7400110",
+    "message": "Unresolved conflicts with current configurations.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：当前配置存在未解决的冲突。"
+  },
+  {
+    "code": "7400201",
+    "message": "Camera service fatal error.",
+    "source_file": "ohos/multimedia/camera/camera_common.cj",
+    "description": "相机：服务致命错误。细分码：74002011 不支持的分辨率配置、74002012 内存分配失败、74002013 非法会话配置。"
+  },
+  {
+    "code": "501",
+    "message": "Resource unavailable.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：资源不可用。"
+  },
+  {
+    "code": "62980096",
+    "message": "Transaction operation failed.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：事务操作失败（内部 native 错误码，经 convertErrCode 可能转换为对外码）。"
+  },
+  {
+    "code": "62980100",
+    "message": "Image decoding abnormal.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：解码异常。ImageSource.createPixelMap 常见。"
+  },
+  {
+    "code": "62980101",
+    "message": "The image data is abnormal.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：图像数据异常。"
+  },
+  {
+    "code": "62980103",
+    "message": "Image types are not supported.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：图像类型不支持。"
+  },
+  {
+    "code": "62980106",
+    "message": "The image data is too large.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：图像数据过大。"
+  },
+  {
+    "code": "62980115",
+    "message": "Invalid image parameter.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：参数非法。"
+  },
+  {
+    "code": "62980116",
+    "message": "Decoding failed.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：解码失败。"
+  },
+  {
+    "code": "62980119",
+    "message": "Image encoding failed.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：编码失败。ImagePacker.packToData 常见。"
+  },
+  {
+    "code": "62980178",
+    "message": "Failed to create the PixelMap.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：创建 PixelMap 失败。"
+  },
+  {
+    "code": "62980248",
+    "message": "PixelMap does not allow modification.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：PixelMap 不允许修改（对只读 PixelMap 调用 writePixels/opacity/crop 等修改接口）。"
+  },
+  {
+    "code": "7600201",
+    "message": "Unsupported operation.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：不支持的操作（对外错误码）。SDK ImageErrorCode 中对应 PixelMap 不可编辑/锁定等场景。"
+  },
+  {
+    "code": "7600202",
+    "message": "Unsupported metadata.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：不支持的元数据类型（对外码）。"
+  },
+  {
+    "code": "7700101",
+    "message": "Bad source.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：源数据错误（ImageSource 创建时 uri/fd/buffer 非法）。"
+  },
+  {
+    "code": "7700102",
+    "message": "Unsupported mimetype.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：不支持的 MIME 类型。"
+  },
+  {
+    "code": "7700103",
+    "message": "Image too large.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：图像过大。"
+  },
+  {
+    "code": "7700301",
+    "message": "Decode failed.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：解码失败（对外码）。"
+  },
+  {
+    "code": "7800301",
+    "message": "Encode failed.",
+    "source_file": "ohos/multimedia/image/cj_image_common.cj",
+    "description": "图片：编码失败（对外码）。ImagePacker 场景。"
+  },
+  {
+    "code": "5400101",
+    "message": "No memory.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：内存不足或达到服务上限。AVImageGenerator 场景。"
+  },
+  {
+    "code": "5400102",
+    "message": "Operation not allowed.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：当前状态不允许该操作。"
+  },
+  {
+    "code": "5400103",
+    "message": "I/O error.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：数据流 IO 异常。fetchFrameByTime 常见（fdSrc 未设置或无效）。"
+  },
+  {
+    "code": "5400104",
+    "message": "Operation timeout.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：操作超时。"
+  },
+  {
+    "code": "5400105",
+    "message": "Service died.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：媒体服务进程死亡。"
+  },
+  {
+    "code": "5400106",
+    "message": "Unsupported format.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：媒体格式不支持。fetchFrameByTime 对不支持的容器/编码返回。"
+  },
+  {
+    "code": "5411006",
+    "message": "Network access denied.",
+    "source_file": "ohos/multimedia/media/media_common.cj",
+    "description": "媒体：网络访问被拒绝（在线源场景）。"
+  }
+]

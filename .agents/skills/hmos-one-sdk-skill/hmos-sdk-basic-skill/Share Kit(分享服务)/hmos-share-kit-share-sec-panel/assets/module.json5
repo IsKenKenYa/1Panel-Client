@@ -1,0 +1,105 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "virtualMachine": "ark",
+    "pages": "$profile:main_pages",
+    "extensionAbilities": [
+      {
+        "name": "ShareExtensionAbilityExample",
+        "srcEntry": "./ets/abilities/ShareExtensionAbilityExample.ets",
+        "type": "share",
+        "description": "$string:share_ability_desc",
+        "exported": true,
+        "label": "$string:share_ability_label",
+        "icon": "$media:icon",
+        "skills": [
+          {
+            "actions": [
+              "ohos.want.action.sendData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.text",
+                "maxFileSupported": 1
+              },
+              {
+                "scheme": "file",
+                "utd": "general.plain-text",
+                "maxFileSupported": 1
+              },
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.png",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.jpeg",
+                "maxFileSupported": 10
+              },
+              {
+                "scheme": "file",
+                "utd": "general.video",
+                "maxFileSupported": 5
+              },
+              {
+                "scheme": "file",
+                "utd": "general.file",
+                "maxFileSupported": 10
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ContactShareExample",
+        "srcEntry": "./ets/abilities/ContactShareExample.ets",
+        "type": "share",
+        "description": "$string:contact_share_desc",
+        "exported": true,
+        "label": "$string:contact_share_label",
+        "icon": "$media:icon",
+        "skills": [
+          {
+            "actions": [
+              "ohos.want.action.sendData"
+            ],
+            "uris": [
+              {
+                "scheme": "file",
+                "utd": "general.text",
+                "maxFileSupported": 1
+              },
+              {
+                "scheme": "file",
+                "utd": "general.image",
+                "maxFileSupported": 5
+              },
+              {
+                "scheme": "file",
+                "utd": "general.video",
+                "maxFileSupported": 3
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

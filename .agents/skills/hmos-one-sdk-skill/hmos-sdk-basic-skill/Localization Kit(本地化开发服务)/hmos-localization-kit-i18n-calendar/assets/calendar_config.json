@@ -1,0 +1,55 @@
+{
+  "calendarTypes": {
+    "buddhist": "佛历",
+    "chinese": "农历",
+    "coptic": "科普特历",
+    "ethiopic": "埃塞俄比亚历",
+    "hebrew": "希伯来历",
+    "gregory": "公历",
+    "indian": "印度历",
+    "islamic_civil": "伊斯兰希吉来历",
+    "islamic_tbla": "伊斯兰天文历",
+    "islamic_umalqura": "伊斯兰历（乌姆库拉）",
+    "japanese": "日本历",
+    "persian": "波斯历"
+  },
+  "fieldTypes": {
+    "era": "纪元",
+    "year": "年",
+    "month": "月（0-11）",
+    "date": "日",
+    "hour": "挂钟小时",
+    "hour_of_day": "一天中的第几小时",
+    "minute": "分",
+    "second": "秒",
+    "millisecond": "毫秒",
+    "week_of_year": "一年中的第几周",
+    "week_of_month": "一个月中的第几周",
+    "day_of_year": "一年中的第几天",
+    "day_of_week": "一周中的第几天",
+    "day_of_week_in_month": "一月中的第几周",
+    "milliseconds_in_day": "一天中的第几毫秒",
+    "zone_offset": "时区偏移量",
+    "dst_offset": "夏令时偏移量",
+    "dow_local": "本地星期",
+    "extended_year": "扩展年份",
+    "julian_day": "儒略日",
+    "is_leap_month": "是否为闰月"
+  },
+  "defaultSettings": {
+    "locale": "zh-Hans-CN",
+    "calendarType": "gregory",
+    "timezone": "Asia/Shanghai",
+    "firstDayOfWeek": 2,
+    "minimalDaysInFirstWeek": 4
+  },
+  "weekStartDayMapping": {
+    "1": "周日",
+    "2": "周一",
+    "3": "周二",
+    "4": "周三",
+    "5": "周四",
+    "6": "周五",
+    "7": "周六"
+  }
+}

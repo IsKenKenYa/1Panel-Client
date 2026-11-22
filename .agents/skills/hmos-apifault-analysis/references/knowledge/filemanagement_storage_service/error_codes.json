@@ -1,0 +1,266 @@
+[
+  {
+    "code": 201,
+    "message": "Permission verification failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "权限校验失败，调用方未申请所需权限（如 STORAGE_MANAGER / MOUNT_UNMOUNT_MANAGER / MOUNT_FORMAT_MANAGER / ENCRYPT_VOLUME_MANAGER / STORAGE_MANAGER_CRYPT）。"
+  },
+  {
+    "code": 202,
+    "message": "The caller is not a system application.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "调用方非系统应用却使用了系统 API（volumeManager/storageStatistics/keyManager/encryptedVolumeManager 均标注 @systemapi）。"
+  },
+  {
+    "code": 401,
+    "message": "The input parameter is invalid.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "参数校验失败：必填参数缺失、参数类型不匹配或参数个数不对（NAPI 侧 E_PARAMS，对应 JsErrCode 401）。"
+  },
+  {
+    "code": 801,
+    "message": "Capability not supported.",
+    "source_file": "interface_sdk-js/api/@ohos.file.environment.d.ts",
+    "description": "设备不支持该 SysCap（如 FolderObtain 能力缺失），environment 的 getUserDownloadDir/getUserDesktopDir 等可能抛出。"
+  },
+  {
+    "code": 13600001,
+    "message": "IPC error.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "IPC 通信错误，storage_manager SA 5003 未启动或 IPC 调用失败（对应内部 E_IPCSS = E_PERMISSION_DENIED 的同名映射，JsErrCode E_IPCSS）。"
+  },
+  {
+    "code": 13600002,
+    "message": "Not supported filesystem.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "不支持的文件系统类型（JsErrCode E_SUPPORTEDFS）。当前仅支持 FAT/exFAT/ext4/NTFS 等，挂载/格式化/光驱操作遇到其它 fsType 时抛出。"
+  },
+  {
+    "code": 13600003,
+    "message": "Failed to mount.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "挂载失败（JsErrCode E_MOUNT_ERR）。底层 daemon mount 调用返回错误，常见于卷损坏、文件系统驱动加载失败或设备只读。"
+  },
+  {
+    "code": 13600004,
+    "message": "Failed to unmount.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "卸载失败（JsErrCode E_UNMOUNT）。卷被占用或卸载超时，对应内部 E_VOL_UMOUNT_ERR / E_UMOUNT_BUSY。"
+  },
+  {
+    "code": 13600005,
+    "message": "Incorrect volume state.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "卷状态不正确（JsErrCode E_VOLUMESTATE）。如对已挂载卷执行 format、对未挂载卷执行 unmount、对非加密卷执行加密操作。"
+  },
+  {
+    "code": 13600008,
+    "message": "No such object.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "对象不存在（JsErrCode E_NOOBJECT）。volumeId/diskId/uuid 在系统中查不到，keyManager 时表示找不到对应用户的 userkey。"
+  },
+  {
+    "code": 13600009,
+    "message": "User id out of range.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "用户 ID 越界（JsErrCode E_OUTOFRANGE，内部 E_USERID_RANGE）。keyManager 明确约束 userId 须在 100~10736 之间。"
+  },
+  {
+    "code": 13600010,
+    "message": "The input parameter is invalid.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "输入参数无效（JsErrCode E_JS_PARAMS_INVALID）。在 erase/createIsoImage/burn/createPartition 等较新接口的参数校验阶段抛出，区别于 OS 通用 401。"
+  },
+  {
+    "code": 13600011,
+    "message": "Failed to report the specified business space usage.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "上报指定业务空间使用量失败（JsErrCode E_JS_SET_EXT_BUNDLE_STATS_ERROR）。setExtBundleStats 写入数据库失败。"
+  },
+  {
+    "code": 13600012,
+    "message": "Failed to query the specified business space usage.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "查询指定业务空间使用量失败（JsErrCode E_JS_GET_EXT_BUNDLE_STATS_ERROR）。getExtBundleStats 查询数据库失败。"
+  },
+  {
+    "code": 13600013,
+    "message": "Failed to query all business space usage.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "查询所有业务空间使用量失败（JsErrCode E_JS_GET_ALL_EXT_BUNDLE_STATS_ERROR）。getAllExtBundleStats 查询失败。"
+  },
+  {
+    "code": 13600015,
+    "message": "Failed to traverse the query data partition directory.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "遍历查询 data 分区目录失败。listUserdataDirInfo 扫描 /data 目录树异常。"
+  },
+  {
+    "code": 13600016,
+    "message": "Failed to query the inode information of the data partition.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "查询 data 分区 inode 信息失败（JsErrCode E_JS_GET_INODE_ERROR）。getTotalInodes/getFreeInodes statvfs 调用失败。"
+  },
+  {
+    "code": 13600017,
+    "message": "Failed to query the inode information of the application.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "查询应用 inode 信息失败（JsErrCode E_JS_GET_BUNDLE_INODES_ERROR）。getCurrentBundleInodes 查询失败。"
+  },
+  {
+    "code": 13600018,
+    "message": "Failed to query the system data size.",
+    "source_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "description": "查询系统数据大小失败（JsErrCode E_JS_GET_SYSTEM_DATA_SIZE_ERROR）。getSystemDataSize 查询失败。"
+  },
+  {
+    "code": 13600019,
+    "message": "Check the password length and ensure it includes at least two of the following:uppercase letters, lowercase letters, numbers, and special characters.",
+    "source_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "description": "加密卷密码强度不达标。须包含大写/小写/数字/特殊字符中至少两类且满足长度要求。"
+  },
+  {
+    "code": 13600020,
+    "message": "Invalid encryption key format.",
+    "source_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "description": "加密密钥格式无效。bindRecoverKeyToPasswd / resetCryptPasswd 提供的 recoverKey 格式非法。"
+  },
+  {
+    "code": 13600021,
+    "message": "Volume is not encrypted.",
+    "source_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "description": "卷未加密。getCryptProgressById/unlock/decrypt/updateCryptPasswd 等对未加密卷执行操作时抛出（与 volumeManager 的 13600021 分区表错误同名但语义不同）。"
+  },
+  {
+    "code": 13600022,
+    "message": "Incorrect password.",
+    "source_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "description": "密码错误。bindRecoverKeyToPasswd/updateCryptPasswd/verifyCryptPasswd/unlock/decrypt 提供的密码不匹配（JsErrCode E_JS_CREATE_PARTITION_ERROR 与之同名但语义不同，需按 d.ts 上下文区分）。"
+  },
+  {
+    "code": 13600023,
+    "message": "Delete partition failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "删除分区失败（JsErrCode E_JS_DELETE_PARTITION_ERROR）。daemon 侧删除分区操作异常。"
+  },
+  {
+    "code": 13600024,
+    "message": "Empty disc.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "光盘为空。createIsoImage 对空光盘创建 ISO 镜像时抛出。"
+  },
+  {
+    "code": 13600025,
+    "message": "Failed to write the ISO file.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "写 ISO 文件失败。createIsoImage 写入目标文件路径时异常。"
+  },
+  {
+    "code": 13600026,
+    "message": "Erase operation failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "擦除操作失败。erase 卷擦除异常。"
+  },
+  {
+    "code": 13600028,
+    "message": "Burn operation failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "刻录操作失败。burn 向光盘刻录数据异常。"
+  },
+  {
+    "code": 13600030,
+    "message": "Verification failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "刻录数据校验失败。verifyBurnData 对刻录结果校验不一致。"
+  },
+  {
+    "code": 13600032,
+    "message": "Format partition failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "格式化分区失败（JsErrCode E_JS_FORMAT_PARTITION_ERROR）。formatPartition 底层格式化异常。"
+  },
+  {
+    "code": 13900002,
+    "message": "No such file or directory",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ENOENT：路径不存在。statvfs.getFreeSize/getTotalSize 传入的 path 不存在（NAPI 在 file_api 仓）。"
+  },
+  {
+    "code": 13900004,
+    "message": "Interrupted system call",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EINTR：系统调用被信号中断。statvfs 操作期间被中断。"
+  },
+  {
+    "code": 13900005,
+    "message": "I/O error",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EIO：输入输出错误。底层 statvfs 读取文件系统信息时发生 I/O 错误，常见于存储介质损坏。"
+  },
+  {
+    "code": 13900008,
+    "message": "Bad file descriptor",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EBADF：错误的文件描述符。statvfs 内部使用了无效的 fd。"
+  },
+  {
+    "code": 13900011,
+    "message": "Out of memory",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ENOMEM：内存不足。statvfs 分配内存失败。"
+  },
+  {
+    "code": 13900012,
+    "message": "Permission denied",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EACCES：权限不足。statvfs 访问 path 时缺少文件系统读权限。"
+  },
+  {
+    "code": 13900013,
+    "message": "Bad address",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EFAULT：错误的地址。statvfs 传入的缓冲区地址非法。"
+  },
+  {
+    "code": 13900018,
+    "message": "Not a directory",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ENOTDIR：不是目录。statvfs 传入的 path 中某一段不是目录。"
+  },
+  {
+    "code": 13900020,
+    "message": "Invalid argument",
+    "source_file": "interface_sdk-js/api/@ohos.file.environment.d.ts",
+    "description": "errno EINVAL：无效参数。environment.getStorageDataDir/getUserDataDir 在参数处理阶段抛出（NAPI 在 file_api 仓）。"
+  },
+  {
+    "code": 13900030,
+    "message": "File name too long",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ENAMETOOLONG：文件名过长。statvfs 传入的 path 超出系统限制。"
+  },
+  {
+    "code": 13900031,
+    "message": "Function not implemented",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ENOSYS：功能未实现。当前内核/文件系统不支持该 statvfs 操作。"
+  },
+  {
+    "code": 13900033,
+    "message": "Too many symbolic links encountered",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno ELOOP：符号链接过多。statvfs 解析 path 时遇到循环或过多的符号链接。"
+  },
+  {
+    "code": 13900038,
+    "message": "Value too large for defined data type",
+    "source_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "description": "errno EOVERFLOW：值过大超出数据类型范围。statvfs 返回的 size 在目标类型中溢出。"
+  },
+  {
+    "code": 13900042,
+    "message": "Unknown error",
+    "source_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "description": "errno EUNKNOWN：未知错误。所有存储接口的兜底错误码，表示内部发生了未被具体错误码覆盖的异常（Convert2JsErrNum 无匹配映射时的默认输出）。"
+  }
+]

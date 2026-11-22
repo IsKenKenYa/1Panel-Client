@@ -1,0 +1,91 @@
+# CMakeLists.txt 配置模板
+# 用于HiAppEvent冻屏事件订阅Native C++工程
+
+cmake_minimum_required(VERSION 3.4.1)
+project(entry)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 11)
+
+# 添加源文件
+# 注意：需要包含jsoncpp.cpp源文件（用于解析事件参数JSON）
+add_library(entry SHARED
+    napi_init.cpp
+    jsoncpp.cpp  # jsoncpp解析库源文件
+)
+
+# 导入jsoncpp头文件路径
+# 假设json头文件放在cpp/json目录下
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/json
+)
+
+# 链接必要的动态库
+target_link_libraries(entry PUBLIC
+    # NAPI接口库
+    libace_napi.z.so
+    
+    # HiLog日志库
+    libhilog_ndk.z.so
+    
+    # HiAppEvent事件订阅库
+    libhiappevent_ndk.z.so
+)
+
+# 设置编译选项
+target_compile_options(entry PRIVATE
+    -fvisibility=hidden  # 符号可见性设置
+    -Wall                # 启用警告
+    -O2                  # 优化级别
+)
+
+# 输出信息
+message(STATUS "HiAppEvent Freeze Watcher Build Configuration:")
+message(STATUS "  - Source files: napi_init.cpp, jsoncpp.cpp")
+message(STATUS "  - Linked libraries: libace_napi.z.so, libhilog_ndk.z.so, libhiappevent_ndk.z.so")
+message(STATUS "  - C++ Standard: 11")
+
+# ========================================
+# 注意事项：
+# ========================================
+# 1. jsoncpp文件准备：
+#    - 从 https://github.com/open-source-parsers/jsoncpp 下载源码
+#    - 按README中的 "Amalgamated source" 步骤生成以下文件：
+#      * jsoncpp.cpp
+#      * json.h
+#      * json-forwards.h
+#    - 将这三个文件放在 cpp/json 目录下
+#
+# 2. 目录结构示例：
+#    entry/
+#      src/
+#        main/
+#          cpp/
+#            json/
+#              - json.h
+#              - json-forwards.h
+#            types/
+#              libentry/
+#                - index.d.ts
+#            - CMakeLists.txt  (此文件)
+#            - jsoncpp.cpp
+#            - napi_init.cpp
+#          ets/
+#            entryability/
+#              - EntryAbility.ets
+#            pages/
+#              - Index.ets
+#
+# 3. API版本要求：
+#    - HiAppEvent C API 起始版本：API 12
+#    - 需确保DevEco Studio SDK版本≥API 12
+#
+# 4. jsoncpp版本要求：
+#    - 推荐使用 jsoncpp ≥ 1.9.0
+#    - 确保JSON解析功能正常
+#
+# 5. 性能优化建议：
+#    - AddWatcher涉及I/O操作，建议在子线程调用（性能敏感场景）
+#    - 回调函数处理时间建议<100ms（避免阻塞）
+#    - 避免在回调中执行耗时操作
+# ========================================

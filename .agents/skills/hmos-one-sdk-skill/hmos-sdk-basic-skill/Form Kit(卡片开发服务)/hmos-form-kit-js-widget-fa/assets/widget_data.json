@@ -1,0 +1,24 @@
+{
+  "data": {
+    "title": "天气预报",
+    "detail": "温度: 26°C",
+    "updateTime": "12:00:00"
+  },
+  "actions": {
+    "routerEvent": {
+      "action": "router",
+      "abilityName": "com.example.formwidget.MainAbility",
+      "params": {
+        "targetPage": "detail",
+        "message": "查看详情"
+      }
+    },
+    "messageEvent": {
+      "action": "message",
+      "params": {
+        "eventType": "click",
+        "message": "卡片点击事件"
+      }
+    }
+  }
+}

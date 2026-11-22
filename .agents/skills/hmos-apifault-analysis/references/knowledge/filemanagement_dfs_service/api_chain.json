@@ -1,0 +1,177 @@
+﻿[
+  {
+    "api_name": "cloudSync.getFileSyncState",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::GetFileSyncState",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_napi.cpp",
+    "impl_func": "直接在 NAPI 层调用 getxattr 读取 sandBoxPath 的 `user.cloud.filestatus` 扩展属性并映射为 FileSyncState；不经过 CloudSyncManager。失败返回 EINVAL/EIO 等 POSIX errno（对应 1390000X）。"
+  },
+  {
+    "api_name": "cloudSync.getCoreFileSyncState",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::GetCoreFileSyncState",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_core.cpp",
+    "impl_func": "CloudSyncCore::DoGetCoreFileSyncState — getxattr 读 `user.cloud.filestatus` 并经 publicStatusMap 映射为 FileState；非法值返回 E_INNER_FAILED(22400005)。"
+  },
+  {
+    "api_name": "cloudSync.optimizeStorage",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::OptimizeStorage",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_core.cpp",
+    "impl_func": "CloudSyncCore::DoOptimizeStorage → CloudSyncManager::GetInstance().OptimizeStorage(optimizeOptions)，agingDays=30。Inner API 实现 frameworks/native/cloudsync_kit_inner，IPC 代理到 cloudsyncservice SA。"
+  },
+  {
+    "api_name": "cloudSync.startOptimizeSpace",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::StartOptimizeStorage",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_core.cpp",
+    "impl_func": "CloudSyncCore::DoStartOptimizeStorage → CloudSyncManager::GetInstance().OptimizeStorage(optimizeOptions, callback)，带回调进度。重复调用返回 E_TASK_RUNNING(22400006)。"
+  },
+  {
+    "api_name": "cloudSync.stopOptimizeSpace",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::StopOptimizeStorage",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_napi.cpp",
+    "impl_func": "CloudSyncNapi::StopOptimizeStorage → CloudSyncManager::GetInstance().StopOptimizeStorage()（同步调用）。"
+  },
+  {
+    "api_name": "cloudSync.registerChange",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::RegisterChange",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_napi.cpp",
+    "impl_func": "CloudSyncNapi::RegisterChange — 由 ChangeListenerNapi（g_listObj）注册文件变更监听，递归监听子文件/子目录。"
+  },
+  {
+    "api_name": "cloudSync.unregisterChange",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudSyncNapi::UnregisterChange",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_napi.cpp",
+    "impl_func": "CloudSyncNapi::UnregisterChange — 由 ChangeListenerNapi 注销文件变更监听。"
+  },
+  {
+    "api_name": "cloudSync.GallerySync.start",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "GallerySyncNapi::Start",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_core.cpp",
+    "impl_func": "CloudSyncCore::DoStart → CloudSyncManager::GetInstance().StartSync(bundleName)；网络/电量/云状态异常返回 22400002/22400003/22400001。"
+  },
+  {
+    "api_name": "cloudSync.GallerySync.stop",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "GallerySyncNapi::Stop",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_sync_core.cpp",
+    "impl_func": "CloudSyncCore::DoStop → CloudSyncManager::GetInstance().StopSync(bundleName)。"
+  },
+  {
+    "api_name": "cloudSync.FileSync.start",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "FileSyncNapi::Start",
+    "impl_file": "interfaces/kits/js/cloudfilesync/file_sync_napi.cpp",
+    "impl_func": "FileSyncNapi → CloudSyncManager::GetInstance().StartSync(bundleName)（应用级端云同步）。"
+  },
+  {
+    "api_name": "cloudSync.CloudFileCache.start",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudFileCacheNapi::Start",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_file_cache_napi.cpp",
+    "impl_func": "CloudFileCacheNapi → CloudDownloadManager（Inner API）下载单个云文件；失败返回 13900002/13900025/14000002。"
+  },
+  {
+    "api_name": "cloudSync.CloudFileCache.startBatch",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "napi_func": "CloudFileCacheNapi::StartBatch",
+    "impl_file": "interfaces/kits/js/cloudfilesync/cloud_file_cache_napi.cpp",
+    "impl_func": "CloudFileCacheNapi::StartBatch — 批量下载（最多 400 URI），超过返回 22400004；经 Inner API 到 cloudsyncservice/cloudfiledaemon。"
+  },
+  {
+    "api_name": "cloudSyncManager.changeAppCloudSwitch",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "ChangeAppCloudSwitch",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "ChangeAppCloudSwitch (async work) → CloudSyncManager::GetInstance().ChangeAppSwitch(accountId, bundleName, status)；权限失败映射 201/202。"
+  },
+  {
+    "api_name": "cloudSyncManager.notifyDataChange",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "NotifyDataChange",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "NotifyDataChange 分发 NotifyDataChangeInner（accountId+bundleName）或 NotifyEventChange（userId+ExtraData）→ CloudSyncManager::GetInstance().NotifyDataChange / NotifyEventChange。"
+  },
+  {
+    "api_name": "cloudSyncManager.enableCloud",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "EnableCloud",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "EnableCloud (async work) — ParseSwitches 解析 switches 对象 → CloudSyncManager::GetInstance().EnableCloud(accountId, switchData)；需 CLOUDFILE_SYNC_MANAGER 权限。"
+  },
+  {
+    "api_name": "cloudSyncManager.disableCloud",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "DisableCloud",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "DisableCloud (async work) → CloudSyncManager::GetInstance().DisableCloud(accountId)；需 CLOUDFILE_SYNC_MANAGER 权限。"
+  },
+  {
+    "api_name": "cloudSyncManager.clean",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "Clean",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "Clean (async work) — ParseAppActions 解析 appActions(RETAIN_DATA/CLEAR_DATA) → CloudSyncManager::GetInstance().Clean(accountId, cleanOptions)；需 CLOUDFILE_SYNC_MANAGER 权限。"
+  },
+  {
+    "api_name": "cloudSyncManager.getBundlesLocalFilePresentStatus",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "GetBundlesLocalFilePresentStatus",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "GetBundlesLocalFilePresentStatus (async work) — bundleNames 数组上限 20 → CloudSyncManager::GetInstance().GetBundlesLocalFilePresentStatus()，返回 LocalFilePresentStatus 列表。"
+  },
+  {
+    "api_name": "cloudSyncManager.getDowngradeDownloadTaskState",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "GetDowngradeDownloadTaskState",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/cloud_sync_manager_n_exporter.cpp",
+    "impl_func": "GetDowngradeDownloadTaskState (async work) — bundleNames 上限 20 → CloudSyncManager::GetInstance().GetDowngradeDownloadTaskState()，返回 DowngradeProgress 列表。"
+  },
+  {
+    "api_name": "cloudSyncManager.DowngradeDownload.getCloudFileInfo",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "DowngradeDownloadNapi::GetCloudFileInfo",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/downgrade_download_napi.cpp",
+    "impl_func": "DowngradeDownloadNapi::GetCloudFileInfo → CloudSyncManager Inner API 查询应用本地/云端文件数量与大小（CloudFileInfo）。"
+  },
+  {
+    "api_name": "cloudSyncManager.DowngradeDownload.startDownload",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudSyncManager.d.ts",
+    "napi_func": "DowngradeDownloadNapi::StartDownload",
+    "impl_file": "interfaces/kits/js/cloudsyncmanager/downgrade_download_napi.cpp",
+    "impl_func": "DowngradeDownloadNapi::StartDownload — 全量下载；重复触发返回 22400006；经 CloudSyncManager Inner API → cloudsyncservice SA。"
+  },
+  {
+    "api_name": "cloudDiskManager.SyncFolderAccessor.getAllSyncFolders",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudDiskManager.d.ts",
+    "napi_func": "OH_CloudDisk_GetSyncFolders (Native API)",
+    "impl_file": "interfaces/kits/xxx/clouddiskmanager/src/oh_cloud_disk_manager.cpp",
+    "impl_func": "OH_CloudDisk_GetSyncFolders → CloudDiskSyncFolderManager::GetInstance().GetSyncFolders(folderVec)（Inner API: interfaces/inner_api/native/clouddiskservice_kit_inner），IPC 到 clouddiskservice SA；未编译 SUPPORT_CLOUD_DISK_SERVICE 返回 801。"
+  },
+  {
+    "api_name": "cloudDiskManager.OH_CloudDisk_RegisterSyncFolder (Native API)",
+    "d_ts_file": "interfaces/kits/xxx/clouddiskmanager/include/oh_cloud_disk_manager.h",
+    "napi_func": "OH_CloudDisk_RegisterSyncFolder",
+    "impl_file": "interfaces/kits/xxx/clouddiskmanager/src/oh_cloud_disk_manager.cpp",
+    "impl_func": "OH_CloudDisk_RegisterSyncFolder → CloudDiskSyncFolderManager::GetInstance().Register(folder)；冲突返回 34400005/34400006，超限 34400004。"
+  },
+  {
+    "api_name": "cloudDiskManager.OH_CloudDisk_GetSyncFolderChanges (Native API)",
+    "d_ts_file": "interfaces/kits/xxx/clouddiskmanager/include/oh_cloud_disk_manager.h",
+    "napi_func": "OH_CloudDisk_GetSyncFolderChanges",
+    "impl_file": "interfaces/kits/xxx/clouddiskmanager/src/oh_cloud_disk_manager.cpp",
+    "impl_func": "OH_CloudDisk_GetSyncFolderChanges → CloudDiskServiceManager::GetInstance().GetSyncFolderChanges()；startUsn 过期返回 34400013。"
+  },
+  {
+    "api_name": "cloudDiskManager.OH_CloudDisk_RegisterSyncFolderChanges (Native API)",
+    "d_ts_file": "interfaces/kits/xxx/clouddiskmanager/include/oh_cloud_disk_manager.h",
+    "napi_func": "OH_CloudDisk_RegisterSyncFolderChanges",
+    "impl_file": "interfaces/kits/xxx/clouddiskmanager/src/oh_cloud_disk_manager.cpp",
+    "impl_func": "OH_CloudDisk_RegisterSyncFolderChanges → CloudDiskServiceManager::GetInstance().RegisterSyncFolderChanges()；重复注册返回 34400012。"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "name": "traceoverlaydemo",
+  "version": "1.0.0",
+  "description": "Dynamic trace overlay demo for HarmonyOS Map Kit",
+  "main": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kit.MapKit": ">=5.0.0(12)",
+    "@kit.BasicServicesKit": ">=5.0.0(12)"
+  },
+  "devDependencies": {},
+  "dynamicDependencies": {}
+}

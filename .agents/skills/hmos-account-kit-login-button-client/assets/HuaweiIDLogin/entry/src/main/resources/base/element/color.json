@@ -1,0 +1,16 @@
+{
+  "color": [
+    {
+      "name": "white",
+      "value": "#ffffff"
+    },
+    {
+      "name": "startWindowBackground",
+      "value": "#ffffff"
+    },
+    {
+      "name": "activity_color",
+      "value": "#CE0E2D"
+    }
+  ]
+}

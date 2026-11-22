@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "arkuix-interface-scan/scan-report.schema.json",
+  "title": "ScanReport",
+  "description": "ArkUI-X 接口适配性扫描报告（F2 ScanReport 契约，spec ，schema_version=1）",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_model",
+    "inventory",
+    "adaptation"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "契约版本；演进向后兼容（只增可选字段）"
+    },
+    "project_model": {
+      "type": "string",
+      "enum": [
+        "stage",
+        "fa",
+        "unknown"
+      ],
+      "description": "工程模型判定"
+    },
+    "sdk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "version",
+        "confirmed",
+        "origin"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "description": "SDK 版本（目录名或 apiVersion）"
+        },
+        "confirmed": {
+          "type": "boolean",
+          "description": "是否经用户确认"
+        },
+        "origin": {
+          "type": "string",
+          "description": "判定源确认途径：explicit(--sdk-dir)/interactive(TTY 确认)/auto:*(--yes 授权自动探测)"
+        }
+      },
+      "description": "SDK 判定源记录；SDK 未检出降级时缺省"
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "module",
+          "symbol",
+          "file",
+          "line"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "ohos",
+              "hms",
+              "ndk",
+              "unknown"
+            ]
+          },
+          "module": {
+            "type": "string",
+            "description": "模块名（ArkTS 如 @ohos.router / @hms.map；ndk 为头文件路径，如 ace/xcomponent/native_interface_xcomponent.h）"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "引用符号（归一后；ndk 为 OH_* C-API 符号）"
+          },
+          "file": {
+            "type": "string",
+            "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）",
+            "pattern": "^[^\\\\]*$"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "adaptation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "full_direct",
+        "reduced_direct",
+        "equivalent_bridge",
+        "degraded_bridge",
+        "platform_trim",
+        "business_decision",
+        "unknown"
+      ],
+      "properties": {
+        "full_direct": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "reduced_direct": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "equivalent_bridge": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "degraded_bridge": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "platform_trim": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "business_decision": {
+          "$ref": "#/definitions/adaptationItems"
+        },
+        "unknown": {
+          "$ref": "#/definitions/adaptationItems"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "adaptationItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "module",
+          "symbol",
+          "occurrences",
+          "locations",
+          "reason",
+          "advice",
+          "suggested_alternative"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "ohos",
+              "hms",
+              "ndk",
+              "unknown"
+            ]
+          },
+          "module": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "occurrences": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "聚合后引用总次数"
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[^\\\\]*$",
+              "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+            },
+            "description": "文件:行 位置清单，完整且去重"
+          },
+          "reason": {
+            "type": "string",
+            "description": "分类理由，注明判定来源：双源一致/单源+源名/双源冲突+两源结论/判定依据未覆盖"
+          },
+          "advice": {
+            "type": "string",
+            "description": "迁移建议（unknown 项为人工确认指引）"
+          },
+          "suggested_alternative": {
+            "type": "string",
+            "description": "OH 开源替代建议；无已知替代='需开发者评估'；@ohos.* 项可为 'N/A'"
+          }
+        }
+      }
+    }
+  }
+}

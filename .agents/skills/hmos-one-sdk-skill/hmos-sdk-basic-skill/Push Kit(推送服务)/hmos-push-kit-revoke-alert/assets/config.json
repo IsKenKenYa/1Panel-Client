@@ -1,0 +1,35 @@
+{
+  "push_service": {
+    "client_id": "YOUR_CLIENT_ID",
+    "client_secret": "YOUR_CLIENT_SECRET",
+    "project_id": "YOUR_PROJECT_ID"
+  },
+  "jwt_config": {
+    "issuer": "YOUR_ISSUER_ID",
+    "subject": "YOUR_SUBJECT_ID",
+    "audience": "https://oauth-login.cloud.huawei.com/oauth2/v3/token",
+    "key_file": "path/to/private_key.pem",
+    "expiration_time": 3600
+  },
+  "api_endpoints": {
+    "revoke": "https://push-api.cloud.huawei.com/v1/{clientId}/messages:revoke",
+    "token": "https://oauth-login.cloud.huawei.com/oauth2/v3/token"
+  },
+  "retry_config": {
+    "max_retries": 3,
+    "retry_delay": 1.0,
+    "exponential_backoff": true
+  },
+  "batch_config": {
+    "max_tokens_per_batch": 1000,
+    "batch_delay": 0.1
+  },
+  "timeout_config": {
+    "connection_timeout": 10,
+    "read_timeout": 30
+  },
+  "ssl_config": {
+    "verify": true,
+    "min_tls_version": "TLS1.2"
+  }
+}

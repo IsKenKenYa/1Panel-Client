@@ -1,0 +1,16 @@
+{
+  "name": "arkuix-interface-scan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ArkUI-X 接口适配性扫描 Skill（六分类 + ScanReport）",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test \"scripts/*.test.js\"",
+    "benchmark": "node benchmark/compare.js",
+    "guard": "node scripts/guard.js"
+  },
+  "dependencies": {}
+}

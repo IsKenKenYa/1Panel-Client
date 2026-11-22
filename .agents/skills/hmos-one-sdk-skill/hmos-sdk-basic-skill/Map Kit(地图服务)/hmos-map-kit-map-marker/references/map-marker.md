@@ -1,0 +1,579 @@
+# 标记
+---
+# 标记
+#### 场景介绍
+本章节将向您介绍如何在地图的指定位置添加标记以标识位置、商家、建筑等。
+点标记用来在地图上标记任何位置，例如用户位置、车辆位置、店铺位置等一切带有位置属性的事物。Map Kit提供的点标记功能（又称 Marker）封装了大量的触发事件，例如点击事件、长按事件、拖拽事件。
+Marker有默认风格，同时也支持自定义。由于内容丰富，以下只能展示一些基础功能的使用。
+5.1.1(19)开始，支持控制Marker文字显隐功能。
+6.0.0(20)开始，支持自定义组件实现Marker图标功能。
+6.1.1(24)开始，支持监听Marker长按事件。
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/15/v3/0GC2KHDOSpGbshLLU7vMVw/zh-cn_image_0000002628701824.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=66CD30A9AA68939B7CD54B60BB5992BA6F98F9DDCCEC5E7FE6D20019BDFC1603)
+#### 接口说明
+添加标记功能主要由 [MarkerOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md) 、 [addMarker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md) 和 [Marker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 提供，更多接口及使用方法请参见 [接口文档](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 。
+| 接口名 | 描述 |
+| --- | --- |
+| [MarkerOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md) | 标记参数。 |
+| [addMarker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(options:[mapCommon.MarkerOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md)): Promise<[Marker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md)> | 在地图上添加标记。 |
+| [Marker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) | 标记，支持更新和查询相关属性。 |
+#### 开发步骤
+#### 添加标记
+1.
+导入相关模块。
+```typescript
+import { MapComponent, mapCommon, map } from '@kit.MapKit';
+import { AsyncCallback } from '@kit.BasicServicesKit';
+```
+2.
+添加标记，在callback方法中创建初始化参数并新建 [Marker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 。
+```
+@Entry
+@Component
+struct MapMarkerDemo {
+  // ...
+  private mapOptions?: mapCommon.MapOptions;
+  private mapController?: map.MapComponentController;
+  private callback?: AsyncCallback<map.MapComponentController>;
+  private mapEventManager?: map.MapEventManager;
+  private marker?: map.Marker;
+  aboutToAppear(): void {
+    // 地图初始化参数
+    this.mapOptions = {
+      position: {
+        target: {
+          latitude: 31.984410259206815,
+          longitude: 118.76625379397866
+        },
+        zoom: 15
+      }
+    };
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        this.mapController = mapController;
+        this.mapEventManager = this.mapController.getEventManager();
+        // Marker初始化参数
+        let markerOptions: mapCommon.MarkerOptions = {
+          position: {
+            latitude: 31.984410259206815,
+            longitude: 118.76625379397866
+          },
+          rotation: 0,
+          visible: true,
+          zIndex: 0,
+          alpha: 1,
+          anchorU: 0.5,
+          anchorV: 1,
+          clickable: true,
+          draggable: true,
+          flat: false
+        };
+        // 创建Marker
+        try {
+          this.marker = await this.mapController.addMarker(markerOptions);
+        } catch (e) {
+          console.error(`Failed to create the marker, code is：${e.code}, message is ${e.message}`);
+        }
+      } else {
+        console.error(`Failed to initialize the map, code is：${err.code}, message is ${err.message}`);
+      }
+    };
+  }
+  build() {
+    // ...
+      Stack() {
+        Column() {
+          MapComponent({ mapOptions: this.mapOptions, mapCallback: this.callback });
+        }.width('100%')
+      }.height('100%')
+      // ...
+  }
+}
+```
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/7b/v3/19XHEFqkTkaT8Z-2ZQ4IVA/zh-cn_image_0000002659101055.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=7B49487E56BA950B0D6C2996F69E7761CAEF0D35FAB49EB9783AC87AF650DB8F)
+3.
+在添加标记之后，修改已经设置的标记属性。
+```typescript
+// 设置标记可拖拽
+this.marker.setDraggable(true);
+// 设置标记锚点
+this.marker.setMarkerAnchor(1.0, 1.0);
+```
+#### 自定义标记
+通过在 [MarkerOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md) 中将icon属性设置为自定义图标的资源，可将默认标记图标修改成自定义图标。
+```typescript
+let markerOptions: mapCommon.MarkerOptions = {
+  position: {
+    latitude: 31.984410259206815,
+    longitude: 118.76625379397866
+  },
+  rotation: 0,
+  visible: true,
+  zIndex: 0,
+  alpha: 1,
+  anchorU: 0.5,
+  anchorV: 1,
+  clickable: true,
+  draggable: true,
+  flat: false,
+  // 图标存放在resources/rawfile，icon参数传入rawfile文件夹下的相对路径
+  icon: 'test.png'
+};
+this.marker = await this.mapController.addMarker(markerOptions);
+```
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/b3/v3/8snQiECdRXWlD6pcDlRiXQ/zh-cn_image_0000002628861704.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=009D31FE46CFC6C3144294342FB1EC91D781FC61D6F0343F8978FE6789573D7F)
+#### 控制Marker文字显隐
+通过 [setAnnotationVisible](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 方法可以控制Marker文字显隐，还可以通过 [isAnnotationVisible](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 方法来获取Marker文字显隐的状态。
+```
+// Marker初始化参数
+let markerOptions: mapCommon.MarkerOptions = {
+  position: {
+    latitude: 31.984410259206815,
+    longitude: 118.76625379397866
+  },
+  rotation: 0,
+  visible: true,
+  zIndex: 0,
+  alpha: 1,
+  anchorU: 0.5,
+  anchorV: 1,
+  clickable: true,
+  draggable: true,
+  flat: false,
+  annotations: [{
+    // 定义标题内容
+    content: 'text',
+    fontStyle: 1,
+    strokeWidth: 3,
+    fontSize: 15
+  }]
+};
+// 创建Marker
+this.marker = await this.mapController.addMarker(markerOptions);
+// 设置文字隐藏
+this.marker.setAnnotationVisible(false);
+// 查询当前显隐状态
+let isAnnotationVisible: boolean = this.marker.isAnnotationVisible();
+console.info(`isAnnotationVisible is: ` + isAnnotationVisible);
+```
+**图1** 隐藏Marker文字之前
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/ba/v3/NCpLmNORRSmjBGUa9HAF5w/zh-cn_image_0000002659221017.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=6CE29D73AE78FDBA9859B0D788878BFFEF2804E74043FA86A13FEC9C8AAAEADB)
+**图2** 隐藏Marker文字之后
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/d0/v3/Usl6kyDjQym-TtIXg-iDEA/zh-cn_image_0000002628701826.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=B02CE6846062E24ABD68E1C024E88CD196F996DB8D02F168852F60422F840414)
+#### 碰撞检测
+通过在 [MarkerOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md) 中设置collisionRule属性，可以设置标记的冲突处理规则。
+```
+let markerOptions: mapCommon.MarkerOptions = {
+  position: {
+    latitude: 31.984410259206815,
+    longitude: 118.76625379397866
+  },
+  rotation: 0,
+  visible: true,
+  zIndex: 0,
+  alpha: 1,
+  anchorU: 0.5,
+  anchorV: 1,
+  clickable: true,
+  draggable: true,
+  flat: false,
+  // 图标存放在resources/rawfile，icon参数传入rawfile文件夹下的相对路径
+  icon: 'icon.png',
+  annotations: [{
+    // 定义标题内容
+    content: 'Test',
+    fontStyle: 1,
+    strokeWidth: 3,
+    fontSize: 15
+  }],
+  // 设置碰撞规则为图标和名称都参与碰撞
+  collisionRule: mapCommon.CollisionRule.ALL,
+  annotationPosition: mapCommon.TextPosition.TOP
+};
+this.marker = await this.mapController.addMarker(markerOptions);
+```
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/73/v3/pKDRUQOWQFi-biV6QX4wuQ/zh-cn_image_0000002659101057.gif?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=13C23EC4AD648B1BDD9FFFC4BC2889B025CA5222A79850A84830B17A6B0308BA)
+#### 设置监听标记点击事件
+```
+let callback = (marker: map.Marker) => {
+  console.info(`on-markerClick marker = ${marker.getId()}`);
+};
+this.mapEventManager.on('markerClick', callback);
+```
+#### 设置监听标记拖动事件
+通过如下步骤设置监听标记拖动事件：
+1.
+将 [Marker](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-marker.md) 的拖拽属性设置为true。
+2.
+调用 [on(type: 'markerDragStart' , callback: Callback<Marker>)](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapeventmanager.md) 方法监听标记是否开始拖拽。
+3.
+调用 [on(type: 'markerDrag' , callback: Callback<Marker>)](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapeventmanager.md) ，监听标记拖动过程。
+4.
+调用 [on(type: 'markerDragEnd' , callback: Callback<Marker>)](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapeventmanager.md) ，监听标记拖动结束事件。
+```
+// 设置标记可拖拽
+this.marker.setDraggable(true);
+// 监听标记开始拖拽
+let markerCallback = (marker: map.Marker) => {
+  console.info(`on-markerDragStart marker = ${marker.getId()}`);
+};
+this.mapEventManager.on('markerDragStart', markerCallback);
+// 监听标记拖拽事件
+let markerDragCallback = (marker: map.Marker) => {
+  console.info(`on-markerDrag marker = ${marker.getId()}`);
+};
+this.mapEventManager.on('markerDrag', markerDragCallback);
+// 监听标记拖拽结束
+let markerDragEndCallback = (marker: map.Marker) => {
+  console.info(`on-markerDragEnd marker = ${marker.getId()}`);
+};
+this.mapEventManager.on('markerDragEnd', markerDragEndCallback);
+```
+#### 设置监听标记长按事件
+```
+let callback = (markerLong: map.Marker) => {
+  console.info('markerLongClick', `callback markerLongClick = ${markerLong.getId()}`);
+};
+this.mapEventManager.onMarkerLongClick(callback);
+```
+#### 信息窗
+```typescript
+// 添加信息窗
+let markerOptions: mapCommon.MarkerOptions = {
+  position: {
+    latitude: 31.984410259206815,
+    longitude: 118.76625379397866
+  }
+};
+this.marker = await this.mapController?.addMarker(markerOptions);
+// 设置信息窗的标题
+this.marker.setTitle('南京');
+// 设置信息窗的子标题
+this.marker.setSnippet('华东地区');
+// 设置标记可点击
+this.marker.setClickable(true);
+// 设置信息窗的锚点位置
+this.marker.setInfoWindowAnchor(1, 1);
+// 设置信息窗可见，点击标记后可展示信息窗
+this.marker.setInfoWindowVisible(true);
+```
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/ca/v3/A1NZPVbEQT6r1I9cf_oPwA/zh-cn_image_0000002628861706.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=371044C15630724A4DDB6BAB7CAFBDF1439AD726F2D4707D9325D04AD39EB767)
+#### 自定义信息窗
+```
+@Entry
+@Component
+struct MapMarkerDemo {
+  // ...
+  private mapOptions?: mapCommon.MapOptions;
+  private mapController?: map.MapComponentController;
+  private callback?: AsyncCallback<map.MapComponentController>;
+  aboutToAppear(): void {
+    this.mapOptions = {
+      position: {
+        target: {
+          latitude: 32.120750,
+          longitude: 118.788765
+        },
+        zoom: 15
+      }
+    }
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        this.mapController = mapController;
+        let markerOptions: mapCommon.MarkerOptions = {
+          position: {
+            latitude: 32.120750,
+            longitude: 118.788765
+          },
+          clickable: true,
+          // 设置信息窗标题，点击标记后可展示信息窗
+          title: '自定义信息窗'
+        };
+        // 新建marker
+        await this.mapController?.addMarker(markerOptions);
+      } else {
+        console.error(`Failed to initialize the map, code is：${err.code}, message is ${err.message}`);
+      }
+    }
+  }
+  build() {
+    // ...
+      Stack() {
+        Column() {
+          MapComponent({
+            mapOptions: this.mapOptions,
+            mapCallback: this.callback,
+            // 自定义信息窗
+            customInfoWindow: this.customInfoWindow
+          })
+            .width('100%')
+            .height('100%');
+        }.width('100%')
+      }.height('100%')
+      // ...
+  }
+  // 自定义信息窗BuilderParam
+  @BuilderParam customInfoWindow: ($$: map.MarkerDelegate) => void = this.customInfoWindowBuilder;
+  // 自定义信息窗Builder
+  @Builder
+  customInfoWindowBuilder($$: map.MarkerDelegate) {
+    if ($$.marker) {
+      Text($$.marker.getTitle())
+        .width('50%')
+        .height(50)
+        .backgroundColor(Color.Green)
+        .textAlign(TextAlign.Center)
+        .fontColor(Color.Black)
+        .font({ size: 25, weight: 10, style: FontStyle.Italic })
+        .border({
+          width: 3,
+          color: Color.Black,
+          radius: 25,
+          style: BorderStyle.Dashed
+        })
+    }
+  }
+}
+```
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/c5/v3/tOC_oFJDQLOOBjUMrsFDdg/zh-cn_image_0000002659221019.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=EADFE0CB6648B8699537DC1575DF7259598912FB327230523A3EFC478513D1B2)
+#### 标记动画
+Marker支持设置旋转、缩放、平移、透明、图片动画播放和组合动画效果。
+| 接口名 | 描述 |
+| --- | --- |
+| [AlphaAnimation](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-alphaanimation.md) | 控制透明度的动画类。 |
+| [RotateAnimation](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-rotateanimation.md) | 控制旋转的动画类。 |
+| [ScaleAnimation](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-scaleanimation.md) | 控制缩放的动画类。 |
+| [TranslateAnimation](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-translateanimation.md) | 控制平移的动画类。 |
+| [PlayImageAnimation](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-playimageanimation.md) | 控制多张图片的动画类。 |
+| [AnimationSet](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-animationset.md) | 动画集合。 |
+旋转动画效果的示例代码如下：
+```
+import { map, mapCommon, MapComponent } from '@kit.MapKit';
+import { AsyncCallback } from '@kit.BasicServicesKit';
+// ...
+@Entry
+@Component
+struct MapMarkerDemo {
+  // ...
+  private mapOptions?: mapCommon.MapOptions;
+  private callback?: AsyncCallback<map.MapComponentController>;
+  aboutToAppear(): void {
+    this.mapOptions = {
+      position: {
+        target: {
+          latitude: 32.020750,
+          longitude: 118.788765
+        },
+        zoom: 11
+      }
+    }
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        // 构造MarkerOptions对象
+        let markerOptions: mapCommon.MarkerOptions = {
+          position: {
+            latitude: 32.020750,
+            longitude: 118.788765
+          }
+        };
+        // 新建marker
+        let marker: map.Marker = await mapController.addMarker(markerOptions);
+        // 构造RotateAnimation对象
+        let animation = new map.RotateAnimation(0, 270);
+        // 动画执行时间
+        animation.setDuration(2000);
+        // 动画结束状态
+        animation.setFillMode(map.AnimationFillMode.BACKWARDS);
+        // 动画重复模式
+        animation.setRepeatMode(map.AnimationRepeatMode.REVERSE);
+        // 动画重复次数
+        animation.setRepeatCount(100);
+        // 设置动画开始监听
+        let callbackStart = () => {
+          console.info('animationStart', `callback`);
+        };
+        animation.on('animationStart', callbackStart);
+        // 设置动画结束监听
+        let callbackEnd = () => {
+          console.info('animationEnd', `callback`);
+        };
+        animation.on('animationEnd', callbackEnd);
+        // 设置动画
+        marker.setAnimation(animation);
+        // 开启动画
+        marker.startAnimation();
+      } else {
+        console.error(`Failed to initialize the map, code is：${err.code}, message is ${err.message}`);
+      }
+    }
+  }
+  build() {
+    // ...
+      Stack() {
+        Column() {
+          MapComponent({ mapOptions: this.mapOptions, mapCallback: this.callback });
+        }.width('100%')
+      }.height('100%')
+      // ...
+  }
+}
+```
+展示效果如图：
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/25/v3/ffRpGIH7Tt206bwi-FVjZg/zh-cn_image_0000002628701828.gif?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=36C33CCB9D1A4994C9EEF02BE076DFA67065FFF76DC661E9B5472D9BC4F70EEE)
+#### 图片动画播放
+```
+import { map, mapCommon, MapComponent } from '@kit.MapKit';
+import { AsyncCallback } from '@kit.BasicServicesKit';
+import { image } from '@kit.ImageKit';
+// ...
+@Entry
+@Component
+struct MapMarkerDemo {
+  // ...
+  private mapOptions?: mapCommon.MapOptions;
+  private callback?: AsyncCallback<map.MapComponentController>;
+  aboutToAppear(): void {
+    this.mapOptions = {
+      position: {
+        target: {
+          latitude: 32.020750,
+          longitude: 118.788765
+        },
+        zoom: 11
+      }
+    }
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        // 构造MarkerOptions对象
+        let markerOptions: mapCommon.MarkerOptions = {
+          position: {
+            latitude: 32.020750,
+            longitude: 118.788765
+          },
+        };
+        let images: (ResourceStr | image.PixelMap)[] = [
+          // 图标需存放在resources/rawfile目录下
+          'icon/avocado.png',
+          'icon/20231027.png',
+          // 图标需存放在resources/base/media目录下
+          $r('app.media.icon')
+        ]
+        let mContext = this.getUIContext().getHostContext();
+        if (mContext) {
+          const fileData: Uint8Array = await mContext?.resourceManager?.getRawFileContent('icon/icon.png');
+          let imageSource: image.ImageSource =
+            image.createImageSource(fileData.buffer.slice(0, fileData.buffer.byteLength));
+          let pixelMap: PixelMap = await imageSource.createPixelMap();
+          images.push(pixelMap);
+        }
+        // 新建marker
+        let marker: map.Marker = await mapController.addMarker(markerOptions);
+        // 构造PlayImageAnimation对象
+        let animation: map.PlayImageAnimation = new map.PlayImageAnimation();
+        // 添加图片
+        await animation.addImages(images)
+        // 动画执行时间
+        animation.setDuration(3000);
+        // 动画结束状态
+        animation.setFillMode(map.AnimationFillMode.BACKWARDS);
+        // 动画重复模式
+        animation.setRepeatMode(map.AnimationRepeatMode.REVERSE);
+        // 动画重复次数
+        animation.setRepeatCount(100);
+        // 设置动画开始监听
+        let callbackStart = () => {
+          console.info('animationStart', `callback`);
+        };
+        animation.on('animationStart', callbackStart);
+        // 设置动画结束监听
+        let callbackEnd = () => {
+          console.info('animationEnd', `callback`);
+        };
+        animation.on('animationEnd', callbackEnd);
+        // 设置动画
+        marker.setAnimation(animation);
+        // 开启动画
+        marker.startAnimation();
+      } else {
+        console.error(`Failed to initialize the map, code is：${err.code}, message is ${err.message}`);
+      }
+    }
+  }
+  build() {
+    // ...
+      Stack() {
+        Column() {
+          MapComponent({ mapOptions: this.mapOptions, mapCallback: this.callback });
+        }.width('100%')
+      }.height('100%')
+      // ...
+  }
+}
+```
+展示效果如图：
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/0b/v3/jvTa32XMQYq9K5yIJ5yYhQ/zh-cn_image_0000002659101059.gif?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=A0F42303A9D960F5A4751C34D432EE058C28E1BCBB52BD371F59A5950D58F0BB)
+#### 自定义组件实现marker图标
+通过自定义组件生成marker图标。
+```
+import { map, mapCommon, MapComponent } from '@kit.MapKit';
+import { AsyncCallback } from '@kit.BasicServicesKit';
+// ...
+@Entry
+@Component
+struct MapMarkerDemo {
+  // ...
+  private mapOptions?: mapCommon.MapOptions;
+  private mapController?: map.MapComponentController;
+  private callback?: AsyncCallback<map.MapComponentController>;
+  private marker?: map.Marker;
+  aboutToAppear(): void {
+    this.mapOptions = {
+      position: {
+        target: {
+          latitude: 32.120750,
+          longitude: 118.788765
+        },
+        zoom: 14
+      },
+      scaleControlsEnabled: true
+    }
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        this.mapController = mapController;
+        // 构造MarkerOptions对象
+        let markerOptions: mapCommon.MarkerOptions = {
+          position: {
+            latitude: 32.120750,
+            longitude: 118.788765
+          },
+          // 自定义组件
+          iconBuilder: () => {
+            this.renderBuilder();
+          }
+        };
+        this.marker = await this.mapController?.addMarker(markerOptions);
+      }
+    }
+  }
+  @Builder
+  renderBuilder() {
+    Stack({ alignContent: Alignment.Center }) {
+      // 需要替换您自己的资源图片，存放在resources/base/media目录下
+      Image($r('app.media.icon'))
+        .syncLoad(true)
+    }
+    .height(50)
+    .width(50)
+  }
+  build() {
+    // ...
+      Stack() {
+        Column() {
+          MapComponent({ mapOptions: this.mapOptions, mapCallback: this.callback });
+        }.width('100%')
+      }.height('100%')
+      // ...
+  }
+}
+```
+展示效果如图：
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/6a/v3/s-zKTDpCT8uyDDd0kiUVXA/zh-cn_image_0000002628861708.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105233Z&HW-CC-Expire=86400&HW-CC-Sign=E99A64F4AD1D49F0987844A50E97A80806E89B4B5AC4CE0B0B22ED852FE9764A)

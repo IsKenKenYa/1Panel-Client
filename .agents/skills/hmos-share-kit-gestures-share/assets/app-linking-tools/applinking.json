@@ -1,0 +1,9 @@
+{
+  "applinking": {
+    "apps": [
+      {
+        "appIdentifier": "REPLACE_WITH_AGC_APP_IDENTIFIER"
+      }
+    ]
+  }
+}

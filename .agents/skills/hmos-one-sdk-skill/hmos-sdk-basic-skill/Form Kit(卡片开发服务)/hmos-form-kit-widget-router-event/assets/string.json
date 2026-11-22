@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "ButtonA_label",
+      "value": "FunA页面"
+    },
+    {
+      "name": "ButtonB_label",
+      "value": "FunB页面"
+    },
+    {
+      "name": "JumpLabel",
+      "value": "router事件跳转"
+    },
+    {
+      "name": "NoContentAvailable",
+      "value": "暂无内容"
+    },
+    {
+      "name": "text_color",
+      "value": "#000000"
+    }
+  ]
+}

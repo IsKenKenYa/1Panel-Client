@@ -1,0 +1,16 @@
+{
+  "name": "crossdevicecollaborationexample",
+  "version": "1.0.0",
+  "description": "跨设备互通示例应用",
+  "main": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kit.ServiceCollaborationKit": "^5.0.0",
+    "@kit.ImageKit": "^5.0.0",
+    "@kit.PerformanceAnalysisKit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/harmonyos": "^1.0.0"
+  }
+}

@@ -1,0 +1,353 @@
+﻿[
+  {
+    "code": "0",
+    "name": "SUCCESS",
+    "message": "Camera result is ok.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "操作成功。",
+    "category": "public_api"
+  },
+  {
+    "code": "201",
+    "name": "NO_API_PERMISSION",
+    "message": "Permission denied.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "权限被拒。开发者未申请或未获得 ohos.permission.CAMERA 权限。录像场景可能还缺少麦克风权限。",
+    "category": "public_api"
+  },
+  {
+    "code": "202",
+    "name": "NO_SYSTEM_APP_PERMISSION",
+    "message": "Not System Application / Permission verification failed. A non-system application calls a system API.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "非系统应用调用了标记 @systemapi 的系统 API。仅系统应用（如系统相机）可使用。",
+    "category": "public_api"
+  },
+  {
+    "code": "401",
+    "name": "PARAMETER_ERROR",
+    "message": "Parameter error. Possible causes: 1. Parameter verification failed. 2. Mandatory parameters are left unspecified. 3. Parameter type incorrect.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "参数错误。常见原因：必填参数缺失、参数类型不匹配、参数值越界或 surfaceId 无效。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400101",
+    "name": "INVALID_ARGUMENT",
+    "message": "Parameter missing or parameter type incorrect.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "相机参数缺失或类型错误。与 401 的区别：401 多为 NAPI 层入参解析失败，7400101 多为传入业务对象（如 Profile/Camera）无效或与设备能力不匹配。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400102",
+    "name": "OPERATION_NOT_ALLOWED",
+    "message": "Operation not allowed.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "操作不被允许。内部含 4 个子码经 errorCodeMap 映射回 7400102：74001021(会话未就绪)、74001022(能力不支持)、74001023(设备原因)、74001024(设备冲突)。常见触发：会话未 start 就 capture、在错误的会话状态下调用 setter、设备忙。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400103",
+    "name": "SESSION_NOT_CONFIG",
+    "message": "Session not config.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "会话未配置。调 start/commitConfig 前必须先 beginConfig 并完成 addInput/addOutput+commitConfig。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400104",
+    "name": "SESSION_NOT_RUNNING",
+    "message": "Session not running.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "会话未运行。在未 start 的会话上调用 capture/stop 等需要运行态的方法。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400105",
+    "name": "SESSION_CONFIG_LOCKED",
+    "message": "Session config locked.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "会话配置已锁定。commitConfig 成功后再次 addInput/addOutput 而未先 beginConfig。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400106",
+    "name": "DEVICE_SETTING_LOCKED",
+    "message": "Device setting locked.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "设备设置已锁定。未调 lockForControl 直接设置参数，或 unlockForControl 后再设值。仅枚举声明，d.ts 未在 @throws 中显式列出。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400107",
+    "name": "CONFLICT_CAMERA",
+    "message": "Can not use camera cause of conflict.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "相机冲突。高优先级应用（如系统相机）占用相机，或同设备多客户端竞争。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400108",
+    "name": "DEVICE_DISABLED",
+    "message": "Camera disabled cause of security reason.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "相机因安全原因被禁用。常见于安全模式、企业策略、或被 muteCamera 永久静音。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400109",
+    "name": "DEVICE_PREEMPTED",
+    "message": "Can not use camera cause of preempted.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "相机被抢占。运行中另一高优先级客户端抢占了相机资源，当前会话被强制停止。仅枚举声明，d.ts @throws 未显式列出。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400110",
+    "name": "UNRESOLVED_CONFLICTS_BETWEEN_STREAMS",
+    "message": "Unresolved conflicts with current configurations.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "当前流配置存在未解决的冲突。commitConfig 时检测到 PreviewOutput/PhotoOutput/VideoOutput 组合不被设备支持。since 12。",
+    "category": "public_api"
+  },
+  {
+    "code": "7400201",
+    "name": "SERVICE_FATL_ERROR",
+    "message": "Camera service fatal error.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "d_ts_file": "interfaces/kits/js/camera_napi/@ohos.multimedia.camera.d.ts",
+    "description": "相机服务致命错误。内部含 5 个子码经 errorCodeMap 映射回 7400201：74002011(配置)、74002012(分配)、74002013(无效会话配置)、74002014(输入设备)、74002015(服务空)。常见触发：camera_service 进程崩溃/重启、HDF 层异常、IPC 跨进程调用失败、无相机权限时 xxx 侧也返回此码。",
+    "category": "public_api"
+  },
+  {
+    "code": "74001021",
+    "name": "OPERATION_NOT_ALLOWED_OF_SESSION_READY",
+    "message": "Operation not allowed: session not ready.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400102。表示因会话未就绪导致操作不被允许。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74001022",
+    "name": "OPERATION_NOT_ALLOWED_OF_UNSUPPORTED_FEATURE",
+    "message": "Operation not allowed: unsupported feature.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400102。表示因特性不支持导致操作不被允许。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74001023",
+    "name": "OPERATION_NOT_ALLOWED_OF_DEVICE",
+    "message": "Operation not allowed: device reason.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400102。表示因设备原因导致操作不被允许。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74001024",
+    "name": "OPERATION_NOT_ALLOWED_OF_DEVICE_CONFLICT",
+    "message": "Operation not allowed: device conflict.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400102。表示因设备冲突导致操作不被允许。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74002011",
+    "name": "SERVICE_FATL_ERROR_OF_CONFIG",
+    "message": "Service fatal error: config.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400201。配置阶段致命错误。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74002012",
+    "name": "SERVICE_FATL_ERROR_OF_ALLOC",
+    "message": "Service fatal error: alloc.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400201。资源分配致命错误。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74002013",
+    "name": "SERVICE_FATL_ERROR_OF_INVALID_SESSION_CFG",
+    "message": "Service fatal error: invalid session config.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码，经 errorCodeMap 映射为 7400201。会话配置无效致命错误。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74002014",
+    "name": "SERVICE_FATL_ERROR_OF_INPUT_DEVICE",
+    "message": "Service fatal error: input device.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码（注意：此码未在 errorCodeMap 中显式列出，但 FrameworkToNativeAPICameraError 映射将其归入 CAMERA_SERVICE_FATAL_ERROR）。输入设备致命错误。",
+    "category": "internal_only"
+  },
+  {
+    "code": "74002015",
+    "name": "SERVICE_FATL_ERROR_OF_SERVICE_NULL",
+    "message": "Service fatal error: service null.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "内部子码（注意：此码未在 errorCodeMap 中显式列出，但 FrameworkToNativeAPICameraError 映射将其归入 CAMERA_SERVICE_FATAL_ERROR）。服务对象为空致命错误。",
+    "category": "internal_only"
+  },
+  {
+    "code": "7400111",
+    "name": "DEVICE_SWITCH_FREQUENT",
+    "message": "Device switch frequent.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "设备切换过于频繁。仅在内部头文件定义，d.ts 未公开声明，开发者通常看到的是 7400102 或 7400201。",
+    "category": "internal_only"
+  },
+  {
+    "code": "7400112",
+    "name": "CAMERA_LENS_RETRACTED",
+    "message": "Camera lens retracted.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "相机镜头收回（如可伸缩镜头在跌落保护时收回）。仅在内部头文件定义，d.ts 未公开声明。",
+    "category": "internal_only"
+  },
+  {
+    "code": "7400113",
+    "name": "UNSUPPORTED_MULTI_CAMERA_COMBINATION",
+    "message": "Unsupported multi camera combination.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "不支持的多摄组合。内部头文件中命名为 UNSUPPORTED_MULTI_CAMERA_COMBINATION。注意：xxx 侧 camera.h 将 7400113 重定义为 CAMERA_ERROR_OPTIONAL_PROPERTY_NOT_EXIST（可选属性不存在），二者数值相同但语义不同。",
+    "category": "internal_only"
+  },
+  {
+    "code": "7400801",
+    "name": "CAPABILITY_NOT_SUPPORTED",
+    "message": "Capability not supported.",
+    "source_file": "interfaces/inner_api/native/camera/include/camera_error_code.h",
+    "description": "能力不支持。仅在内部头文件定义。注意：xxx 侧将其映射为 CAMERA_ERROR_CAPABILITY_NOT_SUPPORTED=7400114，数值不同。d.ts 未公开声明此码。",
+    "category": "internal_only"
+  },
+  {
+    "code": "0",
+    "name": "CAMERA_OK",
+    "message": "Camera result is ok.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 操作成功。对应内部 SUCCESS。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400101",
+    "name": "CAMERA_INVALID_ARGUMENT",
+    "message": "Parameter missing or parameter type incorrect.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 参数错误。对应内部 INVALID_ARGUMENT。xxx 不返回 401，将 PARAMETER_ERROR(401) 也映射为此码。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400102",
+    "name": "CAMERA_OPERATION_NOT_ALLOWED",
+    "message": "Operation not allowed.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 操作不被允许。同时将 NO_SYSTEM_APP_PERMISSION(202) 也映射为此码。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400103",
+    "name": "CAMERA_SESSION_NOT_CONFIG",
+    "message": "Session not config.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 会话未配置。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400104",
+    "name": "CAMERA_SESSION_NOT_RUNNING",
+    "message": "Session not running.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 会话未运行。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400105",
+    "name": "CAMERA_SESSION_CONFIG_LOCKED",
+    "message": "Session config locked.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 会话配置已锁定。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400106",
+    "name": "CAMERA_DEVICE_SETTING_LOCKED",
+    "message": "Device setting locked.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 设备设置已锁定。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400107",
+    "name": "CAMERA_CONFLICT_CAMERA",
+    "message": "Can not use camera cause of conflict.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 相机冲突。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400108",
+    "name": "CAMERA_DEVICE_DISABLED",
+    "message": "Camera disabled cause of security reason.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 相机因安全原因被禁用。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400109",
+    "name": "CAMERA_DEVICE_PREEMPTED",
+    "message": "Can not use camera cause of preempted.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 相机被抢占。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400110",
+    "name": "CAMERA_UNRESOLVED_CONFLICTS_WITH_CURRENT_CONFIGURATIONS",
+    "message": "Unresolved conflicts with current configurations.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 当前配置存在未解决的冲突。since 12。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400113",
+    "name": "CAMERA_ERROR_OPTIONAL_PROPERTY_NOT_EXIST",
+    "message": "The optional property does not exist.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 特有的可选属性不存在错误（since 26.0.0）。注意：与内部 7400113(UNSUPPORTED_MULTI_CAMERA_COMBINATION) 数值冲突但语义不同。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400114",
+    "name": "CAMERA_ERROR_CAPABILITY_NOT_SUPPORTED",
+    "message": "The capability is not supported.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 能力不支持（since 26.0.0）。由内部 CAPABILITY_NOT_SUPPORTED(7400801) 经 FrameworkToNativeAPICameraError 映射而来，数值不同。",
+    "category": "xxx"
+  },
+  {
+    "code": "7400201",
+    "name": "CAMERA_SERVICE_FATAL_ERROR",
+    "message": "The camera service is abnormal, for example, no camera permission, camera service restart, or abnormal cross-process invocation.",
+    "source_file": "interfaces/kits/native/include/camera/camera.h",
+    "description": "xxx 相机服务致命错误。注意：xxx 侧 201(无相机权限) 也通过此码返回（C 接口不区分权限码）。",
+    "category": "xxx"
+  }
+]

@@ -1,0 +1,226 @@
+[
+  {
+    "api_name": "volumeManager.getAllVolumes",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetAllVolumes",
+    "impl_func": "StorageManagerConnect::GetAllVolumes",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetAllVolumes (services/storage_manager/ipc/src/storage_manager_provider.cpp)"
+  },
+  {
+    "api_name": "volumeManager.mount",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "Mount",
+    "impl_func": "StorageManagerConnect::Mount",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Mount"
+  },
+  {
+    "api_name": "volumeManager.unmount",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "Unmount",
+    "impl_func": "StorageManagerConnect::Unmount",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Unmount"
+  },
+  {
+    "api_name": "volumeManager.getVolumeByUuid",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetVolumeByUuid",
+    "impl_func": "StorageManagerConnect::GetVolumeByUuid",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetVolumeByUuid"
+  },
+  {
+    "api_name": "volumeManager.getVolumeById",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetVolumeById",
+    "impl_func": "StorageManagerConnect::GetVolumeById",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetVolumeById"
+  },
+  {
+    "api_name": "volumeManager.setVolumeDescription",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "SetVolumeDescription",
+    "impl_func": "StorageManagerConnect::SetVolumeDescription",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::SetVolumeDescription"
+  },
+  {
+    "api_name": "volumeManager.format",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "Format",
+    "impl_func": "StorageManagerConnect::Format",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Format"
+  },
+  {
+    "api_name": "volumeManager.partition",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "Partition",
+    "impl_func": "StorageManagerConnect::Partition",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Partition"
+  },
+  {
+    "api_name": "volumeManager.getAllDisks",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetAllDisks",
+    "impl_func": "StorageManagerConnect::GetAllDisks",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetAllDisks"
+  },
+  {
+    "api_name": "volumeManager.getDiskById",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetDiskById",
+    "impl_func": "StorageManagerConnect::GetDiskById",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetDiskById"
+  },
+  {
+    "api_name": "volumeManager.getPartitionTable",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "GetPartitionTable",
+    "impl_func": "StorageManagerConnect::GetPartitionTable",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetPartitionTable"
+  },
+  {
+    "api_name": "volumeManager.createPartition",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "CreatePartition",
+    "impl_func": "StorageManagerConnect::CreatePartition",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::CreatePartition"
+  },
+  {
+    "api_name": "volumeManager.deletePartition",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "DeletePartition",
+    "impl_func": "StorageManagerConnect::DeletePartition",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::DeletePartition"
+  },
+  {
+    "api_name": "volumeManager.formatPartition",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.volumeManager.d.ts",
+    "napi_func": "FormatPartition",
+    "impl_func": "StorageManagerConnect::FormatPartition",
+    "impl_file": "services/storage_manager/kits_impl/src/volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::FormatPartition"
+  },
+  {
+    "api_name": "storageStatistics.getTotalSizeOfVolume",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetTotalSizeOfVolume",
+    "impl_func": "StorageManagerConnect::GetTotalSizeOfVolume",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetTotalSizeOfVolume"
+  },
+  {
+    "api_name": "storageStatistics.getFreeSizeOfVolume",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetFreeSizeOfVolume",
+    "impl_func": "StorageManagerConnect::GetFreeSizeOfVolume",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetFreeSizeOfVolume"
+  },
+  {
+    "api_name": "storageStatistics.getBundleStats",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetBundleStats",
+    "impl_func": "StorageManagerConnect::GetBundleStats",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetBundleStats"
+  },
+  {
+    "api_name": "storageStatistics.getUserStorageStats",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetUserStorageStats",
+    "impl_func": "StorageManagerConnect::GetUserStorageStats",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetUserStorageStats"
+  },
+  {
+    "api_name": "storageStatistics.getTotalSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetTotalSize",
+    "impl_func": "StorageManagerConnect::GetTotalSize",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetTotalSize"
+  },
+  {
+    "api_name": "storageStatistics.getFreeSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetFreeSize",
+    "impl_func": "StorageManagerConnect::GetFreeSize",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetFreeSize"
+  },
+  {
+    "api_name": "storageStatistics.getTotalInodes",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.storageStatistics.d.ts",
+    "napi_func": "GetTotalInodes",
+    "impl_func": "StorageManagerConnect::GetTotalInodes",
+    "impl_file": "services/storage_manager/kits_impl/src/storage_statistics_n_exporter.cpp → IPC → StorageManagerProvider::GetTotalInodes"
+  },
+  {
+    "api_name": "keyManager.deactivateUserKey",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.keyManager.d.ts",
+    "napi_func": "DeactivateUserKey",
+    "impl_func": "StorageManagerConnect::DeactivateUserKey",
+    "impl_file": "services/storage_manager/kits_impl/src/keymanager_n_exporter.cpp → IPC → StorageManagerProvider::InactiveUserKey (fscrypt keyManager，daemon crypto 模块)"
+  },
+  {
+    "api_name": "encryptedVolumeManager.encrypt",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "napi_func": "Encrypt",
+    "impl_func": "StorageManagerConnect::Encrypt",
+    "impl_file": "services/storage_manager/kits_impl/src/encrypted_volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Encrypt"
+  },
+  {
+    "api_name": "encryptedVolumeManager.unlock",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "napi_func": "Unlock",
+    "impl_func": "StorageManagerConnect::Unlock",
+    "impl_file": "services/storage_manager/kits_impl/src/encrypted_volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Unlock"
+  },
+  {
+    "api_name": "encryptedVolumeManager.decrypt",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "napi_func": "Decrypt",
+    "impl_func": "StorageManagerConnect::Decrypt",
+    "impl_file": "services/storage_manager/kits_impl/src/encrypted_volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::Decrypt"
+  },
+  {
+    "api_name": "encryptedVolumeManager.getCryptProgressById",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "napi_func": "GetCryptProgressById",
+    "impl_func": "StorageManagerConnect::GetCryptProgressById",
+    "impl_file": "services/storage_manager/kits_impl/src/encrypted_volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::GetCryptProgressById"
+  },
+  {
+    "api_name": "encryptedVolumeManager.updateCryptPasswd",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.encryptedVolumeManager.d.ts",
+    "napi_func": "UpdateCryptPasswd",
+    "impl_func": "StorageManagerConnect::UpdateCryptPasswd",
+    "impl_file": "services/storage_manager/kits_impl/src/encrypted_volumemanager_n_exporter.cpp → IPC → StorageManagerProvider::UpdateCryptPasswd"
+  },
+  {
+    "api_name": "statvfs.getFreeSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "napi_func": "",
+    "impl_func": "",
+    "impl_file": "filemanagement_file_api（跨仓，NAPI 与 statvfs 实现位于 file_api 兄弟仓；本仓 d.ts 仅声明接口）"
+  },
+  {
+    "api_name": "statvfs.getTotalSize",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.statvfs.d.ts",
+    "napi_func": "",
+    "impl_func": "",
+    "impl_file": "filemanagement_file_api（跨仓，NAPI 与 statvfs 实现位于 file_api 兄弟仓；本仓 d.ts 仅声明接口）"
+  },
+  {
+    "api_name": "environment.getStorageDataDir",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.environment.d.ts",
+    "napi_func": "",
+    "impl_func": "",
+    "impl_file": "filemanagement_file_api（跨仓，NAPI 实现位于 file_api 兄弟仓；本仓 d.ts 仅声明接口）"
+  },
+  {
+    "api_name": "environment.getUserDataDir",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.environment.d.ts",
+    "napi_func": "",
+    "impl_func": "",
+    "impl_file": "filemanagement_file_api（跨仓，NAPI 实现位于 file_api 兄弟仓；本仓 d.ts 仅声明接口）"
+  },
+  {
+    "api_name": "environment.getUserDownloadDir",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.environment.d.ts",
+    "napi_func": "",
+    "impl_func": "",
+    "impl_file": "filemanagement_file_api（跨仓，NAPI 实现位于 file_api 兄弟仓；本仓 d.ts 仅声明接口）"
+  }
+]

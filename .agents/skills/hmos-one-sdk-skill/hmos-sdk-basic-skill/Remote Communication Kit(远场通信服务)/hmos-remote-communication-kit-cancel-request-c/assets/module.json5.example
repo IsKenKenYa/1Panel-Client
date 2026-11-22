@@ -1,0 +1,61 @@
+{
+  "module": {
+    "name": "cancel_request_module",
+    "type": "entry",
+    "description": "HarmonyOS Remote Communication Kit取消网络请求示例模块",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1",
+      "wearable"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$media:main_pages",
+    
+    // 重要的权限配置
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "用于HTTP网络请求和取消操作",
+        "usedScene": {
+          "abilities": [
+            "MainAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ],
+    
+    // 能力配置（可选）
+    "abilities": [
+      {
+        "name": "MainAbility",
+        "srcEntry": "./ets/mainability/MainAbility.ts",
+        "description": "主界面能力",
+        "icon": "$media:icon",
+        "label": "$string:MainAbility_label",
+        "launchType": "standard",
+        "orientation": "unspecified",
+        "type": "page",
+        "visible": true
+      }
+    ]
+  }
+}
+
+// 说明：
+// 1. ohos.permission.INTERNET权限是必需的，用于网络请求操作
+// 2. reason字段说明了权限用途，便于用户理解
+// 3. usedScene定义了权限使用场景
+// 4. deviceTypes定义了支持的设备类型
+// 5. 取消网络请求功能支持以下设备：
+//    - Phone, 2in1, Tablet, Wearable (从5.0.0(12)开始)
+//    - TV (从5.1.1(19)开始)
+//    - Car (从6.1.0(23)开始)
+//
+// 配置步骤：
+// 1. 将此配置文件放在项目的entry/src/main/module.json5位置
+// 2. 根据实际项目调整module name和abilities配置
+// 3. 确保requestPermissions中包含ohos.permission.INTERNET
+// 4. 如果需要其他权限，可以在requestPermissions数组中添加

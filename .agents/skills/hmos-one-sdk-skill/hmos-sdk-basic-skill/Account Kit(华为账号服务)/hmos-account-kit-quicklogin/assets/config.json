@@ -1,0 +1,26 @@
+{
+  "accountKit": {
+    "clientId": "<your_client_id_from_agc>",
+    "clientSecret": "<your_client_secret_from_agc>",
+    "quickLoginEnabled": true,
+    "region": "CN",
+    "timeout": 5,
+    "tlsVersion": "TlsV1.3"
+  },
+  "server": {
+    "baseUrl": "http://localhost:8080",
+    "loginEndpoint": "/login",
+    "timeout": 10000
+  },
+  "ui": {
+    "buttonStyle": "BUTTON_RED",
+    "borderRadius": 24,
+    "supportDarkMode": true,
+    "showAgreementDialog": true
+  },
+  "errorHandling": {
+    "retryCount": 3,
+    "retryDelay": 1000,
+    "showOtherLoginMethods": true
+  }
+}

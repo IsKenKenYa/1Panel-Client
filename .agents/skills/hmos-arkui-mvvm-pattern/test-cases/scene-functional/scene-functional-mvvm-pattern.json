@@ -1,0 +1,165 @@
+[
+  {
+    "case_id": "MVVM-FUNC-001",
+    "layer": "scene-functional",
+    "title": "阅读书架V1版本MVVM架构开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿阅读App书架：页面展示书籍列表（书名、作者、阅读进度、是否收藏），支持点击收藏/取消收藏单本书籍、批量收藏/取消收藏所有书籍、点击书籍增加阅读进度，顶部显示已收藏数量统计。书籍数据从rawfile的JSON文件加载。要求按MVVM分层组织代码：Model层负责原始数据结构与JSON加载，ViewModel层负责页面数据管理与业务逻辑，View层负责UI展示与用户交互，View层不可直接操作Model层数据，只能通过ViewModel提供的方法调用。请输出完整的开发方案。",
+    "intent": "验证 MVVM-01 状态管理V1版本下MVVM架构场景中 @Observed + @Track 装饰ViewModel + @Observed extends Array 子类化数组使数组操作可观察 + @State 在页面组件绑定ViewModel + @Link/@ObjectLink 父子组件双向同步 + ForEach 渲染列表 + 共享组件纯展示的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-01",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-02"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用V1装饰器套件（@Component、@State、@Link、@ObjectLink、@Observed、@Track），禁止混用V2装饰器（@ComponentV2、@Local、@Param、@Event、@ObservedV2、@Trace、@Computed等）。",
+        "Model层必须使用普通class定义BookModel（bookName、author、readingProgress、isFavorite）和BookshelfModel（从rawfile读取JSON并反序列化），不包含任何状态管理装饰器。",
+        "ViewModel层必须使用 @Observed + @Track 装饰BookViewModel（@Track bookName/author/readingProgress/isFavorite），提供toggleFavorite()、addReadingProgress()方法，View层点击事件调用这些方法间接操作数据。",
+        "ViewModel层必须使用 @Observed extends Array 子类化BookViewModelArray，使push/splice等数组操作可被@ObjectLink观察。",
+        "ViewModel层BookshelfViewModel必须使用 @Observed + @Track 装饰（@Track isFavoriteAll、@Track books），提供likeAll()、loadBookshelf(context)方法，在loadBookshelf中完成Model→ViewModel对象转换。",
+        "View层页面组件必须使用 @Entry + @Component + @State 绑定BookshelfViewModel作为数据源，aboutToAppear中调用loadBookshelf加载书籍数据。",
+        "View层业务组件必须使用 @Link 与BookshelfViewModel双向同步（如LikeAllComponent接收@Link bookshelfViewModel），使用 @ObjectLink 接收BookViewModelArray/BookViewModel实例。",
+        "View层列表组件必须使用 ForEach 渲染书籍数组，key生成器使用书籍唯一标识（如bookName）。",
+        "View层必须包含共享组件（如FavoriteCountComponent），不关联ViewModel数据，不使用任何状态管理装饰器，已收藏数量通过外部参数传入。",
+        "View层禁止import Model类型，ForEach回调中只能出现ViewModel类型，不出现Model接口类型。",
+        "用户操作（收藏、增加阅读进度、批量收藏）必须通过调用ViewModel方法处理，View层不直接修改数据，符合单向数据流。"
+      ],
+      "should_reuse_resources": [
+        "./references/mvvm-scenario-development_V1.md",
+        "./assets/V1MVVM",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "混用V2装饰器（如@ComponentV2、@Local、@Param、@ObservedV2、@Trace），破坏V1版本一致性。",
+        "View层直接import Model类型并在ForEach中出现Model接口类型，违反View禁止直接访问Model原则。",
+        "数组不使用 @Observed extends Array 子类化，导致push/splice操作不触发UI更新。",
+        "在BookViewModel的@Observed类中同时使用@Track装饰属性和定义get访问器（getter），触发V1运行时闪退。",
+        "View层直接修改书籍数据而非调用ViewModel方法，违反单向数据流与单一数据源原则。",
+        "共享组件FavoriteCountComponent关联ViewModel数据，破坏组件可复用性。",
+        "将视图私有状态（如展开/折叠、弹窗显示）放入ViewModel，违反就近持有原则。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "页面加载后书籍列表正确显示书名、作者、阅读进度、收藏状态，数据来自rawfile的JSON文件。",
+        "点击收藏单本书籍后该书籍收藏状态切换，顶部已收藏数量统计实时更新。",
+        "点击书籍增加阅读进度后进度数值刷新，@Track精准刷新对应UI而非整列表重绘。",
+        "点击批量收藏后所有书籍收藏状态统一切换，再次点击取消收藏，@Link双向同步生效。",
+        "书籍数组push/splice操作触发列表UI更新，@Observed extends Array子类化数组观测生效。",
+        "View层未直接访问Model类型，所有数据操作经ViewModel方法完成。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "书架初始加载截图（书籍列表完整显示，数据来自rawfile）",
+        "收藏/增加阅读进度操作截图（收藏数量与阅读进度实时刷新）",
+        "批量收藏/取消收藏截图（所有书籍收藏状态统一切换）",
+        "目录结构截图（model/viewmodel/view/pages分层清晰）"
+      ]
+    }
+  },
+  {
+    "case_id": "MVVM-FUNC-002",
+    "layer": "scene-functional",
+    "title": "记账本支出记录V2版本MVVM架构开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿记账本应用：页面展示支出记录列表（金额、分类、日期、备注、收支类型），顶部显示支出总额统计，支持新增支出记录、删除单条记录。支出数据从rawfile的JSON文件加载，并通过PersistenceV2持久化存储，应用重启后数据自动恢复。要求按MVVM分层组织代码：Model层负责原始数据结构与JSON加载，ViewModel层负责页面数据管理与业务逻辑（含计算属性），View层通过@Param接收只读数据，通过@Event回调通知父组件修改数据源，不直接修改数据。请输出完整的开发方案。",
+    "intent": "验证 MVVM-02 状态管理V2版本下MVVM架构场景中 @ObservedV2 + @Trace 深度属性观测 + @Computed 依赖驱动的计算属性 + @Param + @Event 父子组件单向数据流与回调双向同步 + @Local 页面内部状态 + @Type 嵌套对象序列化 + PersistenceV2.connect 持久化存储 + Repeat 组件复用渲染的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-01"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用V2装饰器套件（@ComponentV2、@Local、@Param、@Event、@ObservedV2、@Trace、@Computed、@Type），禁止混用V1装饰器（@Component、@State、@Prop、@Link、@ObjectLink、@Observed、@Track等）。",
+        "Model层必须使用普通class定义ExpenseModel（amount、category、date、note、type）和ExpenseListModel（从rawfile读取JSON并反序列化），不包含任何状态管理装饰器。",
+        "ViewModel层必须使用 @ObservedV2 + @Trace 装饰ExpenseViewModel（@Trace amount/category/date/note/type），提供updateExpense()方法接收Model数据转换。",
+        "ViewModel层ExpenseListViewModel必须使用 @ObservedV2 + @Trace 装饰expenses数组，并使用 @Type(ExpenseViewModel) 标注嵌套class类型确保PersistenceV2序列化/反序列化成功；V2中@Trace装饰的数组直接支持push/splice操作观测，无需子类化数组。",
+        "ViewModel层必须提供loadExpenses(context)、addExpense()、removeExpense()方法，在loadExpenses中完成Model→ViewModel对象转换。",
+        "View层页面组件必须使用 @Entry + @ComponentV2 + @Local + PersistenceV2.connect 从持久化存储创建或恢复ViewModel，aboutToAppear中仅在持久化数据为空时调用loadExpenses加载默认数据，应用重启后数据自动恢复。",
+        "View层页面组件必须使用 @Computed 计算支出总额统计，依赖expenses数组，任意amount变化时自动重算，只计算一次并读取缓存。",
+        "View层业务组件必须使用 @Param 接收ViewModel引用（只读访问），通过 @Event 声明回调（如deleteExpense），子组件通知父组件修改数据源，不直接修改数据，实现严格单向数据流。",
+        "View层列表组件必须使用 Repeat<T>() 渲染支出数组，数据变化时仅更新变化部分，非懒加载场景高效更新。",
+        "View层共享组件（如StatsView）必须使用 @Param 接收@Computed计算结果只读展示，子组件中不允许直接修改@Param传入的值（编译期报错）。",
+        "View层禁止import Model类型，Repeat回调中只能出现ViewModel类型，不出现Model接口类型。"
+      ],
+      "should_reuse_resources": [
+        "./references/mvvm-scenario-development_V2.md",
+        "./assets/V2MVVM",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "混用V1装饰器（如@Component、@State、@Link、@ObjectLink、@Observed、@Track），破坏V2版本一致性。",
+        "数组使用 @Observed extends Array 子类化，V2中无需子类化数组，属于V1做法混用。",
+        "View层直接修改ViewModel数据而非通过@Event回调通知父组件，违反V2严格单向数据流。",
+        "共享组件StatsView关联ViewModel数据而非通过@Param接收只读计算结果，破坏组件可复用性。",
+        "不使用PersistenceV2.connect持久化存储，应用重启后数据丢失。",
+        "嵌套对象不使用@Type标注，导致PersistenceV2序列化/反序列化失败。",
+        "总额统计手动存储为独立字段再手动同步，而非使用@Computed自动计算，违反派生不存储原则。",
+        "使用ForEach而非Repeat渲染列表，未利用V2组件复用渲染能力。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "页面加载后支出记录列表正确显示金额、分类、日期、备注、收支类型，数据来自rawfile的JSON文件。",
+        "顶部支出总额统计正确，新增/删除记录后总额实时刷新（@Computed依赖expenses自动重算）。",
+        "新增支出记录后列表新增对应项，Repeat仅更新变化部分而非整列表重绘。",
+        "删除单条记录通过@Event回调通知父组件，父组件调用removeExpense后列表移除对应项，@Trace数组splice观测生效。",
+        "应用重启后数据自动恢复，PersistenceV2.connect持久化生效，@Type嵌套序列化成功。",
+        "View层未直接访问Model类型，所有数据操作经ViewModel方法或@Event回调完成。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "记账本初始加载截图（支出列表与总额统计完整显示，数据来自rawfile）",
+        "新增/删除记录操作截图（列表与总额实时刷新）",
+        "应用重启后数据恢复截图（PersistenceV2持久化生效）",
+        "目录结构截图（model/viewmodel/view/pages分层清晰）"
+      ]
+    }
+  }
+]

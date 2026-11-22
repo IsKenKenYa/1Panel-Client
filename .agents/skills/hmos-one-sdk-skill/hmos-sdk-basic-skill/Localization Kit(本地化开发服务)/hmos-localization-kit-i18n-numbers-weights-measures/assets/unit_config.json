@@ -1,0 +1,106 @@
+{
+  "unitConversion": {
+    "supportedMeasureSystems": ["SI", "US", "UK"],
+    "formatStyles": ["long", "short", "narrow"],
+    "defaultStyle": "short",
+    "supportedUnits": {
+      "length": ["meter", "kilometer", "inch", "foot", "mile", "yard"],
+      "volume": ["liter", "milliliter", "cup", "gallon", "pint"],
+      "weight": ["kilogram", "gram", "pound", "ounce"],
+      "area": ["square-meter", "square-kilometer", "acre", "square-foot"],
+      "temperature": ["celsius", "fahrenheit", "kelvin"]
+    }
+  },
+  "numberFormatting": {
+    "commonLocales": ["en-US", "zh-CN", "de-DE", "fr-FR", "ja-JP"],
+    "decimalOptions": {
+      "default": {
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 3
+      },
+      "currency": {
+        "minimumFractionDigits": 2,
+        "maximumFractionDigits": 2
+      },
+      "percentage": {
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2
+      }
+    },
+    "notationTypes": ["standard", "scientific", "compact"],
+    "compactDisplay": ["short", "long"]
+  },
+  "currencyFormatting": {
+    "commonCurrencies": [
+      {
+        "code": "USD",
+        "name": "美元",
+        "defaultLocale": "en-US",
+        "symbol": "$",
+        "decimals": 2
+      },
+      {
+        "code": "EUR",
+        "name": "欧元",
+        "defaultLocale": "de-DE",
+        "symbol": "€",
+        "decimals": 2
+      },
+      {
+        "code": "CNY",
+        "name": "人民币",
+        "defaultLocale": "zh-CN",
+        "symbol": "¥",
+        "decimals": 2
+      },
+      {
+        "code": "JPY",
+        "name": "日元",
+        "defaultLocale": "ja-JP",
+        "symbol": "￥",
+        "decimals": 0
+      },
+      {
+        "code": "GBP",
+        "name": "英镑",
+        "defaultLocale": "en-GB",
+        "symbol": "£",
+        "decimals": 2
+      },
+      {
+        "code": "KRW",
+        "name": "韩元",
+        "defaultLocale": "ko-KR",
+        "symbol": "₩",
+        "decimals": 0
+      }
+    ],
+    "displayStyles": ["symbol", "code", "name", "narrowSymbol"],
+    "signStyles": ["standard", "accounting"]
+  },
+  "errorHandling": {
+    "fallbackStrategy": "returnOriginal",
+    "logErrors": true,
+    "maxRetryAttempts": 3,
+    "supportedErrorCodes": {
+      "401": "Parameter error",
+      "890001": "Invalid parameter",
+      "TypeError": "Type error",
+      "RangeError": "Range error"
+    }
+  },
+  "performance": {
+    "maxConcurrentConversions": 10,
+    "enableCache": true,
+    "cacheExpiration": 300,
+    "timeout": 5000
+  },
+  "validation": {
+    "localePattern": "^[a-z]{2}-[A-Z]{2}$|^zh-Hans-[A-Z]{2}$|^zh-Hant-[A-Z]{2}$",
+    "valueRange": {
+      "min": -1e15,
+      "max": 1e15
+    },
+    "strictValidation": false
+  }
+}

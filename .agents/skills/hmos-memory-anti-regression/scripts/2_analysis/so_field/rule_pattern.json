@@ -1,0 +1,1954 @@
+{
+    "": {
+        "Flutter": {
+            "FirstKind": "Flutter",
+            "Rule": [
+                {
+                    "SecondKind": "Flutter",
+                    "ThirdKind": "Flutter",
+                    "Lib": [
+                        ".*libflutter.so$",
+                        "\\d+\\.io(线程)",
+                        "\\d+\\.raster(线程)",
+                        "\\d+\\.ui(线程)",
+                        "io\\.flutter\\.work$(线程)",
+                        "io\\.worker\\..*(线程)"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "RN": {
+            "FirstKind": "RN",
+            "Rule": [
+                {
+                    "SecondKind": "RN",
+                    "ThirdKind": "RN",
+                    "Lib": [
+                        ".*libhermes.so$",
+                        ".*librnoh.so$",
+                        ".*libreact_debug.so$",
+                        ".*libreact_render_debug.so$",
+                        ".*libreact_utils.so$",
+                        ".*libhermestooling.so$",
+                        ".*libhermesvm.so$",
+                        ".*libruntimeexecutor.so$",
+                        "RNJS_\\d+(线程)"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "WEB": {
+            "FirstKind": "WEB",
+            "Rule": [
+                {
+                    "SecondKind": "WEB",
+                    "ThirdKind": "WEB",
+                    "Lib": [
+                        ".*libarkweb_engine.so$",
+                        ".*libarkweb_render.so$",
+                        ".*NWeb.hap$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "三方自研代码": {
+            "FirstKind": "三方自研代码",
+            "Rule": [
+                {
+                    "SecondKind": "其他三方库",
+                    "ThirdKind": "其他三方库",
+                    "Lib": [
+                        "^(?!/proc/.*libappnative.so$)/proc/.*/data/storage/.*/bundle/.*\\.so.*"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "应用自身ArkTS",
+                    "ThirdKind": "应用自身ArkTS",
+                    "Lib": [
+                        "^(?!/system/lib64/module/arkcompiler/stub.an$).*\\.an$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "内核符号": {
+            "FirstKind": "内核符号",
+            "Rule": [
+                {
+                    "SecondKind": "内核符号",
+                    "ThirdKind": "内核符号",
+                    "Lib": [
+                        "\\[kernel.kallsyms]",
+                        "^(?!.*devhost\\.elf).*\\.elf"
+                    ]
+                }
+            ]
+        }
+    },
+    "/proc/": {
+        "语言运行时": {
+            "FirstKind": "语言运行时",
+            "Rule": [
+                {
+                    "SecondKind": "JS引擎",
+                    "ThirdKind": "三方JS引擎",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libantquickjs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjsc.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkwai-v8-lite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmv8.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtv8.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmyv8.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqjs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libquick.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libquickjs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libv8.mt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libv8.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libv8_libfull.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjse.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqjs-adapter.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "系统SDK": {
+            "FirstKind": "系统SDK",
+            "Rule": [
+                {
+                    "SecondKind": "系统自研KIT",
+                    "ThirdKind": "ffmpeg",
+                    "Lib": [
+                        "/proc/./data/app/.*/bundle/.*libffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libAemonPlayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libAemonPlayerNapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTPFFmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libThumbPlayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkffmpeg4x.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijksdl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkgffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkugouplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libliveplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmcplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libredffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libredplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libredplayerproxy.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtbffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libswscale_ffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtxffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libffmpeg-neon.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmctoffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtvkplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwcplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libalpha_player.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavcodec_ffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavformat_ffmpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavutil.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavutil_ffmpeg.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "系统自研KIT",
+                    "ThirdKind": "三方图形",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libskia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmskia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libagskia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdimage.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "Flutter": {
+            "FirstKind": "Flutter",
+            "Rule": [
+                {
+                    "SecondKind": "Weex",
+                    "ThirdKind": "Weex",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libweex_ability.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libweex_framework.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "RN": {
+            "FirstKind": "RN",
+            "Rule": [
+                {
+                    "SecondKind": "Hippy",
+                    "ThirdKind": "Hippy",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libhippy.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "Lynx",
+                    "ThirdKind": "Lynx",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*liblynx.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblynx_security_service.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "RN",
+                    "ThirdKind": "RN",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libjsinspector.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjsvm.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_config.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_nativemodule_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_animations.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_attributedstring.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_componentregistry.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_graphics.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_imagemanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_leakchecker.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_mapbuffer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_mounting.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_runtimescheduler.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_scheduler.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_telemetry.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_templateprocessor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_textlayoutmanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreact_render_uimanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreactnative.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_app.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_core_package.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_semi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_image.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_root.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_scrollview.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_text.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_textinput.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librrc_view.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libv8_shared.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "Taro",
+                    "ThirdKind": "Taro",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libJDTaroNativeOH.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtaro_native_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTaroHarmonyLibrary.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTaroKit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtaronativelib.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "MRN",
+                    "ThirdKind": "MRN",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmrn.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "MSC",
+                    "ThirdKind": "MSC",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmsc.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmscjsi.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "AJX",
+                    "ThirdKind": "AJX",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libajx.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libajxbiz2.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "CUBE",
+                    "ThirdKind": "CUBE",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libantcube.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcube.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libBifrost.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbloxohos.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "DX",
+                    "ThirdKind": "DX",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libdinamicx.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtbdinamicx.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "KMP": {
+            "FirstKind": "KMP",
+            "Rule": [
+                {
+                    "SecondKind": "KMP",
+                    "ThirdKind": "KMP",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_base.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_imsdk.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_kdevtools.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_mini.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_shell.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_video.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_combo_stdlib.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_stdlib.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_export.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_launcher.so",
+                        "/proc/.*/data/storage/.*/bundle/.*libALIPAYKMP.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libconnectionclass.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_launcher.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkn.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkntr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkuikly_qqmusic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblauncher.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libshared.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtaolivekmp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTBKMP.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtkmp.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "WEB": {
+            "FirstKind": "WEB",
+            "Rule": [
+                {
+                    "SecondKind": "WEB",
+                    "ThirdKind": "WEB",
+                    "Lib": [
+                        "/proc/.*/bundle/arkwebcore/libs/arm64/.*\\.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "XWEB",
+                    "ThirdKind": "三方WEB",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_webview.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_xweb.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxweb_glue.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxwebadapter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxwebcore.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        },
+        "三方自研代码": {
+            "FirstKind": "三方自研代码",
+            "Rule": [
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方3D引擎",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libzeusEngine.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方AI",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libalita.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libalita_ext.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavmdlbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libavmdlv2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbytenn.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhuiyanharmonysdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libMaasSDK.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmegface_v5.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtoygerDocWrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtoygerWrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libWeVision.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libXHSNN.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxnn.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方AI",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libMNN.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmnxnet.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方AI",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaim.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamapml.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libapmmodelmanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcupid.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkaicenter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdface.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdface_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmobileaix.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmodel.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtai.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtaigc.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方AR",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libARKernelInterface.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmagicar.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方DFX",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libAliHALogEngine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libCrashSight.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_antdlog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_antdlog_service.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方DFX",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*liblogan.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblogging.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmarsxlog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos.hilog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxlog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxmmarsxlog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzlog_napi.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方DFX",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libalog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamaplog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantdlog_cpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libapplogrs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libblog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libclogan.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libconan.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdiagnose.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libHMCrash.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiesapplogger.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjsinspector.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblogger.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libLogTransport.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblogx.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblx.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohxylog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libonelog.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libriverlogger.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtlog_uploader_dynamic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtraceUtils.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwlog.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方DSL",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamapdsl.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方Flutter",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libapp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_flutter_common.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfml.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方IDL",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmegability_idl_interface.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzidl_reg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzidl2.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方IDL",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libpb_shared.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libProtobufLite.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方KMP",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libdouyin_kmp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_export.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_framework.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_mpaas_metadataservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkmp_services.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreading_kmp_impl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuep_kmp_api.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方RN",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libuplogger.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupreact_render_scheduler.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupreact_render_templateprocessor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupreact_render_textlayoutmanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupreact_render_uimanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_app.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_clipboard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_pager_view.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_safe_area.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_webview.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprrc_root.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方SLAM",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libweslam.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方TS引擎",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libpuerts.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方TTS",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamaptts.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_voice_tts.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方UI",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libQt5GuiKso.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libslcyoga.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libyoga.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libyogacore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方UI",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libnui.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohosview.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantui.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpoplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librelax_ui.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtttext.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprrc_view.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwechatlv.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方XR",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libleap3d_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libleapxr_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxrbusiness.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxrengine.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方安全",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbd_ticket_guard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbdsword.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbdswordharmony.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbyte_cert_smash_harmony_native.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblv5_sdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_changeprotection.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方安全",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libboringssl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbytehook.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos.security_huks.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopenssl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libssl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttboringssl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwolfssl.so.*"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方安全",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libak.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaosl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libblueshield.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdlfm.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdsecurity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohguard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpassguardlibrary.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librisk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librisk_mapi_interceptor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsafemode.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsecmobileaspect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsecurity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtersafe.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libucs_fullsdk_appauth.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libyundun.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方编译器",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libil2cpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libluajit.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方编译器",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libdart2cpp.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方测试",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_abtest_api.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方测试",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libabtest.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libabtest_mega.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libexpt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libunit_rc.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方大数据",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libjma_sdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_fulllinktracker.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_spmtracker.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libut_analytics_sdk.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方大数据",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbehavix.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdnautils.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libevent_report.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_data_report.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_data_report.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_data_report_api.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libInsightWrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmetrix.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqmstatistic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libut_kernel_dynamic.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方地图",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmapvisualsdk.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方地图",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamapinfo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamapmain.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamaptbt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdps.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgaea.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmapengine.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方电商",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmtop_next.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方电商",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaff_biz.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaff_biz_native.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbom.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcart.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcjbridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libddd.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhybrid.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdmpnative.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdmpnativecj.bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdmpnativecj.jsapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjoyjs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjoyjsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnewdetail.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpluscard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtbrest_dynamic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libweb_offline.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方工程平台",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_uep.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpitaya_impl.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方广告",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_advertisement.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方广告",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_sns_ad.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方国际化",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbabel.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_area_code.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方基础库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libutdid_native.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwindvane.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方基础库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_webview.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_video.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_svg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_safe_area.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_reanimated.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_pager_view.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_masked_view.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_lottie.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_linear_gradient.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_gesture_handler.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_fs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_flash_list.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_datetime_picker.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_async_storage.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtimageknifepro.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkplayer_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libabseil_dll.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaki.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaki_jsbind.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libark_interop_loader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libc\\+\\+_shared.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcangjie-runtime.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcJSON.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiksemel.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjsoncpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblinebreak.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmarisa.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnpth.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnpth_dl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos.ark_interop.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos.concurrency.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos.ffi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libQt5CoreKso.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsimdutf.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtextcodec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtinyxml2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxml2.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方基础库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libapplicationmonitor_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libconcurrent.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdevice_info_native.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libffi_opt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmatrix.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmm_foundation_cpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtdeviceinfo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnative_loader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libowl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpike_c.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpowermsg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsecurec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libthreadpool.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvfs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwakelock.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方加密",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libagccrypto.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblynx_krypton.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttcrypto.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方加密",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libagcmbedtls.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libboringcrypto.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcrypto.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方加密",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libekey.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libencryptservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiseccrypto.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkrypton.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtpencrypt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libphcengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupencrypt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuppayencrypt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwangyincrypto.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzipamse.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方金融",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libalipay_xlite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbankcard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcardsdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcashierHarmonyAlipay.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcashierPlatform.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfunc_sdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsdkbridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuppayment.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方金融",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbankcard_detect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcashierCore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcrosser.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_pay.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libformula.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjdcard.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkinda.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmyjsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libonsitepay.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libportal.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libproduct_offlinepaycred.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreadmoney.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtask-record.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libupjsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwdlibrary.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libweituo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxdkj.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方媒体",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaliplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libalixplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbdmssdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhymediasdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libijkffext.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libliteavsdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmctoplayersdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmfproducts4x.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtmediakit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttvesdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvcbasekit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvesdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxriver.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxriver_jsi_adapter.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方媒体",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbvcparser.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdyplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libeffect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libeffectplatform.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_hd_viewer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_voipmp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhydecoder.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhyencoder.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_voipmp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_vqm.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblib_hd_viewer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libliveio.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblib_hd_viewer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libliveio.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmedia_util.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmediadataloader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmediatrans.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmmedia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnleplatform.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPixVideo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPixVideoCore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqimeihar.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libshiply.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libskrplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtaobaoavsdk_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtaobaoplayer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvideocompressor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvodstrategy.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libweapon.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwemedia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxmcore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxmservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libyk_native_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libYouKuABR.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方配置",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libconfSDK.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方配置",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libapollo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libconfigservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libconfigservice_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdisk_usage_config.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhorn.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmobileconfig.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liborange_next.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方启动恢复",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libboot.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_entry.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfitwxscold.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtlauncher.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方全场景协同",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libmultiscreennapi.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方扫码",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_scan.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方上传下载",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libDownloadProxy.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttuploader.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方上传下载",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbdvideouploader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdownloader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreddownload.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwbmediadownloader.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方社交",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libImSDK.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmessagesdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsmsdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwboxsdkcore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方社交",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbarrage_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libblive_pandora.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdanmu.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_emoticon.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_fav.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_status.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhylivestreamhelper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libim_rust_ts.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkntr_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmission_god.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmsgbox.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libredstrategycenter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librelax.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtbmessage.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzaid.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方身份与访问管理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaliautologin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantuser_context.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantuser_integration.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantuser_platform.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantuserohos.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方身份与访问管理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaccount.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaccountauth.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libauthservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_udr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhyudblogin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_emoticon.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_mm_foundation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_scan.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_feat_sns.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libiam_pb_shared.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblogin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libYTCommonLiveness.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方升级",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libupdate_ohos.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方生物识别",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbiometric.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方数据管理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libsyncsdk.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方数据管理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libada.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcdpbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_migrate_out.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_storage.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtavro.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libWCModel.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方数据可视化",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libf2native.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方数据库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libalipay_rdb.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方数据库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libleveldb.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmkv.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsqlcipher.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsqlite3.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libWCDB.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方数据库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamapkvd.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamapstore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_asset_store.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkeva.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmkv_wrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libplt-mmkv.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libProtoDB2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libQtskDB.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方搜索",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libFTSEngine.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方通信",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libagora_rtc_sdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcjnet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblibraryCJNet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_mrtccore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwcprobe_sdk.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方通信",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libares.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbeast.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcoap.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcronet.*.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcronet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcurl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjingle_peerconnection_so.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmars.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsscronet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtnet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttquic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxquic.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方通信",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libadblock_component.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libadblock_wrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamapalinet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libartc_engine_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbroadcast_client.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcobiwan.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcrosCurl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libflybird.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhodor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhttpdns.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhttpsig.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libignet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libilink_protobuf.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libisecnet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libknoi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmarsnapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmtcp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmudp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmt_network.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libNetImpl2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetsdkextdepend.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork_monitor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetworkkotlinadapter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libntkhttp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libosmss-.*.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libosmss.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libp2plivevdp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpbcurlwrapper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpixuiCurl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqtpclient.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librednqe.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtimeout_report.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtunnelkit_c.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libucc.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libutnet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libutunnel.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvoipChannel.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvoipComm.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libXNet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxnet_next.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxylonglink.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方图像",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libQBar.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttheif_dec.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方图像",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libexif.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libheifdecoder.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libimageknifepro.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopencv_world.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtiny.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libturbojpeg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libyuv.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方图像",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libcvenginelite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_image_process.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_magicbrush.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libimagekit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmagicbrush_.*.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmagicbrush-nano.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libMobileOCR.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtImageKit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprrc_image.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方图形",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libAMapOpenMap.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantanimation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libantgraphic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtop_ssr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnativeGpu.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libRender.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方图形",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libcocos.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgcanvas_runtime_jsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgecko.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblottie-turbo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpag.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librlottie.so.*$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方图形",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libAGFX.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamapr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbulletrender.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfcanvas_qk_jsi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgaia_lib.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgraphics.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhycrender.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libManis.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmfsurfacemanager.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmmrcieffect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopenrender.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libprglite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libservalsvg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libskikobridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libskity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libskyline.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libuprnoh_svg.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwecamera_render.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libWeEffect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_render.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_skia.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方推送",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_push.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方位置服务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*liblocsdk8b.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方位置服务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamaphorus.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libamaploc.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方文本处理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libshellwpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwppcore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方文件处理",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libdom_napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libformats.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libjlreader.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtthtmlparser.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_commandbuffer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_glue.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_parse.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_pdfium.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxfile_tools.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方无障碍",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_accessibility.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_care_mode.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方相机",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libwecamera.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方相机算法",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*liblens.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmtrteffectcore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方小程序",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libwxam.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libWXAMSDK.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方小程序",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_weapp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfitwxsc.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方性能",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libMSDKPIXCore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方性能",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libapm.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_performance.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libLightProfiler.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libperflibrary.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libperfsupport.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方虚拟化",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libspice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libunicorn.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方压缩",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*lib7zr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbzip2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libflate2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblibzstd_shared.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblz4.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libminizip.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libz.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzstd.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方业务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libminetab.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方业务基础库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbili.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmegability_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmegability_for_taobao.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmegability_hub.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmegability_interface.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_common_teclabilities.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_common_teclabilities_api.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_commonservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_cppbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_decodenapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_teclability.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_teclability_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_teclability_interface.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方业务基础库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamapnsq.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libchronosLibrary.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcmp_framework.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcommand.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcommonability.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libctz.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libexthub.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_biz.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_jsapi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_liteapp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_mm_foundation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libframework_api.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libinterop.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkasync.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libklink.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libknsupport.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkrt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libkso.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblib_dynamicrelease.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libliteapphelper.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libluggage_base.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmakeurl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmax-native.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmega_mtop_abilities_ohos.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmiddleware_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnapiutil.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libng_infrastructure.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohos_base.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopenplatform.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopensource.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpie_dynamic.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libplatform_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libplugindeviceinfo.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpreload.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libqohos.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libQtsFileSystemPlugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libredbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libreverseindex.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librosseta.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libservicecore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libshareddata.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsharedmemory.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libshellbase.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsleep_mgmt.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtask_monitor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtimeservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtlvparser.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTPThirdParties.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libunisuslib.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzcache_ability.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libzcachecore.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方页面路由",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libhmrouterlibrary.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方音频",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libAkSoundEngine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwxaudio.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方音频",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libjazz.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtxsoundtouch.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方音频",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaudio_session.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaudioeffect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaus.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_audio.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhyaudioengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libohostek.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方音视频编解码",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libByteVC1_dec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbyteVC2dec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvoipCodec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvoipVideoCodec.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方音视频编解码",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libbdmpg123.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfdk_aac.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfdk-aac.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmp3lame.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopus.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libvcn.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方音视频编解码",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaicodec.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libJDSilkTaroNativeOH.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopendecoder.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libSilkTaroKit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsilktaronativelib.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwechatvoicesilk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwxVcodec1.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方游戏框架",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libMSDKUnityAdapter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPxKit3.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方游戏框架",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libkwsgmain.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpandora.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPixUI_Unity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libQtsVFS.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtdatamaster.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方游戏引擎",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libunity.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方闭源SDK",
+                    "ThirdKind": "三方云服务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libaccs_ohos.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libaccsbridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPcdnTegTransSdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxriver_ccdn_adapter.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方云服务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libalibabacloud-oss-cpp-sdk.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方自研库",
+                    "ThirdKind": "三方云服务",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libamapsync.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libccdn.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcdnadapter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeat_ilink.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgcloudcore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libHCDNClientNet.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libilink_network.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libilink2.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpcdn_ng.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libXcdnEngine.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "三方开源库",
+                    "ThirdKind": "三方运行时",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libc\\+\\+.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "系统应用自研库",
+                    "ThirdKind": "系统应用自研库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*libagopenssl.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libAiKit.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libAIPipeline.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libasr_core_cpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libawarenessanalysis.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbookparser.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbrowser_service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libbrushengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libc_utils.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcalculate.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcobackbone.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcompression.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcomputation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcomputingframework.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcontactsdataability.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcore_engine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcore_engine_fea.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libcore_engine_foundation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdata_guard.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libddl_native_audio.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdecoder_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdllite_model.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdlliteclient.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdlliteclient_mindspore_c.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libdownloadinstallmanage.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libengineCapability.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libevad_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libewp_computing_engine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libewp_thirdparty_rosen_skia.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libface_detect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfacebeauty.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfea_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfeanorm_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libformrender_service.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfrostfire.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libfrostfire_business.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libGraphOptimizeCore.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libgrsservice.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libharmonyscansdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhichain.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhms-log-service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libhuawei_secure_c.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libHuaweiImageEditor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libHuaweiMediaCreativity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libHuaweiMovingPhotoCreativity.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libimage_effect_entry.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libimeAsr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libimeengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libinfer_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libinferin_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libinstallinfomanage.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libinstantshape.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblabel_detect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblatex.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblite_common_ocr.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblitedrm_oh.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*liblocatorsdk.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmap.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmedialibrary_data_extension.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmpaas_abtest.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libmqttasync.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnativecelllocation.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-api.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-common.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-data-stream.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-download.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-filedownload-service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-fileupload-service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-grs.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-hwhttp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-restclient-service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-upload.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-websocket.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnetwork-websocket-service.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libNLProcessor.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libnumber_identity.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopencv_core.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libopencv_imgproc.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpa.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpaf_logger_.*.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPCRE.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpenkitnative.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpipal.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPoissonTextLite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPoissonVectorLite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPoseDetect.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpostproc_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libprediction.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libPrivacy.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libproxy.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libpymap_plugin.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libRealTimeFilter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libRealTimeRecordFilter.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librecinfer.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnnengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_jdrn_bridge.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*librnoh_slider.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsceneengine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsearch_engine.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsecure.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libsecurityi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libSetQosNative.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtel_telephony_data.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtext_identify.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libthrax-napi.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtianjiengine_lite.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libtileofflinepositioning.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libTimelapseNative.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libttsaudio.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libudma.z.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libwvad.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libxtts2p0.so$"
+                    ],
+                    "Thread": []
+                },
+                {
+                    "SecondKind": "其他三方库",
+                    "ThirdKind": "其他三方库",
+                    "Lib": [
+                        "/proc/.*/data/storage/.*/bundle/.*liblive_proto_model_cpp.so$",
+                        "/proc/.*/data/storage/.*/bundle/.*libksvideorendersdk.so$"
+                    ],
+                    "Thread": []
+                }
+            ]
+        }
+    },
+    "system/lib64/": {
+        "语言运行时": {
+            "FirstKind": "语言运行时",
+            "Rule": [
+                {
+                    "SecondKind": "C++运行时",
+                    "ThirdKind": "C++ Runtime",
+                    "Lib": [
+                        "/system/lib64/libc\\+\\+.so",
+                        "/system/lib64/chipset-sdk-sp/libc\\+\\+.so",
+                        "/system/lib64/libc\\+\\+_shared.so",
+                        "/system/lib64/libdfmalloc.z.so"
+                    ],
+                    "Thread": []
+                }
+            ]
+        }
+    }
+}

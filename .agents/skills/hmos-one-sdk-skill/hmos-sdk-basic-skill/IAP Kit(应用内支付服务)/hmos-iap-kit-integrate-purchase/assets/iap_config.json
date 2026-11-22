@@ -1,0 +1,50 @@
+{
+  "iap": {
+    "products": [
+      {
+        "productId": "consumable_product_001",
+        "productType": "CONSUMABLE",
+        "productName": "Game Coin Pack",
+        "productDescription": "100 game coins",
+        "status": "VALID"
+      },
+      {
+        "productId": "consumable_product_002",
+        "productType": "CONSUMABLE",
+        "productName": "Premium Item",
+        "productDescription": "Premium game item",
+        "status": "VALID"
+      },
+      {
+        "productId": "nonconsumable_product_001",
+        "productType": "NONCONSUMABLE",
+        "productName": "Unlock Premium Feature",
+        "productDescription": "Unlock all premium features permanently",
+        "status": "VALID"
+      }
+    ],
+    "testAccounts": [
+      "test_user_001@huawei.com",
+      "test_user_002@huawei.com"
+    ],
+    "supportedRegions": [
+      "CN"
+    ],
+    "sandboxTesting": {
+      "enabled": true,
+      "debugSignature": true
+    }
+  },
+  "appConfig": {
+    "appId": "123456789",
+    "packageName": "com.example.iapdemo",
+    "version": "1.0.0",
+    "minAPIVersion": "4.0.0(10)"
+  },
+  "serverConfig": {
+    "baseUrl": "https://your-server-domain.com",
+    "purchaseNotificationEndpoint": "/api/iap/purchase-notification",
+    "verifySignatureEndpoint": "/api/iap/verify-signature",
+    "deliverProductEndpoint": "/api/iap/deliver-product"
+  }
+}

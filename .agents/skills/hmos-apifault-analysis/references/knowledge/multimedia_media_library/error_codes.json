@@ -1,0 +1,254 @@
+[
+  {
+    "code": "201",
+    "name": "PERMISSION_DENIED",
+    "message": "Permission denied / 权限校验失败",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，运行时由 frameworks/js/src/napi_error.cpp E_PERMISSION_DENIED 映射）",
+    "category": "public",
+    "frequency": "206 次（高频）",
+    "description": "缺少 READ_IMAGEVIDEO / WRITE_IMAGEVIDEO / SHORT_TERM_WRITE_IMAGEVIDEO / MANAGE_PRIVATE_PHOTOS / ACCESS_MEDIALIB_THUMB_DB / CLOUDFILE_SYNC_MANAGER 等权限。几乎所有需要访问媒体资产的接口都会校验"
+  },
+  {
+    "code": "202",
+    "name": "NON_SYSTEM_APP",
+    "message": "Called by non-system application / 非系统应用调用",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "public",
+    "frequency": "251 次（高频）",
+    "description": "接口标注为系统应用专属（systemapi），普通三方应用调用被拒。涉及云端同步、隐藏相册、主动分析、设备发现（getAllPeers/getPeerDevices）等能力"
+  },
+  {
+    "code": "401",
+    "name": "PARAMETER_ERROR",
+    "message": "Parameter error / 参数校验失败（必填缺失、类型错误、范围非法）",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，napi_error.cpp E_PARAM_INVALID 映射）",
+    "category": "public",
+    "frequency": "261 次（高频）",
+    "description": "参数缺失、类型不匹配、枚举值非法。常见于 createAsset/createAlbum/getAlbums 等带配置对象的接口"
+  },
+  {
+    "code": "801",
+    "name": "CAPABILITY_NOT_SUPPORTED",
+    "message": "Capability not supported / 设备能力不支持",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "public",
+    "frequency": "中频",
+    "description": "接口在当前设备/系统版本上不可用（如 small 设备不支持某能力）"
+  },
+  {
+    "code": "13900002",
+    "name": "ENOENT",
+    "message": "No such file or directory / 文件或目录不存在",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（文件系统 errno，napi_error.cpp E_FILE_NOT_EXIST 映射）",
+    "category": "public",
+    "frequency": "中频",
+    "description": "open/getThumbnail 等文件操作时底层文件不存在。常见于资产已被删除或路径错误"
+  },
+  {
+    "code": "13900012",
+    "name": "EACCES",
+    "message": "Permission denied（文件系统层 EACCES）",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（errno）",
+    "category": "public",
+    "frequency": "中频",
+    "description": "文件系统层访问被拒，多发生在沙箱路径越界或 SELinux 拦截场景"
+  },
+  {
+    "code": "13900015",
+    "name": "EEXIST",
+    "message": "File exists / 文件已存在",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（errno）",
+    "category": "public",
+    "frequency": "中频",
+    "description": "创建资产/相册时目标已存在"
+  },
+  {
+    "code": "13900020",
+    "name": "EINVAL",
+    "message": "Invalid argument（文件系统层 EINVAL）",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（errno，napi_error.cpp E_PARAM_INVALID/E_PATH_NOT_SUPPORT 映射）",
+    "category": "public",
+    "frequency": "168 次",
+    "description": "路径/参数在文件系统层非法，如不支持的后缀、非法路径分隔"
+  },
+  {
+    "code": "13900042",
+    "name": "UNKNOWN_ERROR",
+    "message": "Unknown error / 未知错误",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（errno）",
+    "category": "public",
+    "frequency": "低频",
+    "description": "系统调用返回未识别错误码"
+  },
+  {
+    "code": "14000001",
+    "name": "INVALID_PARAMETER_VALUE",
+    "message": "Invalid parameter value / 参数值非法",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，第 2091 行附近 createAsset）",
+    "category": "media_specific",
+    "frequency": "中频",
+    "description": "媒体层参数值非法（如 displayName 无效、文件名格式错误）。区别于 401 的缺失/类型错误，此处是值本身不合法"
+  },
+  {
+    "code": "14000002",
+    "name": "MEDIA_PERMISSION_DENIED",
+    "message": "Permission denied / 数据库权限不足",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，napi_error.cpp E_PERMISSION_DENIED 映射）",
+    "category": "media_specific",
+    "frequency": "中频",
+    "description": "媒体数据库层（DataShare/RDB）权限校验失败，区别于 201 的令牌权限"
+  },
+  {
+    "code": "14000011",
+    "name": "SYSTEM_INNER_FAIL",
+    "message": "System inner fail / 系统内部错误",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，napi_error.cpp E_INNER_FAIL 映射）",
+    "category": "media_specific",
+    "frequency": "264 次（最常见媒体错误）",
+    "description": "DataShare/RDB/IPC 层内部失败。常见于相册/资产增删改查、数据库异常、服务端处理失败、IPC 调用失败。首推日志+重试"
+  },
+  {
+    "code": "14000014",
+    "name": "ALBUM_INVALID",
+    "message": "Album invalid / 相册不存在或非法",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，napi_error.cpp E_SCENE_ALBUM_NOT_EXIST 映射）",
+    "category": "media_specific",
+    "frequency": "中频",
+    "description": "目标相册不存在、已删除、或成员名非法（如 PhotoKey 属性名错误）。场景相册操作（创建/更新/取消）尤其常见"
+  },
+  {
+    "code": "14000016",
+    "name": "DATABASE_OPERATION_FAIL",
+    "message": "Database operation fail / 数据库操作失败",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "media_specific",
+    "frequency": "中频",
+    "description": "RDB 增删改查执行失败（约束冲突、SQL 错误、事务异常）"
+  },
+  {
+    "code": "23800101",
+    "name": "SCENE_ERROR_101",
+    "message": "场景相关错误 101",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws，场景相册接口）",
+    "category": "media_specific",
+    "frequency": "低频",
+    "description": "场景相册（analysis album / 推荐相册）相关业务错误"
+  },
+  {
+    "code": "23800102",
+    "name": "SCENE_ERROR_102",
+    "message": "场景相关错误 102",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "media_specific",
+    "frequency": "低频",
+    "description": "场景相册相关业务错误"
+  },
+  {
+    "code": "23800104",
+    "name": "SCENE_ERROR_104",
+    "message": "场景相关错误 104",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "media_specific",
+    "frequency": "低频",
+    "description": "场景相册相关业务错误"
+  },
+  {
+    "code": "23800107",
+    "name": "SCENE_ERROR_107",
+    "message": "场景相关错误 107",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "media_specific",
+    "frequency": "低频",
+    "description": "场景相册相关业务错误"
+  },
+  {
+    "code": "23800151",
+    "name": "MEDIA_LIBRARY_INVALID_PARAMETER_ERROR",
+    "message": "Scene parameters validate failed / 场景参数校验失败",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:22（constexpr MEDIA_LIBRARY_INVALID_PARAMETER_ERROR = 23800151）",
+    "category": "media_specific",
+    "frequency": "中频",
+    "description": "场景相册/分析参数校验失败。常量在 media_library_error_code.h 第 22 行"
+  },
+  {
+    "code": "23800201",
+    "name": "ACTIVE_ANALYSIS_ERROR",
+    "message": "Active analysis error / 主动分析错误",
+    "source_file": "interface_sdk-js/api/@ohos.file.photoAccessHelper.d.ts（@throws）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析（active analysis）通用错误"
+  },
+  {
+    "code": "23800203",
+    "name": "ACTIVE_ANALYSIS_HIGH_TEMPERATURE_ERROR",
+    "message": "High temperature / 设备温度过高",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:24（MEDIA_LIBRARY_ACTIVE_ANALYSIS_HIGH_TEMPERATURE_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析因设备高温中止。第 24 行常量"
+  },
+  {
+    "code": "23800204",
+    "name": "ACTIVE_ANALYSIS_LOW_BATTERY_ERROR",
+    "message": "Low battery / 电量过低",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:25（MEDIA_LIBRARY_ACTIVE_ANALYSIS_LOW_BATTERY_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析因电量过低中止。第 25 行常量"
+  },
+  {
+    "code": "23800205",
+    "name": "ACTIVE_ANALYSIS_LOW_STORAGE_ERROR",
+    "message": "Low storage / 存储空间不足",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:26（MEDIA_LIBRARY_ACTIVE_ANALYSIS_LOW_STORAGE_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析因存储空间不足中止。第 26 行常量"
+  },
+  {
+    "code": "23800206",
+    "name": "ACTIVE_ANALYSIS_POWER_SAVE_MODE_ERROR",
+    "message": "Power save mode / 省电模式",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:27（MEDIA_LIBRARY_ACTIVE_ANALYSIS_POWER_SAVE_MODE_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析因省电模式中止。第 27 行常量"
+  },
+  {
+    "code": "23800207",
+    "name": "ACTIVE_ANALYSIS_ALREADY_RUNNING_ERROR",
+    "message": "Already running / 分析任务已在运行",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:28（MEDIA_LIBRARY_ACTIVE_ANALYSIS_ALREADY_RUNNING_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析任务已在运行，重复启动被拒。第 28 行常量"
+  },
+  {
+    "code": "23800208",
+    "name": "ACTIVE_ANALYSIS_SWITCH_DISABLED_ERROR",
+    "message": "Switch disabled / 主动分析开关已关闭",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:29（MEDIA_LIBRARY_ACTIVE_ANALYSIS_SWITCH_DISABLED_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "用户关闭了主动分析开关。第 29 行常量"
+  },
+  {
+    "code": "23800209",
+    "name": "ACTIVE_ANALYSIS_OTHER_ERROR",
+    "message": "Other error / 其它主动分析错误",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:30（MEDIA_LIBRARY_ACTIVE_ANALYSIS_OTHER_ERROR）",
+    "category": "active_analysis",
+    "frequency": "低频",
+    "description": "主动分析其它未分类错误。第 30 行常量"
+  },
+  {
+    "code": "23800301",
+    "name": "MEDIA_LIBRARY_INTERNAL_SYSTEM_ERROR",
+    "message": "Internal system error / 媒体库内部系统错误（建议重试并查日志）",
+    "source_file": "interfaces/inner_api/media_library_helper/include/media_library_error_code.h:32（constexpr MEDIA_LIBRARY_INTERNAL_SYSTEM_ERROR = 23800301）",
+    "category": "media_specific",
+    "frequency": "137 次（高频）",
+    "description": "媒体库服务内部系统错误（IPC/RDB/DataShare/扩展进程异常）。第 32 行常量。官方建议重试并查看 hilog"
+  }
+]

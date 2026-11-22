@@ -1,0 +1,16 @@
+{
+  "name": "arkuix-migration-orchestrator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ArkUI-X 迁移编排器 Skill（全流程调度 + MigrationState + 迁移报告）",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test \"scripts/*.test.js\"",
+    "benchmark": "node benchmark/compare.js",
+    "guard": "node scripts/guard.js"
+  },
+  "dependencies": {}
+}

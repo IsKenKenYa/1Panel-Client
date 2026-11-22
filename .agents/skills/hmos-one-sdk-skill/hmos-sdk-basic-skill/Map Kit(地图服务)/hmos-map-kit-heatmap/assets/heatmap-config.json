@@ -1,0 +1,59 @@
+{
+  "heatmapId": "heatmap0001",
+  "dataSettings": {
+    "count": 500,
+    "centerLatitude": 31.000000,
+    "centerLongitude": 118.000000,
+    "latitudeRange": 1,
+    "longitudeRange": 1,
+    "defaultIntensity": 1
+  },
+  "colorSettings": {
+    "gradient": {
+      "0": "0x00026C39",
+      "0.15": "0xAA138C4A",
+      "0.3": "0xFF82CB67",
+      "0.45": "0xFFE3F399",
+      "0.6": "0xFFFEDE89",
+      "0.75": "0xFFF67C4A",
+      "0.9": "0xFFBE1827",
+      "1": "0xFFA90426"
+    },
+    "description": "默认颜色渐变方案，从绿色到红色"
+  },
+  "styleSettings": {
+    "intensity": {
+      "byLevel": {
+        "2": 1,
+        "5": 5,
+        "8": 10
+      },
+      "description": "不同层级使用不同强度值"
+    },
+    "opacity": {
+      "value": 0.5,
+      "description": "半透明效果"
+    },
+    "radius": {
+      "value": 20,
+      "unit": "PIXEL_UNIT",
+      "description": "半径20像素"
+    }
+  },
+  "visibilitySettings": {
+    "visible": true,
+    "description": "热力图默认可见"
+  },
+  "performanceTips": {
+    "maxDataCount": 10000,
+    "recommendedDataCount": 5000,
+    "updateFrequency": "避免频繁更新，建议批量更新数据"
+  },
+  "errorHandling": {
+    "errorCodes": {
+      "1002601001": "操作对象不存在，确保地图控制器已初始化",
+      "1002600015": "热力图ID已存在，使用唯一ID",
+      "401": "输入参数非法，检查参数格式和范围"
+    }
+  }
+}

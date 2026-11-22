@@ -1,0 +1,25 @@
+{
+  "data": {
+    "title": "卡片标题",
+    "detail": "点击查看详情",
+    "temperature": "22°C",
+    "time": "10:30"
+  },
+  "actions": {
+    "routerEvent": {
+      "action": "router",
+      "abilityName": "EntryAbility",
+      "params": {
+        "message": "router message from widget",
+        "target": "detail_page"
+      }
+    },
+    "messageEvent": {
+      "action": "message",
+      "params": {
+        "action": "refresh",
+        "detail": "refresh widget data"
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+# 手势交互
+---
+# 手势交互
+#### 场景介绍
+本章节将向您介绍如何使用地图的手势。
+Map Kit提供了多种手势供用户与地图之间进行交互。如缩放：双指捏合操作以放大或缩小地图；滚动：单指拖动以平移地图视图；旋转：双指旋转操作以改变地图方向；倾斜：双指上下滑动以调整地图视角。这些手势默认开启，如果想要关闭某些手势，可以通过 [MapComponentController](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md) 类提供的接口来控制手势的开关。
+![](https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_scene_100_1/9e/v3/jQdc-AyGTNiyHlRNFHXkpg/zh-cn_image_0000002628861700.jpg?HW-CC-KV=V1&HW-CC-Date=20260701T105232Z&HW-CC-Expire=86400&HW-CC-Sign=A49C51CDA7C64FB6B870612311F688722EC9045A2F1EB1B0EE263873CDDA2111)
+#### 接口说明
+以下是地图手势相关接口，该功能有2种实现方式：
+-
+地图初始化时，可在初始化参数 [MapOptions](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map-common.md) 中设置是否启用手势功能，详细讲解见 [显示地图](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Map Kit（地图服务）/创建地图/显示地图/map-presenting.md) 章节。
+-
+通过调用 [MapComponentController](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md) 提供的set方法实现相关手势的开启或关闭。
+| 接口名 | 描述 |
+| --- | --- |
+| [setZoomGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(enabled: boolean): void | 设置是否启用缩放手势。默认值为true。 |
+| [setScrollGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(enabled: boolean): void | 设置是否启用滚动手势。默认值为true。 |
+| [setRotateGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(enabled: boolean): void | 设置是否启用旋转手势。默认值为true。 |
+| [setTiltGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(enabled: boolean): void | 设置是否启用倾斜手势。默认值为true。 |
+| [setAllGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md)(enabled: boolean): void | 设置手势是否可用。默认值为true。 |
+#### 开发步骤
+mapController对象在初始化地图时获取，初始化地图功能在 [显示地图](D:/code/APIDevice/output/md_output/harmonyos-guides/应用服务/Map Kit（地图服务）/创建地图/显示地图/map-presenting.md) 章节中有详细讲解。
+#### 地图手势控制
+您可以通过mapController对象来启用或禁止相关的地图手势。
+**缩放手势：**
+用户可以通过用双指捏合，实现放大缩小地图。
+```typescript
+this.mapController.setZoomGesturesEnabled(true);
+```
+**滚动平移手势：**
+用户可以通过用手指拖动地图来进行移动。
+```typescript
+this.mapController.setScrollGesturesEnabled(true);
+```
+**旋转手势：**
+用户可以通过将两个手指放在地图上旋转来旋转地图。
+```typescript
+this.mapController.setRotateGesturesEnabled(true);
+```
+**倾斜手势：**
+用户可以通过将两个手指放在地图上下滑动来倾斜地图。
+```typescript
+this.mapController.setTiltGesturesEnabled(true);
+```
+**启用或禁止所有手势：**
+通过调用 [setAllGesturesEnabled](D:/code/APIDevice/output/md_output/harmonyos-references/应用服务/Map Kit（地图服务）/ArkTS API/map（地图显示功能）/map-map-mapcomponentcontroller.md) 方法，可启用或禁止所有手势。
+```typescript
+// 禁止所有手势
+this.mapController.setAllGesturesEnabled(false);
+```

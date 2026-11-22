@@ -1,0 +1,76 @@
+{
+  "app": {
+    "bundleName": "com.example.removeshortcut",
+    "vendor": "example",
+    "versionCode": 1000000,
+    "versionName": "1.0.0",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  },
+  "deviceConfig": {
+    "default": {
+      "process": "com.example.removeshortcut"
+    }
+  },
+  "module": {
+    "distro": {
+      "deliveryWithInstall": true,
+      "moduleName": "entry",
+      "moduleType": "entry",
+      "installationFree": false
+    },
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ts",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "exported": true,
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "reqPermissions": [
+      {
+        "name": "ohos.permission.GET_BUNDLE_INFO",
+        "reason": "$string:permission_reason",
+        "usedScene": {
+          "ability": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}
+
+/**
+ * 配置说明:
+ * 
+ * 1. bundleName: 应用包名,需要唯一
+ * 2. versionCode: 应用版本号,用于版本管理
+ * 3. versionName: 应用版本名称,显示给用户
+ * 4. abilities: 应用能力配置,包含入口Ability
+ * 5. reqPermissions: 需要申请的权限
+ * 
+ * 快捷方式相关权限:
+ * - 标准删除: 无需特殊权限
+ * - 静默删除: 需要在AppGallery Connect中申请
+ * 
+ * 注意:
+ * - 确保HarmonyOS SDK版本≥6.1.1(24)
+ * - 设备类型支持: Phone/Tablet/PC/2in1/TV
+ * - 不支持模拟器,必须使用真机
+ */

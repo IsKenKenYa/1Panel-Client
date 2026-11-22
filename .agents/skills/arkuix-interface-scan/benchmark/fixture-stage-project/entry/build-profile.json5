@@ -1,0 +1,5 @@
+{
+  "apiVersion": { "compatible": 12 },
+  "buildOption": {},
+  "targets": [{ "name": "default" }]
+}

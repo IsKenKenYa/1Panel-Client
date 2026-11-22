@@ -1,0 +1,1217 @@
+[
+  {
+    "case_id": "SMOKE-ANIM-01",
+    "layer": "smoke",
+    "title": "水波纹涟漪扩散动画",
+    "phase": "DEV",
+    "user_prompt": "仿听歌识曲的涟漪扩散效果：点击按钮启动后产生连续向外扩散的水波纹动画，两层涟漪错开 200ms 产生扩散视觉，再次点击立即停止并归位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中水波纹特效子场景，覆盖 animateTo + iterations:-1 无限循环 + delay 错开 + scale/opacity 双属性联动。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-02",
+    "layer": "smoke",
+    "title": "侧边栏淡入淡出动画",
+    "phase": "DEV",
+    "user_prompt": "仿群聊信息面板：点击侧边按钮后右侧滑出群成员列表面板，主内容区自动缩进，面板内容渐显；再次点击收起，面板渐隐。要求弹性曲线过渡自然。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中侧边栏淡入淡出子场景，覆盖 SideBarContainer(Embed) + animateTo 驱动 showSideBar + Curve.Friction + 内容区 opacity 联动。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-03",
+    "layer": "smoke",
+    "title": "数字滚动动画",
+    "phase": "DEV",
+    "user_prompt": "仿抢票/库存数字刷新动画：下拉触发后多位数字以动画效果各自滚动到新的随机值，变化量越大的数字滚动越久，支持千分位逗号分隔显示。需要父子组件拆分，子组件监听刷新状态触发滚动动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中数字滚动子场景，覆盖父子组件拆分 + 双重 ForEach 渲染 + translate({y}) 偏移 + clip(true) 裁剪 + animateTo 按差值计算 duration。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-03",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-04",
+    "layer": "smoke",
+    "title": "投票PK宽度过渡动画",
+    "phase": "DEV",
+    "user_prompt": "仿投票PK效果：投票前左右双方各占 50% 宽度，投票后双方宽度按实际得票比例平滑过渡，所选一方完整高亮显示，未选一方变暗衬托（opacity: 0.5）。要求宽度过渡和高亮变化同步进行。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中投票PK子场景，覆盖 animateTo 驱动 width 百分比字符串 + Curve.EaseOut + 三级 opacity 高亮/变暗逻辑 + .animation() 隐式动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-05",
+    "layer": "smoke",
+    "title": "悬浮窗拖拽弹性吸附动画",
+    "phase": "DEV",
+    "user_prompt": "仿客服悬浮球动画：手指拖拽时悬浮窗弹性跟手移动，松手后自动弹性吸附到最近的屏幕左/右边缘，吸附动画过程有弹性回弹效果。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中悬浮窗拖拽吸附子场景，覆盖 curves.responsiveSpringMotion() 拖拽跟手 + curves.springMotion() 松手吸附 + .position() + onTouch 事件。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-06",
+    "layer": "smoke",
+    "title": "列表边缘渐变遮罩动画",
+    "phase": "DEV",
+    "user_prompt": "仿应用推荐页的水平滑动列表边缘渐变遮罩动画：列表内容超出可视区域时可水平滚动，滚动到起始位置时左端遮罩消失、右端遮罩以动画效果渐显提示还有内容；滚动到末尾时右端遮罩消失、左端以动画效果渐显；滚动到中间时两端同时显示遮罩。遮罩显隐需有平滑动画过渡。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中边缘渐变子场景，覆盖两个独立 opacity 布尔状态 + .overlay() + linearGradient({angle:90}) + .animation() 隐式动画 + Scroller + onReachStart/onReachEnd/onDidScroll。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-07",
+    "layer": "smoke",
+    "title": "振动抖动关键帧动画",
+    "phase": "DEV",
+    "user_prompt": "仿登录页振动抖动关键帧动画：未勾选协议时点击一键登录，手机产生振动反馈的同时「请阅读并勾选协议」提示文本以关键帧动画左右抖动数轮。需要硬件振动与关键帧抖动动画同步触发。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景是否稳定命中振动抖动子场景，覆盖 vibrator.startVibration 硬件振动 + keyframeAnimateTo 关键帧抖动 + translateX 位移动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-08",
+    "layer": "smoke",
+    "title": "标签下划线滑动动画",
+    "phase": "DEV",
+    "user_prompt": "仿今日头条 Tab 栏下划线滑动动画：点击不同标签时底部下划线指示器以自定义属性动画平滑滑动到对应标签下方，下划线宽度同时以自定义属性动画逐帧变化，跟手滑动切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景是否稳定命中标签下划线滑动子场景，覆盖两个 @AnimatableExtend 分别驱动 width + translate + onAreaChange 测量 Tab 栏宽度。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-09",
+    "layer": "smoke",
+    "title": "天气图标变形动画",
+    "phase": "DEV",
+    "user_prompt": "仿天气 App：点击不同天气类型（晴/多云/雨/阴）时，太阳半径、云朵透明度、雨滴透明度等图标元素通过逐帧插值平滑变形过渡，背景渐变色同步切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景是否稳定命中天气图标变形子场景，覆盖 AnimatableArithmetic 只含 number 字段的 WeatherAnimData + 独立 WeatherStyle + 多个 @AnimatableExtend + .animation() 隐式动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-10",
+    "layer": "smoke",
+    "title": "图表数据切换动画",
+    "phase": "DEV",
+    "user_prompt": "仿数据看板：点击切换不同数据集（营收/用户/订单）时，柱状图所有柱子高度通过自定义类型逐帧插值平滑变化到新值，柱子颜色同步切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景是否稳定命中图表数据切换子场景，覆盖 ChartData 类实现 AnimatableArithmetic + @AnimatableExtend(Column) 扩展 height + .animation() 驱动逐帧柱高变化 + 颜色独立 @State 管理。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-11",
+    "layer": "smoke",
+    "title": "页面滑动转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿页面切换：点击按钮后当前页面向左淡出，新页面从右侧滑入，形成 A→B 的页面跳转过渡，使用弹性曲线。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中页面滑动子场景，覆盖 TransitionEffect.OPACITY.combine(translate) 左移淡出 + TransitionEffect.move(TransitionEdge.END) 右侧滑入 + curves.springMotion() 弹性曲线。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-12",
+    "layer": "smoke",
+    "title": "侧滑手势返回转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿 iOS 手势侧滑返回转场动画：手指从屏幕左边缘向右拖拽时顶层页面以转场动画效果跟手右移，滑动超过阈值后自动退出，未超过则以转场动画效果弹回原位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中侧滑返回子场景，覆盖 PanGesture 水平拖拽 + translate({x: offsetX}) 跟手 + 松手判断偏移阈值 + TransitionEffect 退出动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-13",
+    "layer": "smoke",
+    "title": "底部抽屉转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿底部抽屉转场动画：点击按钮后从屏幕底部以转场动画弹出半透明遮罩 + 内容面板，点击遮罩或关闭按钮后面板以转场动画滑出消失，使用弹性曲线。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中底部抽屉子场景，覆盖条件渲染 + TransitionEffect.OPACITY.combine(translate({y:400})) + curves.springMotion() 弹性曲线 + 半透明遮罩点击关闭。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-14",
+    "layer": "smoke",
+    "title": "分组列表展开折叠转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿设置页分组列表展开折叠转场动画：点击分组标题后箭头以动画效果旋转 180° 指示展开状态，子选项容器整体以转场动画淡入、内部各行从左侧依次以动画效果交错滑入；再次点击折叠收起，使用弹性曲线和 clip(true) 裁剪溢出。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中展开折叠子场景，覆盖 animateTo + springMotion 触发展开 + 箭头 rotate 隐式动画 + 容器级 TransitionEffect.OPACITY 整体淡入 + 子项级 OPACITY.combine(translate({x:-30})) + delay: index * 30 交错入场 + clip(true) 裁剪。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-15",
+    "layer": "smoke",
+    "title": "相册宫格旋转布局适配",
+    "phase": "DEV",
+    "user_prompt": "仿相册浏览页旋转转场动画：竖屏时宫格列数较少适配窄屏，横屏时宫格列数自动增多利用宽屏空间，旋转时图片以转场动画居中缩放、列数以动画效果平滑过渡。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中相册宫格旋转子场景，覆盖 GridRow 断点系统 { sm, md, lg, xl } 自动适配列数 + GridCol({ span: 1 }) 均分列宽 + .aspectRatio(1) 正方形缩略图。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-02",
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-16",
+    "layer": "smoke",
+    "title": "商品详情旋转转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品详情页旋转转场动画：竖屏单列滚动布局，横屏左右分栏布局，旋转时整体以转场动画淡入淡出平滑过渡，竖屏略微缩小淡出、横屏略微放大淡入形成视差感。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景是否稳定命中商品详情旋转子场景，覆盖 mediaquery 监听方向变化 + TransitionEffect.OPACITY.combine(scale) 缩放淡入淡出 + curves.springMotion() 弹性过渡 + 公共 @Builder 组件复用。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-02",
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-17",
+    "layer": "smoke",
+    "title": "分享面板半模态转场",
+    "phase": "DEV",
+    "user_prompt": "仿社交分享面板半模态转场动画：点击按钮后从底部以模态转场动画弹出包含微信/朋友圈/QQ 等分享渠道的半模态面板，面板内使用 4 列网格排列分享渠道图标和名称，底部有取消按钮，支持拖拽关闭。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中分享面板子场景，覆盖 bindSheet 半模态 + Grid 4 列布局 + dragBar 拖拽关闭 + @Builder 内容构建。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-18",
+    "layer": "smoke",
+    "title": "聊天列表深色弹出菜单",
+    "phase": "DEV",
+    "user_prompt": "仿微信聊天列表模态转场弹出菜单动画：顶部标题栏含「+」按钮，点击以模态转场动画弹出深色下拉菜单（发起群聊/添加朋友/扫一扫/收付款），菜单使用自定义背景色和圆角，带箭头指向触发按钮。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中聊天列表弹出菜单子场景，覆盖 bindPopup 自定义深色弹出菜单 + placement: Placement.Bottom + enableArrow 箭头指向 + backgroundBlurStyle: BlurStyle.NONE 关闭默认模糊。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-19",
+    "layer": "smoke",
+    "title": "滑动选择器半模态转场",
+    "phase": "DEV",
+    "user_prompt": "仿城市选择器半模态转场动画：点击按钮后从底部以模态转场动画弹出选择面板，顶部有取消/确定按钮，中间为可滚动城市列表，选中项字体放大加粗高亮显示，底部无拖拽条。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中滑动选择器子场景，覆盖 bindSheet 380px 面板 + List 可滚动选择 + 选中项字体放大加粗高亮。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-20",
+    "layer": "smoke",
+    "title": "全屏模态登录转场动画",
+    "phase": "DEV",
+    "user_prompt": "仿全屏模态登录转场动画：点击按钮后以全屏模态转场动画覆盖弹出登录页，默认显示一键登录，切换到其他登录方式时界面以动画效果淡入淡出过渡，返回按钮根据当前页面执行不同操作。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中全屏模态登录子场景，覆盖 bindContentCover 全屏模态 + 预定义 TransitionEffect 变量复用 + Stack 叠加返回按钮 + expandSafeArea 延伸安全区。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-21",
+    "layer": "smoke",
+    "title": "文件操作菜单 bindMenu",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器列表模态转场菜单动画：每个文件项右侧有「⋮」按钮，点击后以模态转场动画弹出系统级操作菜单（复制/移动/重命名/分享/删除），菜单项点击后执行对应操作并自动关闭。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中更多操作菜单子场景，覆盖 bindMenu 绑定菜单数组 + MenuElement 菜单项配置 + action 回调处理点击。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-22",
+    "layer": "smoke",
+    "title": "长按菜单 bindContextMenu",
+    "phase": "DEV",
+    "user_prompt": "仿桌面图标和图片长按弹出模态转场菜单动画：长按桌面应用图标以模态转场动画弹出快捷操作菜单（分享/应用信息/卸载），长按图片以模态转场动画弹出图片操作菜单（保存图片/收藏/识图搜索/复制链接/转发），通过 Tab 切换两种场景。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中长按菜单子场景，覆盖 bindContextMenu + ResponseType.LongPress + @Builder 自定义菜单布局 + Tab 切换两种场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-23",
+    "layer": "smoke",
+    "title": "登录注册交叉模态转场",
+    "phase": "DEV",
+    "user_prompt": "仿登录注册流程：点击「登录」按钮后登录页从底部弹性滑入覆盖全屏，点击「注册」按钮后注册页从右侧弹性滑入，登录↔注册之间可互相跳转，切换时旧页面先淡出再新页面淡入形成交叉转场。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景是否稳定命中登录注册模态转场子场景，覆盖 if 条件渲染 + TransitionEffect.OPACITY.combine(translate) + curves.springMotion(0.6, 0.9) 弹性曲线 + setTimeout 编排交叉转场。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-24",
+    "layer": "smoke",
+    "title": "朋友圈图片浏览共享元素动画",
+    "phase": "DEV",
+    "user_prompt": "仿朋友圈图片浏览：点击九宫格中的小图后图片放大过渡到全屏大图预览，点击图片反向缩小回缩略图位置。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景是否稳定命中朋友圈图片浏览子场景，覆盖 geometryTransition 共享元素过渡 + animateTo 驱动过渡 + curves.springMotion 弹性曲线 + 缩略图条件置空 ID + Viewer 始终持有 ID。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-25",
+    "layer": "smoke",
+    "title": "卡片转场一镜到底共享元素动画",
+    "phase": "DEV",
+    "user_prompt": "仿电商瀑布流卡片共享元素转场动画：点击瀑布流卡片后卡片封面图以共享元素动画放大过渡到全屏详情页，返回时详情页以动画效果缩小回原卡片封面位置，封面图使用共享元素过渡，详情页整体以转场动画淡入淡出。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景是否稳定命中卡片转场一镜到底子场景，覆盖 WaterFlow 瀑布流 + geometryTransition('cardImg_${index}') 条件 ID + curves.springMotion(0.6, 0.9) + TransitionEffect.OPACITY 详情页淡入 + clip(true) 裁剪。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-26",
+    "layer": "smoke",
+    "title": "搜索框一镜到底共享元素动画",
+    "phase": "DEV",
+    "user_prompt": "仿搜索一镜到底：点击首页搜索框后搜索框无缝放大过渡为全屏搜索页，输入关键词后点击结果返回首页，搜索框缩小回原位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景是否稳定命中一镜到底搜索子场景，覆盖 geometryTransition(id, {follow:true}) + bindContentCover(modalTransition:NONE) + curves.interpolatingSpring 插值弹簧 + TransitionEffect.asymmetric 非对称转场。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-27",
+    "layer": "smoke",
+    "title": "卡片展开详情 NodeController 动画",
+    "phase": "DEV",
+    "user_prompt": "仿商品卡片展开：点击列表中的卡片后封面图从卡片位置展开为全屏详情页，封面图节点在卡片和详情页之间复用（NodeController），返回时收起回卡片。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景是否稳定命中卡片展开详情子场景，覆盖 NodeController + BuilderNode 封面图节点复用 + getComponentUtils().getRectangleById() 获取位置 + curves.springMotion(0.6, 0.9) 弹性展开 + position/translate/height 属性插值动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-28",
+    "layer": "smoke",
+    "title": "新闻封面详情跨页面共享元素动画",
+    "phase": "DEV",
+    "user_prompt": "仿新闻 Feed 流共享元素转场动画：点击新闻列表中的卡片后封面图以共享元素转场动画从卡片位置展开为全屏新闻详情页，列表页同步以转场动画淡出，返回时封面图以动画效果缩小回列表中的卡片位置，使用 Navigation 自定义转场动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景是否稳定命中新闻封面→详情子场景，覆盖 Navigation.customNavContentTransition + CustomTransition 单例注册转场回调 + CoverNodeController 跨页面共享封面 + interpolatingSpring + scale/translate/clip 组合动画。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-05",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-29",
+    "layer": "smoke",
+    "title": "列表批量入场交错动画",
+    "phase": "DEV",
+    "user_prompt": "仿社交 App 首页刷新：点击按钮后 12 条列表项从底部依次弹入，每项间隔 80ms 产生瀑布式交错入场效果，使用弹性曲线。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景是否稳定命中列表入场子场景，覆盖 TransitionEffect.OPACITY.combine(translate({y:80})) + delay: index * 80 交错 + curves.springMotion() 弹性曲线。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-30",
+    "layer": "smoke",
+    "title": "列表项拖拽交换动画",
+    "phase": "DEV",
+    "user_prompt": "仿支付宝银行卡管理排序组件动画：长按列表项后卡片以组件动画浮起（阴影+放大），跟随手指上下拖拽，拖拽过程中邻居项根据距离动态以动画效果收缩让位，超过相邻项一半高度时自动交换位置，松手后以两段弹簧动画弹性归位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景是否稳定命中列表项交换子场景，覆盖 AttributeModifier<ListItemAttribute> 封装动画属性 + GestureGroup(Sequence, LongPress + Pan) 组合手势 + curves.initCurve(Curve.Sharp).interpolate() 计算邻居收缩比例 + curves.interpolatingSpring 两段弹性归位。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-31",
+    "layer": "smoke",
+    "title": "网格元素删除补位动画",
+    "phase": "DEV",
+    "user_prompt": "仿桌面快捷方式管理网格元素删除补位动画：进入编辑模式后图标右上角出现红色删除按钮，点击删除后相邻图标以组件动画滑移填补空位（同行左移、行尾跳到下一行首位），同时支持长按拖拽以动画效果重新排序。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景是否稳定命中网格元素交换子场景，覆盖 Grid.editMode + supportAnimation(true) + AttributeModifier<GridItemAttribute> 驱动删除位移。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-32",
+    "layer": "smoke",
+    "title": "加载动画 createAnimator",
+    "phase": "DEV",
+    "user_prompt": "三种常见 Loading 样式：① 五个圆点依次弹跳起伏的跳动加载；② 系统圆形进度旋转指示器；③ 脉冲圆环从中心向外扩散的呼吸效果。点击按钮同时启动三种动画，使用 createAnimator 逐帧驱动。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景是否稳定命中加载动画子场景，覆盖 AnimatorResult(createAnimator) + onFrame 逐帧回调 + direction:'alternate' 反向。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-33",
+    "layer": "smoke",
+    "title": "成功打勾串行动画",
+    "phase": "DEV",
+    "user_prompt": "仿支付成功页：点击按钮后依次出现——绿色圆形从中心弹出 → 勾号在圆中画出 → 一圈涟漪向外扩散 → 「支付成功」文字从下方上移淡入，四段动画串行衔接。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景是否稳定命中成功打勾子场景，覆盖四个 AnimatorResult 串行 delay + onFinish 链式触发 + easing:'friction' 弹出 + 涟漪扩散。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-34",
+    "layer": "smoke",
+    "title": "骨架屏 Shimmer 动画",
+    "phase": "DEV",
+    "user_prompt": "仿社交 Feed 流骨架屏 Shimmer 帧动画：数据加载中时显示灰色骨架占位块（头像、标题行、正文行），每个占位块内各有一道高光以帧动画同步从左到右循环扫过产生闪烁效果；加载完成后骨架与真实内容以动画效果交叉淡入切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景是否稳定命中骨架屏 Shimmer 子场景，覆盖 AnimatorResult 无限循环 linear 水平扫动驱动全局 shimmerTranslateX + linearGradient 5 档透明度高光条带 + 可复用 @Builder shimmerLine/shimmerSquare + clip(true) 裁剪防溢出 + Stack 双层交叉淡入 + 独立 fadeAnimator 单次驱动。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-35",
+    "layer": "smoke",
+    "title": "自定义扫码扫描线动画",
+    "phase": "DEV",
+    "user_prompt": "仿扫码界面：屏幕中央显示方形扫码框，框内一道蓝色扫描线上下往复扫动，扫描线上方有菱形光斑跟随并缩放呼吸，四角有装饰角标标定识别区域，扫描线反转时菱形翻转。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景是否稳定命中自定义扫码子场景，覆盖 AnimatorResult + direction:'alternate' 上下扫动 + onRepeat 翻转阴影 + .position() 扫描线/角标定位。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-ANIM-36",
+    "layer": "smoke",
+    "title": "迷你播放器展开收起动画",
+    "phase": "DEV",
+    "user_prompt": "仿音乐播放器：页面底部有一条迷你播放器栏显示封面和歌曲名，点击后迷你播放器无缝展开为全屏播放详情页（封面放大移至屏幕中央、详情页从底部滑入），在详情页向下拖拽可实时跟随收起，松手后根据位置阈值决定弹回或完全收起。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景是否稳定命中迷你播放器子场景，覆盖 AnimatorResult 双向复用 + 自定义 expandCollapseAnimation(progress) 逐帧多属性联动 + 双封面图层切换 + 两阶段 opacity 交替 + PanGesture.onActionUpdate 手势实时驱动 + onActionEnd + animateTo 阈值判断。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-02",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    }
+  }
+]

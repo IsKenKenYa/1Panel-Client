@@ -1,0 +1,51 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$string:pages_list",
+    "abilities": [
+      {
+        "name": "HiWearMainAbility",
+        "srcEntry": "./ets/HiWearMainAbility.ets",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "description": "$string:ability_desc",
+        "orientation": "auto",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "metadata": [
+      {
+        "name": "wearEngineRemoteAppNameList",
+        "value": "com.example.remoteapp1,com.example.remoteapp2"
+      },
+      {
+        "name": "wearEngineUIAbilityName",
+        "value": "HiWearMainAbility"
+      },
+      {
+        "name": "wearEngineAwaitRegisterReceiver",
+        "value": "true"
+      }
+    ]
+  }
+}

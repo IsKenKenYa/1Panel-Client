@@ -1,0 +1,194 @@
+# CMakeLists.txt 配置示例
+
+## 基础配置
+
+```cmake
+cmake_minimum_required(VERSION 3.4.1)
+project(networkboost_reportqoe_example)
+
+# 设置HarmonyOS SDK路径
+set(HMOS_SDK_NATIVE "${OHOS_SDK_NATIVE}")
+
+# 设置编译目标
+add_executable(entry 
+    src/main.cpp
+    src/reportqoe_example.cpp
+)
+
+# 配置头文件路径
+target_include_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# 配置库文件路径
+target_link_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos
+)
+
+# 链接Network Boost库
+target_link_libraries(entry PUBLIC 
+    libnetwork_boost.so
+    libc.so
+)
+
+# 设置编译选项
+target_compile_options(entry PUBLIC 
+    -std=c++14
+    -Wall
+    -Wextra
+)
+```
+
+## 完整CMakeLists.txt示例
+
+```cmake
+# ========================================
+# Network Boost Kit - 应用传输体验反馈示例
+# ========================================
+
+cmake_minimum_required(VERSION 3.4.1)
+project(networkboost_reportqoe_demo)
+
+# 1. 定义SDK路径变量
+if(NOT DEFINED HMOS_SDK_NATIVE)
+    if(DEFINED ENV{HMOS_SDK_NATIVE})
+        set(HMOS_SDK_NATIVE $ENV{HMOS_SDK_NATIVE})
+    else()
+        message(FATAL_ERROR "请设置HMOS_SDK_NATIVE环境变量或在CMake中定义")
+    endif()
+endif()
+
+# 2. 打印SDK路径信息
+message(STATUS "HarmonyOS SDK路径: ${HMOS_SDK_NATIVE}")
+
+# 3. 设置源文件
+set(SOURCE_FILES
+    src/main.cpp
+    src/reportqoe_handler.cpp
+    src/error_handler.cpp
+)
+
+# 4. 创建可执行文件
+add_executable(networkboost_demo ${SOURCE_FILES})
+
+# 5. 配置头文件包含路径
+target_include_directories(networkboost_demo PUBLIC
+    # HarmonyOS系统头文件
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+    
+    # 项目自定义头文件
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+# 6. 配置库文件链接路径
+target_link_directories(networkboost_demo PUBLIC
+    ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos
+)
+
+# 7. 链接必要的库文件
+target_link_libraries(networkboost_demo PUBLIC
+    # Network Boost Kit核心库
+    libnetwork_boost.so
+    
+    # 系统基础库
+    libc.so
+    libm.so
+)
+
+# 8. 设置编译标准
+set_target_properties(networkboost_demo PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)
+
+# 9. 设置编译警告选项
+target_compile_options(networkboost_demo PUBLIC
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+)
+
+# 10. 设置输出目录
+set_target_properties(networkboost_demo PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+# 11. 打印构建信息
+message(STATUS "========================================")
+message(STATUS "项目: ${PROJECT_NAME}")
+message(STATUS "目标: networkboost_demo")
+message(STATUS "C++标准: C++14")
+message(STATUS "输出目录: ${CMAKE_BINARY_DIR}/bin")
+message(STATUS "========================================")
+```
+
+## 多模块配置示例
+
+```cmake
+# 主CMakeLists.txt
+cmake_minimum_required(VERSION 3.4.1)
+project(networkboost_multi_module)
+
+# 添加子模块
+add_subdirectory(reportqoe_module)
+add_subdirectory(utils_module)
+add_subdirectory(test_module)
+
+# reportqoe_module/CMakeLists.txt
+add_library(reportqoe_lib STATIC
+    reportqoe_handler.cpp
+    error_handler.cpp
+)
+
+target_include_directories(reportqoe_lib PUBLIC
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+)
+
+target_link_libraries(reportqoe_lib PUBLIC
+    libnetwork_boost.so
+)
+
+# test_module/CMakeLists.txt
+add_executable(reportqoe_test
+    test_main.cpp
+)
+
+target_link_libraries(reportqoe_test PUBLIC
+    reportqoe_lib
+    libnetwork_boost.so
+)
+```
+
+## 编译命令
+
+```bash
+# 创建构建目录
+mkdir build && cd build
+
+# 生成构建文件
+cmake -DHMOS_SDK_NATIVE=/path/to/hmos/sdk ..
+
+# 编译
+make
+
+# 运行
+./bin/networkboost_demo
+```
+
+## 环境变量配置
+
+```bash
+# Linux/MacOS
+export HMOS_SDK_NATIVE=/path/to/hmos/sdk/native
+
+# Windows PowerShell
+$env:HMOS_SDK_NATIVE="C:\path\to\hmos\sdk\native"
+
+# Windows CMD
+set HMOS_SDK_NATIVE=C:\path\to\hmos\sdk\native
+```

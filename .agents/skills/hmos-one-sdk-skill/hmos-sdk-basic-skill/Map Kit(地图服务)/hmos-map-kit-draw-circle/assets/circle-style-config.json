@@ -1,0 +1,55 @@
+{
+  "circleStyles": [
+    {
+      "name": "服务覆盖范围",
+      "description": "表示服务区域的覆盖范围，使用黄色填充和红色边框",
+      "options": {
+        "center": {
+          "latitude": 39.918,
+          "longitude": 116.397
+        },
+        "radius": 500,
+        "fillColor": "0xFFFFC100",
+        "strokeColor": "0xFFFF0000",
+        "strokeWidth": 10,
+        "clickable": true,
+        "visible": true,
+        "zIndex": 15
+      }
+    },
+    {
+      "name": "地理围栏",
+      "description": "表示地理围栏区域，使用半透明蓝色填充和蓝色边框",
+      "options": {
+        "center": {
+          "latitude": 39.95,
+          "longitude": 116.4
+        },
+        "radius": 1000,
+        "fillColor": "0x400000FF",
+        "strokeColor": "0xFF0000FF",
+        "strokeWidth": 5,
+        "clickable": false,
+        "visible": true,
+        "zIndex": 10
+      }
+    },
+    {
+      "name": "兴趣点影响区域",
+      "description": "表示兴趣点的影响范围，使用绿色填充和深绿边框",
+      "options": {
+        "center": {
+          "latitude": 39.88,
+          "longitude": 116.35
+        },
+        "radius": 300,
+        "fillColor": "0x8000FF00",
+        "strokeColor": "0xFF008000",
+        "strokeWidth": 8,
+        "clickable": true,
+        "visible": true,
+        "zIndex": 12
+      }
+    }
+  ]
+}

@@ -1,0 +1,377 @@
+[
+  {
+    "case_id": "SMOKE-CPB-01",
+    "layer": "smoke",
+    "title": "设置页设置项 Column+Row 垂直排列",
+    "phase": "DEV",
+    "user_prompt": "仿系统设置页：多个设置项（无线网络、蓝牙、亮度等）垂直排列，每行包含左侧图标+标题、右侧副文本或开关。要求间距均匀、开关右对齐。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 设置页设置项 Column+Row 垂直排列 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-02",
+    "layer": "smoke",
+    "title": "悬浮返回顶部按钮 Stack 层叠",
+    "phase": "DEV",
+    "user_prompt": "仿通讯录列表：长列表底部悬浮一个返回顶部圆形按钮，不随列表滚动而移动，始终固定在右下角。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 悬浮返回顶部按钮 Stack 层叠 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-03",
+    "layer": "smoke",
+    "title": "社交动态卡片 RelativeContainer 相对定位",
+    "phase": "DEV",
+    "user_prompt": "仿社交动态卡片：头像左上、昵称在头像右侧、时间在昵称下方、右上角关注按钮、底部操作栏（点赞/评论/转发）相对于卡片底部对齐。要求使用相对定位布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 社交动态卡片 RelativeContainer 相对定位 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-04",
+    "layer": "smoke",
+    "title": "电商商品多设备列数 GridRow+GridCol 响应式",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品列表：手机竖屏2列、手机横屏4列、平板6列，要求根据断点自动调整列数。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 电商商品多设备列数 GridRow+GridCol 响应式 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-05",
+    "layer": "smoke",
+    "title": "文件管理器视图切换 DynamicLayout 状态保持",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器：列表视图和网格视图切换时保持各视图滚动位置不丢失。要求使用DynamicLayout实现状态保持。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 文件管理器视图切换 DynamicLayout 状态保持 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-06",
+    "layer": "smoke",
+    "title": "通讯录分组吸顶+左滑删除 List",
+    "phase": "DEV",
+    "user_prompt": "仿手机通讯录：联系人按字母分组，组标题吸顶不随滚动消失；每条联系人可左滑出现删除按钮。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 场景路由分发稳定命中，覆盖 通讯录分组吸顶+左滑删除 List 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-07",
+    "layer": "smoke",
+    "title": "聊天照片九宫格 Grid",
+    "phase": "DEV",
+    "user_prompt": "仿聊天消息中的照片网格：1-9张照片以九宫格排列，3列等宽，点击可预览大图。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 场景路由分发稳定命中，覆盖 聊天照片九宫格 Grid 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-08",
+    "layer": "smoke",
+    "title": "商品推荐瀑布流 WaterFlow",
+    "phase": "DEV",
+    "user_prompt": "仿电商首页推荐流：商品卡片高度不等、参差不齐排列，支持无限滚动加载更多。要求瀑布流布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 场景路由分发稳定命中，覆盖 商品推荐瀑布流 WaterFlow 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-09",
+    "layer": "smoke",
+    "title": "搜索历史标签 Flex 自适应换行",
+    "phase": "DEV",
+    "user_prompt": "仿搜索页历史搜索词：多个标签长度不一，要求自动换行排列、每行标签数自适应屏幕宽度，标签间距均匀不被压缩。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 搜索历史标签 Flex 自适应换行 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-10",
+    "layer": "smoke",
+    "title": "新闻App分类页签 Tabs 切换",
+    "phase": "DEV",
+    "user_prompt": "仿新闻App首页：顶部多个分类页签（推荐/科技/财经/体育），左右滑动切换页签内容，底部内容区显示对应分类的新闻列表。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 场景路由分发稳定命中，覆盖 新闻App分类页签 Tabs 切换 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CPB-11",
+    "layer": "smoke",
+    "title": "智能手表圆弧菜单 ArcList",
+    "phase": "DEV",
+    "user_prompt": "仿智能手表应用列表：在圆形表盘上展示应用图标列表，列表项沿圆弧排列，支持旋转表冠滚动。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 场景路由分发稳定命中，覆盖 智能手表圆弧菜单 ArcList 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    }
+  }
+]

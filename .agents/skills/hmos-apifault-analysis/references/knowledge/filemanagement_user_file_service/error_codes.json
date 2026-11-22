@@ -1,0 +1,392 @@
+[
+  {
+    "code": 201,
+    "message": "Permission denied.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "权限校验失败。内部枚举 E_PERMISSION。FileAccess 系列 API 要求声明并授权 ohos.permission.FILE_ACCESS_MANAGER；@ohos.file.recent/@ohos.file.trash 要求 FILE_ACCESS_MANAGER 及系统应用权限。"
+  },
+  {
+    "code": 202,
+    "message": "Permission verification failed, application which is not system application.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "非系统应用。内部枚举 E_PERMISSION_SYS。fileAccess 模块仅允许系统应用（且仅 FilePicker / FileManager）调用。"
+  },
+  {
+    "code": 401,
+    "message": "The parameter check failed.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "参数校验失败（类型/必填/范围）。d.ts 中以 @throws BusinessError 401 标注。"
+  },
+  {
+    "code": 801,
+    "message": "Capability not supported.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "设备/能力不支持（feature isolation）。内部枚举 E_NOT_SUPPORT。"
+  },
+  {
+    "code": 13900001,
+    "message": "Operation not permitted (EPERM).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX EPERM。内部枚举 ERR_PERM。操作不被允许（如对只读/受限文件执行写操作）。"
+  },
+  {
+    "code": 13900002,
+    "message": "No such file or directory (ENOENT).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX ENOENT。内部枚举 ERR_URI。URI 指向的文件/目录不存在，常见于 createFile/openFile/delete/move/rename 传入了无效或已删除的 parentUri。"
+  },
+  {
+    "code": 13900004,
+    "message": "Interrupted system call (EINTR).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EINTR。系统调用被中断。"
+  },
+  {
+    "code": 13900006,
+    "message": "No such device or address (ENXIO).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ENXIO。无此设备或地址。"
+  },
+  {
+    "code": 13900008,
+    "message": "Bad file descriptor (EBADF).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EBADF。无效文件描述符。"
+  },
+  {
+    "code": 13900011,
+    "message": "Out of memory (ENOMEM).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX ENOMEM。内部枚举 ERR_NOMEM。内存不足。"
+  },
+  {
+    "code": 13900012,
+    "message": "Permission denied (EACCES).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EACCES。访问权限被拒绝（与 201 不同：201 是权限框架层校验，13900012 是底层文件系统访问被拒）。"
+  },
+  {
+    "code": 13900013,
+    "message": "Bad address (EFAULT).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EFAULT。地址错误。"
+  },
+  {
+    "code": 13900014,
+    "message": "Device or resource busy (EBUSY).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EBUSY。设备或资源忙。"
+  },
+  {
+    "code": 13900015,
+    "message": "File exists (EEXIST).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX EEXIST。内部枚举 ERR_EXIST。文件已存在，常见于 createFile 目标名重复、mkDir 目录已存在。"
+  },
+  {
+    "code": 13900017,
+    "message": "No such device (ENODEV).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ENODEV。无此设备。"
+  },
+  {
+    "code": 13900018,
+    "message": "Not a directory (ENOTDIR).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX ENOTDIR。内部枚举 ERR_NOT_DIR。路径中某段不是目录，或对文件执行了目录操作。"
+  },
+  {
+    "code": 13900019,
+    "message": "Is a directory (EISDIR).",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "POSIX EISDIR。内部枚举 ERR_IS_DIR。对目录执行了仅适用于文件的操作（如 openFile 以写入模式打开目录、createFile 目标是目录）。"
+  },
+  {
+    "code": 13900020,
+    "message": "Invalid argument (EINVAL).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EINVAL。无效参数（如 flags 非法、相对路径格式错误）。"
+  },
+  {
+    "code": 13900022,
+    "message": "Invalid argument (EINVAL variant).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EINVAL 变体之一（参数非法）。"
+  },
+  {
+    "code": 13900023,
+    "message": "Too many open files in system (ENFILE).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ENFILE。系统级打开文件过多。"
+  },
+  {
+    "code": 13900024,
+    "message": "Too many open files (EMFILE).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EMFILE。进程打开文件过多。"
+  },
+  {
+    "code": 13900025,
+    "message": "No space left on device (ENOSPC).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ENOSPC。设备剩余空间不足，常见于 createFile/copy/move 写满目标卷。"
+  },
+  {
+    "code": 13900027,
+    "message": "Read-only file system (EROFS).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EROFS。只读文件系统（如对外置只读存储执行写操作）。"
+  },
+  {
+    "code": 13900029,
+    "message": "Invalid seek (ESPIPE).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ESPIPE。无法对管道/流执行 seek。"
+  },
+  {
+    "code": 13900030,
+    "message": "Read-only file system (EROFS variant).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EROFS 变体（只读）。"
+  },
+  {
+    "code": 13900033,
+    "message": "Value too large for defined data type (EOVERFLOW).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX EOVERFLOW。数值溢出。"
+  },
+  {
+    "code": 13900034,
+    "message": "The value of fsync flag is invalid.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "fsync 标志位取值非法。"
+  },
+  {
+    "code": 13900038,
+    "message": "Stale file handle (ESTALE).",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "POSIX ESTALE。文件句柄过期（文件已被删除或重命名后仍持有旧句柄）。"
+  },
+  {
+    "code": 13900041,
+    "message": "The parameter path is invalid.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "路径参数非法（格式/长度/字符不合规）。"
+  },
+  {
+    "code": 13900042,
+    "message": "Unknown error.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "未归类/未知错误，通常为底层返回的非常见 errno。"
+  },
+  {
+    "code": 14000001,
+    "message": "Invalid display name.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "UserFileManager 段（BASE_OFFSET=14000000）。display name（文件名）非法：为空、含非法字符（/ : * ? \" < > |）、超长。"
+  },
+  {
+    "code": 14000002,
+    "message": "Invalid uri.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "UserFileManager 段。URI 非法：格式错误、scheme/authority 不正确、无法解析。"
+  },
+  {
+    "code": 14000003,
+    "message": "Invalid file extension.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "UserFileManager 段。文件扩展名非法：与目录已存在文件扩展名冲突，或扩展名不被允许。"
+  },
+  {
+    "code": 14000004,
+    "message": "File has been put into trash bin.",
+    "source_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "description": "UserFileManager 段。文件已被放入回收站（软删除），无法直接操作，需先 recover 还原。"
+  },
+  {
+    "code": 14300001,
+    "message": "IPC error.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段（BASE_OFFSET=14300001）。内部枚举 E_IPCS。跨进程通信失败（写数据/读 parcel 失败）。"
+  },
+  {
+    "code": 14300002,
+    "message": "Invalid uri.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_URIS。URI 非法或为空。"
+  },
+  {
+    "code": 14300003,
+    "message": "Fail to get fileextension info.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_GETINFO。获取文件扩展（FileAccessExtensionAbility）信息失败：扩展未安装、配置错误或不可达。"
+  },
+  {
+    "code": 14300004,
+    "message": "Get wrong result.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_GETRESULT。从扩展拿到异常结果（结果码不合法）。"
+  },
+  {
+    "code": 14300005,
+    "message": "Fail to register notification.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_REGISTER。registerObserver 注册文件变更通知失败。"
+  },
+  {
+    "code": 14300006,
+    "message": "Fail to remove notification.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_REMOVE。unregisterObserver 移除通知失败。"
+  },
+  {
+    "code": 14300007,
+    "message": "Fail to init notification agent.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_INIT_NOTIFY_AGENT。通知 agent（NotifyAgent）初始化失败。"
+  },
+  {
+    "code": 14300008,
+    "message": "Fail to notify agent.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_NOTIFY。向通知 agent 推送变更事件失败。"
+  },
+  {
+    "code": 14300009,
+    "message": "Fail to connect file access extension ability.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_CONNECT。连接 FileAccessExtensionAbility 失败：扩展未安装、未启动、被冻结或权限不足。最常见的连接类故障码。"
+  },
+  {
+    "code": 14300010,
+    "message": "Too many records.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_COUNT。查询/操作返回记录数过多，超过单次上限。"
+  },
+  {
+    "code": 14300011,
+    "message": "Uri and callback do not have relations, cannot unregister.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_CALLBACK_AND_URI_HAS_NOT_RELATIONS。URI 与 callback 无关联，无法反注册。"
+  },
+  {
+    "code": 14300012,
+    "message": "Callback is not registered, cannot unregister.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_CALLBACK_IS_NOT_REGISTER。callback 未注册，无法反注册。"
+  },
+  {
+    "code": 14300013,
+    "message": "Cannot find registered uri.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_CAN_NOT_FIND_URI。找不到已注册的 URI。"
+  },
+  {
+    "code": 14300014,
+    "message": "Do not have parent uri in observerNode.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_DO_NOT_HAVE_PARENT。observer 节点缺少父 URI。"
+  },
+  {
+    "code": 14300015,
+    "message": "Load SA failed.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "FileAccessFramework 段。内部枚举 E_LOAD_SA。加载 FileAccessService SA 失败。"
+  },
+  {
+    "code": 29189,
+    "message": "Service died.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "内部枚举 E_SERVICE_DIED。FileAccessService SA 或扩展进程死亡，IPC 远端对象失效。"
+  },
+  {
+    "code": 34400001,
+    "message": "Invalid parameter.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段（BASE_OFFSET=34400000）。内部枚举 E_INVALID_PARAM。云盘同步目录参数非法。"
+  },
+  {
+    "code": 34400002,
+    "message": "Sync folder path unauthorized.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_PATH_UNAUTHORIZED。同步目录路径未授权（应用无权访问该路径）。"
+  },
+  {
+    "code": 34400003,
+    "message": "IPC error.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_IPC_FAILED。云盘服务 IPC 失败。"
+  },
+  {
+    "code": 34400004,
+    "message": "Sync folder limit exceeded.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_LIMIT_EXCEEDED。同步目录数量超过上限。"
+  },
+  {
+    "code": 34400005,
+    "message": "Conflict with own app's Sync folder.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_CONFLICT_SELF。与自身应用已注册的同步目录冲突（嵌套/重复）。"
+  },
+  {
+    "code": 34400006,
+    "message": "Conflict with other app's Sync folder.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_CONFLICT_OTHER。与其它应用已注册的同步目录冲突。"
+  },
+  {
+    "code": 34400007,
+    "message": "Failed to register Sync folder.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_REGISTER_SYNC_FOLDER_FAILED。注册同步目录失败。"
+  },
+  {
+    "code": 34400008,
+    "message": "Sync folder not registered.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_NOT_REGISTERED。同步目录未注册（对其执行移除/监听操作）。"
+  },
+  {
+    "code": 34400009,
+    "message": "Failed to remove Sync folder.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_REMOVE_SYNC_FOLDER_FAILED。移除同步目录失败。"
+  },
+  {
+    "code": 34400010,
+    "message": "Sync folder path not exist.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYNC_FOLDER_PATH_NOT_EXIST。同步目录路径不存在。"
+  },
+  {
+    "code": 34400011,
+    "message": "Listener not registered.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_LISTENER_NOT_REGISTERED。监听器未注册（对其执行取消监听）。"
+  },
+  {
+    "code": 34400012,
+    "message": "Listener already registered.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_LISTENER_ALREADY_REGISTERED。监听器已注册（重复注册）。"
+  },
+  {
+    "code": 34400013,
+    "message": "Invalid change sequence.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_INVALID_CHANGE_SEQUENCE。变更序号（change sequence）非法。"
+  },
+  {
+    "code": 34400014,
+    "message": "Try again.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_TRY_AGAIN。临时性失败，需重试（如服务正在初始化）。"
+  },
+  {
+    "code": 34400015,
+    "message": "System restricted, for IT device.",
+    "source_file": "utils/file_access_framework_errno.h",
+    "description": "云盘同步段。内部枚举 E_SYSTEM_RESTRICTED。系统受限（IT 设备禁止使用该能力）。"
+  }
+]

@@ -1,0 +1,2 @@
+typedef struct OH_PixelmapNative OH_PixelmapNative;
+Image_ErrorCode OH_PixelmapNative_Release(OH_PixelmapNative *pixelmap);

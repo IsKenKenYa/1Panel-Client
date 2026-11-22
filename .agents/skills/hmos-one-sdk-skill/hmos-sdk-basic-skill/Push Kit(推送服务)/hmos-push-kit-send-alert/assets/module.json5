@@ -1,0 +1,138 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "Phone",
+      "Tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "TestAbility",
+        "srcEntry": "./ets/abilities/TestAbility.ets",
+        "description": "$string:TestAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:TestAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": false,
+        "skills": [
+          {
+            "actions": [
+              "com.app.action"
+            ]
+          },
+          {
+            "actions": [
+              "com.test.action"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "InnerUrisAbility",
+        "srcEntry": "./ets/abilities/InnerUrisAbility.ets",
+        "description": "$string:InnerUrisAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:InnerUrisAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": false,
+        "skills": [
+          {
+            "actions": [
+              "com.app.action"
+            ]
+          },
+          {
+            "actions": [
+              ""
+            ],
+            "uris": [
+              {
+                "scheme": "https",
+                "host": "www.example.com",
+                "port": "8080",
+                "path": "push/test"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "PushMessageAbility",
+        "srcEntry": "./ets/abilities/PushMessageAbility.ets",
+        "description": "$string:PushMessageAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:PushMessageAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "launchType": "singleton",
+        "exported": false,
+        "skills": [
+          {
+            "actions": [
+              "com.app.action"
+            ]
+          },
+          {
+            "actions": [
+              "action.ohos.push.listener"
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "$string:permission_reason_network",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "$string:permission_reason_internet",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility",
+            "TestAbility",
+            "InnerUrisAbility",
+            "PushMessageAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ]
+  }
+}

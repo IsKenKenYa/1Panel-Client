@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "project_model": "stage",
+  "inventory": [],
+  "adaptation": {
+    "full_direct": [],
+    "reduced_direct": [],
+    "equivalent_bridge": [],
+    "degraded_bridge": [],
+    "platform_trim": [],
+    "business_decision": [],
+    "unknown": []
+  }
+}

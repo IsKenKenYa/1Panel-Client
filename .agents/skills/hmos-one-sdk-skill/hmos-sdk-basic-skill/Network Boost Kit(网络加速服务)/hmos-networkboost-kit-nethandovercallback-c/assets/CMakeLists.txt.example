@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.4.1)
+project(networkboost_handover_demo)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(networkboost_handover_demo
+    example_networkboost_handover.cpp
+)
+
+target_link_libraries(networkboost_handover_demo
+    libnetwork_boost.so
+    libhilog_ndk.z.so
+)
+
+target_include_directories(networkboost_handover_demo
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set_target_properties(networkboost_handover_demo PROPERTIES
+    OUTPUT_NAME "networkboost_handover_demo"
+)

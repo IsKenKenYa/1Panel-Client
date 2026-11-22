@@ -1,0 +1,586 @@
+[
+  {
+    "case_id": "CC-FUNC-001",
+    "layer": "scene-functional",
+    "title": "设计类App按钮渐变边框+外发光DrawModifier开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿设计类App：按钮需要绘制独特的渐变边框（红/青/灰三色分段）和外发光光晕效果，系统Button组件无法满足该视觉需求，需通过DrawModifier在背景层绘制渐变边框、前景层绘制多层半透明圆形外发光，并支持霓虹灯变体方案。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 DrawModifier + drawBehind/drawFront + drawing.Brush + canvas.drawRect/drawCircle + vp2px 坐标转换的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须继承 DrawModifier 类，实现 drawBehind(context: DrawContext) 和 drawFront(context: DrawContext) 两个方法，分别在背景层和前景层自定义绘制。",
+        "drawBehind 必须使用 drawing.Brush 创建画刷、setColor 设置颜色、canvas.attachBrush/drawRect/detachBrush 分段绘制渐变边框（红/青/灰三色）。",
+        "drawFront 必须绘制多层半透明圆形（drawCircle）向外扩散实现外发光光晕效果。",
+        "必须使用 this.uiContext.vp2px() 将 context.size 返回的 vp 坐标转换为 px 供 canvas 绘制使用，不能直接用 vp 值绘制。",
+        "必须通过 .drawModifier(new GradientBorderModifier(this.getUIContext())) 将 Modifier 绑定到 Button 组件。",
+        "Modifier 构造函数必须接收 UIContext 参数用于 vp2px 转换，不能在类内自行获取。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 AttributeModifier 代替 DrawModifier，AttributeModifier 只能修改已有属性无法进行 Canvas 自定义绘制。",
+        "不使用 vp2px 转换坐标，直接用 context.size 的 vp 值绘制导致尺寸错位。",
+        "只实现 drawBehind 不实现 drawFront，无法绘制外发光前景层效果。",
+        "绘制后不调用 canvas.detachBrush() 释放画刷导致后续绘制异常。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "Button 组件显示渐变边框（红/青/灰三色分段），边框宽度约 3vp。",
+        "按钮前景层显示多层半透明圆形外发光光晕效果，向四周扩散。",
+        "渐变边框和外发光通过 DrawModifier 的 drawBehind/drawFront 绘制，非系统 backgroundColor/border 属性。",
+        "绑定 .drawModifier() 后按钮原有内容（文字）正常显示在背景层和前景层之间。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "按钮渐变边框截图（红/青/灰三色分段边框）",
+        "按钮外发光截图（多层半透明光晕扩散）",
+        "绑定 drawModifier 后按钮整体效果截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-002",
+    "layer": "scene-functional",
+    "title": "企业级App按钮四态样式AttributeModifier开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿企业级App：需要封装一套统一的主按钮样式规范，支持正常态、按压态、焦点态、禁用态四种状态切换，每种状态有不同背景色/圆角/阴影/缩放，且样式定义需跨文件导出复用、一个Modifier实例可绑定到多个Button。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 AttributeModifier<ButtonAttribute> + applyNormal/Pressed/Focused/DisabledAttribute 四态方法 + attributeModifier 复用 + 跨文件导出的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 实现 AttributeModifier<ButtonAttribute> 接口，实现 applyNormalAttribute/applyPressedAttribute/applyFocusedAttribute/applyDisabledAttribute 四个方法。",
+        "applyNormalAttribute 必须设置背景色（#4A90D9）、文字色（白色）、圆角（24）、阴影（radius:8,offsetY:3）。",
+        "applyPressedAttribute 必须加深背景色（#357ABD）并添加 scale({x:0.96, y:0.96}) 缩小效果和减弱阴影。",
+        "applyFocusedAttribute 必须添加 border 边框（width:2,color:#1A5FB4）并增强阴影（radius:12）。",
+        "applyDisabledAttribute 必须变灰（#B0C4DE）、降低透明度（opacity:0.6）、移除阴影。",
+        "必须通过 .attributeModifier(this.primaryModifier) 绑定，且同一 Modifier 实例可复用到多个 Button（含禁用态 Button）。",
+        "Modifier 类必须可跨文件导出（export class），支持参数化配置不同按钮主题色。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 @Styles 代替 AttributeModifier，@Styles 不支持参数传递、跨文件导出和多态样式切换。",
+        "不实现四态全部方法，缺少按压态/焦点态样式导致状态切换时外观无变化。",
+        "按压态不添加 scale 缩小效果，缺少按压视觉反馈。",
+        "同一 Modifier 实例不复用而是每个 Button 新建实例，浪费资源且样式难以统一维护。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "Button 正常态显示蓝色背景（#4A90D9）、白色文字、圆角24、阴影。",
+        "按压 Button 时背景加深（#357ABD）、整体缩小（scale 0.96）、阴影减弱。",
+        "获得焦点时显示 border 边框（#1A5FB4）和增强阴影（radius:12）。",
+        "disabled 状态下变灰（#B0C4DE）、透明度降低（0.6）、无阴影。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "四态样式切换截图（正常态蓝色按钮）",
+        "按压态截图（加深背景+缩小+减弱阴影）",
+        "禁用态截图（变灰+降低透明度+无阴影）"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-003",
+    "layer": "scene-functional",
+    "title": "设计工具App画布元素动态切换手势GestureModifier开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿设计工具App：画布上的图形元素需根据编辑模式动态切换手势行为——选择模式绑定拖拽手势、缩放模式绑定捏合手势、旋转模式绑定旋转手势，手势类型随模式运行时变化，并需通过translate/scale/rotate属性驱动元素变换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 GestureModifier + applyGesture + PanGestureHandler/PinchGestureHandler/RotationGestureHandler + gestureModifier + 模式动态切换的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 实现 GestureModifier 接口，实现 applyGesture(event: UIGestureEvent) 方法。",
+        "必须定义 EditMode 枚举（Drag/Scale/Rotate），根据 mode 值动态添加不同手势处理器。",
+        "Drag 模式必须使用 event.addGesture(new PanGestureHandler()) 绑定拖拽手势，onActionUpdate 回调获取 offsetX/offsetY 驱动 translate。",
+        "Scale 模式必须使用 PinchGestureHandler 绑定捏合手势，onActionUpdate 回调获取 scale 驱动元素缩放。",
+        "Rotate 模式必须使用 RotationGestureHandler 绑定旋转手势，onActionUpdate 回调获取 angle 驱动 rotate。",
+        "必须通过 .gestureModifier(this.shapeGestureModifier) 绑定，切换模式时更新 modifier.mode 属性使手势在下一次操作生效。",
+        "回调函数必须由外部绑定（onDragUpdate/onScaleUpdate/onRotateUpdate），Modifier 不直接操作状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用静态 .gesture() 代替 GestureModifier，静态绑定无法在运行时动态切换手势类型。",
+        "不根据 mode 动态添加手势，所有手势同时绑定导致手势冲突。",
+        "切换模式后不更新 modifier.mode 属性，手势类型不随模式变化。",
+        "手势处理器不绑定 onActionUpdate 回调，手势操作无响应。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "选择模式（Drag）下拖拽图形元素，元素随手指移动（translate 变化）。",
+        "切换到缩放模式（Scale）后双指捏合，元素随捏合缩放（scale 变化）。",
+        "切换到旋转模式（Rotate）后双指旋转，元素随旋转改变角度（rotate 变化）。",
+        "手势切换在当次手势结束后的下一次操作中生效，不中断当前手势。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "拖拽模式截图（图形元素随手指移动）",
+        "缩放模式截图（元素随捏合缩放）",
+        "旋转模式截图（元素随旋转改变角度）"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-004",
+    "layer": "scene-functional",
+    "title": "组件库Button图标+文字ContentModifier开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿组件库全局定制：需将系统Button的内容区统一替换为\"图标+文字\"组合样式，并为Checkbox添加自定义的收藏切换内容（★/☆），通过config.selected/config.pressed驱动UI刷新，支持一个Modifier实例复用到多个组件。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 ContentModifier<ButtonConfiguration/CheckBoxConfiguration> + applyContent + wrapBuilder + config.label/pressed/selected/triggerChange 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 实现 ContentModifier<ButtonConfiguration> 接口，实现 applyContent() 方法返回 WrappedBuilder<[ButtonConfiguration]>。",
+        "必须使用 wrapBuilder(buildIconButton) 包装 @Builder 函数，@Builder 接收 ButtonConfiguration 参数。",
+        "@Builder 中必须通过 config.label 获取按钮文字、config.pressed 获取按压状态、config.contentModifier as XxxModifier 访问自定义属性（icon/iconColor）。",
+        "Checkbox 内容定制必须使用 ContentModifier<CheckBoxConfiguration>，通过 config.selected 获取选中状态、config.triggerChange(bool) 触发切换。",
+        "必须通过 .contentModifier(new XxxModifier(...)) 绑定到 Button 和 Checkbox，同一实例可复用。",
+        "Modifier 自定义属性不触发刷新，必须用 config.selected/config.pressed 驱动 UI 更新。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 Modifier 自定义属性（如 isFavorited）驱动 UI 刷新，自定义属性不触发刷新导致状态不更新。",
+        "@Builder 中不通过 config.contentModifier as XxxModifier 访问自定义属性，无法获取 icon 等配置。",
+        "Checkbox 不使用 config.triggerChange 触发切换，点击无响应。",
+        "不使用 wrapBuilder 包装 @Builder 直接传入 applyContent，类型不匹配编译报错。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "Button 内容区显示\"图标+文字\"组合样式，图标和文字水平排列居中。",
+        "按压 Button 时文字颜色变化（config.pressed 驱动），松开恢复。",
+        "Checkbox 显示★/☆收藏切换图标，选中时★金色（#F39C12）、未选中时☆灰色（#999）。",
+        "点击 Checkbox 通过 config.triggerChange 切换选中状态，图标随之更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "Button 图标+文字组合截图",
+        "Checkbox 收藏切换截图（未选中☆灰色）",
+        "Checkbox 选中后★金色截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-005",
+    "layer": "scene-functional",
+    "title": "JSON驱动动态表单FrameNode开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿动态表单页：需根据后端返回的JSON配置动态生成表单组件（输入框、开关、按钮），并在运行时动态添加或删除表单项，新增/删除直接操作节点不重建整树以保留已有输入，根容器需自带垂直流式布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 NodeController + typeNode.createNode + appendChild/removeChild + makeNode + NodeContainer + 不调用rebuild保留状态的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 继承 NodeController，实现 makeNode(uiContext: UIContext): FrameNode 方法返回根节点。",
+        "根容器必须使用 typeNode.createNode(uiContext, 'Column') 创建（自带垂直流式布局），不能用 new FrameNode（无布局策略导致子节点堆叠）。",
+        "必须根据 JSON 配置的 type 字段（TextInput/Toggle/Button）使用 typeNode.createNode 创建对应类型节点，并调用 initialize 设置初始值。",
+        "添加字段必须使用 rootNode.appendChild(fieldNode)，删除字段必须使用 rootNode.removeChild(node)，不调用 rebuild() 保留已有输入。",
+        "必须缓存 fieldNodes 数组用于删除时定位目标节点。",
+        "必须通过 NodeContainer(this.formController) 挂载 FrameNode 树到页面。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 new FrameNode 创建根容器，无布局策略导致动态增删时子节点堆叠重叠。",
+        "新增/删除字段调用 rebuild() 重建整树，丢失其余节点输入状态。",
+        "不缓存 fieldNodes 数组，删除时无法定位目标节点。",
+        "不调用 typeNode.initialize 设置初始值，节点内容为空。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "页面加载后根据 JSON 配置动态生成表单（输入框、开关、按钮）垂直排列。",
+        "点击添加字段按钮后新表单项追加到末尾，已有表单项输入值保留不丢失。",
+        "点击删除字段按钮后末尾表单项移除，其余表单项位置和输入不变。",
+        "根容器使用 Column 类型节点，动态增删时子节点自动垂直重排不堆叠。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "动态表单初始截图（多个表单项垂直排列）",
+        "添加字段后截图（新表单项追加，已有输入保留）",
+        "删除字段后截图（末尾表单项移除，其余不变）"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-006",
+    "layer": "scene-functional",
+    "title": "电子合同手写签名RenderNode开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电子合同签署页：用户在屏幕上手写签名，手指或触控笔拖动时实时绘制平滑笔迹，支持撤销上一步和清除画板，书写需流畅不卡顿，通过RenderNode重写draw方法逐帧重绘。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 RenderNode 重写 draw + drawing.Path + moveTo/lineTo + invalidate() + onTouch + getRenderNode().appendChild + vp2px 坐标转换的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 继承 RenderNode，重写 draw(context: DrawContext) 方法进行自定义渲染。",
+        "draw 方法必须使用 drawing.Pen 创建画笔、setStrokeWidth 设置线宽、setColor 设置颜色，canvas.attachPen/drawPath/detachPen 绘制笔迹。",
+        "必须使用 drawing.Path 记录手指拖动轨迹，startStroke 调用 moveTo 设置起始点，continueStroke 调用 lineTo 添加线段。",
+        "必须 invalidate() 触发逐帧重绘保证书写流畅，撤销调用 paths.pop()、清除调用 paths=[] 后 invalidate()。",
+        "必须通过 FrameNode.getRenderNode().appendChild 挂载 RenderNode 到 NodeContainer，并设置 frame={x,y,width,height}（单位 vp）。",
+        "必须在 NodeContainer 上绑定 onTouch 处理 TouchType.Down/Move/Up 事件，并用 vp2px 将触摸坐标转换为 px 供 Path 使用。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 Canvas 组件代替 RenderNode，每次重绘参与完整测量布局流程，高频书写卡顿。",
+        "不调用 invalidate() 触发重绘，笔迹不更新显示。",
+        "Path 坐标直接用 vp 不转换 px，导致笔迹位置错位。",
+        "不挂载到 FrameNode.getRenderNode().appendChild，RenderNode 不显示。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手指在签名区拖动时实时绘制平滑笔迹，书写流畅不卡顿。",
+        "点击撤销按钮后移除上一笔画，画板保留其余笔画不变。",
+        "点击清除按钮后清空所有笔画，画板恢复空白。",
+        "笔迹通过 RenderNode 的 draw 方法渲染，invalidate() 触发逐帧重绘。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手写签名进行中截图（笔迹实时绘制）",
+        "撤销上一笔画后截图（保留其余笔画）",
+        "清除画板后截图（恢复空白）"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-007",
+    "layer": "scene-functional",
+    "title": "信息流穿插广告BuilderNode开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿新闻信息流：列表中穿插广告条目，广告形态（图文/视频/轮播）在运行时根据服务器下发数据动态创建，先用NodeContainer占位显示加载中样式、数据到达后填充实际内容，支持数据更新后重建。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 BuilderNode + NodeController + NodeContainer + build(wrappedBuilder) + rebuild() 占位先行内容后填的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 class 继承 NodeController，实现 makeNode(uiContext: UIContext): FrameNode 方法。",
+        "必须使用 new BuilderNode(uiContext) 创建 BuilderNode 实例，调用 build(wrappedBuilder, params) 根据 WrappedBuilder 动态构建组件树。",
+        "必须为不同广告形态（image-text/video/carousel）定义不同 @Builder 函数，用 wrapBuilder 包装后根据 type 选择传入。",
+        "数据未加载时必须用 buildLoadingAd 占位先行，数据到达后调用 rebuild() 重新回调 makeNode 上树。",
+        "必须通过 builderNode.getFrameNode() 获取构建后的 FrameNode 返回给 NodeContainer 挂载。",
+        "必须在列表项中用 NodeContainer(this.adController) 占位，数据到达后 updateAdData 填充内容。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 ForEach 代替 BuilderNode，ForEach 需编译期确定组件结构无法运行时动态生成不同类型。",
+        "数据未加载时不占位，直接等数据到达才创建节点导致列表布局抖动。",
+        "数据到达后不调用 rebuild()，NodeContainer 不重新回调 makeNode 内容不更新。",
+        "不使用 wrapBuilder 包装 @Builder 直接传入 build()，类型不匹配编译报错。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表加载时广告位先用 NodeContainer 占位显示加载中样式。",
+        "服务器数据到达后广告位更新为对应形态（图文/视频/轮播）组件。",
+        "列表中新闻条目和广告条目正确穿插排列。",
+        "广告数据更新后调用 rebuild() 重新回调 makeNode 上树显示新内容。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表占位截图（广告位显示加载中样式）",
+        "数据到达后截图（广告更新为图文形态）",
+        "新闻+广告穿插列表截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CC-FUNC-008",
+    "layer": "scene-functional",
+    "title": "XComponent Surface自定义绘制开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿自定义绘制App：需在XComponent的Surface上使用画布对象直接绘制矩形等图形，无需Native代码，通过lockCanvas获取画布、drawing.Brush设置颜色、unlockCanvasAndPost提交显示，支持onLoad初始化和onDestroy清理。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-12 自定义组件场景中 XComponent(SURFACE) + XComponentController.lockCanvas/unlockCanvasAndPost + drawing.Brush + drawRect + clear + onLoad/onDestroy 生命周期的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-12",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/custom-component-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 XComponent({ type: XComponentType.SURFACE, controller: this.xcController }) 声明 SURFACE 类型组件。",
+        "必须在 onLoad 回调中通过 this.xcController.lockCanvas() 获取 DrawingCanvas 画布对象，返回 null 需处理失败情况。",
+        "每次绘制前必须调用 canvas.clear(common2D.Color) 清除上一帧内容，避免图形残留叠加。",
+        "必须使用 drawing.Brush 创建画刷、setColor 设置颜色、canvas.attachBrush/drawRect/detachBrush 绘制图形。",
+        "绘制完成后必须调用 this.xcController.unlockCanvasAndPost(canvas) 提交结果到 Surface 显示。",
+        "必须在 onDestroy 回调中清理资源，坐标需用 vp2px 转换（DrawingCanvas 坐标系为 px）。"
+      ],
+      "should_reuse_resources": [
+        "./references/custom-component-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 Canvas 组件代替 XComponent SURFACE，Canvas 使用 CanvasRenderingContext2D 无法直接操作 Surface 缓冲区。",
+        "每次绘制前不调用 canvas.clear() 清除上一帧，导致图形残留叠加。",
+        "绘制后不调用 unlockCanvasAndPost() 提交，绘制结果不显示。",
+        "坐标直接用 vp 不转换 px，导致绘制位置错位。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "XComponent 加载后在 Surface 上显示背景色和首帧图形。",
+        "调用 drawRect 方法后在 Surface 上绘制矩形，颜色和坐标正确。",
+        "每次绘制前 clear 清除上一帧，多次绘制无残留叠加。",
+        "绘制完成后 unlockCanvasAndPost 提交到 Surface 显示，onDestroy 时资源已清理。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "XComponent 加载首帧截图（背景色+初始图形）",
+        "调用 drawRect 后截图（矩形正确绘制）",
+        "多次绘制无残留截图（每次 clear 清除上一帧）"
+      ]
+    }
+  }
+]

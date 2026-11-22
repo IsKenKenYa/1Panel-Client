@@ -1,0 +1,91 @@
+{
+  "sessionConfigurations": {
+    "default": {
+      "requestConfiguration": {
+        "transfer": {
+          "timeout": {
+            "connectMs": 6000,
+            "transferMs": 6000,
+            "inactivityMs": 6000
+          }
+        },
+        "security": {
+          "remoteValidation": "skip"
+        }
+      }
+    },
+    "highSecurity": {
+      "requestConfiguration": {
+        "transfer": {
+          "timeout": {
+            "connectMs": 5000,
+            "transferMs": 5000,
+            "inactivityMs": 5000
+          }
+        },
+        "security": {
+          "remoteValidation": "strict",
+          "tlsOptions": {
+            "tlsVersion": "TlsV1.3"
+          }
+        }
+      }
+    },
+    "largeFile": {
+      "requestConfiguration": {
+        "transfer": {
+          "timeout": {
+            "connectMs": 30000,
+            "transferMs": 30000,
+            "inactivityMs": 30000
+          }
+        },
+        "security": {
+          "remoteValidation": "skip"
+        }
+      }
+    }
+  },
+  "downloadConfigurations": {
+    "folder": {
+      "kind": "folder",
+      "path": "/data/storage/el2/base/haps/entry/files"
+    },
+    "file": {
+      "kind": "file",
+      "file": "/data/storage/el2/base/haps/entry/files/downloaded_file.txt"
+    },
+    "fileWithKeepLocal": {
+      "kind": "file",
+      "file": "/data/storage/el2/base/haps/entry/files/existing_file.txt",
+      "keepLocal": true
+    }
+  },
+  "uploadConfigurations": {
+    "smallFile": {
+      "bufferSize": 1024 * 1024,
+      "filePath": "/data/storage/el1/bundle/entry_test/resources/resfile/small_file.txt"
+    },
+    "mediumFile": {
+      "bufferSize": 5 * 1024 * 1024,
+      "filePath": "/data/storage/el2/base/haps/entry/files/medium_file.bin"
+    },
+    "largeFile": {
+      "bufferSize": 10 * 1024 * 1024,
+      "filePath": "/data/storage/el2/base/haps/entry/files/large_file.zip"
+    }
+  },
+  "errorHandling": {
+    "retryAttempts": 3,
+    "retryDelayMs": 1000,
+    "fallbackStrategies": {
+      "timeout": "increase_timeout",
+      "networkFailure": "prompt_user",
+      "fileNotFound": "log_error"
+    }
+  },
+  "permissions": [
+    "ohos.permission.INTERNET",
+    "ohos.permission.GET_NETWORK_INFO"
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BridgeArtifact（F4 消费，F3 为契约 owner）",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifacts",
+    "unmapped_native_apis"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/artifact"
+      }
+    },
+    "unmapped_native_apis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "audit": {
+      "type": "object",
+      "description": "产物自检：五件套落盘后确定性结构检查；残缺=待补信号（非失败）",
+      "required": [
+        "checked",
+        "deficient_count",
+        "deficient",
+        "suggestion_count",
+        "suggestions"
+      ],
+      "properties": {
+        "checked": {
+          "type": "integer"
+        },
+        "deficient_count": {
+          "type": "integer"
+        },
+        "deficient": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "issues"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "issues": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "file",
+                    "kind",
+                    "detail",
+                    "action"
+                  ],
+                  "properties": {
+                    "file": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "suggestion_count": {
+          "type": "integer"
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "issues"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "issues": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "file",
+                    "kind",
+                    "detail",
+                    "action"
+                  ],
+                  "properties": {
+                    "file": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "artifact": {
+      "type": "object",
+      "required": [
+        "name",
+        "module",
+        "category",
+        "files",
+        "local_status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "module": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "equivalent_bridge",
+            "degraded_bridge"
+          ]
+        },
+        "files": {
+          "$ref": "#/definitions/files"
+        },
+        "local_status": {
+          "type": "string",
+          "enum": [
+            "migrated",
+            "failed"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "接口符号名（F2 adaptation 条目 symbol）"
+        },
+        "min_android": {
+          "type": "string",
+          "description": "映射 Android 原生 API 的最低系统版本（native-api-map 策展，如 \"API 21+\"；可选——未标注适用 F1 platform_baseline 工程基线）"
+        },
+        "min_ios": {
+          "type": "string",
+          "description": "映射 iOS 原生 API 的最低系统版本（native-api-map 策展，如 \"iOS 9+\"；可选）"
+        },
+        "unmapped": {
+          "type": "boolean",
+          "description": "原生 API 映射未收录标记（F4 报告区分：在 map 无版本 vs 不在 map 需人工确认）"
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "interface",
+        "local",
+        "arkui_x",
+        "android",
+        "ios"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "interface": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+        },
+        "local": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+        },
+        "arkui_x": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+        },
+        "impl": {
+          "type": "string",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）",
+          "pattern": "^[^\\\\]*$"
+        },
+        "android": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+        },
+        "ios": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "相对路径契约值——固定 '/' 分隔（禁反斜杠：win32 漏归一会被此闸拦下）"
+        }
+      }
+    }
+  }
+}

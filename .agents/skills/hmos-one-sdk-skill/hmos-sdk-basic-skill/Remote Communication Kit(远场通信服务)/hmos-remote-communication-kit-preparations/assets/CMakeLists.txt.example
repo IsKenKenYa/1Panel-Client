@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.4.1)
+project(remote_communication_demo)
+
+set(HMOS_SDK_NATIVE ${OHOS_SDK_NATIVE}/native)
+
+add_library(entry SHARED
+    src/main/cpp/native_entry.cpp
+    src/main/cpp/network_wrapper.cpp
+)
+
+target_include_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/include
+)
+
+target_link_directories(entry PUBLIC 
+    ${HMOS_SDK_NATIVE}/sysroot/usr/lib/aarch64-linux-ohos
+)
+
+target_link_libraries(entry PUBLIC 
+    librcp_c.so
+    libhilog_ndk.z.so
+    libace_napi.z.so
+)
+
+set_target_properties(entry PROPERTIES
+    C_STANDARD 11
+    CXX_STANDARD 17
+    CXX_EXTENSIONS ON
+)

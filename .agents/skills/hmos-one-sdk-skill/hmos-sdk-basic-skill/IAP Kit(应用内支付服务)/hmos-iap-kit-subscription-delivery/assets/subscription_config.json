@@ -1,0 +1,97 @@
+{
+  "subscriptionDelivery": {
+    "config": {
+      "productType": "AUTORENEWABLE",
+      "queryTypes": {
+        "active": "CURRENT_ENTITLEMENT",
+        "unfinished": "UNFINISHED"
+      },
+      "retryConfig": {
+        "maxRetries": 3,
+        "retryDelay": 5000,
+        "retryableErrors": [
+          "1001860001",
+          "1001860005"
+        ]
+      },
+      "validationConfig": {
+        "certificatePath": "/path/to/cer/RootCaG2Ecdsa.cer",
+        "leafCertOID": "1.3.6.1.4.1.2011.2.415.1.1",
+        "algorithm": "ES256"
+      },
+      "deliveryConfig": {
+        "checkDeliveryStatus": true,
+        "recordDeliveryOrders": true,
+        "confirmDelivery": true,
+        "maxDeliveryRecords": 100
+      }
+    },
+    "subscriptionStatus": {
+      "1": {
+        "description": "Active subscription",
+        "action": "deliverBenefit",
+        "needsConfirmation": true
+      },
+      "2": {
+        "description": "Expired subscription",
+        "action": "stopBenefit",
+        "needsConfirmation": false
+      },
+      "3": {
+        "description": "Retry billing",
+        "action": "wait",
+        "needsConfirmation": false
+      },
+      "5": {
+        "description": "Revoked subscription",
+        "action": "handleRevocation",
+        "needsConfirmation": false
+      }
+    },
+    "finishStatus": {
+      "1": {
+        "description": "Already delivered",
+        "action": "skip"
+      },
+      "2": {
+        "description": "Not delivered",
+        "action": "confirmDelivery"
+      }
+    },
+    "errorHandling": {
+      "1001860000": {
+        "description": "User canceled",
+        "action": "noAction"
+      },
+      "1001860001": {
+        "description": "System error",
+        "action": "retry"
+      },
+      "1001860005": {
+        "description": "Network error",
+        "action": "retry"
+      },
+      "1001860050": {
+        "description": "Not logged in",
+        "action": "promptLogin"
+      },
+      "1001860052": {
+        "description": "Purchase not paid",
+        "action": "waitPayment"
+      },
+      "1001860053": {
+        "description": "Purchase already finished",
+        "action": "noAction"
+      }
+    }
+  },
+  "serverConfig": {
+    "rootUrl": "https://svc-drcn.developer.huawei.com",
+    "confirmPurchaseEndpoint": "/subscription/harmony/v1/application/purchase/shipped/confirm",
+    "timeout": 30000,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Authorization": "Bearer {jwtToken}"
+    }
+  }
+}

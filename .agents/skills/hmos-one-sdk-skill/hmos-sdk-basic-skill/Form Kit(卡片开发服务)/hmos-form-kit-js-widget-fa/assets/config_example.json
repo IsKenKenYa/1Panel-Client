@@ -1,0 +1,95 @@
+{
+  "app": {
+    "bundleName": "com.example.formwidget",
+    "vendor": "example",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    }
+  },
+  "module": {
+    "package": "com.example.formwidget",
+    "name": ".FormWidgetModule",
+    "mainAbility": "MainAbility",
+    "deviceType": [
+      "default",
+      "tablet"
+    ],
+    "distro": {
+      "deliveryWithInstall": true,
+      "moduleName": "entry",
+      "moduleType": "entry",
+      "installationFree": false
+    },
+    "abilities": [
+      {
+        "name": "MainAbility",
+        "description": "$string:MainAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:MainAbility_label",
+        "launchType": "standard",
+        "orientation": "unspecified",
+        "type": "page",
+        "visible": true
+      },
+      {
+        "name": ".FormAbility",
+        "srcPath": "FormAbility",
+        "description": "$string:FormAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:FormAbility_label",
+        "type": "service",
+        "formsEnabled": true,
+        "srcLanguage": "ets",
+        "visible": false,
+        "forms": [
+          {
+            "jsComponentName": "widget",
+            "isDefault": true,
+            "scheduledUpdateTime": "10:30",
+            "defaultDimension": "2*2",
+            "name": "weatherWidget",
+            "description": "Weather forecast widget",
+            "type": "JS",
+            "formVisibleNotify": true,
+            "supportDimensions": [
+              "2*2",
+              "2*4"
+            ],
+            "updateEnabled": true,
+            "updateDuration": 1,
+            "colorMode": "auto"
+          }
+        ]
+      }
+    ],
+    "js": [
+      {
+        "name": "default",
+        "pages": [
+          "pages/index/index"
+        ],
+        "window": {
+          "designWidth": 720,
+          "autoDesignWidth": true
+        }
+      },
+      {
+        "name": "widget",
+        "pages": [
+          "pages/widget/widget"
+        ],
+        "window": {
+          "designWidth": 720,
+          "autoDesignWidth": true
+        },
+        "type": "form"
+      }
+    ],
+    "reqPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "skills": [
+    {
+      "entities": [
+        "entity.system.home",
+        "entity.system.browsable"
+      ],
+      "actions": [
+        "ohos.want.action.home",
+        "ohos.want.action.viewData"
+      ],
+      "uris": [
+        {
+          "scheme": "https",
+          "host": "REPLACE_WITH_VERIFIED_DOMAIN",
+          "path": ""
+        }
+      ],
+      "domainVerify": true
+    }
+  ]
+}

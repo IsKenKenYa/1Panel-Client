@@ -1,0 +1,86 @@
+{
+  "forms": [
+    {
+      "name": "weather_widget",
+      "displayName": "$string:weather_widget_display_name",
+      "description": "$string:weather_widget_desc",
+      "src": "./ets/widget/pages/WeatherWidgetCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "renderingMode": "fullColor",
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2",
+        "2*4"
+      ],
+      "formConfigAbility": "ability://EntryAbility",
+      "isDynamic": true,
+      "metadata": [],
+      "fontScaleFollowSystem": true,
+      "supportShapes": ["rect"],
+      "dataProxyEnabled": false,
+      "transparencyEnabled": false,
+      "enableBlurBackground": false
+    },
+    {
+      "name": "calendar_widget",
+      "displayName": "$string:calendar_widget_display_name",
+      "description": "$string:calendar_widget_desc",
+      "src": "./ets/widget/pages/CalendarWidgetCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "renderingMode": "autoColor",
+      "isDefault": false,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "08:00",
+      "updateDuration": 2,
+      "defaultDimension": "2*4",
+      "supportDimensions": [
+        "2*4"
+      ],
+      "formConfigAbility": "ability://EntryAbility",
+      "isDynamic": false,
+      "metadata": [],
+      "fontScaleFollowSystem": true,
+      "supportShapes": ["rect"],
+      "resizable": true,
+      "groupId": "calendar_group"
+    },
+    {
+      "name": "todo_widget",
+      "displayName": "$string:todo_widget_display_name",
+      "description": "$string:todo_widget_desc",
+      "src": "./ets/widget/pages/TodoWidgetCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "renderingMode": "fullColor",
+      "isDefault": false,
+      "updateEnabled": false,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2"
+      ],
+      "formConfigAbility": "ability://EntryAbility",
+      "isDynamic": true,
+      "metadata": [],
+      "standby": {
+        "isSupported": true,
+        "isAdapted": true,
+        "isPrivacySensitive": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+entry:
+  src:
+    main:
+      cpp:
+        - json:
+            - json.h
+            - json-forwards.h
+        - types:
+            libentry:
+              - index.d.ts
+        - CMakeLists.txt
+        - napi_init.cpp
+        - jsoncpp.cpp
+      ets:
+        - entryability:
+            - EntryAbility.ets
+        - pages:
+            - Index.ets

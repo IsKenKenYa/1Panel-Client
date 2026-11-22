@@ -1,0 +1,35 @@
+# 多语种场景
+---
+# 多语种场景
+#### 设计场景
+当对朗读内容进行标注时，须对标注字符串进行多语种翻译，具体支持的语种和应用本身界面支持的语种保持一致。若采用多个字符串进行朗读内容的拼接，需考虑多语种的情况，避免拼接后朗读错误，例如阿拉伯语从右到左。
+#### 开发实例
+```typescript
+@Entry
+@Component
+export struct Rule_2_1_10 {
+  title: string = 'Rule 2.1.10';
+  private multilingual: string = 'It is convenient: 屏幕朗读已开启 and use';
+  build() {
+    NavDestination() {
+      Column() {
+        Flex({
+          direction: FlexDirection.Column,
+          alignItems: ItemAlign.Center,
+          justifyContent: FlexAlign.Center,
+        }) {
+          Row() {
+            Text(this.multilingual)
+              .fontSize(30)
+              .fontColor(Color.Blue)
+          }
+          .width('80%')
+        }
+        .width('100%')
+        .height('100%')
+        .backgroundColor(Color.White)
+      }
+    }.title(this.title)
+  }
+}
+```

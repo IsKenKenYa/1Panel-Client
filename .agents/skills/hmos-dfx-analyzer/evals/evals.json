@@ -1,0 +1,119 @@
+{
+  "skill_name": "hmos-dfx-analyzer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "应用闪退了，帮我分析这个崩溃日志 /data/log/faultlog/faultlogger/cppcrash-com.example.app-10217-12345",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；文件输入优先经 devecocli log --crash --path <日志文件> --format json 完成确定性分诊（CLI 不可用或退出码非 0 时回退 identify_fault_log.py），判为 cpp_crash 后仅加载 cppcrash analyzer（不加载其他 analyzer）；会话内只输出简洁摘要——协议行『分诊结论：cpp_crash；输入完整度：<full|fragment>；置信度：<high|medium|low>；报告：<路径>』+ 1~3 句根因摘要，不输出报告正文或日志片段；完整报告经 export_report.py 写入 dfx-reports/ 下的 HTML（含代码高亮与修复建议 diff 渲染），报告路径与摘要中原样一致",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "这是 jscrash 日志片段：Reason: TypeError ... Stacktrace: at foo (entry/src/main/ets/pages/Index.ets:10:5) at bar (entry/src/main/ets/pages/Index.ets:20:3)，帮我看下什么问题",
+      "expected_output": "子会话内将粘贴内容经 --stdin 传入识别脚本，按 JS 栈帧特征判为 js_crash（片段模式置信度不超过 medium）；加载 jscrash analyzer 分析；会话内输出『分诊结论：js_crash；输入完整度：fragment；置信度：medium；报告：<路径>』+ 受限说明（片段、置信度降低原因一行），完整报告落盘 HTML",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我的应用卡死没响应，这是冻屏日志 /data/log/faultlog/faultlogger/appfreeze-com.example.app-10217-12345，旁边还有个 freeze-cpuinfo-ext-com.example.app-10217-12345",
+      "expected_output": "两份文件分别执行识别脚本：faultlog 判为 app_freeze，采样栈文件判为 sample_stack（不计入独立日志计数）；按文件名毫秒级时间戳一致归并为同一事件，appfreeze analyzer 正常路由，采样栈路径作为配套证据传入（供热点函数采样分析）；会话输出『分诊结论：app_freeze...；报告：<路径>』，摘要后附配套证据说明行",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "分析下这段日志：09-21 14:23:31.831 14337 14363 I A0fefe/JSAPP com.example.app page create （后面是几百行同样格式的 hilog 流水）",
+      "expected_output": "识别脚本判为 unknown 且 out_of_scope.reason=hilog_stream；不加载任何 Analyzer、不生成 HTML 报告；会话内直接输出无法判定结论块（含 out_of_scope.detail『输入为 HiLog 流水日志，非 FaultLog』与已排除类型），建议提供 faultlogger 目录下的完整日志",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "DevEco 里我的 ArkTS 代码编译报错了：Property 'name' does not exist on type，帮我修一下",
+      "expected_output": "不触发 DFX：主 Agent 识别为一般编译错误（dfx agent description 排除面），按常规开发流程处理，不委派 dfx subagent、不加载 hmos-dfx-analyzer 主 Skill",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "我的应用内存泄漏越来越严重，帮忙分析一下",
+      "expected_output": "不触发 DFX 分析流程：内存泄漏/OOM 属本期未支持类型（description 排除面），明确告知不在当前 DFX 能力范围内（仅受理 AppFreeze、CppCrash、JSCrash 三类），不勉强分析、不生成报告",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "这是 native 崩溃吧？帮我分析 /data/log/faultlog/faultlogger/jscrash-com.example.app-10217-12345",
+      "expected_output": "用户口述（L3）指向 native 崩溃，但日志内容结构（L1）判为 js_crash：按 L1 定类继续分析，同时显式输出一致性冲突标注（你的描述、⚠ 不一致、两种可能成因），口述作为线索传入 jscrash analyzer；不得静默按用户口述改判 native",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "定位完顺便帮我修了：分析 /data/log/faultlog/faultlogger/cppcrash-com.example.app-10217-12345 并修复",
+      "expected_output": "用户原话含修复意图：分析在 dfx 子会话完成（不修改源码，edit/patch 为 deny 是职责边界）；会话摘要与 HTML 报告结尾追加『诊断状态：<已完成|受限|无法判定>』『源码修改状态：未执行，由主 Agent 承接』及承接语句『是否需要按照上面的诊断结论修改并验证？』；不得声称修复已开始/已完成，不得请求用户手动改代码",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "/analyze /data/log/faultlog/faultlogger/ 目录",
+      "expected_output": "目录含多份故障日志且用户原话未写明全部/逐份/最新等范围表述：不默认全量也不默认单份，经 question 确认分析范围（选项含全部逐份分析、只分析最新一份、用户指定）；采样栈文件（sample_stack）不参与候选计数与范围确认；范围确认后逐份独立分诊，同类型逐份出报告，跨类型合并为按日志逐份分节的一份 HTML，摘要行按各份分别给出",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "分析下这个空文件 /tmp/empty.log",
+      "expected_output": "识别脚本判为空输入（out_of_scope.reason=empty）：不加载 Analyzer、不生成 HTML；会话内输出无法判定结论块（观察到的特征为『输入为空文件或无内容』），建议提供 /data/log/faultlog/faultlogger/ 下的完整日志文件",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "The app crashes on startup, analyze this faultlog: /data/log/faultlog/faultlogger/cppcrash-com.example.demo-10200-99999",
+      "expected_output": "英文提问同样触发 DFX 委派与分诊流程；最终交付语言跟随用户提问语言（英文摘要与英文 HTML 报告），协议字段（分诊结论/输入完整度/置信度/报告）保持模板原样不翻译；脚本中文输出仅为中间证据，不得原文复制进英文交付（数值、路径、堆栈帧、代码除外）",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "帮我分析这个冻屏日志 /tmp/appfreeze-sample.log，分析报告里我看到根因了，再说下你们的分析过程和中间证据吧",
+      "expected_output": "分析过程与中间证据已保留在 HTML 报告与子会话内：会话内仍只保持简洁摘要（主会话不追加报告正文或证据链复述）；可指引打开 HTML 报告查看完整证据链，或在说明后于子会话上下文内按需补充关键段落引用，但不得整段复制日志正文，交付格式钉板不被用户后续追问改变",
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "点击应用就闪退，没有日志",
+      "expected_output": "经 Task 委派 dfx subagent 子会话；无日志证据走症状入口采集流程：读取 AppScope/app.json5 的 bundleName（禁猜）→ devecocli device list 解析设备（多台 question 选择、无设备降级反馈）→ question 引导复现 → devecocli log --crash 拉取最新崩溃日志存临时文件 → identify_fault_log.py 分诊定类（不得按症状预设 js_crash）；拉取失败时 hilog 快照仅作 jscrash 解析锚点（collect-hilog.mjs + parse-jscrash-log.mjs --source hilog）；拿到分诊结论前不大范围 Read/Glob 工程",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "这是 jscrash 日志：TypeError ... at entry/src/main/ets/pages/Index.ets:10:5，帮我修复",
+      "expected_output": "委派 dfx 子会话；日志经 --stdin 过识别脚本分诊为 js_crash 后加载 jscrash Analyzer 分析，不额外拉取设备日志；修复方案即 Analyzer 报告主体的修复建议章节（模式命中、可信度、源码级建议与 diff），报告尾部附修复执行约束块（最小修复三条 + 范围声明，不重复 analyzer 内容）；会话摘要带一行修复方向，回主会话后由主 Agent 按报告与约束执行修复，dfx 子会话不改业务源码",
+      "files": []
+    },
+    {
+      "id": 15,
+      "prompt": "工程能构建也不会崩溃，但冷启动一直白屏。不要先复现，直接定位并修复。",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；判定为非崩溃型白屏（进程未退出、无 crash 日志为常态），不进入设备侧采集，加载 references/white-screen/analyzer.md 走 source-first 路径；先核对 main_pages.json、EntryAbility.loadContent 与入口页 Navigation，再定向搜索 hideNavBar/navDestination/pushPath；用户要求不先复现时不索要日志与设备；修复遵循最小改动约束；会话内只输出简洁摘要（分诊结论：white_screen），报告经 export_report.py --type white_screen 写入 dfx-reports/ 下 HTML",
+      "files": []
+    },
+    {
+      "id": 16,
+      "prompt": "首页能显示，点击卡片 pushPathByName 后目标页白屏。",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；判定为非崩溃型白屏（进程未退出、无 crash 日志为常态），不进入设备侧采集，加载 references/white-screen/analyzer.md 走 source-first 路径；从点击处理器的 route name 定位 NavPathStack 与唯一 navDestination dispatcher，核对名称相等性并确保每个目标分支以 NavDestination 为根，不宽泛读取整个工程",
+      "files": []
+    },
+    {
+      "id": 17,
+      "prompt": "Navigation 里已经有 HomePage，但启动白屏，代码还设置了 hideNavBar(true)。",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；判定为非崩溃型白屏（进程未退出、无 crash 日志为常态），不进入设备侧采集，加载 references/white-screen/analyzer.md 走 source-first 路径；识别 hideNavBar(true) 在空栈时隐藏唯一首页内容；优先移除 hideNavBar 或按意图改为 hideTitleBar，不用 aboutToAppear 强推首页、setInterception、占位页或删除业务内容掩盖问题",
+      "files": []
+    },
+    {
+      "id": 18,
+      "prompt": "白屏修复后已经 build 成功，请确认是否修好了。",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；判定为非崩溃型白屏（进程未退出、无 crash 日志为常态），不进入设备侧采集，加载 references/white-screen/analyzer.md 走 source-first 路径复查；区分根因匹配、构建验证与运行时验证三档结论——build 成功不能证明白屏消失，只有受影响路径的设备/UI 内容证据或自动化视觉断言才能宣称运行时验证通过；运行时未验证时如实声明",
+      "files": []
+    },
+    {
+      "id": 19,
+      "prompt": "Navigation 链式配置了 .navDestination(builderA).navDestination(builderB)，push 到 A 后白屏。",
+      "expected_output": "经 Task 委派 dfx subagent 在隔离子会话执行；判定为非崩溃型白屏（进程未退出、无 crash 日志为常态），不进入设备侧采集，加载 references/white-screen/analyzer.md 走 source-first 路径；将多个 navDestination 注册合并为一个按 route name 分发的 builder，并确保每个目标分支都以 NavDestination 为根，不通过占位页、重试或无条件入栈掩盖问题",
+      "files": []
+    }
+  ]
+}

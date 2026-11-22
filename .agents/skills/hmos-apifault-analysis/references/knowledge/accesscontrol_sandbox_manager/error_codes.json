@@ -1,0 +1,178 @@
+[
+  {
+    "code": "0",
+    "name": "SANDBOX_MANAGER_OK",
+    "message": "Success / 成功",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "操作成功，无错误。"
+  },
+  {
+    "code": "1",
+    "name": "PERMISSION_DENIED",
+    "message": "Permission denied / 权限校验失败",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "调用方缺少所需权限（如 ohos.permission.SET_SANDBOX_POLICY / FILE_ACCESS_PERSIST 等），或 UID/tokenId 不满足限定。所有权限失败统一返回此码，并通过 SandboxManagerDfxHelper::ReportPolicyViolate 上报。"
+  },
+  {
+    "code": "2",
+    "name": "INVALID_PARAMTER",
+    "message": "Invalid parameter / 参数无效（注：枚举名原文拼写如此）",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "入参非法：如 policy 列表为空、路径超长（>4095）、批量超过 500、mode 越界等。Kit 层 (sandbox_manager_kit.cpp) 优先校验。"
+  },
+  {
+    "code": "3",
+    "name": "SANDBOX_MANAGER_SERVICE_NOT_EXIST",
+    "message": "Service not exist / 沙箱管理服务不存在或未启动",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "SA 3508 未运行或 GetProxy/CheckSystemAbility 失败。常见于第一次调用触发按需加载但加载失败。排查 samgr 中 3508 是否注册。"
+  },
+  {
+    "code": "4",
+    "name": "SANDBOX_MANAGER_SERVICE_PARCEL_ERR",
+    "message": "Parcel error / IPC 序列化反序列化错误",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "跨进程 Binder 数据 Parcel 读写失败（policy_info_parcel / set_info_parcel / *_vec_raw_data）。常见于数据量超限或结构不匹配。"
+  },
+  {
+    "code": "5",
+    "name": "SANDBOX_MANAGER_SERVICE_REMOTE_ERR",
+    "message": "Remote error / 远端 IPC 异常",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "远端服务对象异常或 proxy 调用返回非 OK 但无更具体错误。CallProxyWithRetry 重试后仍失败。"
+  },
+  {
+    "code": "6",
+    "name": "SANDBOX_MANAGER_DB_ERR",
+    "message": "Database error / RDB 数据库错误",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "RDB 数据库操作失败（SandboxManagerRdb::Insert/Query 等返回错误）。排查数据库文件权限、磁盘空间、表结构。"
+  },
+  {
+    "code": "7",
+    "name": "SANDBOX_MANAGER_DB_RETURN_EMPTY",
+    "message": "Database return empty / 查询结果为空",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "数据库查询命中但无记录返回（如 GetPersistPolicy 对无持久化规则的 tokenId）。区别于 RECORD_NOT_EXIST。"
+  },
+  {
+    "code": "8",
+    "name": "SANDBOX_MANAGER_DB_RECORD_NOT_EXIST",
+    "message": "Record not exist / 指定记录不存在",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "UnPersistPolicy/CleanPersistPolicyByPath 等操作的记录在库中不存在。"
+  },
+  {
+    "code": "9",
+    "name": "SANDBOX_MANAGER_MAC_NOT_INIT",
+    "message": "MAC not initialized / MAC 内核适配层未初始化",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "MacAdapter 未初始化（/dev/sandbox 或内核沙箱节点未就绪）。临时规则 SetPolicy/UnSetPolicy 会触发。"
+  },
+  {
+    "code": "10",
+    "name": "SANDBOX_MANAGER_MAC_IOCTL_ERR",
+    "message": "MAC ioctl error / 内核 ioctl 失败",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "向内核下发沙箱策略 ioctl 失败（MacAdapter::SetSandboxPolicy 等）。排查内核沙箱驱动、参数合法性。"
+  },
+  {
+    "code": "11",
+    "name": "SANDBOX_MANAGER_DENY_ERR",
+    "message": "Deny error / 策略 deny 冲突",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "设置规则时与已存在的 deny 规则冲突，或 deny 规则导致操作被拒。"
+  },
+  {
+    "code": "12",
+    "name": "SANDBOX_MANAGER_MEDIA_CALL_ERR",
+    "message": "Media call error / 媒体库调用失败",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "调用媒体库（media_path_support / MediaPermissionHelper）失败。涉及媒体路径的策略校验。"
+  },
+  {
+    "code": "13",
+    "name": "SANDBOX_MANAGER_KILL_PROCESS_ERR",
+    "message": "Kill process error / 进程终止失败",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "策略变更后需要 kill 受影响进程但终止失败（通过 AbilityManagerClient）。"
+  },
+  {
+    "code": "14",
+    "name": "SANDBOX_MANAGER_NOT_SYS_APP",
+    "message": "Not system app / 调用方非系统应用",
+    "kind": "errcode",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/sandbox_manager_err_code.h",
+    "description": "调用方 TokenId 非 system app（TokenIdKit::IsSystemAppByFullTokenID 为 false）。GetPersistPolicy / GetSharedDirectoryInfo / GrantSharedDirectoryPermission / RevokeSharedDirectoryPermission 等强制要求。"
+  },
+  {
+    "code": "0",
+    "name": "OPERATE_SUCCESSFULLY",
+    "message": "Operate successfully / 单条策略操作成功",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：单条 PolicyInfo 在批量操作中的结果码（result 向量元素），表示该条策略成功。"
+  },
+  {
+    "code": "1",
+    "name": "FORBIDDEN_TO_BE_PERSISTED",
+    "message": "Forbidden to be persisted / 该策略禁止持久化",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：该 PolicyInfo 因 IS_POLICY_ALLOWED_TO_BE_PRESISTED 标志位为 0，不允许被持久化。常见于临时授权路径。"
+  },
+  {
+    "code": "2",
+    "name": "INVALID_MODE",
+    "message": "Invalid mode / mode 值非法",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：PolicyInfo.mode 越界或位组合非法（OperateMode 位掩码：READ=1/WRITE=2/CREATE=4/DELETE=8/RENAME=16/DENY_READ=32/DENY_WRITE=64/MAX_MODE=128）。"
+  },
+  {
+    "code": "3",
+    "name": "INVALID_PATH",
+    "message": "Invalid path / 路径非法",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：PolicyInfo.path 为空、超长（>4095）、格式不合法或不在允许的沙箱路径范围内。"
+  },
+  {
+    "code": "4",
+    "name": "POLICY_HAS_NOT_BEEN_PERSISTED",
+    "message": "Policy has not been persisted / 策略未持久化",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：UnPersistPolicy / StartAccessingPolicy 时该策略在库中不存在持久化记录。"
+  },
+  {
+    "code": "5",
+    "name": "POLICY_MAC_FAIL",
+    "message": "Policy MAC fail / MAC 层下推失败（单条）",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：该条策略向内核 MAC 层 ioctl 下推失败。需结合 errcode MAC_IOCTL_ERR(10)/MAC_NOT_INIT(9) 排查。"
+  },
+  {
+    "code": "6",
+    "name": "FORBIDDEN_TO_BE_PERSISTED_BY_FLAG",
+    "message": "Forbidden to be persisted by flag / 因 policyFlag 禁止持久化",
+    "kind": "rettype",
+    "source_file": "interfaces/inner_api/sandbox_manager/include/policy_info.h",
+    "description": "SandboxRetType：因 SetPolicy 传入的 policyFlag 标志位禁止该策略被持久化（区别于 FORBIDDEN_TO_BE_PERSISTED，后者是路径本身属性）。"
+  }
+]

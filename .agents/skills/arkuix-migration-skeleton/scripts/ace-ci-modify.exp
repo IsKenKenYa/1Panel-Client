@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+# ArkUI-X Skill CI 辅助：ace modify 多模块的 PTY 包装（绕过二级交互管道崩溃）
+# 用法: expect scripts/ace-ci-modify.exp <工程根目录> <平台应答:1|2|3> <entry模块名> [ace命令路径]
+# 依赖: expect
+
+set timeout 120
+set projDir [lindex $argv 0]
+set platAns [lindex $argv 1]
+if {$platAns == ""} { set platAns "1" }
+set entryName [lindex $argv 2]
+if {$entryName == ""} { set entryName "entry" }
+set aceCmd [lindex $argv 3]
+if {$aceCmd == ""} { set aceCmd "ace" }
+
+cd $projDir
+spawn $aceCmd modify --project
+
+expect {
+    -re {platform}     { sleep 0.3; send "$platAns\r"; exp_continue }
+    -re {entry|module} { sleep 0.3; send "$entryName\r"; exp_continue }
+    -re {already exists.*repair} { sleep 0.3; send "y\r"; exp_continue }
+    timeout { puts "TIMEOUT: ace modify 未完成"; exit 1 }
+    eof
+}
+
+catch wait result
+exit [lindex $result 3]

@@ -1,0 +1,569 @@
+[
+  {
+    "case_id": "SMOKE-RULES-001",
+    "layer": "smoke",
+    "title": "默认焦点与优先级不可同设",
+    "phase": "DEV",
+    "user_prompt": "页面打开时希望某个输入框默认获焦，我给它在 defaultFocus(true) 的同时加了 FocusPriority，为什么焦点行为不确定？",
+    "intent": "验证「默认焦点与优先级不可同设」能稳定命中 FOCUS，路由到 24-arkts-focus-rules.md 的 8.1。规则要点：须遵循「defaultFocus 仅用于层级页面（Page/NavDestination/NavBar/PopUp/Dialog 等）」；避免「同一组件同时配置 defaultFocus(true) 与 FocusPriority」（违反后果：同时配置时行为未定义，焦点落点不可预期）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/24-arkts-focus-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-002",
+    "layer": "smoke",
+    "title": "空容器无法仅靠 focusable 获焦",
+    "phase": "DEV",
+    "user_prompt": "给一个没有子组件的 Column 设了 .focusable(true) 想让它能获焦，但不生效，焦点框也不显示。",
+    "intent": "验证「空容器无法仅靠 focusable 获焦」能稳定命中 FOCUS，路由到 24-arkts-focus-rules.md 的 5.2。规则要点：须遵循「容器作为叶子节点时即使 focusable(true) 也无法获焦，需添加可获焦子组件或配置 onClick/单击 Tap 手势」；避免「空容器仅设 focusable(true) 期望获焦」（违反后果：容器无法获焦，焦点框不显示）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/24-arkts-focus-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-003",
+    "layer": "smoke",
+    "title": "tabStop 嵌套层数限制",
+    "phase": "DEV",
+    "user_prompt": "把多个容器都设成 tabStop 来分组走焦，嵌套了三层后 Tab/Enter/ESC 切换行为异常。",
+    "intent": "验证「tabStop 嵌套层数限制」能稳定命中 FOCUS，路由到 24-arkts-focus-rules.md 的 7。规则要点：须遵循「tabStop 容器嵌套不超过 2 层，且不建议在根容器配置 tabStop」；避免「tabStop 嵌套超过 2 层」（违反后果：走焦/Enter/ESC 行为异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/24-arkts-focus-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-004",
+    "layer": "smoke",
+    "title": "双击须先绑定，单击有 300ms 延迟",
+    "phase": "DEV",
+    "user_prompt": "组件同时绑了双击和单击手势，单击响应有明显延迟，且有时双击识别不对。",
+    "intent": "验证「双击须先绑定，单击有 300ms 延迟」能稳定命中 INTERACTION，路由到 25-arkts-interaction-rules.md 的 TapGesture 识别约束。规则要点：须遵循「同时绑双击和单击时，双击必须先绑定、单击在后」；避免「单击先于双击绑定」（违反后果：单击产生约 300ms 延迟，双击识别异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/25-arkts-interaction-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-005",
+    "layer": "smoke",
+    "title": "触控板无法触发旋转手势",
+    "phase": "DEV",
+    "user_prompt": "在触控板上用双指旋转，RotationGesture 一直不触发。",
+    "intent": "验证「触控板无法触发旋转手势」能稳定命中 INTERACTION，路由到 25-arkts-interaction-rules.md 的 RotationGesture 识别约束。规则要点：须遵循「RotationGesture 仅支持触屏双指旋转」；避免「期望触控板双指旋转触发 RotationGesture」（违反后果：手势不触发，功能缺失）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/25-arkts-interaction-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-006",
+    "layer": "smoke",
+    "title": "stopPropagation 不阻断父组件手势",
+    "phase": "DEV",
+    "user_prompt": "调用 event.stopPropagation() 后，以为父组件的手势也不会响应了，但父组件手势仍在处理。",
+    "intent": "验证「stopPropagation 不阻断父组件手势」能稳定命中 INTERACTION，路由到 25-arkts-interaction-rules.md 的 六、事件冒泡。规则要点：须遵循「stopPropagation 仅终止 Touch 事件冒泡，不中断父组件对手势的响应处理」；避免「误以为 stopPropagation 能阻止父组件手势响应」（违反后果：对事件流理解错误，手势冲突依旧）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/25-arkts-interaction-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-007",
+    "layer": "smoke",
+    "title": "页面级生命周期仅 @Entry 生效",
+    "phase": "DEV",
+    "user_prompt": "我在子组件里写了 onPageShow 想监听页面显示，但没有回调。",
+    "intent": "验证「onPageShow/Hide/BackPress 仅 @Entry 生效」能稳定命中 COMPONENT-LIFECYCLE，路由到 26-arkts-ui-basic-rules.md 的 2.1。规则要点：须遵循「onPageShow/onPageHide/onBackPress 仅对 @Entry 装饰的组件生效」；避免「在非 @Entry 的子组件中定义这些回调」（违反后果：回调不触发，逻辑不执行）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/26-arkts-ui-basic-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-008",
+    "layer": "smoke",
+    "title": "新生命周期装饰器入参约束",
+    "phase": "DEV",
+    "user_prompt": "给 @ComponentAppear 写了入参想接收数据，编译报错。",
+    "intent": "验证「新生命周期装饰器入参约束」能稳定命中 COMPONENT-LIFECYCLE，路由到 26-arkts-ui-basic-rules.md 的 3.2。规则要点：须遵循「@ComponentInit/@ComponentAppear/@ComponentBuilt/@ComponentDisappear/@ComponentRecycle 装饰的函数不能有入参」；避免「给上述无参装饰器的方法加入参」（违反后果：编译报错）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/26-arkts-ui-basic-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-009",
+    "layer": "smoke",
+    "title": "Disappear 阶段不修改 @Link 状态变量",
+    "phase": "DEV",
+    "user_prompt": "在 aboutToDisappear 里改了 @Link 变量，导致异常。",
+    "intent": "验证「Disappear 阶段不修改 @Link 状态变量」能稳定命中 COMPONENT-LIFECYCLE，路由到 26-arkts-ui-basic-rules.md 的 4。规则要点：须遵循「aboutToDisappear/@ComponentDisappear 中不允许修改状态变量（特别是 @Link）」；避免「在 aboutToDisappear 中修改 @Link 变量」（违反后果：修改不生效或引发状态同步异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/26-arkts-ui-basic-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-010",
+    "layer": "smoke",
+    "title": "@Builder 多参数不刷新",
+    "phase": "DEV",
+    "user_prompt": "@Builder 函数定义了两个参数，传参变化后 UI 不刷新。",
+    "intent": "验证「@Builder 多参数不刷新」能稳定命中 BUILDER-EXTENSION，路由到 27-arkts-ui-extension.md 的 7.1。规则要点：须遵循「@Builder 仅传一个参数且为对象字面量时才支持按引用刷新」；避免「@Builder 定义两个及以上参数并期望属性变化刷新 UI」（违反后果：UI 不刷新）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/27-arkts-ui-extension.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-011",
+    "layer": "smoke",
+    "title": "@Builder 不可赋值给变量",
+    "phase": "DEV",
+    "user_prompt": "把 @Builder 方法赋值给变量/数组后在 UI 中使用，刷新时节点显示异常。",
+    "intent": "验证「@Builder 不可赋值给变量」能稳定命中 BUILDER-EXTENSION，路由到 27-arkts-ui-extension.md 的 7.4。规则要点：须遵循「@Builder 函数只能在 UI 语句内直接调用」；避免「将 @Builder 函数赋值给变量或数组后在 UI 方法中使用」（违反后果：刷新时节点显示异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/27-arkts-ui-extension.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-012",
+    "layer": "smoke",
+    "title": "@Watch 内不调用 @Builder",
+    "phase": "DEV",
+    "user_prompt": "在 @Watch 回调里调用了 @Builder 函数，UI 刷新异常。",
+    "intent": "验证「@Watch 内不调用 @Builder」能稳定命中 BUILDER-EXTENSION，路由到 27-arkts-ui-extension.md 的 7.7。规则要点：须遵循「@Watch 回调中不得执行 @Builder 函数」；避免「在 @Watch 回调中执行 @Builder 函数」（违反后果：UI 刷新异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/27-arkts-ui-extension.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-013",
+    "layer": "smoke",
+    "title": "V1 需手动 freeze，V2 自动冻结",
+    "phase": "DEV",
+    "user_prompt": "@Reusable 组件进复用池后仍在响应状态更新，想冻结；又听说 @ReusableV2 是自动冻结的。",
+    "intent": "验证「V1 需手动 freeze，V2 自动冻结」能稳定命中 FREEZE，路由到 28-arkts-ui-freeze-rules.md 的 3.6。规则要点：须遵循「V1 @Reusable 需显式 @Component({ freezeWhenInactive: true }) 才冻结」；避免「V1 复用组件期望自动冻结而不设 freezeWhenInactive」（违反后果：V1 组件在池中仍响应状态更新、持续刷新）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/28-arkts-ui-freeze-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-014",
+    "layer": "smoke",
+    "title": "BuilderNode 冻结需三方配置",
+    "phase": "DEV",
+    "user_prompt": "父组件开了 freezeWhenInactive，中间用了 BuilderNode 并调了 inheritFreezeOptions(true)，子组件冻结仍不生效。",
+    "intent": "验证「BuilderNode 冻结需三方配置」能稳定命中 FREEZE，路由到 28-arkts-ui-freeze-rules.md 的 6.1。规则要点：须遵循「API 20+ 需父组件声明 freezeWhenInactive、BuilderNode 调 inheritFreezeOptions(true)、子组件自身也声明 freezeWhenInactive，三者缺一不可」；避免「只设父 freezeWhenInactive + inheritFreezeOptions，子组件未声明 freezeWhenInactive」（违反后果：子组件 @Watch/@Monitor 仍触发，冻结不生效）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/28-arkts-ui-freeze-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-015",
+    "layer": "smoke",
+    "title": "API 18+ 仅解冻当前 TabContent",
+    "phase": "DEV",
+    "user_prompt": "NavDestination 里嵌 Tabs，页面恢复时本应只刷新当前 Tab，结果所有 TabContent 的回调都被触发了。",
+    "intent": "验证「API 18+ 仅解冻当前 TabContent」能稳定命中 FREEZE，路由到 28-arkts-ui-freeze-rules.md 的 5.3。规则要点：须遵循「API 18+ 父组件解冻时仅解冻子组件的屏上节点，不解冻非当前 TabContent」；避免「API 18+ 期望恢复时解冻全部 TabContent」（违反后果：非当前 TabContent 被意外解冻，产生不必要刷新）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/28-arkts-ui-freeze-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-016",
+    "layer": "smoke",
+    "title": "V1 与 V2 复用组件不可互含",
+    "phase": "DEV",
+    "user_prompt": "在 @ReusableV2 组件里放了一个 @Reusable 子组件，编译报错。",
+    "intent": "验证「V1 与 V2 复用组件不可互含」能稳定命中 REUSE，路由到 29-arkts-ui-reuse-rules.md 的 6.1。规则要点：须遵循「V1 复用组件（@Reusable @Component）与 V2 复用组件（@ReusableV2 @ComponentV2）不能互相包含」；避免「V1 复用组件与 V2 复用组件互相嵌套」（违反后果：编译报错（或编译告警、子组件不创建））。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/29-arkts-ui-reuse-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-017",
+    "layer": "smoke",
+    "title": "V2 复用组件不可直接用于 Repeat template",
+    "phase": "DEV",
+    "user_prompt": "把 @ReusableV2 组件直接放进 Repeat 的 template 里，复用不生效。",
+    "intent": "验证「V2 复用组件不可直接用于 Repeat template」能稳定命中 REUSE，路由到 29-arkts-ui-reuse-rules.md 的 6.2。规则要点：须遵循「V2 复用组件不能直接用于 Repeat 的 template，需嵌套在普通 V2 组件中」；避免「Repeat(...).template(...) 内直接使用 @ReusableV2Component」（违反后果：复用不生效/行为异常）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/29-arkts-ui-reuse-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-018",
+    "layer": "smoke",
+    "title": "reusePool 与 poolAccepts 必须同时提供",
+    "phase": "DEV",
+    "user_prompt": "配置全局复用池时只写了 reusePool 没写 poolAccepts，编译报错。",
+    "intent": "验证「reusePool 与 poolAccepts 必须同时提供」能稳定命中 REUSE，路由到 29-arkts-ui-reuse-rules.md 的 8.2。规则要点：须遵循「reusePool 和 poolAccepts 必须同时提供，仅指定其一会导致编译错误，且 poolAccepts 必须是非空数组」；避免「只提供 reusePool 或只提供 poolAccepts」（违反后果：编译错误）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/29-arkts-ui-reuse-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-019",
+    "layer": "smoke",
+    "title": "@Styles 不传参 / @Extend 可传参",
+    "phase": "DEV",
+    "user_prompt": "我想抽取一段可按字号/颜色变化的样式，用 @Styles 但发现不能传参。",
+    "intent": "验证「@Styles 不传参 / @Extend 可传参」能稳定命中 STYLES，路由到 30-arkts-ui-styles-rules.md 的 一。规则要点：须遵循「@Styles 不支持传参，仅封装通用属性/事件；@Extend 支持参数（可为 function、状态变量）」；避免「用 @Styles 期望接收参数动态生成样式」（违反后果：编译报错或无法实现参数化样式）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/30-arkts-ui-styles-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-020",
+    "layer": "smoke",
+    "title": "@Extend 仅全局且须指定组件",
+    "phase": "DEV",
+    "user_prompt": "把 @Extend 写在组件内部，且没指定组件类型，报错。",
+    "intent": "验证「@Extend 仅全局且须指定组件」能稳定命中 STYLES，路由到 30-arkts-ui-styles-rules.md 的 一。规则要点：须遵循「@Extend 仅支持全局定义，且必须显式指定组件（如 @Extend(Text)）」；避免「组件内部定义 @Extend」（违反后果：编译报错）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/30-arkts-ui-styles-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-RULES-021",
+    "layer": "smoke",
+    "title": "@AnimatableExtend 参数类型限制",
+    "phase": "DEV",
+    "user_prompt": "我想用 @AnimatableExtend 做属性动画，传了一个 string 类型的参数，编译报错。",
+    "intent": "验证「@AnimatableExtend 参数类型限制」能稳定命中 STYLES，路由到 30-arkts-ui-styles-rules.md 的 二。规则要点：须遵循「@AnimatableExtend 函数参数必须为 number 类型，或实现 AnimatableArithmetic<T> 接口的自定义类型」；避免「给 @AnimatableExtend 传入 string 等非 number/非 AnimatableArithmetic 类型」（违反后果：编译报错）。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "route_reason": "str 路由到该规则文档的原因",
+      "next_scene_refs": "list[str] 下一步要打开的规则文件相对路径列表",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "next_scene_refs": [
+        "./references/quick-rules/30-arkts-ui-styles-rules.md"
+      ],
+      "forbidden_scenes": []
+    }
+  }
+]

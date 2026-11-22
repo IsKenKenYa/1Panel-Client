@@ -1,0 +1,1271 @@
+[
+  {
+    "case_id": "GESTURE-FUNC-001",
+    "layer": "scene-functional",
+    "title": "priorityGesture 优先于系统/子组件手势（长按图片显示菜单）",
+    "phase": "DEV",
+    "user_prompt": "做一个信息流页面：竖向 List 平铺一组内容卡片，每张卡片为 16:9 的封面图（宽度铺满、圆角 16vp、objectFit 裁剪），图上叠加从透明到半透明黑的底部渐变标题条（单行标题、超出省略）。需求：长按任一封面图时，要在该卡片正上方弹出一个带向下箭头的暗色「气泡」操作菜单，菜单首项为「不感兴趣」（点选后该卡片从信息流中移除），并预留收藏、分享等次要操作位。请在方案中补充：①布局结构（List 与卡片 Stack 的层级、标题条与气泡菜单的定位方式）；②气泡菜单样式规范（背景色、圆角、箭头、遮罩、菜单项行高/内边距/字号、主操作与次要操作的配色区分）。输出可落到工程中的开发方案。",
+    "intent": "验证 priorityGesture 优先级场景能路由至 ARKUI-02，方案覆盖 priorityGesture 替代 gesture 优先于系统内置手势 + GestureGroup(Exclusive) 包裹长按 + bindPopup 状态驱动与 onStateChange 同步。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-08"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-bind.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 .priorityGesture(...) 而非 .gesture(...) 绑定长按手势，使自定义手势优先于 Image 等组件的内置长按手势/动画响应。",
+        "必须用 GestureGroup(GestureMode.Exclusive, LongPressGesture().onAction(...)) 包裹长按手势，onAction 中将 showMenu 置 true 触发弹窗。",
+        "弹窗必须用 .bindPopup(this.showMenu, { builder, onStateChange })，并在 onStateChange 中当 !e.isVisible 时同步 showMenu = false，避免弹窗显隐状态与实际不同步。",
+        "弹窗内容用 @Builder 提供，菜单按钮 onClick 通过 eventHub 通知页面删除条目并关闭弹窗。",
+        "必须说明 priorityGesture（自定义优先，拦截子组件/系统内置手势）与 parallelGesture（不改变优先级，并行竞争）的区别。",
+        "布局结构：信息流用 List 纵向平铺卡片；每张卡片为 Stack(alignContent: Bottom) 叠放——底层 Image（width 100%、aspectRatio 16:9、objectFit Cover、borderRadius 16vp、clip）+ 底部 linearGradient 渐变标题条（透明→半透明黑、单行省略）。",
+        "气泡定位与样式：bindPopup 必须挂在卡片根 Stack 上，placement 取 Placement.Top 使气泡出现在卡片正上方、enableArrow: true 带指向卡片的向下箭头，形成「气泡」语义；popupColor 用深色背景（如 #F21F1F1F）、mask 半透明遮罩（如 #33000000）；菜单项行高约 44vp、左右内边距 16vp、字号 14fp，主操作「不感兴趣」用强调色（如红色）与次要操作区分，次要操作配约 18vp 白色图标（fillColor 染白）。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-bind.md"
+      ],
+      "forbidden_patterns": [
+        "用 .gesture 绑定长按导致被 Image 内置长按动画抢占、自定义菜单不触发。",
+        "弹窗未在 onStateChange 同步 showMenu，导致再次长按弹窗不复现或状态错乱。",
+        "误用 parallelGesture 期望「优先」效果（parallelGesture 不改变优先级）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "长按图片触发自定义操作菜单弹窗，而非系统放大预览。",
+        "点击菜单按钮后弹窗关闭、页面收到删除通知。",
+        "弹窗因点击外部消失后，showMenu 状态同步为 false，再次长按可正常复现。",
+        "气泡出现在卡片正上方、带向下箭头，背景为深色，菜单项行高/字号及主次操作配色符合样式规范。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "长按弹出操作菜单截图",
+        "priorityGesture 绑定代码",
+        "弹窗 onStateChange 同步日志",
+        "气泡菜单布局/样式截图（卡片上方定位 + 箭头 + 深色背景）"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-002",
+    "layer": "scene-functional",
+    "title": "parallelGesture 父手势与子列表滚动并行（评论弹窗高度联动）",
+    "phase": "DEV",
+    "user_prompt": "评论弹窗里有一个可滚动的评论列表。希望下拉弹窗能关闭、上拉能恢复，同时列表还能正常滚动：列表没在顶部时父拖拽不响应，列表滚到顶部时父拖拽才接管调整弹窗高度。两者不互斥。输出可落到工程中的开发方案。",
+    "intent": "验证 parallelGesture 并行场景能路由至 ARKUI-02，方案覆盖 parallelGesture(PanGesture, GestureMask.Normal) + 父子状态联动（isGesture 经 @Link 回写）+ 高度夹紧与吸附。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-08"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-bind.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "弹窗主体必须用 .parallelGesture(PanGesture({ direction: PanDirection.Vertical })..., GestureMask.Normal)，与子列表内置滚动手势并行响应；GestureMask.Normal 不忽略任何子组件手势。",
+        "必须通过 @State isGesture 经 @Link 传给子列表，子列表滚动到顶部时回写 true；父手势 onActionUpdate 首行 if (!this.isGesture) return;，实现列表未到顶时父拖拽不接管。",
+        "必须计算目标高度 curDialogHeight = initDialogHeight - event.offsetY 并夹紧到 [0, initDialogHeight]。",
+        "onActionEnd 必须按高度阈值（COMMENT_DIALOG_MIN_HEIGHT）决定 closeDialog() 关闭或 recoveryDialog() 吸附。",
+        "弹窗上方蒙版必须用独立 .gesture(PanGesture) 处理，与弹窗主体区域互不影响。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-bind.md"
+      ],
+      "forbidden_patterns": [
+        "用 priorityGesture 导致子列表内置滚动手势被拦截、列表无法滚动。",
+        "父子缺少 isGesture 联动，列表未到顶时父拖拽就抢走手势。",
+        "漏配 GestureMask.Normal（默认可能忽略子组件手势）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表未在顶部时拖拽，列表正常滚动、弹窗高度不变。",
+        "列表滚到顶部后继续下拉，父拖拽接管、弹窗高度随之变化。",
+        "下拉低于阈值松手关闭弹窗；上拉/未超阈值松手吸附恢复。",
+        "父拖拽与子列表滚动不互斥，两者按 isGesture 协调。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表滚动与弹窗高度联动录屏",
+        "parallelGesture + GestureMask.Normal 配置代码",
+        "isGesture 父子联动日志"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-003",
+    "layer": "scene-functional",
+    "title": "TapGesture 多次点击（双击放大/还原图片）",
+    "phase": "DEV",
+    "user_prompt": "图片查看器里双击图片要在「适配屏幕放大」和「原始大小」之间切换，切换要平滑过渡不要突变。输出可落到工程中的开发方案。",
+    "intent": "验证 TapGesture 多次点击场景能路由至 ARKUI-02，方案覆盖 TapGesture({ count: 2 }) + onAction 比较缩放态 + runWithAnimation 包裹状态与 matrix 更新，并联动 ARKUI-09（matrix4 缩放动画）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 TapGesture({ count: 2 }) 绑定双击手势，count 参数指定连续点击次数。",
+        "必须在 onAction 中比较 scaleValue 与 defaultScaleValue 决定本次执行放大还是还原。",
+        "必须用 runWithAnimation(() => {...}) 包裹 scaleValue 赋值与 matrix4 矩阵更新，避免缩放突变。",
+        "放大时计算适配屏幕的缩放比 ratio 并 matrix4.identity().scale({ x: ratio, y: ratio })；还原时 reset 并将 matrix 重置为 identity。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "forbidden_patterns": [
+        "用 onClick 自行计时实现双击（应直接用 TapGesture count: 2）。",
+        "状态切换未包裹 runWithAnimation 导致缩放突变、无过渡。",
+        "还原分支未将 matrix 重置为 identity，导致残留缩放。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "双击图片平滑放大到适配屏幕大小。",
+        "再次双击平滑还原到原始大小。",
+        "缩放切换有过渡动画、不突变。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "双击放大 / 还原录屏",
+        "TapGesture({ count: 2 }) + runWithAnimation 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-004",
+    "layer": "scene-functional",
+    "title": "PanGesture 离手惯性滑动（自定义面板/悬浮球）",
+    "phase": "DEV",
+    "user_prompt": "自定义一个可拖拽的悬浮球/面板，希望手指松开后它还能按离手时的速度继续滑动并逐渐减速，模拟物理惯性。输出可落到工程中的开发方案。",
+    "intent": "验证 PanGesture 惯性滑动场景能路由至 ARKUI-02，方案覆盖 onActionUpdate 以历史位置为基准 + onActionEnd 保存终态 + velocityY×衰减系数 + animateTo(Curve.LinearOutSlowIn) 驱动惯性，并联动 ARKUI-09。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须声明 offsetX/offsetY（当前位移）与 positionX/positionY（上次停留位置）；onActionUpdate 中以历史位置为基准：offsetX = positionX + event.offsetX。",
+        "onActionEnd 必须把当前偏移写入 positionX/positionY 作为下次手势基准。",
+        "必须取离手速度 event.velocityY/velocityX 乘衰减系数（如 0.2）得到惯性距离。",
+        "必须用 getUIContext().animateTo({ duration, curve: Curve.LinearOutSlowIn }, () => { offsetY += velocityY * 0.2 }) 驱动先快后慢的惯性动画。",
+        "可用 PanGestureOptions 限定方向（如 PanDirection.Up | PanDirection.Down）。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "forbidden_patterns": [
+        "onActionUpdate 不以 positionX 为基准、直接累加 event.offsetX，导致位移跳变或累积误差。",
+        "漏存 onActionEnd 终态到 position，下次手势基准错误。",
+        "用线性曲线而非 Curve.LinearOutSlowIn，惯性不会减速。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "拖动过程中组件跟手移动（基于历史位置 + 本次偏移）。",
+        "松手后组件按离手速度继续滑动并逐渐减速停止。",
+        "多次拖动基准正确，无位移跳变或累积误差。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "离手惯性滑动录屏",
+        "animateTo + Curve.LinearOutSlowIn + velocityY×0.2 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-005",
+    "layer": "scene-functional",
+    "title": "PinchGesture 双指捏合缩放图片（跟手缩放 + 边界限制）",
+    "phase": "DEV",
+    "user_prompt": "做一个图片预览器，支持双指捏合/张开对图片缩放，要求以双指中心点为基准「跟手」缩放，缩放到极限不漂移、图片不会被拖出可视区域，松手后保持缩放大小。还要支持单指平移。输出可落到工程中的开发方案。",
+    "intent": "验证 PinchGesture 捏合缩放场景能路由至 ARKUI-02，方案覆盖 GestureGroup(Exclusive) 组合 + 跟手偏移公式 + 缩放中心取反 + 极限 effectiveScale 钳制 + 边界限制 + gestureEnd 终态保存，并联动 ARKUI-09。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 GestureGroup(GestureMode.Exclusive, PinchGesture, PanGesture, TapGesture) 组合捏合/平移/双击。",
+        "必须封装缩放模型，onScale 按「跟手」公式更新偏移：offsetX' = (lastOffsetX + offX) + (0.5 - centerX) * imageWidth * (1 - effectiveScale) * lastScale。",
+        "pinchGestureStart 必须调 evaluateCenter 得到缩放中心百分比并取反存入 centerX/centerY（centerX = 1 - cX），与偏移公式配合。",
+        "必须钳制缩放比：超出 min/max 时用 effectiveScale = maxScale / lastScale（或 minScale / lastScale）替代原始 scale 参与偏移计算，避免到达极限后漂移。",
+        "必须用 pictureBoundaryRestriction 把偏移夹紧到 [min, max]，图片小于屏幕时强制居中；gestureEnd 把 cur* 写入 last* 作为下次基准，缩放比 ≤ 默认值时 reset。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-type.md",
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "forbidden_patterns": [
+        "缩放中心未取反（centerX = 1 - cX），导致跟手方向错乱。",
+        "到达 min/max 后仍用原始 scale 计算偏移，导致图片漂移。",
+        "缺少边界限制，图片被拖出可视区域。",
+        "未在 gestureEnd 保存终态，多次手势基准错误。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "双指捏合以双指中心点为基准跟手缩放。",
+        "缩放到 min/max 极限后不再漂移。",
+        "图片不会被单指平移拖出可视区域，小于屏幕时居中。",
+        "缩放比恢复到 ≤ 默认值时自动 reset。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "跟手缩放 + 边界限制录屏",
+        "跟手偏移公式与 effectiveScale 钳制代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-006",
+    "layer": "scene-functional",
+    "title": "RotationGesture 双指旋转图片（90° 吸附）",
+    "phase": "DEV",
+    "user_prompt": "图片查看器支持双指旋转图片，要求旋转过程中实时跟随手指角度，松手后吸附到最近的 90° 倍数，连续多次旋转角度不累积漂移。输出可落到工程中的开发方案。",
+    "intent": "验证 RotationGesture 旋转场景能路由至 ARKUI-02，方案覆盖 angle 阈值防误触 + lastRotate 累加并修正阈值 + matrix4 绕 Z 轴从 identity 重建 + simplestRotationQuarter 90° 吸附 + stash 保存基准，并联动 ARKUI-09。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 RotationGesture({ angle: startAngle }) 并设较大阈值（如 20°）避免手指抖动误触。",
+        "onActionUpdate 中必须 angle = lastRotate + event.angle，并按 event.angle 正负减/加 startAngle 修正阈值，避免开始旋转时图片跳变。",
+        "必须用 matrix4.identity().rotate({ x: 0, y: 0, z: 1, angle }).copy() 绕 Z 轴旋转，每次从单位矩阵重建避免累积误差。",
+        "onActionEnd 必须用 simplestRotationQuarter 归整到 90° 倍数，在 runWithAnimation 内更新矩阵并 stash() 保存为下次基准。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-type.md"
+      ],
+      "forbidden_patterns": [
+        "每次在旧矩阵上累乘 rotate 导致累积误差/角度漂移（应从 identity 重建）。",
+        "未减/加触发阈值，导致开始旋转时图片跳变。",
+        "松手不吸附 90°，或吸附未包裹动画。",
+        "未 stash 保存角度，下次旋转基准丢失。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "双指旋转过程中图片实时跟随角度。",
+        "松手后图片吸附到最近的 90° 倍数。",
+        "连续多次旋转角度无累积漂移。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "旋转跟手 + 90° 吸附录屏",
+        "matrix4 identity 重建 + simplestRotationQuarter 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-007",
+    "layer": "scene-functional",
+    "title": "GestureGroup(Sequence) 长按确认后拖动",
+    "phase": "DEV",
+    "user_prompt": "卡片列表里希望长按某张卡片后（不松手）即可拖动它移动位置，松手后卡片动画归位。长按要有放大+半透明的视觉反馈。输出可落到工程中的开发方案。",
+    "intent": "验证 GestureGroup(Sequence) 顺序手势场景能路由至 ARKUI-02，方案覆盖 priorityGesture 绑定 + 先序 LongPress 激活 + 后序 Pan(distance:0) 进识别 + onCancel 兜底重置，并联动 ARKUI-09。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 priorityGesture 绑定 GestureGroup(GestureMode.Sequence, LongPressGesture, PanGesture)，优先于 Image 等组件内置长按手势。",
+        "先序 LongPressGesture({ duration }) 的 onAction 中激活拖动模式（放大 + 半透明视觉反馈）。",
+        "后序 PanGesture 必须设 distance: 0，确保即使不拖动也能进入识别，从而作为最后一个手势能触发 onActionEnd 完成状态重置。",
+        "序列被系统中断时必须走 onCancel 兜底重置状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "forbidden_patterns": [
+        "后序 PanGesture 未设 distance: 0，导致不拖动时 onActionEnd 不触发、拖动状态无法重置。",
+        "缺少 onCancel 兜底，序列中断时拖动状态残留。",
+        "用普通 .gesture 而非 priorityGesture，长按被 Image 内置手势抢占。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "短按不触发拖动，长按达到 duration 后进入拖动模式（放大+半透明）。",
+        "长按不松手继续拖动，卡片跟随移动。",
+        "松手后卡片动画归位；手势被中断时状态正确重置。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "长按后拖动录屏",
+        "GestureGroup(Sequence) + PanGesture(distance:0) + onCancel 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-008",
+    "layer": "scene-functional",
+    "title": "GestureGroup(Parallel) 不同时长长按触发分级操作",
+    "phase": "DEV",
+    "user_prompt": "一个按钮希望随着按压时长升级触发不同操作：按 0.5 秒收藏、1.5 秒分享、3 秒删除，按住时间越久触发的等级越高，且每轮按压从零开始。输出可落到工程中的开发方案。",
+    "intent": "验证 GestureGroup(Parallel) 并行手势场景能路由至 ARKUI-02，方案覆盖多个不同 duration 的 LongPressGesture 并行识别 + 最短时长重置上一轮 + pressLevel 只升不降保护，并联动 ARKUI-09。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-10"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 GestureGroup(GestureMode.Parallel, LongPress(duration:500), LongPress(duration:1500), LongPress(duration:3000))，三个不同时长手势同时开始识别。",
+        "最短时长（500ms）手势最先 onAction，在其中清除上一轮状态（重置 level 标识），确保每一轮按压从零开始。",
+        "每个手势 onAction 必须用 if (this.pressLevel < N) 保证等级只升不降。",
+        "松手 onActionEnd 动画重置按钮状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "forbidden_patterns": [
+        "用 Sequence 期望并行（Sequence 要求前序成功后序才识别，无法实现「越按越升级」）。",
+        "未在最短时长手势中重置上一轮状态，导致等级/标识残留。",
+        "等级判断无 pressLevel < N 保护，可能出现等级回退。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "按 0.5s 触发收藏、继续按到 1.5s 触发分享、到 3s 触发删除，等级递进。",
+        "每次重新按压从最低等级开始，无残留。",
+        "等级只升不降，不会回退。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "分级触发录屏",
+        "GestureGroup(Parallel) 多时长 + pressLevel 保护代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-009",
+    "layer": "scene-functional",
+    "title": "GestureGroup(Exclusive) 单击/长按互斥 + 单击/双击声明顺序",
+    "phase": "DEV",
+    "user_prompt": "做一个聊天消息列表，每条消息气泡在同一时刻只响应一种手势：单击进入消息详情、双击快速点赞（弹爱心动画）、长按弹出操作菜单（复制、转发、删除）。输出可落到工程中的开发方案。",
+    "intent": "验证 GestureGroup(Exclusive) 互斥手势场景能路由至 ARKUI-02，方案覆盖 Exclusive 按序匹配 + parallelGesture 绑定避免被内置手势拦截 + 双击必须前置的声明顺序 + ~300ms 单击延迟取舍。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 GestureGroup(GestureMode.Exclusive, TapGesture, LongPressGesture) 让组内手势互斥识别：系统按参数顺序逐一尝试，一旦某个手势匹配成功，其余手势不再响应。",
+        "必须用 parallelGesture（而非 gesture）绑定，使自定义手势与组件内置手势并行识别、不被系统内置手势拦截。",
+        "单击与双击互斥时，TapGesture({ count: 2 }) 必须声明在 TapGesture({ count: 1 }) 之前，否则单击立即匹配成功、双击永远无法响应。",
+        "必须说明该声明顺序会导致单击响应延迟约 300ms（系统需等待确认是否双击），是不可避免取舍；若不可接受可改用 Parallel 手动互斥或去掉双击。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-group.md"
+      ],
+      "forbidden_patterns": [
+        "单击(count:1)写在双击(count:2)之前，导致双击永远走不到。",
+        "用 .gesture 而非 parallelGesture，自定义手势被系统内置手势拦截。",
+        "误用 Parallel 期望互斥（Parallel 是同时识别，不互斥）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "长按消息弹出操作菜单、单击进入详情、双击点赞，三者互斥、同一时刻只响应一种。",
+        "双击能正确响应点赞（TapGesture(count:2) 声明在单击之前，不被单击抢先匹配）。",
+        "单击/双击互斥时单击有约 300ms 延迟（系统等待确认是否为双击）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "单击/长按、单击/双击互斥录屏",
+        "GestureGroup(Exclusive) + 双击前置声明代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-010",
+    "layer": "scene-functional",
+    "title": "responseRegion 扩大边缘按钮响应热区",
+    "phase": "DEV",
+    "user_prompt": "侧边栏切换按钮紧贴屏幕右边缘、尺寸很小（24×48vp），手机上点击边缘容易失误，请修复该问题。输出可落到工程中的开发方案。",
+    "intent": "验证 responseRegion 扩大热区场景能路由至 ARKUI-02，方案覆盖 responseRegion({x,y,width,height}) 以左上角为原点 + x/y 负值向外扩 + width/height 为热区总尺寸（视觉不变）+ 位移状态与显隐状态分离。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 .responseRegion({ x, y, width, height }) 以组件左上角为坐标原点定义响应矩形；x/y 设负值向外扩展，width/height 为热区总尺寸。",
+        "视觉布局不变（组件 width/height 不变），仅扩大实际可点击区域。",
+        "位移必须用独立 @State（如 sideBarBtnOffset）驱动，与显隐状态（isShowSideBar）分开；切换方法内用 animateTo({ curve: Curve.Friction }) 包裹位移赋值。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "把 responseRegion 的 width/height 当作组件视觉尺寸修改，导致布局变化。",
+        "位移状态与显隐状态混用同一个变量，动画与业务逻辑耦合。",
+        "x/y 未用负值，热区只向单一方向扩展、未覆盖边缘外侧。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "按钮视觉大小不变，但点击其周围扩展区域也能触发切换。",
+        "热区向四周（含屏幕边缘外侧方向）扩展。",
+        "切换时按钮位移动画平滑（Friction 曲线）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "扩大热区前后点击对比（视觉不变）",
+        "responseRegion 配置代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-011",
+    "layer": "scene-functional",
+    "title": "hitTestBehavior 短视频双层级事件穿透（全透明操作层 None + 按钮 Block）",
+    "phase": "DEV",
+    "user_prompt": "做一个短视频播放页，分上下两层：下层是视频层（竖屏视频，点击可暂停/播放，外层用 Swiper 支持上下滑动切换视频），上层是覆盖在视频上的全透明操作层，操作层右下角竖直排列「喜欢/收藏/评论」等按钮。要求：点击按钮只响应按钮（点赞/收藏/打开评论），不触发视频暂停；点击按钮以外的透明区域，触发视频暂停/播放（上下滑动也能切换视频）。输出可落到工程中的开发方案。",
+    "intent": "验证短视频双层事件穿透场景能路由至 ARKUI-02（联动 ARKUI-07 组件构建页面），方案覆盖 Stack 分层（视频层 Swiper/Video + 全透明操作层）+ 操作层 HitTestMode.None 自身不参与触摸测试让空白穿透到下层视频（tap 暂停 + swipe 切换）+ 按钮 HitTestMode.Block 消费自身点击不穿透 + 与 HitTestMode.Transparent 双触发陷阱的区别。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Stack 分层：底层视频层（Video 接 onTap 实现点击暂停/播放；外层可用 Swiper 承载多条视频、开启上下滑动切换）+ 上层全透明操作层（Column/Stack 承载右下角竖排的喜欢/收藏/评论按钮）。",
+        "操作层容器必须设 .hitTestBehavior(HitTestMode.None)：使操作层自身不参与触摸测试，点击按钮以外的空白区域事件穿透到下层视频层——既能触发视频 onTap 暂停/播放，也能让 Swiper 收到上下滑动手势切换视频。",
+        "操作层内按钮必须设 .hitTestBehavior(HitTestMode.Block)，消费自身点击（点赞/收藏/评论）且不穿透到下层视频，保证点按钮只触发按钮、不触发视频暂停。",
+        "必须说明本场景用 HitTestMode.None 而非 HitTestMode.Transparent：Transparent 下容器与子组件命中后仍向下层兄弟传递，点按钮时视频会同时收到 tap 暂停（双触发）；None 让空白穿透、按钮命中即止，按钮与视频互不干扰。",
+        "必须说明按钮的响应不靠绝对定位或 Z 序规避穿透，hitTestBehavior 才是控制事件是否分发到下层视频的正解。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "操作层用 HitTestMode.Transparent 误以为等同 None（Transparent 命中后仍向下层传递，点按钮时视频同时暂停，双触发）。",
+        "操作层不设 hitTestBehavior（默认 Default），空白区域被操作层拦截、视频收不到 tap 暂停、Swiper 收不到滑动切换。",
+        "把 hitTestBehavior(None) 设在按钮上而非操作层容器上（None 设在按钮上会使按钮不响应点击、事件穿透到视频）。",
+        "用 enabled(false) 或绝对定位/留空规避而非 hitTestBehavior 控制事件分发。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击操作层右下角按钮（喜欢/收藏/评论），仅按钮响应、视频不暂停、不切换。",
+        "点击按钮以外的透明操作层区域，事件穿透到下层视频，触发视频暂停/播放。",
+        "上下滑动透明区域可切换视频（穿透到 Swiper）。",
+        "操作层用 None（非 Transparent），点按钮时视频不同时暂停（无双触发）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "点按钮只响应按钮 / 点空白穿透到视频（暂停/切换）对比录屏",
+        "hitTestBehavior(None) 操作层 + Block 按钮配置代码",
+        "None vs Transparent 双触发对比日志（可选）"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-012",
+    "layer": "scene-functional",
+    "title": "hitTestBehavior(Block) 阻止子组件触发父容器滚动",
+    "phase": "DEV",
+    "user_prompt": "一个可滚动的 Scroll 列表里有一块特殊区域（如地图卡片/画布），希望触摸这块区域时不触发外层 Scroll 滚动，触摸其余区域时 Scroll 正常滚动。输出可落到工程中的开发方案。",
+    "intent": "验证 hitTestBehavior(Block) 阻止父滚动场景能路由至 ARKUI-02，方案覆盖 Scroll{Column{...}} 结构 + 子组件 HitTestMode.Block 阻塞父容器触摸测试使其滚动手势不触发。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "父容器必须用 Scroll() { Column() { ... } } 结构。",
+        "需要阻止滚动的子组件必须设 .hitTestBehavior(HitTestMode.Block)，阻塞其父组件的触摸测试，使父容器的滚动手势无法被触发。",
+        "触摸其余（未设 Block 的）区域时父容器正常滚动。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "给子组件设 HitTestMode.None 期望阻止滚动（None 让事件透传，反而可能让父滚动继续）。",
+        "把 hitTestBehavior 设在父 Scroll 上而非需阻止滚动的子组件上。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "触摸设了 Block 的子组件区域，父 Scroll 不滚动。",
+        "触摸其余区域，父 Scroll 正常滚动。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "阻止滚动 / 正常滚动对比录屏",
+        "子组件 HitTestMode.Block 配置代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-013",
+    "layer": "scene-functional",
+    "title": "onTouchIntercept 触摸时动态决定事件透传",
+    "phase": "DEV",
+    "user_prompt": "上层容器覆盖在 TextArea 之上，上层里有一块交互区域。希望根据触摸点位置动态决定：点交互区域内事件不透传（上层处理），点区域外事件透传到下层 TextArea。请用 ArkUI 实现按触摸坐标动态决策透传，输出可落到工程中的开发方案。",
+    "intent": "验证 onTouchIntercept 动态透传场景能路由至 ARKUI-02，方案覆盖 onTouchIntercept 返回 HitTestMode + Params 缓存交互区 globalPosition + displayX/displayY 比较判断 + 与 onChildTouchTest 区别。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 .onTouchIntercept((event: TouchEvent) => HitTestMode) 在每次触摸时根据触摸点坐标动态返回 HitTestMode。",
+        "必须用 Params 类缓存交互区的 globalPosition.x/y 与 width/height（通过 onAreaChange 写入）。",
+        "必须比较 event.touches[0].displayX/displayY 与缓存坐标，判断触摸点是否落在交互区内。",
+        "交互区内返回 HitTestMode.Default（不透传），区域外返回 HitTestMode.Transparent（透传到下层）。",
+        "必须说明 onTouchIntercept 返回 HitTestMode（粗粒度，决定是否透传）与 onChildTouchTest 返回 TouchResult（细粒度，决定转发给哪个子节点）的区别。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "用固定 hitTestBehavior 而非 onTouchIntercept，无法按触摸点位置动态决策。",
+        "坐标比较混用 localX 与 displayX/globalPosition，坐标系不一致导致判断错误。",
+        "交互区坐标未通过 onAreaChange 实时缓存，布局变化后判断失效。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点交互区域内，事件由上层处理、不透传。",
+        "点交互区域外，事件透传到下层 TextArea。",
+        "布局/滚动变化后，交互区坐标实时更新、判断仍正确。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "区域内/外透传行为对比录屏",
+        "onTouchIntercept + displayX/displayY 判断代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-014",
+    "layer": "scene-functional",
+    "title": "onChildTouchTest 自定义音量条点击定位 + 无缝拖动精调",
+    "phase": "DEV",
+    "user_prompt": "做一个音量调节控件：点击音量条任意位置可快速跳到对应音量，且不抬手即可继续拖动滑块精调音量，并实时显示当前音量百分比、音量到 0 时提示静音。输出可落到工程中的开发方案。",
+    "intent": "验证 onChildTouchTest 父子协作接力场景能路由至 ARKUI-02，方案覆盖 contentModifier 自定义音量条后重建链路 + 根容器 onTouch(Down) 点击定位音量 + 音量滑块 .id + PanGesture + onChildTouchTest(FORWARD_COMPETITION, id) 转发。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "contentModifier 自定义 Slider 内容区为带刻度的音量条（0~100）后原生滑块触摸逻辑被替换，必须自行重建：根容器 onTouch 处理点击定位音量，音量滑块 PanGesture 处理拖动精调。",
+        "根容器 onTouch 必须在 TouchType.Down 时按触摸点 x 换算成 0~100 音量值并 config.triggerChange(value, SliderChangeMode.Click)，同时实时刷新音量百分比显示。",
+        "音量滑块 Circle 必须通过 .id('volumeThumb') 声明 ID 并绑定水平 PanGesture，onActionStart/Update/End 分别提交 Begin/Moving/End。",
+        "根容器必须 .onChildTouchTest(() => ({ strategy: TouchTestStrategy.FORWARD_COMPETITION, id: 'volumeThumb' }))，把同一次手势的后续事件转发给音量滑块，实现不抬手继续拖。",
+        "onChildTouchTest 返回的 id 必须与子组件 .id() 声明完全一致。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "onChildTouchTest 返回的 id 与音量滑块 .id('volumeThumb') 不一致，事件无法定位到音量滑块。",
+        "用 onTouchIntercept 代替 onChildTouchTest（前者只能决定是否透传，不能转发给指定子节点）。",
+        "contentModifier 自定义内容后未重建 onTouch + PanGesture + onChildTouchTest 链路，点击/拖动失效。",
+        "点击定位未用 SliderChangeMode.Click、拖动未用 Begin/Moving/End 状态。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击音量滑轨任意位置，音量滑块快速跳到对应音量（0~100）。",
+        "点击后不抬手继续拖动，音量滑块跟随精调（同一次手势接力），实时显示音量百分比。",
+        "音量为 0 时提示静音；带刻度音量条渲染正确。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "点击定位音量 + 无缝拖动精调录屏",
+        "onChildTouchTest(FORWARD_COMPETITION, 'volumeThumb') + onTouch 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-015",
+    "layer": "scene-functional",
+    "title": "onGestureCollectIntercept 短视频按钮点击独占、滑动手势透传（按手势类型筛选）",
+    "phase": "DEV",
+    "user_prompt": "做一个短视频播放页：下层视频层（竖屏视频，外层 Swiper 支持上下滑动切换），上层覆盖一个全透明操作浮层，浮层右下角竖排「喜欢/收藏/评论」按钮。要求：(1) 点击按钮只响应按钮（点赞/收藏/评论），视频层不收到点击、不双触发；(2) 点击按钮以外的透明区域事件正常透传到视频（触发暂停等）;（3）不要修改子组件。输出可落到工程中的开发方案。",
+    "intent": "验证 onGestureCollectIntercept 按手势类型筛选的精准独占场景能路由至 ARKUI-02（联动 ARKUI-07 组件构建页面），方案覆盖透明浮层 Transparent + 按钮 .id + 遍历 recognizers 按 getType/getId 命中按钮 CLICK 返回 DISCARD_LOWER_PRIORITY_SIBLINGS（按钮独占点击、丢弃视频 CLICK 避免双触发）+ PAN 手势返回 CONTINUE（滑动仍透传到视频切换）+ 与 hitTestBehavior(Block) 一刀切的边界。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Stack 分层：底层视频层（Swiper 承载竖屏视频、开启上下滑动切换）+ 上层全透明操作浮层（hitTestBehavior(HitTestMode.Transparent)），浮层右下角竖排按钮必须 .id('event') 声明 ID。",
+        "浮层容器必须注册 .onGestureCollectIntercept((recognizers) => ...)，遍历 recognizers，通过 getType() 区分手势类型、getEventTargetInfo().getId() 判断目标组件。",
+        "命中目标按钮的 CLICK（GestureControl.GestureType.CLICK）手势时，必须返回 GestureCollectIntervention.DISCARD_LOWER_PRIORITY_SIBLINGS 丢弃兄弟节点低优先级手势，让按钮独占点击、视频层不再收到 CLICK（避免点赞时视频同时暂停等双触发）。",
+        "对 PAN（滑动）手势必须返回 GestureCollectIntervention.CONTINUE 不干预，使在按钮上起手的上下滑动手势仍透传到下层 Swiper 切换视频——这正是按手势类型差异化控制：只吞 CLICK、放过 PAN。",
+        "点击按钮以外的透明区域（无目标 CLICK 命中）必须返回 CONTINUE，事件正常透传到视频层。",
+        "必须说明为何不能用 hitTestBehavior(HitTestMode.Block)：Block 工作在触摸测试阶段、对所有手势类型一刀切，会让按钮同时吞掉点击和滑动（在按钮上滑动视频切不了）；onGestureCollectIntercept 工作在手势收集阶段、能按 getType() 筛选手势，做到「点击独占、滑动透传」——这是本场景必须用它而非 Block 的根本原因。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-layer"
+      ],
+      "forbidden_patterns": [
+        "用 hitTestBehavior(HitTestMode.Block) 给按钮做独占（Block 一刀切，会让按钮上的滑动也无法透传、视频无法切换，无法满足「点击独占、滑动透传」）。",
+        "onGestureCollectIntercept 中对 PAN 手势也返回 DISCARD_LOWER_PRIORITY_SIBLINGS（会把视频滑动手势也丢弃，滑动无法透传切换）。",
+        "目标按钮未声明 .id('event')，getEventTargetInfo().getId() 无法匹配、点击无法独占。",
+        "用 onTouchIntercept 代替 onGestureCollectIntercept（前者按触摸点粗粒度控制、无法「点击独占但滑动放过」）。",
+        "误以为 DISCARD_LOWER_PRIORITY_SIBLINGS 会丢弃目标手势本身或父子链路上的手势（仅丢弃同父兄弟中更低优先级者）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击浮层按钮（喜欢/收藏/评论），仅按钮响应、视频层不收到点击、不暂停/不双触发。",
+        "在按钮上起手上下滑动，手势仍透传到下层视频、能切换视频。",
+        "点击按钮以外的透明区域，事件正常透传到视频层（如触发暂停/播放）。",
+        "按钮只独占 CLICK、放过 PAN，点击与滑动互不干扰。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "点按钮独占（视频不双触发）/ 在按钮上滑动仍切换视频 对比录屏",
+        "onGestureCollectIntercept 按 getType() 筛选（CLICK→DISCARD_LOWER_PRIORITY_SIBLINGS、PAN→CONTINUE）代码",
+        "与 hitTestBehavior(Block) 滑动被吞的对比日志（可选）"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-016",
+    "layer": "scene-functional",
+    "title": "自定义手势与系统内置手势冲突（priorityGesture/parallelGesture）",
+    "phase": "DEV",
+    "user_prompt": "FeedCardBad.ets中长按图片，回调不执行。请说明原因并给出解决方案，输出可落到工程中的开发方案。",
+    "intent": "验证自定义与系统手势冲突场景能路由至 ARKUI-02，方案覆盖「同类型系统手势优先」原则 + priorityGesture 优先 + parallelGesture 并行 + GestureMask.IgnoreInternal 屏蔽子组件内置手势。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须说明根因：同一组件绑定相同类型的系统手势与自定义手势时，系统手势（如 Image 内置长按动画）优先响应，导致 .gesture 绑定的自定义手势无法触发。",
+        "解决一：改用 .priorityGesture(LongPressGesture) 让自定义手势优先于系统手势响应。",
+        "解决二：用 .parallelGesture(LongPressGesture) 让自定义手势与系统手势同时响应。",
+        "可配合 GestureMask.IgnoreInternal 屏蔽子组件系统内置手势，如 priorityGesture(gesture, GestureMask.IgnoreInternal)。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict",
+        "./references/arkui-interaction/gesture-bind.md"
+      ],
+      "forbidden_patterns": [
+        "继续用 .gesture 绑定与系统手势同类型的自定义手势，被系统手势抢占无法触发。",
+        "需要两者同时响应却用了 priorityGesture（priorityGesture 让自定义优先、替代系统手势）。",
+        "需要屏蔽子组件内置手势却未配 GestureMask.IgnoreInternal。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "改用 priorityGesture 后，长按图片执行自定义回调（而非系统放大动画）。",
+        "改用 parallelGesture 后，自定义回调与系统动画同时响应。",
+        "配合 GestureMask.IgnoreInternal 可屏蔽子组件内置手势。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "三种绑定方式（gesture/priorityGesture/parallelGesture）行为对比日志",
+        "绑定方式切换代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-017",
+    "layer": "scene-functional",
+    "title": "monopolizeEvents 多点触控下事件独占（修图滑块 vs 工具栏）",
+    "phase": "DEV",
+    "user_prompt": "PhotoEditPage.ets中单指调整亮度数值时，再用一根手指点击确认按钮，亮度调整进度框消失，请修复该问题。输出可落到工程中的开发方案。",
+    "intent": "验证 monopolizeEvents 多点触控独占场景能路由至 ARKUI-02，方案覆盖 monopolizeEvents(true) 首先响应即独占整次交互、其余组件至手指离开前不响应。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须说明核心机制：多指触控下多组件可能同时响应导致业务异常；.monopolizeEvents(true) 使组件首先响应后独占整次交互，窗口内其他组件不响应，直到手指离开屏幕。",
+        "必须给需要独占的组件（如 Slider 拖动调节时）加 .monopolizeEvents(true)，其余组件（工具栏按钮）不加。",
+        "必须说明 monopolizeEvents 是「首先响应即独占整次交互」，而非「仅多指时独占」。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "forbidden_patterns": [
+        "给所有组件都加 monopolizeEvents(true)，导致互相独占、都无法响应。",
+        "误以为 monopolizeEvents 只在多指时生效。",
+        "在不需要独占的工具栏按钮上也设 monopolizeEvents，误触时屏蔽其他交互。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（需多指触控验证）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "拖动 Slider 期间，多指触摸工具栏按钮不响应。",
+        "Slider 独占事件直到手指离开屏幕。",
+        "未拖动 Slider 时工具栏按钮正常响应。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "多指触控下独占行为录屏",
+        "Slider .monopolizeEvents(true) 配置代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-018",
+    "layer": "scene-functional",
+    "title": "onGestureJudgeBegin 动态控制手势是否响应（悬浮球禁用透传）",
+    "phase": "DEV",
+    "user_prompt": "悬浮球绑定了拖拽、长按、点击三种手势。长按可切换禁用/启用状态。禁用后希望点击事件能穿透悬浮球传给底层页面（不再被悬浮球消费），拖拽和长按的判定不受影响。输出可落到工程中的开发方案。",
+    "intent": "验证 onGestureJudgeBegin 动态判定场景能路由至 ARKUI-02，方案覆盖 onGestureJudgeBegin 返回 REJECT/ACCEPT/CONTINUE + 按 gestureInfo.type 与业务状态精细化拒绝 + 拒绝后事件向上传递。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 .onGestureJudgeBegin((gestureInfo, event) => GestureJudgeResult) 在手势识别阶段动态判定。",
+        "必须据 gestureInfo.type（如 GestureControl.GestureType.TAP_GESTURE）与业务状态（isDisable）返回 REJECT（拒绝、事件向上传递）/ ACCEPT（直接允许）/ CONTINUE（默认流程）。",
+        "悬浮球禁用时必须对 TAP_GESTURE 返回 REJECT，使点击透传到底层；非点击手势返回 CONTINUE。",
+        "必须说明拒绝手势（REJECT）会使该手势事件向上传递给底层组件，而非整体禁用组件。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "forbidden_patterns": [
+        "用 enabled(false) 整体禁用组件而非 onGestureJudgeBegin 按手势类型精细化拒绝（整体禁用无法让特定手势透传）。",
+        "onGestureJudgeBegin 未按 gestureInfo.type 区分，把所有手势都拒绝。",
+        "需要事件透传却返回 ACCEPT/CONTINUE，导致手势仍被自身消费。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "启用状态下点击悬浮球正常响应（展开/收起工具栏）。",
+        "长按切换为禁用后，点击事件透传到底层页面、不被悬浮球消费。",
+        "禁用状态下拖拽/长按判定逻辑不受影响（按 type 区分）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "禁用后点击透传录屏",
+        "onGestureJudgeBegin + gestureInfo.type + REJECT 代码"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-019",
+    "layer": "scene-functional",
+    "title": "shouldBuiltInRecognizerParallelWith 商品详情页嵌套滚动联动（父子边界方向切换）",
+    "phase": "DEV",
+    "user_prompt": "做一个电商商品详情页：外层是整页可滚动的 Scroll，从上到下依次是商品主图、标题价格、规格参数、详情图文；页面中段嵌一块「店铺热销 / 相关推荐」的内层竖向 List。在内层推荐流里浏览时，滑到顶部继续下拉，外层 Scroll 接管往上滚露出商品信息；滑到底部继续上滑，外层继续往下露出底部购买栏；内层没到边界时外层不响应。输出可落到工程中的开发方案。",
+    "intent": "验证商品详情页父子嵌套滚动联动场景能路由至 ARKUI-02（联动 ARKUI-07 组件构建页面），方案覆盖 shouldBuiltInRecognizerParallelWith 收集内层 List/Scroll 内置 Pan 识别器并行 + onGestureRecognizerJudgeBegin 动态 setEnabled 配合 ScrollableTargetInfo.isBegin/isEnd 与 offsetY 方向（正下负上）切换内外层 + 三方/WebView 区域不检查 isBuiltIn 改用标志位 consumePanGesture 驱动路由。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": ["ARKUI-07"],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须为详情页内外层滚动区域设 .id()（如外层 outerScroll、内层推荐流 innerScroll）用于回调中定位。",
+        "外层 Scroll 必须用 .shouldBuiltInRecognizerParallelWith((current, others) => ...) 遍历 others，按 getEventTargetInfo().getId() 找到内层 List/Scroll 的内置 Pan 识别器（需 isBuiltIn() 且 PAN_GESTURE），保存 current/child 识别器引用并返回该识别器形成并行。",
+        "外层 Scroll 必须用 .onGestureRecognizerJudgeBegin 动态 setEnabled 控制内外层：用 ScrollableTargetInfo 的 isBegin()/isEnd() 判断内层是否到顶/到底，结合 PanGestureEvent.offsetY 方向（正下负上）切换——内层到顶继续下拉或到底继续上滑时禁内层启外层（外层接管往上露出商品信息、往下露出底部购买栏），内层未到边界时启内层禁外层。",
+        "当内层区域是 WebView/三方渲染（非 ArkUI 内置滚动手势）时，shouldBuiltInRecognizerParallelWith 中必须不检查 isBuiltIn()（其 PanGesture 属自定义手势），改由内层标志位（consumePanGesture）驱动手势路由。",
+        "必须说明联动判定：仅内层到达边界且继续同向时才让外层接管，内层未到边界时必须保留内层手势，避免外层抢手势导致内层推荐流在中间滚不动。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "forbidden_patterns": [
+        "shouldBuiltInRecognizerParallelWith 中对三方/WebView 自定义手势仍检查 isBuiltIn()，导致找不到识别器。",
+        "未保存 current/child 识别器引用，onGestureRecognizerJudgeBegin 中无法 setEnabled。",
+        "方向判断用错 offsetY 符号（正下负上），导致到顶/到底时内外层切换反向。",
+        "对 WebView/三方区域使用 ScrollableTargetInfo 判断边界（三方区域无该信息，应改用标志位）。",
+        "内层未到边界就禁用内层手势，导致内层推荐流在中间也被外层抢走、滚不动。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "在内层推荐流里滚动，未到顶/到底时内层正常滚动、外层不动。",
+        "内层滚到顶部继续下拉，外层 Scroll 接管往上滚露出商品信息；滚到底部继续上滑，外层往下露出底部购买栏。",
+        "内层是 WebView/三方区域时，按内层标志位正确切换内外层手势路由。",
+        "内层未到边界时外层不抢手势，内层可正常浏览。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "商品详情页嵌套滚动联动录屏（到顶下拉外层接管 / 到底上滑外层继续）",
+        "shouldBuiltInRecognizerParallelWith + onGestureRecognizerJudgeBegin 代码",
+        "WebView/三方区域标志位路由日志（可选）"
+      ]
+    }
+  },
+  {
+    "case_id": "GESTURE-FUNC-020",
+    "layer": "scene-functional",
+    "title": "onTouchTestDone + preventBegin 阻止特定类型手势（PdfView 禁缩放）",
+    "phase": "DEV",
+    "user_prompt": "PdfView 内置了双指捏合缩放手势，业务上需要禁用缩放（只允许阅读、固定宽度审阅模式），但保留其他交互。输出可落到工程中的开发方案。",
+    "intent": "验证 onTouchTestDone + preventBegin 阻止特定手势场景能路由至 ARKUI-02，方案覆盖父容器 onTouchTestDone 遍历 recognizers + getType() 过滤 + preventBegin() 阻止识别 + 与 onGestureJudgeBegin/onGestureRecognizerJudgeBegin 的区别（外部阻止其他组件手势 vs 阻止自身手势）。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-02",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/arkui-interaction/ROUTE.md",
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Stack 等容器包裹目标组件（PdfView），在父容器上设置 .onTouchTestDone((event, recognizers) => ...)。",
+        "必须在回调中遍历 recognizers，通过 recognizer.getType() 判断手势类型（如 PINCH_GESTURE），对目标类型调用 recognizer.preventBegin() 阻止其进入识别。",
+        "必须说明 onTouchTestDone 在触摸测试完成后、手势识别开始前触发，是阻止特定（尤其其他组件内置）手势的最后时机。",
+        "必须区分：onGestureJudgeBegin/onGestureRecognizerJudgeBegin 在识别过程中判定、一般阻止自身组件手势；onTouchTestDone + preventBegin() 从外部阻止其他组件某类手势。"
+      ],
+      "should_reuse_resources": [
+        "./references/arkui-interaction/gesture-control.md#gesture-conflict"
+      ],
+      "forbidden_patterns": [
+        "在 PdfView 自身上设 onTouchTestDone 而非父容器（应包裹后设父容器）。",
+        "用 onGestureJudgeBegin 期望阻止子组件 PdfView 的内置手势（该回调一般阻止自身手势）。",
+        "未按 getType() 过滤，对全部识别器 preventBegin，导致组件完全无手势。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程（需 PDF Kit）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "双指捏合 PdfView 不再缩放（PINCH_GESTURE 被 preventBegin）。",
+        "PdfView 其他交互（滚动、阅读）正常。",
+        "仅阻止 PINCH_GESTURE，未误伤其他手势类型。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "禁用缩放前后对比录屏",
+        "onTouchTestDone + getType() + preventBegin() 代码"
+      ]
+    }
+  }
+]

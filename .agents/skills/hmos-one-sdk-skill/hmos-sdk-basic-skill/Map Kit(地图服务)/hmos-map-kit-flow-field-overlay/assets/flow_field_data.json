@@ -1,0 +1,38 @@
+[
+  {
+    "header": {
+      "parameterUnit": "m.s-1",
+      "parameterNumber": 2,
+      "dx": 10,
+      "dy": 20,
+      "parameterNumberName": "U-component-wind",
+      "la2": -90,
+      "la1": 90,
+      "parameterCategory": 2,
+      "lo1": 0,
+      "lo2": 359.75,
+      "ny": 4,
+      "nx": 4,
+      "numberPoints": 16
+    },
+    "data": [2, 2, 2, 2, 2, 2, 2, 2, -10, -10, -1, -1, -1, -1, -3, 2]
+  },
+  {
+    "header": {
+      "parameterUnit": "m.s-1",
+      "parameterNumber": 3,
+      "dx": 4,
+      "dy": 4,
+      "parameterNumberName": "V-component-wind",
+      "la2": -90,
+      "la1": 90,
+      "parameterCategory": 2,
+      "lo1": 0,
+      "lo2": 359.75,
+      "ny": 4,
+      "nx": 4,
+      "numberPoints": 16
+    },
+    "data": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -2, -3, -1]
+  }
+]

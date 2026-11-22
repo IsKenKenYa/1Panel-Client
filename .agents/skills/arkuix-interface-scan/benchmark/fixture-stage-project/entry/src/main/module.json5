@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": ["phone"],
+    "reqPermissions": [
+      { "name": "ohos.permission.LOCATION" }
+    ]
+  }
+}

@@ -1,0 +1,396 @@
+[
+  {
+    "case_id": "SMOKE-DM-01",
+    "layer": "smoke",
+    "title": "删除操作 AlertDialog 二次确认",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器：用户点击删除按钮时弹出警告弹窗，标题\"删除确认\"，内容\"确定要删除该文件吗？删除后无法恢复。\"，提供取消和确定删除两个按钮，确定按钮为红色。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-08 场景路由分发稳定命中，覆盖 删除操作 AlertDialog 二次确认 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-08",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-02",
+    "layer": "smoke",
+    "title": "分享渠道 ActionSheet 底部弹窗",
+    "phase": "DEV",
+    "user_prompt": "仿社交动态分享：用户点击分享按钮时从底部弹出操作面板，标题\"分享到\"，列出微信、QQ、微博三个分享渠道供用户选择，每个渠道带图标和标题。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 分享渠道 ActionSheet 底部弹窗 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-03",
+    "layer": "smoke",
+    "title": "日期/学历选择器弹窗",
+    "phase": "DEV",
+    "user_prompt": "仿用户注册表单：生日字段点击后弹出日期选择器弹窗（范围1900-2030），学历字段点击后弹出文本选择器弹窗（高中/大专/本科/硕士/博士）。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 日期/学历选择器弹窗 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-04",
+    "layer": "smoke",
+    "title": "倒计时广告弹窗 openCustomDialog+ComponentContent 动态更新",
+    "phase": "DEV",
+    "user_prompt": "仿电商促销：弹出广告弹窗显示限时特惠倒计时，倒计时5秒结束后动态更新弹窗内容——倒计时数字消失、按钮文案从\"等待倒计时\"变为\"立即抢购\"。要求弹窗内容可动态更新且不依赖特定组件上下文。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 倒计时广告弹窗 openCustomDialog+ComponentContent 动态更新 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-05",
+    "layer": "smoke",
+    "title": "商品规格选择 @CustomDialog+CustomDialogController",
+    "phase": "DEV",
+    "user_prompt": "仿商品详情页：点击\"选择规格\"按钮从底部弹出自定义弹窗，包含颜色选择（黑色/白色/蓝色/红色）、尺码选择（S/M/L/XL）、数量调节（+/-按钮）、取消和加入购物车两个操作按钮。要求弹窗与父组件共享状态。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-08 场景路由分发稳定命中，覆盖 商品规格选择 @CustomDialog+CustomDialogController 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-08",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-06",
+    "layer": "smoke",
+    "title": "多弹窗层级管理 levelOrder",
+    "phase": "DEV",
+    "user_prompt": "仿多任务编辑器：已打开基础设置弹窗（层级50）的情况下，需要在其之上弹出\"未保存提醒\"弹窗（层级200），确保提醒弹窗始终覆盖在设置弹窗之上。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 多弹窗层级管理 levelOrder 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-07",
+    "layer": "smoke",
+    "title": "搜索建议弹窗 focusable:false 焦点管理",
+    "phase": "DEV",
+    "user_prompt": "仿搜索页：用户在搜索框输入文字时实时弹出搜索建议/联想词弹窗，弹窗不能关闭软键盘，焦点保持在输入框中让用户继续输入，同时点击建议词可选中。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 搜索建议弹窗 focusable:false 焦点管理 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-08",
+    "layer": "smoke",
+    "title": "支付确认+新手引导弹窗蒙层控制",
+    "phase": "DEV",
+    "user_prompt": "仿支付流程：支付确认弹窗需要禁止点击蒙层关闭防止误触；同时需要一个新手引导弹窗，蒙层只遮挡顶部10%区域实现局部高亮，范围外事件可透传。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 支付确认+新手引导弹窗蒙层控制 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-09",
+    "layer": "smoke",
+    "title": "表单提交异步确认 showDialog",
+    "phase": "DEV",
+    "user_prompt": "仿表单提交流程：用户点击提交按钮后弹出异步确认弹窗，标题\"提交确认\"，内容\"确认提交当前表单数据？提交后不可修改。\"，提供取消和确认两个按钮，需要根据用户异步选择的按钮索引决定是否执行提交逻辑。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 表单提交异步确认 showDialog 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-10",
+    "layer": "smoke",
+    "title": "更多操作 showActionMenu 操作菜单",
+    "phase": "DEV",
+    "user_prompt": "仿内容详情页：点击右上角\"更多\"按钮弹出操作菜单，包含编辑、删除、分享、收藏四个选项，删除选项为红色警示，需要根据用户异步选择的菜单项索引执行对应操作。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 更多操作 showActionMenu 操作菜单 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-DM-11",
+    "layer": "smoke",
+    "title": "节日活动弹窗 transition 自定义过渡动画",
+    "phase": "DEV",
+    "user_prompt": "仿节日活动弹窗：弹窗需要自定义淡入动画效果，弹窗和蒙层整体以3秒缓慢渐显方式出现增强视觉氛围，同时提供一个快速淡入（1秒）的变体方案和一个滑动+淡入组合动画变体。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-13 场景路由分发稳定命中，覆盖 节日活动弹窗 transition 自定义过渡动画 子场景。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-13",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-08",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/dialog-menu-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    }
+  }
+]

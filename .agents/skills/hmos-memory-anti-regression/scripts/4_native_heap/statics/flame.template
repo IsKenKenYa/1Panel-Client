@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="d3.flameGraph.min.css"/>
+    <style>
+        .container {{
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }}
+        #chart {{
+            width: 80%;
+            padding-bottom: 40px;
+        }}
+        .d3-flame-graph-label {{
+            font-size: x-small;
+        }}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="chart">
+    </div>
+</div>
+
+<script type="text/javascript" src="d3.v7.js"></script>
+<script type="text/javascript" src="d3-flamegraph.min.js"></script>
+<script type="text/javascript" src="d3-flamegraph-tooltip.min.js"></script>
+
+<script type="text/javascript">
+    var string_table = {string_dict}
+    var chart = flamegraph()
+        .width(document.getElementById("chart").clientWidth)
+        .cellHeight(18)
+        .transitionDuration(0)
+        .transitionEase(d3.easeCubic)
+        .sort(function(a, b) {{
+            return d3.descending(a.data.value, b.data.value);
+        }})
+        .title("");
+    chart.minFrameSize(1); // 过滤小节点
+    chart.inverted(true); // 或者不显示 root
+    // chart.selfValue(true); // 只渲染自身值，不绘制太多
+    var tip = flamegraph.tooltip.defaultFlamegraphTooltip()
+        .html(d => {{
+                str = "Symbol: " + string_table[d.data.s]
+                        + "<br>Lib: " + string_table[d.data.l]
+                        + "<br>Size: " + d.data.si + "MB"
+                        + "<br>apply_count: " + d.data.ac
+                        + "<br>release_count: " + d.data.rc
+                if (Object.hasOwn(d.data, "cc")) {{
+                    str += "<br>Callchain: " + d.data.cc
+                        + "<br>apply_size: " + d.data.as
+                        + "<br>release_size: " + d.data.rs
+                        + "<br>type: " + d.data.t
+                }}
+                return str
+            }});
+    chart.tooltip(tip);
+    var stackData = {flame_data}
+    d3.select("#chart")
+        .datum(stackData)
+        .call(chart);
+    function notifyHeight(){{parent.postMessage({{height:document.body.scrollHeight}},'*');}}
+    var debounced=function(){{var t;return function(){{clearTimeout(t);t=setTimeout(notifyHeight,200);}};}}();
+    notifyHeight();setTimeout(notifyHeight,600);setTimeout(notifyHeight,1500);setTimeout(notifyHeight,3000);
+    try{{new ResizeObserver(debounced).observe(document.body);}}catch(e){{}}
+</script>
+</body>
+</html> 

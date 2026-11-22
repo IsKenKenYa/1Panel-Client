@@ -1,0 +1,16 @@
+{
+  "name": "arkuix-bridge-codegen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ArkUI-X 跨平台桥接代码生成 Skill（五件套 + BridgeArtifact）",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test \"scripts/*.test.js\"",
+    "benchmark": "node benchmark/compare.js",
+    "guard": "node scripts/guard.js"
+  },
+  "dependencies": {}
+}

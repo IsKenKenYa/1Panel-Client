@@ -1,0 +1,12 @@
+{
+  //  ：模块类型矩阵 fixture（entry/feature=hap、har、shared=hsp）
+  app: {
+    products: [{ name: "default", runtimeOS: "OpenHarmony", }],
+  },
+  modules: [
+    { name: "entry", srcPath: "./entry" },
+    { name: "feature", srcPath: "./feature" },
+    { name: "har", srcPath: "./har" },
+    { name: "shared", srcPath: "./shared" },
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "libarkui_ndk_p1.so",
+  "types": "./Index.d.ts",
+  "version": "1.0.0",
+  "description": "ArkUI NDK P1 native module type declaration"
+}

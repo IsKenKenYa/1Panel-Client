@@ -1,0 +1,35 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "virtualMachine": "ark",
+    "extensionAbilities": [
+      {
+        "name": "EntryFormAbility",
+        "srcEntry": "./ets/entryformability/EntryFormAbility.ets",
+        "description": "EntryFormAbility",
+        "type": "form",
+        "metadata": [
+          {
+            "name": "ohos.extension.form",
+            "resource": "$profile:form_config"
+          }
+        ]
+      },
+      {
+        "name": "MyLiveFormExtensionAbility",
+        "srcEntry": "./ets/myliveformextensionability/MyLiveFormExtensionAbility.ets",
+        "description": "MyLiveFormExtensionAbility",
+        "type": "liveForm"
+      }
+    ]
+  }
+}

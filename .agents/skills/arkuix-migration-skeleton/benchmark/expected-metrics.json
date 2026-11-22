@@ -1,0 +1,46 @@
+{
+  "modify": {
+    "mode": "modify",
+    "platform": "both",
+    "android_shell": ".arkui-x/android",
+    "ios_shell": ".arkui-x/ios",
+    "shared_arkts_dir": "entry",
+    "platform_cases": {
+      "android": {
+        "android_shell": ".arkui-x/android",
+        "ios_shell_absent": true
+      },
+      "ios": {
+        "ios_shell": ".arkui-x/ios",
+        "android_shell_absent": true
+      }
+    }
+  },
+  "new": {
+    "mode": "new",
+    "platform": "both",
+    "migrated_files": 4,
+    "migrated_rels": [
+      "ets/Index.ets",
+      "ets/pages/Detail.ets",
+      "module.json5",
+      "resources/base/media/icon.png"
+    ],
+    "android_shell": ".arkui-x/android",
+    "ios_shell": ".arkui-x/ios"
+  },
+  "rejects": {
+    "fa_message": "FA 模型不支持，仅支持 Stage 模型",
+    "unknown_message": "请先运行 F2 接口扫描"
+  },
+  "exit_codes": {
+    "usage": 2,
+    "model": 3,
+    "env_low_sdk": 4,
+    "tool_fail": 5,
+    "tool_timeout": 5,
+    "user_abort": 6,
+    "skip": 0,
+    "ok": 0
+  }
+}

@@ -1,0 +1,35 @@
+# CMakeLists.txt示例配置
+cmake_minimum_required(VERSION 3.4.1)
+project(networkboost_handover_demo)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 11)
+
+# 添加可执行文件
+add_executable(networkboost_handover_demo 
+    example_set_handover_mode.cpp
+)
+
+# 添加Network Boost Kit库依赖
+# 注意:libnetwork_boost.so是HarmonyOS提供的动态库
+target_link_libraries(networkboost_handover_demo 
+    libnetwork_boost.so
+)
+
+# 设置头文件搜索路径
+# 根据实际SDK安装路径调整
+target_include_directories(networkboost_handover_demo PRIVATE
+    ${OHOS_SDK_PATH}/native/sysroot/usr/include
+)
+
+# 编译选项
+target_compile_options(networkboost_handover_demo PRIVATE
+    -Wall
+    -Wextra
+    -O2
+)
+
+# 链接选项
+target_link_options(networkboost_handover_demo PRIVATE
+    -Wl,--as-needed
+)

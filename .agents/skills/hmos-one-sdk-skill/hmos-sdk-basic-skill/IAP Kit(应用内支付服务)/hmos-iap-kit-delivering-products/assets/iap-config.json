@@ -1,0 +1,97 @@
+{
+  "skill": {
+    "name": "hmos-iap-kit-delivering-products",
+    "version": "1.0.0",
+    "description": "权益发放技能 - 支持消耗型和非消耗型商品权益发放",
+    "kit": "IAP Kit",
+    "api_level": "11+",
+    "platform": "HarmonyOS"
+  },
+  "dependencies": {
+    "@kit.IAPKit": {
+      "version": "4.1.0+",
+      "description": "应用内支付Kit"
+    },
+    "@kit.AbilityKit": {
+      "version": "4.0.0+",
+      "description": "程序框架Kit"
+    },
+    "@kit.BasicServicesKit": {
+      "version": "4.0.0+",
+      "description": "基础服务Kit"
+    },
+    "jsonwebtoken": {
+      "version": "^9.0.0",
+      "description": "JWT验签库",
+      "optional": true
+    }
+  },
+  "permissions": [],
+  "configuration": {
+    "max_batch_quantity": 10,
+    "query_timeout": 30000,
+    "finish_timeout": 30000,
+    "retry_interval": 5000,
+    "max_retries": 3
+  },
+  "supported_product_types": [
+    {
+      "type": "CONSUMABLE",
+      "code": 0,
+      "description": "消耗型商品",
+      "can_repurchase": true
+    },
+    {
+      "type": "NONCONSUMABLE",
+      "code": 1,
+      "description": "非消耗型商品",
+      "can_repurchase": false
+    }
+  ],
+  "supported_query_types": [
+    {
+      "type": "UNFINISHED",
+      "code": 1,
+      "description": "已购买但未确认发货的商品",
+      "applicable_products": ["CONSUMABLE", "NONCONSUMABLE"]
+    },
+    {
+      "type": "CURRENT_ENTITLEMENT",
+      "code": 2,
+      "description": "已购非消耗型商品和当前生效的订阅",
+      "applicable_products": ["NONCONSUMABLE"]
+    }
+  ],
+  "error_handling": {
+    "network_error": {
+      "error_code": 1001860005,
+      "strategy": "retry_with_delay",
+      "max_retries": 3,
+      "fallback": "use_cached_orders"
+    },
+    "signature_error": {
+      "error_code": 1001860060,
+      "strategy": "log_and_skip",
+      "fallback": "reject_delivery"
+    },
+    "system_error": {
+      "error_code": 1001860001,
+      "strategy": "query_purchases_again",
+      "fallback": "record_pending_order"
+    }
+  },
+  "delivery_flow": [
+    "query_purchases",
+    "decode_and_verify_jws",
+    "check_delivery_status",
+    "grant_user_rights",
+    "record_delivery",
+    "finish_purchase"
+  ],
+  "security": {
+    "verify_signature": true,
+    "check_product_id": true,
+    "check_price": true,
+    "server_verification": true
+  }
+}

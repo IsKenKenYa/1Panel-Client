@@ -1,0 +1,327 @@
+[
+  {
+    "case_id": "SMOKE-CR-001",
+    "layer": "smoke",
+    "title": "冷启动白屏时间长排查",
+    "phase": "FIX",
+    "user_prompt": "应用冷启动后白屏要好几秒才出现首屏内容，用户体感很差。热启动倒是正常。我没看到崩溃，就是慢。请帮我排查冷启动白屏的耗时点在哪、怎么优化。",
+    "intent": "验证「冷启动白屏」这一运行时性能症状能否命中 ARKUI-06 FIX；属编译运行时的启动性能范畴，案例集无专门冷启动场景，发散自主线程耗时/渲染时延方向。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-002",
+    "layer": "smoke",
+    "title": "应用闪退/crash 日志排查",
+    "phase": "FIX",
+    "user_prompt": "应用在某个页面偶发闪退，用户操作路径不确定。我抓到了 crash 日志但看不懂堆栈，想知道怎么分析这个崩溃日志定位到具体代码。请帮我说明运行时崩溃的排查方法。",
+    "intent": "验证「运行时崩溃/闪退日志排查」能否命中 ARKUI-06 FIX；crash/闪退是 ARKUI-06 的 intent_signal，发散自 aboutToDisappear 异常等运行时崩溃方向，聚焦崩溃日志分析方法而非具体某场景。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-05"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-003",
+    "layer": "smoke",
+    "title": "弱网下网络图加载卡死",
+    "phase": "FIX",
+    "user_prompt": "应用里有一屏九宫格网络头像，WiFi 下还好，切到弱网或断网时整页卡死好几秒、点击没反应，恢复网络又好了。请帮我排查弱网下图片加载为什么会卡死主线程。",
+    "intent": "边界 case：验证「弱网下网络图加载卡死」能否命中 ARKUI-06 FIX（而非被当作组件用法路由到 ARKUI-07）；与 FUNC-001 syncLoad 冻屏同源但弱网放大症状，发散网络 IO 阻塞主线程方向。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-004",
+    "layer": "smoke",
+    "title": "长列表滚动卡顿但不确定原因",
+    "phase": "FIX",
+    "user_prompt": "我的长列表滚动起来卡，但我不确定是列表写法问题、状态刷新问题还是图片加载问题。请帮我用 Profiler 一类工具定位到底卡在哪、怎么排查，而不是直接让我改代码。",
+    "intent": "边界 case：验证「不确定原因的性能卡顿求助诊断方法」能否命中 ARKUI-06 FIX（性能诊断）而非误判为列表组件用法 ARKUI-07；核心是诊断方法论（Profiler/Trace 抓取与分析）。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-005",
+    "layer": "smoke",
+    "title": "帧率不稳/掉帧如何度量与优化",
+    "phase": "FIX",
+    "user_prompt": "应用滑动时帧率不稳、经常掉帧，但我不太清楚 HarmonyOS 上怎么测帧率、丢帧率这些指标，以及多少算达标。请帮我说明怎么度量帧率性能、用什么工具、优化方向有哪些。",
+    "intent": "验证「帧率度量与掉帧优化」能否命中 ARKUI-06 FIX；发散自滑动长帧/丢帧分析方向，聚焦性能度量方法论（丢帧率、最大连续丢帧数、60fps/120fps 预算）。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07",
+        "ARKUI-09"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-006",
+    "layer": "smoke",
+    "title": "点击响应慢/操作时延大",
+    "phase": "FIX",
+    "user_prompt": "用户反馈点按钮后界面迟迟不响应、有延迟感，搜索输入也有滞后。我想分析从点击到界面首帧变化的响应时延，定位是事件处理慢还是首帧构建慢。请帮我给出时延类性能问题的分析方法。",
+    "intent": "验证「点击响应时延大」能否命中 ARKUI-06 FIX；发散自时延类性能分析方向（响应时延/完成时延、触控到首帧），案例集无专门点击时延场景，聚焦时延度量与定位。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-02",
+        "ARKUI-07"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-007",
+    "layer": "smoke",
+    "title": "ArkTS 编译报错/类型错误排查",
+    "phase": "FIX",
+    "user_prompt": "我的 ArkUI 项目编译报了一堆错：有 Cannot find module、有类型不匹配，还有个装饰器提示 not supported。请帮我说明 ArkTS 编译错误的通用排查思路（怎么定位语法错误、类型错误、导入问题），不是只修某一个错。",
+    "intent": "验证「ArkTS 编译期错误排查」能否命中 ARKUI-06 FIX；编译错误/ArkTS 编译是 ARKUI-06 的 intent_signal，覆盖「编译」半边（案例集偏运行时，此处发散编译期排查方法论）。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-01"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-008",
+    "layer": "smoke",
+    "title": "性能验收标准与基线建立",
+    "phase": "REQ",
+    "user_prompt": "团队要给 ArkUI 应用定性能验收标准：冷启动时间、首帧渲染、滑动帧率、点击响应时延这些指标分别应该定多少才算达标、怎么测、用什么工具采集。请帮我分析性能验收标准该怎么建立、关键指标基线设多少、验收时重点确认什么。",
+    "intent": "验证「性能验收标准/基线建立」需求分析能否命中 ARKUI-06 REQ；ARKUI-06 phase_tags 含 REQ，发散性能度量指标体系与验收标准方向，非具体排查而是需求阶段分析。",
+    "expected": {
+      "primary_phase": "REQ",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "device_constraints",
+        "capability_boundary",
+        "acceptance_focus"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-009",
+    "layer": "smoke",
+    "title": "动画播放卡顿：性能问题还是动画实现问题",
+    "phase": "FIX",
+    "user_prompt": "我用了 animateTo 做列表项入场动画，播放时一卡一卡的、掉帧明显。我不确定是我动画写法有问题，还是整体性能不够。请帮我判断这种动画卡顿到底是动画实现问题还是性能问题，并给出排查方向。",
+    "intent": "边界 case：验证「动画卡顿」能否被正确识别为性能问题命中 ARKUI-06 FIX（主）并联动 ARKUI-09（次），而不被 Q1 直接抢到 ARKUI-09 当作动画实现问题；与案例集动画卡顿诊断方向衔接。",
+    "expected": {
+      "primary_phase": "FIX",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [
+        "ARKUI-09"
+      ],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md",
+        "./references/animation-transitions-scenario-development/"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "problem_profile",
+        "root_cause_hypothesis",
+        "fix_plan",
+        "regression_watchlist"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-CR-010",
+    "layer": "smoke",
+    "title": "性能优化后回归验证是否达标",
+    "phase": "VAL",
+    "user_prompt": "我刚把长列表的滑动卡顿优化了——加了组件复用、把 notifyDataReload 改成了局部刷新。现在想验证优化到底有没有生效、有没有达到帧率/时延的验收线。请帮我说明性能优化后该用哪些工具和方法做回归验证、采集什么指标、怎么判断达标。",
+    "intent": "验证「性能优化后回归验证」能否命中 ARKUI-06 VAL 阶段；ARKUI-06 phase_tags 含 VAL，案例集的诊断方法（Profiler Frame 轨道、APP_LIST_FLING 时延、hidumper 状态变量报告）正是验证工具，发散验证回归与达标判定方向。",
+    "expected": {
+      "primary_phase": "VAL",
+      "primary_scene": "ARKUI-06",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./references/compilation-runtime-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "verification_matrix",
+        "evidence_requirements",
+        "pass_criteria",
+        "residual_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-07"
+      ]
+    }
+  }
+]

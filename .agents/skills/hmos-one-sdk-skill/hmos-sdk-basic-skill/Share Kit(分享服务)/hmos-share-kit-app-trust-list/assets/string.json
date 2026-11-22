@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "企业应用分享管控示例"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "企业应用分享管控Ability"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "企业分享"
+    },
+    {
+      "name": "permission_reason_set_system_share_app_launch_trust_list",
+      "value": "用于企业应用管控内部资料仅限于企业内部分享"
+    }
+  ]
+}

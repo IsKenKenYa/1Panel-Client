@@ -1,0 +1,224 @@
+﻿[
+  {
+    "code": 201,
+    "message": "Permission verification failed.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "权限校验失败（VerifyAccessToken 未通过）。对应内部码 E_PERMISSION_DENIED→JsErrCode E_PERMISSION=201。触发场景：调用标有 @permission 的接口（如 GallerySync/Download.on、optimizeStorage、changeAppCloudSwitch、enableCloud、disableCloud、clean、getAllSyncFolders）但未在 module.json5 声明所需权限（CLOUDFILE_SYNC / CLOUDFILE_SYNC_MANAGER / ACCESS_CLOUD_DISK_INFO）。"
+  },
+  {
+    "code": 202,
+    "message": "The caller is not a system application.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "非系统应用调用了系统 API。对应内部码 E_PERMISSION_SYSTEM→JsErrCode E_PERMISSION_SYS=202。触发场景：GallerySync/Download 类及 changeAppCloudSwitch/enableCloud/disableCloud/clean 等 @systemapi 接口被三方应用调用。"
+  },
+  {
+    "code": 401,
+    "message": "The input parameter is invalid.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "参数错误。对应内部码 E_INVAL_ARG→JsErrCode E_PARAMS_=401。触发场景：必选参数未传、参数类型不正确（如 accountId/bundleName 非 string、switches 非 object、uris 非数组）；NAPI 层 NARG_CNT 校验或类型转换失败时直接抛 401。"
+  },
+  {
+    "code": 801,
+    "message": "Device not supported.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "设备/能力不支持（Native API Clouddisk）。对应 CLOUD_DISK_NOT_SUPPORTED=801。触发场景：设备未编译 SUPPORT_CLOUD_DISK_SERVICE 宏时调用 OH_CloudDisk_RegisterSyncFolder/GetSyncFolders 等 Native API 接口，直接返回 801。"
+  },
+  {
+    "code": 13600001,
+    "message": "IPC error.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "IPC 错误（STORAGE_SERVICE_SYS_CAP_TAG+1）。对应内部码 E_BROKEN_IPC/E_RDB/E_DEAD_REPLY(29189)/E_SA_LOAD_FAILED/E_SYSTEM_LOAD_OVER 等统一映射为 JsErrCode E_IPCSS=13600001。触发场景：IPC 通信失败或超时、云同步 SA 加载失败、RDB 异常、远端 binder 死亡（DEAD_REPLY）。.d.ts 多处标注：1.IPC failed or timed out; 2.Failed to load the service。"
+  },
+  {
+    "code": 13900001,
+    "message": "Operation not permitted.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "操作不允许（FILEIO_SYS_CAP_TAG+1，对应 POSIX EPERM）。触发场景：registerChange/unregisterChange 时操作被拒；startTransfer 在 DowngradeDownload 任务或全量同步任务运行中调用（d.ts 明确：1.The DowngradeDownload task is running; 2.The full data synchronization task is running）。"
+  },
+  {
+    "code": 13900002,
+    "message": "No such file or directory.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "文件不存在（FILEIO_SYS_CAP_TAG+2，对应 POSIX ENOENT）。触发场景：Download/CloudFileCache.start 下载的 uri 对应文件不存在；cleanCache/cleanFileCache/pauseUpload/resumeUpload 的 uri 无对应文件；softbus 传输 SOFTBUS_TRANS_FILE_NOT_FOUND 经 softbusErr2ErrCodeTable 转 ENOENT。"
+  },
+  {
+    "code": 13900005,
+    "message": "I/O error.",
+    "source_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "description": "I/O 错误（FILEIO_SYS_CAP_TAG+5，对应 POSIX EIO）。触发场景：磁盘读写异常；softbus 传输 SOFTBUS_TRANS_FILE_DISK_QUOTA_EXCEEDED 经 softbusErr2ErrCodeTable 映射为 EIO（磁盘配额超限）。"
+  },
+  {
+    "code": 13900010,
+    "message": "Try again.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "请重试（FILEIO_SYS_CAP_TAG+10，对应 POSIX EAGAIN）。内部码 E_AGAIN→JsErrCode E_TRY_AGAIN=13900010。触发场景：registerUploadProgress/getUploadList/getDownloadList/getCachedTotalSize/cleanFileCache/getCloudFileInfo/startDownload/DowngradeDownload 等并发冲突或临时繁忙，建议稍后重试。"
+  },
+  {
+    "code": 13900012,
+    "message": "Permission denied by the file system.",
+    "source_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "description": "文件系统权限拒绝（FILEIO_SYS_CAP_TAG+12，对应 POSIX EACCES）。触发场景：registerChange/unregisterChange、cleanFileCache、getCoreFileSyncState 读取 `user.cloud.filestatus` xattr 时底层文件系统拒绝访问。"
+  },
+  {
+    "code": 13900020,
+    "message": "Invalid argument.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "无效参数（FILEIO_SYS_CAP_TAG+20，对应 POSIX EINVAL）。内部码 E_INVAL_PARAM→JsErrCode E_INVALID_ARGUMENT=13900020。触发场景：必选参数缺失/类型错误；getCoreFileSyncState/startBatch/on('batchDownload') 等接口参数不合法；registerUploadProgress 同时注册实例数超上限；getUploadList/getDownloadList/bundleNames 长度超限或含非法 uri。"
+  },
+  {
+    "code": 13900025,
+    "message": "No space left on device.",
+    "source_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "description": "本地存储空间不足（FILEIO_SYS_CAP_TAG+25，对应 POSIX ENOSPC）。触发场景：Download.start/CloudFileCache.start 下载云文件时本地磁盘空间不足。"
+  },
+  {
+    "code": 13900031,
+    "message": "Function not implemented.",
+    "source_file": "interface_sdk-js/api/@ohos.file.cloudSync.d.ts",
+    "description": "功能未实现（FILEIO_SYS_CAP_TAG+31，对应 POSIX ENOSYS）。触发场景：getFileSyncState(uri: string) 同步重载读取文件云状态时，底层能力未实现/未编译。"
+  },
+  {
+    "code": 13900042,
+    "message": "Unknown error.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "未知错误（FILEIO_SYS_CAP_TAG+42）。内部码 E_UNKNOWN_FAULT→JsErrCode E_UNKNOWN_ERR=13900042。触发场景：getxattr 读取云文件状态失败等未归类错误；errMessageTable 提示 'Unknown error. The possible causes is getxattr failed.'"
+  },
+  {
+    "code": 14000002,
+    "message": "Invalid uri.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "URI 非法（USER_FILE_MANAGER_SYS_CAP_TAG+2）。内部码 E_ILLEGAL_URI→JsErrCode E_INVALID_URI=14000002。触发场景：CloudFileCache.start/startBatch/stop、pauseUpload/resumeUpload、getFileSyncState、registerChange 的 uri 参数非法或非 file scheme。"
+  },
+  {
+    "code": 22400001,
+    "message": "Cloud status not ready.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "云状态未就绪（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+1）。内部码 E_CLOUD_SDK→JsErrCode E_CLOUD_NOT_READY=22400001。触发场景：GallerySync.start/FileSync.start 触发端云同步时，云账号未登录或 Drive Kit/云 SDK 未就绪。"
+  },
+  {
+    "code": 22400002,
+    "message": "Network unavailable.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "网络不可用（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+2）。内部码 E_SYNC_FAILED_NETWORK_NOT_AVAILABLE→JsErrCode E_NETWORK_ERR=22400002。触发场景：GallerySync.start/FileSync.start 时移动数据网络与 Wi-Fi 均不可用（仅当两者都不可用才报错）。"
+  },
+  {
+    "code": 22400003,
+    "message": "Low battery level.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "电量过低（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+3）。内部码 E_SYNC_FAILED_BATTERY_TOO_LOW→JsErrCode E_BATTERY_WARNING=22400003。触发场景：非充电状态下电量低于 10% 时触发或继续端云同步。"
+  },
+  {
+    "code": 22400004,
+    "message": "Exceed the maximum limit.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "超出最大限制（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+4）。内部码 E_EXCEED_MAX_SIZE→JsErrCode E_EXCEED_MAX_LIMIT=22400004。触发场景：CloudFileCache.startBatch 批量下载 URI 数量超过 400；云空间不足导致上传失败。"
+  },
+  {
+    "code": 22400005,
+    "message": "Inner error.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "内部错误（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+5）。内部码 E_SERVICE_INNER_ERROR/E_INNER_RDB→JsErrCode E_INNER_FAILED=22400005。触发场景：数据库访问或 SQL 执行失败；空指针、内存不足、JS 引擎异常等系统错误；getCoreFileSyncState 读取到非法 filestatus 值。"
+  },
+  {
+    "code": 22400006,
+    "message": "The same task is already in progress.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "同名任务正在执行（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+6）。内部码 E_TASK_RUNNING→JsErrCode E_OTHER_TASK_RUNNING=22400006。触发场景：重复调用 startOptimizeSpace（必须配合 stopOptimizeSpace）；重复触发 DowngradeDownload.startDownload/startTransfer 全量下载/迁移任务。"
+  },
+  {
+    "code": 22400007,
+    "message": "Version file not exist.",
+    "source_file": "utils/log/include/dfs_error.h",
+    "description": "版本文件不存在（DISTRIBUTEDFILE_SERVICE_SYS_CAP_TAG+7）。内部码 E_VERSION_FILE_NOT_EXIST→JsErrCode E_VERSION_FILE_NO_EXIST=22400007。触发场景：文件版本管理（FileVersion）查询/回滚时本地版本记录文件缺失。"
+  },
+  {
+    "code": 34400001,
+    "message": "Invalid input parameter.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "xxx 入参非法（CLOUD_DISK_INVALID_ARG）。触发场景：OH_CloudDisk_* 接口的 syncFolderPath/customAlias/callback 为空或长度非法、syncFolder 结构体为空指针。"
+  },
+  {
+    "code": 34400002,
+    "message": "Sync folder path unauthorized.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "同步目录路径未授权（CLOUD_DISK_SYNC_FOLDER_PATH_UNAUTHORIZED）。触发场景：第三方云盘注册/操作同步根目录时，路径不在该应用授权的可访问范围内。"
+  },
+  {
+    "code": 34400003,
+    "message": "IPC communication failed.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "IPC 通信失败（CLOUD_DISK_IPC_FAILED）。触发场景：xxx 调用经 Inner API 与 clouddiskservice SA 通信失败；getAllSyncFolders 的 .d.ts 明确标注 34400003 IPC communication failed。"
+  },
+  {
+    "code": 34400004,
+    "message": "Sync folder exceeds the allowed limit.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "同步目录数量超限（CLOUD_DISK_SYNC_FOLDER_LIMIT_EXCEEDED）。触发场景：单个应用/设备注册的第三方云盘同步根目录数量超过上限。"
+  },
+  {
+    "code": 34400005,
+    "message": "Sync folder conflicts with an existing sync folder of this application.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "与本应用已有同步目录冲突（CLOUD_DISK_CONFLICT_THIS_APP）。触发场景：注册的同步根路径与当前应用已注册的另一个同步根存在包含/重叠关系。"
+  },
+  {
+    "code": 34400006,
+    "message": "Sync folder conflicts with an existing sync folder of another application.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "与其它应用已有同步目录冲突（CLOUD_DISK_CONFLICT_OTHER_APP）。触发场景：注册的同步根路径与其它第三方云盘应用已注册的同步根冲突。"
+  },
+  {
+    "code": 34400007,
+    "message": "Failed to register sync folder.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "注册同步目录失败（CLOUD_DISK_REGISTER_SYNC_FOLDER_FAILED）。触发场景：CloudDiskSyncFolderManager::Register 在 clouddiskservice SA 侧执行失败（DB 写入、挂载、seccomp 校验等）。"
+  },
+  {
+    "code": 34400008,
+    "message": "Sync folder is not registered.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "同步目录未注册（CLOUD_DISK_SYNC_FOLDER_NOT_REGISTERED）。触发场景：对未注册的路径执行 Active/Deactive/Unregister/GetSyncFolderChanges/SetFileSyncStates 等操作。"
+  },
+  {
+    "code": 34400009,
+    "message": "Failed to unregister sync folder.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "注销同步目录失败（CLOUD_DISK_UNREGISTER_SYNC_FOLDER_FAILED）。触发场景：Unregister 在 SA 侧执行失败。"
+  },
+  {
+    "code": 34400010,
+    "message": "Sync folder path does not exist.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "同步目录路径不存在（CLOUD_DISK_SYNC_FOLDER_PATH_NOT_EXIST）。触发场景：操作的目标路径在本地文件系统中不存在。"
+  },
+  {
+    "code": 34400011,
+    "message": "Change listener is not registered.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "变更监听未注册（CLOUD_DISK_LISTENER_NOT_REGISTERED）。触发场景：OH_CloudDisk_UnregisterSyncFolderChanges 时该路径未注册过监听回调。"
+  },
+  {
+    "code": 34400012,
+    "message": "Change listener is already registered.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "变更监听已注册（CLOUD_DISK_LISTENER_ALREADY_REGISTERED）。触发场景：OH_CloudDisk_RegisterSyncFolderChanges 对同一路径重复注册监听。"
+  },
+  {
+    "code": 34400013,
+    "message": "Invalid change sequence. Full query is recommended.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "变更序列号无效（CLOUD_DISK_INVALID_CHANGE_SEQUENCE）。触发场景：OH_CloudDisk_GetSyncFolderChanges 传入的 startUsn 过期/落后于服务端记录，建议全量查询变更。"
+  },
+  {
+    "code": 34400014,
+    "message": "Temporary failure. Retry is recommended (e.g., network issues).",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "临时失败，建议重试（CLOUD_DISK_TRY_AGAIN）。触发场景：网络抖动等临时故障；xxx 实现内部 malloc 分配变更结果/失败列表内存失败时也返回此码；getAllSyncFolders 的 .d.ts 明确标注 34400014。"
+  },
+  {
+    "code": 34400015,
+    "message": "Cloud disk is not allowed on this device.",
+    "source_file": "interfaces/kits/xxx/clouddiskmanager/include/cloud_disk_error_code.h",
+    "description": "本设备不允许使用云盘（CLOUD_DISK_NOT_ALLOWED）。触发场景：设备策略/管控禁止云盘功能；getAllSyncFolders 的 .d.ts 明确标注 34400015。"
+  }
+]

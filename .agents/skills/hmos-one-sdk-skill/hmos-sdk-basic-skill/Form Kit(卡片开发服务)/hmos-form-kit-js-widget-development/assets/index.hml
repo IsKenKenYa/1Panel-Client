@@ -1,0 +1,16 @@
+<div class="container">
+  <stack>
+    <div class="container-img">
+      <image src="/common/widget.png" class="bg-img"></image>
+    </div>
+    <div class="container-inner">
+      <text class="title">{{title}}</text>
+      <text class="detail_text" onclick="routerEvent">{{detail}}</text>
+      <div class="info-row">
+        <text class="temperature">{{temperature}}</text>
+        <text class="time">{{time}}</text>
+      </div>
+      <button class="refresh-btn" onclick="messageEvent">刷新</button>
+    </div>
+  </stack>
+</div>

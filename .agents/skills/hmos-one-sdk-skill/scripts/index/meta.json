@@ -1,0 +1,28 @@
+{
+  "built_at": "2026-09-23T08:14:20.353Z",
+  "total_docs": 290,
+  "avg_doc_length": 2535.48,
+  "vocabulary_size": 22846,
+  "posting_entries": 160951,
+  "postings_format": "flat_number_array_interleaved",
+  "max_tf": 241,
+  "k1": 1.5,
+  "b": 0.75,
+  "title_weight": 5,
+  "description_weight": 3,
+  "breadcrumb_weight": 2,
+  "body_weight": 1,
+  "path_weight": 1,
+  "skipped": 0,
+  "compression": "gzip",
+  "tokenizer": "jieba_api",
+  "builder_version": "jieba-ts-dag-hmm-v1",
+  "document_order": "windows-path-components-lowercase",
+  "generation": "915a3d4a-45dc-428d-bf12-ea8be38f1018",
+  "source": {
+    "path": "/public/workspace/wxy/Projects/SkillRetrieval2026/harmonyos-agent-skills/02-development/sdk/hmos-one-sdk-skill",
+    "kind": "directory",
+    "sha256": "4d4a4c2a3bb7caa0c31c37310dce5b1b1c5ae6b9672293f828d02ba96746c6d5",
+    "input_documents": 290
+  }
+}

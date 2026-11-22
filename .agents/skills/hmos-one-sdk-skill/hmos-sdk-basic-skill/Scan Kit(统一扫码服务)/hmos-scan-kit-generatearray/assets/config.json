@@ -1,0 +1,89 @@
+{
+  "description": "通过字节数组生成码图配置示例",
+  "parameters": {
+    "scanType": "QR_CODE",
+    "width": {
+      "description": "码图宽度（px）",
+      "range": [200, 4096],
+      "recommended": [400, 800, 1200],
+      "default": 400
+    },
+    "height": {
+      "description": "码图高度（px）",
+      "range": [200, 4096],
+      "recommended": [400, 800, 1200],
+      "default": 400
+    },
+    "margin": {
+      "description": "最小边距（px）",
+      "range": [1, 10],
+      "default": 1
+    },
+    "level": {
+      "description": "纠错级别",
+      "options": ["LEVEL_L", "LEVEL_M", "LEVEL_Q", "LEVEL_H"],
+      "bufferSizeLimits": {
+        "LEVEL_L": 2048,
+        "LEVEL_M": 2048,
+        "LEVEL_Q": 1536,
+        "LEVEL_H": 1024
+      },
+      "default": "LEVEL_H",
+      "recommendation": "根据字节数组长度自动选择合适的纠错级别"
+    },
+    "backgroundColor": {
+      "description": "背景颜色（HEX格式）",
+      "default": "0xFFFFFF",
+      "recommended": ["0xFFFFFF", "0xFFF8F8", "0xF8F8F8"]
+    },
+    "pixelMapColor": {
+      "description": "码图颜色（HEX格式）",
+      "default": "0x000000",
+      "recommended": ["0x000000", "0x333333", "0x1A1A1A"]
+    }
+  },
+  "content": {
+    "type": "ArrayBuffer",
+    "source": "hexString",
+    "description": "字节数组内容（通过十六进制字符串转换）",
+    "conversion": {
+      "method": "buffer.from(hexString, 'hex').buffer",
+      "example": "buffer.from('0177C10DD10F...', 'hex').buffer"
+    }
+  },
+  "errorHandling": {
+    "errorCodes": {
+      "401": {
+        "description": "参数错误",
+        "possibleCauses": [
+          "参数类型错误",
+          "参数校验失败（宽高超出范围、字节数组超限）"
+        ],
+        "solution": "检查参数类型和取值范围"
+      },
+      "1000500001": {
+        "description": "内部错误",
+        "solution": "稍后重试或检查API版本"
+      }
+    }
+  },
+  "bestPractices": [
+    "建议宽高值相同且≥200px以保证识别效果",
+    "建议使用默认颜色（黑色码图、白色背景）以保证识别率",
+    "建议保持默认边距（margin=1）",
+    "根据字节数组长度选择合适的纠错级别",
+    "字节数组长度超过2048字节时需减少内容长度",
+    "在真机环境运行，不支持模拟器"
+  ],
+  "deviceSupport": {
+    "apiVersion": "≥5.0.0(12)",
+    "devices": [
+      "Phone",
+      "Tablet",
+      "Wearable (≥5.1.0(18))",
+      "PC/2in1 (≥5.1.1(19))",
+      "TV (≥5.1.1(19))"
+    ],
+    "note": "不支持模拟器环境"
+  }
+}

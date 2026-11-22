@@ -1,0 +1,703 @@
+[
+  {
+    "case_id": "SMOKE-GESTURE-001",
+    "layer": "smoke",
+    "title": "priorityGesture 优先响应",
+    "phase": "DEV",
+    "user_prompt": "做一个信息流页面：竖向 List 平铺一组内容卡片，每张卡片为 16:9 的封面图（宽度铺满、圆角 16vp、objectFit 裁剪），图上叠加从透明到半透明黑的底部渐变标题条（单行标题、超出省略）。需求：长按任一封面图时，要在该卡片正上方弹出一个带向下箭头的暗色「气泡」操作菜单，菜单首项为「不感兴趣」（点选后该卡片从信息流中移除），并预留收藏、分享等次要操作位。请在方案中补充：①布局结构（List 与卡片 Stack 的层级、标题条与气泡菜单的定位方式）；②气泡菜单样式规范（背景色、圆角、箭头、遮罩、菜单项行高/内边距/字号、主操作与次要操作的配色区分）。输出可落到工程中的开发方案。",
+    "intent": "验证「priorityGesture 优先响应」能稳定命中 ARKUI-02，并路由到 gesture-bind.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02",
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-bind.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-002",
+    "layer": "smoke",
+    "title": "parallelGesture 父子并行",
+    "phase": "DEV",
+    "user_prompt": "评论弹窗里有一个可滚动的评论列表。希望下拉弹窗能关闭、上拉能恢复，同时列表还能正常滚动：列表没在顶部时父拖拽不响应，列表滚到顶部时父拖拽才接管调整弹窗高度。两者不互斥。输出可落到工程中的开发方案。",
+    "intent": "验证「parallelGesture 父子并行」能稳定命中 ARKUI-02，并路由到 gesture-bind.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-bind.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-003",
+    "layer": "smoke",
+    "title": "TapGesture 多次点击",
+    "phase": "DEV",
+    "user_prompt": "图片查看器里双击图片要在「适配屏幕放大」和「原始大小」之间切换，切换要平滑过渡不要突变。输出可落到工程中的开发方案。",
+    "intent": "验证「TapGesture 多次点击」能稳定命中 ARKUI-02，并路由到 gesture-type.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-type.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-004",
+    "layer": "smoke",
+    "title": "PanGesture 离手惯性",
+    "phase": "DEV",
+    "user_prompt": "自定义一个可拖拽的悬浮球/面板，希望手指松开后它还能按离手时的速度继续滑动并逐渐减速，模拟物理惯性。输出可落到工程中的开发方案。",
+    "intent": "验证「PanGesture 离手惯性」能稳定命中 ARKUI-02，并路由到 gesture-type.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-type.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-005",
+    "layer": "smoke",
+    "title": "PinchGesture 捏合缩放",
+    "phase": "DEV",
+    "user_prompt": "做一个图片预览器，支持双指捏合/张开对图片缩放，要求以双指中心点为基准「跟手」缩放，缩放到极限不漂移、图片不会被拖出可视区域，松手后保持缩放大小。还要支持单指平移。输出可落到工程中的开发方案。",
+    "intent": "验证「PinchGesture 捏合缩放」能稳定命中 ARKUI-02，并路由到 gesture-type.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-type.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-006",
+    "layer": "smoke",
+    "title": "RotationGesture 旋转",
+    "phase": "DEV",
+    "user_prompt": "图片查看器支持双指旋转图片，要求旋转过程中实时跟随手指角度，松手后吸附到最近的 90° 倍数，连续多次旋转角度不累积漂移。输出可落到工程中的开发方案。",
+    "intent": "验证「RotationGesture 旋转」能稳定命中 ARKUI-02，并路由到 gesture-type.md 的 SCENE-04。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-type.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-04"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-007",
+    "layer": "smoke",
+    "title": "GestureGroup(Sequence)",
+    "phase": "DEV",
+    "user_prompt": "卡片列表里希望长按某张卡片后（不松手）即可拖动它移动位置，松手后卡片动画归位。长按要有放大+半透明的视觉反馈。输出可落到工程中的开发方案。",
+    "intent": "验证「GestureGroup(Sequence)」能稳定命中 ARKUI-02，并路由到 gesture-group.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-group.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-008",
+    "layer": "smoke",
+    "title": "GestureGroup(Parallel)",
+    "phase": "DEV",
+    "user_prompt": "一个按钮希望随着按压时长升级触发不同操作：按 0.5 秒收藏、1.5 秒分享、3 秒删除，按住时间越久触发的等级越高，且每轮按压从零开始。输出可落到工程中的开发方案。",
+    "intent": "验证「GestureGroup(Parallel)」能稳定命中 ARKUI-02，并路由到 gesture-group.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-group.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-009",
+    "layer": "smoke",
+    "title": "GestureGroup(Exclusive)",
+    "phase": "DEV",
+    "user_prompt": "做一个聊天消息列表，每条消息气泡在同一时刻只响应一种手势：单击进入消息详情、双击快速点赞（弹爱心动画）、长按弹出操作菜单（复制、转发、删除）。输出可落到工程中的开发方案。",
+    "intent": "验证「GestureGroup(Exclusive)」能稳定命中 ARKUI-02，并路由到 gesture-group.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-group.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-010",
+    "layer": "smoke",
+    "title": "responseRegion 扩大热区",
+    "phase": "DEV",
+    "user_prompt": "SideBarPage.ets边栏切换按钮紧贴屏幕右边缘、尺寸很小（24×48vp），手机上点击边缘容易失误，请修复该问题。输出可落到工程中的开发方案。",
+    "intent": "验证「responseRegion 扩大热区」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-01。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-01"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-011",
+    "layer": "smoke",
+    "title": "hitTestBehavior 事件穿透",
+    "phase": "DEV",
+    "user_prompt": "做一个短视频播放页，分上下两层：下层是视频层（竖屏视频，点击可暂停/播放，外层用 Swiper 支持上下滑动切换视频），上层是覆盖在视频上的全透明操作层，操作层右下角竖直排列「喜欢/收藏/评论」等按钮。要求：按钮区域手势不透传到下方（点赞/收藏/打开评论）；按钮以外的透明区域手势透传到下方视频，触发视频暂停/播放（上下滑动也能切换视频）。输出可落到工程中的开发方案。",
+    "intent": "验证「hitTestBehavior 事件穿透」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-02。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-02"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-012",
+    "layer": "smoke",
+    "title": "hitTestBehavior(Block) 阻止滚动",
+    "phase": "DEV",
+    "user_prompt": "一个可滚动的 Scroll 列表里有一块特殊区域，希望触摸这块区域时不触发外层 Scroll 滚动，触摸其余区域时 Scroll 正常滚动。输出可落到工程中的开发方案。",
+    "intent": "验证「hitTestBehavior(Block) 阻止滚动」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-03。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-03"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-013",
+    "layer": "smoke",
+    "title": "onTouchIntercept 动态透传",
+    "phase": "DEV",
+    "user_prompt": "上层容器覆盖在 TextArea 之上，上层里有一块交互区域。希望根据触摸点位置动态决定：点交互区域内事件不透传（上层处理），点区域外事件透传到下层 TextArea。输出可落到工程中的开发方案。",
+    "intent": "验证「onTouchIntercept 动态透传」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-04。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-04"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-014",
+    "layer": "smoke",
+    "title": "onChildTouchTest 点击定位 + 无缝拖动",
+    "phase": "DEV",
+    "user_prompt": "做一个自定义滑轨组件：点击滑轨任意位置可快速跳到对应取值，且不抬手即可继续拖动滑块精调数值，并实时显示当前取值百分比、取值到 0 时给出状态提示。输出可落到工程中的开发方案。",
+    "intent": "验证「onChildTouchTest 点击定位 + 无缝拖动」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-05。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-05"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-015",
+    "layer": "smoke",
+    "title": "onGestureCollectIntercept 手势收集拦截",
+    "phase": "DEV",
+    "user_prompt": "做一个短视频播放页：下层视频层（竖屏视频，外层 Swiper 支持上下滑动切换），上层覆盖一个全透明操作浮层，浮层右下角竖排「喜欢/收藏/评论」按钮。要求：(1) 点击按钮只响应按钮（点赞/收藏/评论），视频层不收到点击、不双触发；(2) 点击按钮以外的透明区域事件正常透传到视频（触发暂停等）;（3）不要修改子组件。输出可落到工程中的开发方案。",
+    "intent": "验证「onGestureCollectIntercept 手势收集拦截」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-06。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-06"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-016",
+    "layer": "smoke",
+    "title": "自定义与系统内置手势冲突",
+    "phase": "DEV",
+    "user_prompt": "FeedCardBad.ets中长按图片，回调不执行。请说明原因并给出解决方案，输出可落到工程中的开发方案。",
+    "intent": "验证「自定义与系统内置手势冲突」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-07。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "FIX",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-07"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-017",
+    "layer": "smoke",
+    "title": "monopolizeEvents 多点触控独占",
+    "phase": "DEV",
+    "user_prompt": "PhotoEditPage.ets中单指调整亮度数值时，再用一根手指点击确认按钮，亮度调整进度框消失，请修复该问题。输出可落到工程中的开发方案。",
+    "intent": "验证「monopolizeEvents 多点触控独占」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-08。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "FIX",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-08"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-018",
+    "layer": "smoke",
+    "title": "onGestureJudgeBegin 动态控制响应",
+    "phase": "DEV",
+    "user_prompt": "悬浮球绑定了拖拽、长按、点击三种手势。长按可切换禁用/启用状态。禁用后希望点击事件能穿透悬浮球传给底层页面（不再被悬浮球消费），拖拽和长按的判定不受影响。输出可落到工程中的开发方案。",
+    "intent": "验证「onGestureJudgeBegin 动态控制响应」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-09。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-09"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-019",
+    "layer": "smoke",
+    "title": "shouldBuiltInRecognizerParallelWith 嵌套滚动联动",
+    "phase": "DEV",
+    "user_prompt": "做一个电商商品详情页：外层是整页可滚动的 Scroll，从上到下依次是商品主图、标题价格、规格参数、详情图文；页面中段嵌一块「店铺热销 / 相关推荐」的内层竖向 List。在内层推荐流里浏览时，滑到顶部继续下拉，外层 Scroll 接管往上滚露出商品信息；滑到底部继续上滑，外层继续往下露出底部购买栏；内层没到边界时外层不响应。输出可落到工程中的开发方案。",
+    "intent": "验证「shouldBuiltInRecognizerParallelWith 嵌套滚动联动」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-10。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-10"
+      ],
+      "forbidden_scenes": []
+    }
+  },
+  {
+    "case_id": "SMOKE-GESTURE-020",
+    "layer": "smoke",
+    "title": "onTouchTestDone + preventBegin 阻止手势",
+    "phase": "DEV",
+    "user_prompt": "PdfView 内置了双指捏合缩放手势，业务上需要禁用缩放（只允许阅读、固定宽度审阅模式），但保留其他交互。输出可落到工程中的开发方案。",
+    "intent": "验证「onTouchTestDone + preventBegin 阻止手势」能稳定命中 ARKUI-02，并路由到 gesture-control.md 的 SCENE-11。",
+    "allowed_tools": [
+      "Read"
+    ],
+    "required_output_fields": {
+      "active_phases": "list[str] 当前激活的阶段标签",
+      "primary_phase": "str 主阶段标签",
+      "active_scenes": "list[str] 当前激活的场景ID列表",
+      "route_reason": "str 路由到主场景的原因",
+      "next_scene_refs": "list[str] 下一步要打开的场景文件相对路径列表",
+      "next_scene_caps": "list[str] 遍历 next_scene_refs 中的每一份参考文档，逐份读取后，把该文档内部【实际定义】的全部场景/子场景编号都列入：编号格式以文档自身为准（可能是 SCENE-xx，也可能是其它命名，必须照搬文档里的原始编号、不要改写或自创），且要覆盖每份文档的全部场景、不可只列主场景。禁止凭记忆或猜测编造编号；禁止带文档名前缀（如 gesture-bind.md/SCENE-01）；禁止填技能级场景 ID（ARKUI-xx）。",
+      "primary_code_domain": "str 主代码落点域",
+      "secondary_code_domains": "list[str] 次级代码域列表",
+      "integration_edges": "list[dict] 集成边列表，每项含 from/to/edge 三个字符串字段"
+    },
+    "expected": {
+      "primary_phase": "DEV",
+      "active_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "references/arkui-interaction/gesture-control.md"
+      ],
+      "next_scene_caps": [
+        "SCENE-11"
+      ],
+      "forbidden_scenes": []
+    }
+  }
+]

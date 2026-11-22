@@ -1,0 +1,205 @@
+[
+  {
+    "api_name": "fileAccess.createFileAccessHelper",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_CreateFileAccessHelper",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "NAPI_CreateFileAccessHelper (line 199); 构造 FileAccessHelper 实例，经 inner_api/file_access 代理到 FileAccessService SA"
+  },
+  {
+    "api_name": "fileAccess.getFileAccessAbilityInfo",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_GetFileAccessAbilityInfo",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "NAPI_GetFileAccessAbilityInfo; 查询系统中所有 fileAccess 扩展 Want，IPC 到 FileAccessService"
+  },
+  {
+    "api_name": "FileAccessHelper.createFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_CreateFile",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->CreateFile(uri, name, newFileUri) (line 394); IPC 到 FileAccessExtensionAbility"
+  },
+  {
+    "api_name": "FileAccessHelper.openFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_OpenFile",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->OpenFile(uri, flags, *result) (line 340); IPC 到 FileAccessExtensionAbility 返回 fd"
+  },
+  {
+    "api_name": "FileAccessHelper.delete",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Delete",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Delete(...); IPC 到 FileAccessExtensionAbility"
+  },
+  {
+    "api_name": "FileAccessHelper.move",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Move",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Move(uri, targetParentUri, newFileUri) (line 557); IPC 到 FileAccessExtensionAbility"
+  },
+  {
+    "api_name": "FileAccessHelper.moveItem",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_MoveItem",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->MoveItem(srcUri, destUri, *result, force) (line 1377); 批量移动，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.moveFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_MoveFile",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->MoveFile(...); 跨目录移动文件，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.rename",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Rename",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Rename(...); IPC 到 FileAccessExtensionAbility"
+  },
+  {
+    "api_name": "FileAccessHelper.mkDir",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Mkdir",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Mkdir(...); 创建目录，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.query",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Query",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Query(...); 查询文件属性，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.copy",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Copy",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Copy(...); 批量复制（目录+文件），IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.copyFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_CopyFile",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->CopyFile(...); 单文件复制，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.getRoots",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_GetRoots",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->GetRoots(...); 枚举所有根（设备/账号），IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.access",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_Access",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->Access(...); 判断文件是否存在，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.getFileInfoFromUri",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_GetFileInfoFromUri",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->GetFileInfoFromUri(...); 由 URI 解析 FileInfo，IPC 到扩展"
+  },
+  {
+    "api_name": "FileAccessHelper.getFileInfoFromRelativePath",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_GetFileInfoFromRelativePath",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->GetFileInfoFromRelativePath(...); 由相对路径解析 FileInfo"
+  },
+  {
+    "api_name": "FileAccessHelper.registerObserver",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_RegisterObserver",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->RegisterNotify(...); 经 FileAccessService 注册文件变更通知（NotifyAgent）"
+  },
+  {
+    "api_name": "FileAccessHelper.unregisterObserver",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "NAPI_UnregisterObserver",
+    "impl_file": "frameworks/js/napi/file_access_module/napi_fileaccess_helper.cpp",
+    "impl_func": "fileAccessHelper->UnregisterNotify(...); 反注册变更通知"
+  },
+  {
+    "api_name": "recent.add",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.recent.d.ts",
+    "napi_func": "AddRecentFile",
+    "impl_file": "interfaces/kits/native/recent/recent_n_exporter.cpp",
+    "impl_func": "RecentNExporter::AddRecentFile (line 83); 本地符号链接到 /storage/Users/currentUser/.recent"
+  },
+  {
+    "api_name": "recent.remove",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.recent.d.ts",
+    "napi_func": "RemoveRecentFile",
+    "impl_file": "interfaces/kits/native/recent/recent_n_exporter.cpp",
+    "impl_func": "RecentNExporter::RemoveRecentFile (line 136); unlink 移除符号链接"
+  },
+  {
+    "api_name": "recent.listFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.recent.d.ts",
+    "napi_func": "ListRecentFile",
+    "impl_file": "interfaces/kits/native/recent/recent_n_exporter.cpp",
+    "impl_func": "RecentNExporter::ListRecentFile (line 340); 扫描 .recent 目录列出最近文件"
+  },
+  {
+    "api_name": "trash.listFile",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.trash.d.ts",
+    "napi_func": "ListFile",
+    "impl_file": "interfaces/kits/native/trash/src/file_trash_n_exporter.cpp",
+    "impl_func": "FileTrashNExporter::ListFile; 扫描 /storage/Users/currentUser/.Trash 列出回收站文件"
+  },
+  {
+    "api_name": "trash.recover",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.trash.d.ts",
+    "napi_func": "Recover",
+    "impl_file": "interfaces/kits/native/trash/src/file_trash_n_exporter.cpp",
+    "impl_func": "FileTrashNExporter::Recover; 从 .Trash 还原文件到原路径"
+  },
+  {
+    "api_name": "trash.completelyDelete",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.trash.d.ts",
+    "napi_func": "CompletelyDelete",
+    "impl_file": "interfaces/kits/native/trash/src/file_trash_n_exporter.cpp",
+    "impl_func": "FileTrashNExporter::CompletelyDelete; 从回收站彻底删除文件"
+  },
+  {
+    "api_name": "cloudDiskManager.getAllSyncFolders",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudDiskManager.d.ts",
+    "napi_func": "GetAllSyncFolders",
+    "impl_file": "interfaces/kits/native/clouddiskmanager/src/sync_folder_access_n_exporter.cpp",
+    "impl_func": "SyncFolderAccessNExporter::GetAllSyncFolders (line 99); 经 CloudDiskJSManager -> cloud_disk_kit_inner -> CloudDiskService SA 获取同步目录"
+  },
+  {
+    "api_name": "cloudDiskManager.registerSyncFolder",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudDiskManager.d.ts",
+    "napi_func": "",
+    "impl_file": "interfaces/kits/native/clouddiskmanager/src/sync_folder_access_n_exporter.cpp",
+    "impl_func": "经 CloudDiskJSManager 注册同步目录，IPC 到 CloudDiskService SA"
+  },
+  {
+    "api_name": "cloudDiskManager.removeSyncFolder",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.cloudDiskManager.d.ts",
+    "napi_func": "",
+    "impl_file": "interfaces/kits/native/clouddiskmanager/src/sync_folder_access_n_exporter.cpp",
+    "impl_func": "经 CloudDiskJSManager 移除同步目录，IPC 到 CloudDiskService SA"
+  },
+  {
+    "api_name": "FileAccessExtensionAbility (扩展提供方继承)",
+    "d_ts_file": "interface_sdk-js/api/@ohos.file.fileAccess.d.ts",
+    "napi_func": "",
+    "impl_file": "interfaces/inner_api/file_access/file_access_ext_ability.h + frameworks/js/napi/file_access_ext_ability/",
+    "impl_func": "扩展提供方（如 ExternalFileManager / medialibrary）继承并实现 onCreate/openFile/createFile 等，由 FileAccessService SA 反向连接调用"
+  }
+]

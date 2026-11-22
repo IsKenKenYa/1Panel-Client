@@ -1,0 +1,22 @@
+{
+  "forms": [
+    {
+      "name": "WidgetUpdateByStatus",
+      "description": "$string:UpdateByStatusFormAbility_desc",
+      "src": "./ets/widgetupdatebystatus/pages/WidgetUpdateByStatusCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2"
+      ]
+    }
+  ]
+}

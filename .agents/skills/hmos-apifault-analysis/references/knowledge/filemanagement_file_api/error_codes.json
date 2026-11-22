@@ -1,0 +1,374 @@
+[
+  {
+    "code": "201",
+    "message": "Permission verification failed",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "权限校验失败（CommonErrCode::E_PERMISSION）。通常是 VerifyAccessToken 未授予所需权限（如 environment 的 READ_WRITE_DOWNLOAD_DIRECTORY 等）。"
+  },
+  {
+    "code": "202",
+    "message": "The caller is not a system application",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "调用方非系统应用（CommonErrCode::E_PERMISSION_SYS）。@ohos.file.environment 等系统 API 仅允许系统应用调用。"
+  },
+  {
+    "code": "401",
+    "message": "The input parameter is invalid",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "输入参数无效（CommonErrCode::E_PARAMS）。参数类型/数量不匹配、路径非字符串、mode 非法等。"
+  },
+  {
+    "code": "801",
+    "message": "The device doesn't support this api",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "设备不支持该能力（CommonErrCode::E_DEVICENOTSUPPORT）。如 environment 未开启 filemanager full mount 时返回。"
+  },
+  {
+    "code": "901",
+    "message": "The os doesn't support this api",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "操作系统不支持该 API（CommonErrCode::E_OSNOTSUPPORT）。"
+  },
+  {
+    "code": "13900001",
+    "message": "Operation not permitted",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "操作不允许（EPERM / E_PERM）。缺乏操作权限或文件被占用。"
+  },
+  {
+    "code": "13900002",
+    "message": "No such file or directory",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文件或目录不存在（ENOENT / E_NOENT）。路径错误或文件未创建，最常见的错误码之一。"
+  },
+  {
+    "code": "13900003",
+    "message": "No such process",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无此进程（ESRCH / E_SRCH）。"
+  },
+  {
+    "code": "13900004",
+    "message": "Interrupted system call",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "系统调用被中断（EINTR / E_INTR）。"
+  },
+  {
+    "code": "13900005",
+    "message": "I/O error",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "输入输出错误（EIO / E_IO）。底层读写失败，常出现在磁盘/分布式文件异常。"
+  },
+  {
+    "code": "13900006",
+    "message": "No such device or address",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无此设备或地址（ENXIO / E_NXIO）。"
+  },
+  {
+    "code": "13900007",
+    "message": "Arg list too long",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "参数列表过长（E2BIG / E_2BIG）。"
+  },
+  {
+    "code": "13900008",
+    "message": "Bad file descriptor",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文件描述符无效（EBADF / E_BADF）。fd 已关闭或非法，read/write/close 常见错误。"
+  },
+  {
+    "code": "13900009",
+    "message": "No child processes",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无子进程（ECHILD / E_CHILD）。"
+  },
+  {
+    "code": "13900010",
+    "message": "Try again",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "重试（EAGAIN / E_AGAIN）。资源暂不可用，可重试。"
+  },
+  {
+    "code": "13900011",
+    "message": "Out of memory",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "内存不足（ENOMEM / E_NOMEM）。分配 uv_fs_t / 异步参数失败。"
+  },
+  {
+    "code": "13900012",
+    "message": "Permission denied",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "权限拒绝（EACCES / E_ACCES）。路径权限或 SELinux 策略阻止访问。"
+  },
+  {
+    "code": "13900013",
+    "message": "Bad address",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "地址错误（EFAULT / E_FAULT）。缓冲区地址非法。"
+  },
+  {
+    "code": "13900014",
+    "message": "Device or resource busy",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "设备或资源忙（EBUSY / E_BUSY）。"
+  },
+  {
+    "code": "13900015",
+    "message": "File exists",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文件已存在（EEXIST / E_EXIST）。mkdir 目标路径已存在时常返回。"
+  },
+  {
+    "code": "13900016",
+    "message": "Cross-device link",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "跨设备链接（EXDEV / E_XDEV）。move/rename 跨挂载点时返回。"
+  },
+  {
+    "code": "13900017",
+    "message": "No such device",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无此设备（ENODEV / E_NODEV）。"
+  },
+  {
+    "code": "13900018",
+    "message": "Not a directory",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "非目录（ENOTDIR / E_NOTDIR）。路径中某段本应是目录却是文件。"
+  },
+  {
+    "code": "13900019",
+    "message": "Is a directory",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "是目录（EISDIR / E_ISDIR）。对目录执行了仅限文件的操作（如 read/unlink）。"
+  },
+  {
+    "code": "13900020",
+    "message": "Invalid argument",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "参数无效（EINVAL / E_INVAL）。最常见的参数类错误，mode/offset/options 非法等。@ohos.file.environment 的 getUserDownloadDir 等也用此码。"
+  },
+  {
+    "code": "13900021",
+    "message": "File table overflow",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "系统文件表溢出（ENFILE / E_NFILE）。"
+  },
+  {
+    "code": "13900022",
+    "message": "Too many open files",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "打开文件过多（EMFILE / E_MFILE）。fd 泄漏或超过进程限制。"
+  },
+  {
+    "code": "13900023",
+    "message": "Text file busy",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文本文件忙（ETXTBSY / E_TXTBSY）。"
+  },
+  {
+    "code": "13900024",
+    "message": "File too large",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文件过大（EFBIG / E_FBIG）。超过文件大小上限。"
+  },
+  {
+    "code": "13900025",
+    "message": "No space left on device",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "设备无剩余空间（ENOSPC / E_NOSPC）。write/copy 时磁盘或配额已满。"
+  },
+  {
+    "code": "13900026",
+    "message": "Illegal seek",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "非法 seek（ESPIPE / E_SPIPE）。对管道/流执行 seek。"
+  },
+  {
+    "code": "13900027",
+    "message": "Read-only file system",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "只读文件系统（EROFS / E_ROFS）。对只读路径写入。"
+  },
+  {
+    "code": "13900028",
+    "message": "Too many links",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "链接过多（EMLINK / E_MLINK）。"
+  },
+  {
+    "code": "13900029",
+    "message": "Resource deadlock would occur",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "将发生资源死锁（EDEADLK / E_DEADLK）。"
+  },
+  {
+    "code": "13900030",
+    "message": "File name too long",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "文件名过长（ENAMETOOLONG / E_NAMETOOLONG）。"
+  },
+  {
+    "code": "13900031",
+    "message": "Function not implemented",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "功能未实现（ENOSYS / E_NOSYS）。某些平台/能力不支持时返回。"
+  },
+  {
+    "code": "13900032",
+    "message": "Directory not empty",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "目录非空（ENOTEMPTY / E_NOTEMPTY）。rmdir 非空目录时返回。"
+  },
+  {
+    "code": "13900033",
+    "message": "Too many symbolic links encountered",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "符号链接过多（ELOOP / E_LOOP）。符号链接循环或层级过深。"
+  },
+  {
+    "code": "13900034",
+    "message": "Operation would block",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "操作将阻塞（EWOULDBLOCK / E_WOULDBLOCK）。"
+  },
+  {
+    "code": "13900035",
+    "message": "Invalid request descriptor",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无效请求描述符（EBADR / E_BADR）。"
+  },
+  {
+    "code": "13900038",
+    "message": "Value too large for defined data type",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "值超出定义数据类型范围（EOVERFLOW / E_OVERFLOW）。statvfs/size 溢出。"
+  },
+  {
+    "code": "13900039",
+    "message": "File descriptor in bad state",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "fd 状态错误（EBADFD / E_BADFD）。"
+  },
+  {
+    "code": "13900040",
+    "message": "Interrupted system call should be restarted",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "被中断的系统调用应重启（ERESTART / E_RESTART）。"
+  },
+  {
+    "code": "13900041",
+    "message": "Quota exceeded",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "配额超限（EDQUOT / E_DQUOT）。用户/应用磁盘配额已满。"
+  },
+  {
+    "code": "13900042",
+    "message": "Unknown error",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "未知错误（UNKNOWN_ERR→E_UKERR）。未能识别的 errno 统一映射为此码（CommonErrCode::E_UNKNOWN_ERROR = 13900042）。"
+  },
+  {
+    "code": "13900043",
+    "message": "No record locks available",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "无可用记录锁（ENOLCK / E_NOLCK）。"
+  },
+  {
+    "code": "13900051",
+    "message": "Network is unreachable",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "网络不可达（ENETUNREACH / E_NETUNREACH）。分布式文件（dfs）网络异常时常见。"
+  },
+  {
+    "code": "13900052",
+    "message": "Connection failed",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "连接失败（ECONNECTIONFAIL / E_CONNECTION_FAIL）。分布式文件连接失败。"
+  },
+  {
+    "code": "13900053",
+    "message": "Software caused connection abort",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "软件导致连接中止（ECONNECTIONABORT / E_CONNECTION_ABORT）。"
+  },
+  {
+    "code": "13900054",
+    "message": "Operation canceled",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "操作已取消（ECANCELED / E_CANCELED）。dfs 任务被取消。"
+  },
+  {
+    "code": "13900055",
+    "message": "Internal resource error",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "内部资源错误（E_INTERN_RES）。"
+  },
+  {
+    "code": "13900056",
+    "message": "Buffer read/write out of bounds",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "mmap 缓冲区读写越界（E_MMAP_OOB）。"
+  },
+  {
+    "code": "13900057",
+    "message": "Mmap buffer released",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "mmap 缓冲区已释放（E_MMAP_FREE）。对已释放的映射区域访问。"
+  },
+  {
+    "code": "13900058",
+    "message": "Read-only mmap buffer",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "只读 mmap 缓冲区（E_MMAP_RO）。对只读映射执行写操作。"
+  },
+  {
+    "code": "13900059",
+    "message": "Mmap buffer is inaccessible",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "mmap 缓冲区不可访问（E_MMAP_ACCS）。"
+  },
+  {
+    "code": "13900060",
+    "message": "Mmap operation not supported",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "mmap 操作不支持（E_MMAP_UNSUP）。"
+  },
+  {
+    "code": "13900061",
+    "message": "Mmap does not support mapping this file",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "mmap 不支持映射该文件（E_MMAP_FILE）。"
+  },
+  {
+    "code": "22400001",
+    "message": "Cloud status not ready",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "云状态未就绪（DistributedFile 子系统前缀 22400000 + E_CLOUD_NOT_READY）。"
+  },
+  {
+    "code": "22400002",
+    "message": "Network unavailable",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "网络不可用（DistributedFile 前缀 + E_NETWORK_ERR）。"
+  },
+  {
+    "code": "22400003",
+    "message": "Battery level warning",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "电量告警（DistributedFile 前缀 + E_BATTERY_WARNING）。"
+  },
+  {
+    "code": "22400004",
+    "message": "Exceed the maximum limit",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "超出最大限制（DistributedFile 前缀 + E_EXCEED_MAX_LIMIT）。"
+  },
+  {
+    "code": "22400005",
+    "message": "Database operation failed",
+    "source_file": "utils/filemgmt_libfs/include/fs_error.h",
+    "description": "数据库操作失败（DistributedFile 前缀 + E_DATABASE_FAILED）。"
+  }
+]

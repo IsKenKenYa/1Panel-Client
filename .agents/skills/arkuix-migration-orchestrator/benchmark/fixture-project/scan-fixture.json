@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "project_model": "stage",
+  "sdk": {
+    "path": "/oh-sdk",
+    "version": "26.0.0",
+    "confirmed": true,
+    "origin": "explicit"
+  },
+  "inventory": [
+    {
+      "source": "ohos",
+      "module": "@ohos.router",
+      "symbol": "router.pushUrl",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "line": 3
+    }
+  ],
+  "adaptation": {
+    "full_direct": [
+      {
+        "source": "ohos",
+        "module": "@ohos.router",
+        "symbol": "router.pushUrl",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:3"
+        ],
+        "reason": "SDK @crossplatform+规则表① 双源一致",
+        "advice": "直接使用",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "reduced_direct": [
+      {
+        "source": "ohos",
+        "module": "@ohos.web",
+        "symbol": "WebComponent",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:4"
+        ],
+        "reason": "规则表②（部分参数不可用）",
+        "advice": "按损益说明调整用法",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "equivalent_bridge": [
+      {
+        "source": "ohos",
+        "module": "@ohos.deviceInfo",
+        "symbol": "udid",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:5"
+        ],
+        "reason": "ArkUI-X 无直接支持，存在等价原生能力",
+        "advice": "由 F3 生成等价桥接",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "degraded_bridge": [
+      {
+        "source": "ohos",
+        "module": "@ohos.vibrator",
+        "symbol": "startVibration",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:6"
+        ],
+        "reason": "振幅精细化控制不可用，仅基础振动等价",
+        "advice": "由 F3 生成降级桥接",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "platform_trim": [
+      {
+        "source": "ohos",
+        "module": "@ohos.distributedDeviceManager",
+        "symbol": "deviceManager.getTrustedDeviceList",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:7"
+        ],
+        "reason": "系统独有，无 ArkUI-X 等价实现（双源一致）",
+        "advice": "ArkUI-X 侧裁剪；或经 F4 决策降为⑥处理",
+        "suggested_alternative": "N/A"
+      }
+    ],
+    "business_decision": [
+      {
+        "source": "hms",
+        "module": "@hms.map",
+        "symbol": "map.MapComponent",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:8"
+        ],
+        "reason": "@hms.* 闭源，默认归⑥",
+        "advice": "结合业务决策",
+        "suggested_alternative": "@ohos.map.mapComponent（开源地图组件）"
+      },
+      {
+        "source": "hms",
+        "module": "@hms.push",
+        "symbol": "pushService.getToken",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:9"
+        ],
+        "reason": "@hms.* 闭源，默认归⑥",
+        "advice": "结合业务决策",
+        "suggested_alternative": "需开发者评估"
+      },
+      {
+        "source": "unknown",
+        "module": "@kit.MockKit",
+        "symbol": "mockKit.doThing",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:11"
+        ],
+        "reason": "闭源 Kit 类比 @hms.* 走业务决策",
+        "advice": "结合业务决策",
+        "suggested_alternative": "需开发者评估"
+      }
+    ],
+    "unknown": [
+      {
+        "source": "ohos",
+        "module": "@ohos.nonsense",
+        "symbol": "mysteryApi",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:10"
+        ],
+        "reason": "判定依据未覆盖",
+        "advice": "人工确认",
+        "suggested_alternative": "需开发者评估"
+      },
+      {
+        "source": "ohos",
+        "module": "@ohos.mockFeature",
+        "symbol": "legacyApi",
+        "occurrences": 1,
+        "locations": [
+          "entry/src/main/ets/pages/Index.ets:12"
+        ],
+        "reason": "判定依据未覆盖",
+        "advice": "人工确认",
+        "suggested_alternative": "需开发者评估"
+      }
+    ]
+  }
+}

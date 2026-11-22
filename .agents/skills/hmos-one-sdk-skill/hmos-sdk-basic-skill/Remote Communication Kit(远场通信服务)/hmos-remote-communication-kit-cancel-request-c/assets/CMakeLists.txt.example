@@ -1,0 +1,58 @@
+# CMakeLists.txt示例配置
+# 用于HarmonyOS Remote Communication Kit取消网络请求功能
+
+cmake_minimum_required(VERSION 3.10)
+project(cancel_request_example CXX)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# HarmonyOS SDK路径配置（根据实际安装路径调整）
+# set(HARMONYOS_SDK_ROOT "/path/to/harmonyos/sdk")
+
+# 添加可执行文件
+add_executable(cancel_request_example 
+    example_cancel_request.cpp
+)
+
+# 添加Remote Communication Kit库依赖
+target_link_libraries(cancel_request_example 
+    librcp_c.so  # Remote Communication Kit C API库
+)
+
+# 如果需要其他依赖库
+# target_link_libraries(cancel_request_example 
+#     librcp_c.so
+#     libhilog.so  # 日志库（可选）
+#     libace_napi.z.so  # NAPI库（可选）
+# )
+
+# 添加头文件路径（如果SDK路径未自动配置）
+# target_include_directories(cancel_request_example PRIVATE
+#     ${HARMONYOS_SDK_ROOT}/native/sysroot/usr/include
+# )
+
+# 编译选项
+target_compile_options(cancel_request_example PRIVATE
+    -Wall
+    -Wextra
+    -O2
+)
+
+# 链接选项
+target_link_options(cancel_request_example PRIVATE
+    -Wl,--gc-sections
+    -Wl,-z,noexecstack
+)
+
+# 安装目标（可选）
+install(TARGETS cancel_request_example 
+    RUNTIME DESTINATION bin
+)
+
+# 说明：
+# 1. librcp_c.so是Remote Communication Kit的C API库
+# 2. 需要确保HarmonyOS SDK已正确安装
+# 3. 如果编译时找不到库文件，请检查SDK路径配置
+# 4. 在实际项目中，可能需要根据项目结构调整配置

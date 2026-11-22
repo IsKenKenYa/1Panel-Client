@@ -1,0 +1,1211 @@
+[
+  {
+    "case_id": "NAV-FUNC-001",
+    "layer": "scene-functional",
+    "title": "路由拦截权限校验（声明式权限 + 集中式拦截）",
+    "phase": "DEV",
+    "user_prompt": "应用中有些页面公开（首页、商品列表），有些需要登录（个人中心、订单列表）甚至需要 VIP。现在每个页面的 onReady 各写登录判断，重复又易遗漏。请实现一套声明式权限 + 集中式拦截方案：在系统路由表 router_map.json 的 data 字段标记 requireAuth/requireVIP，用 NavPathStack.setInterception 在页面显示前统一校验，未登录跳登录页、登录成功后自动跳回原目标页（用户按返回不会回到登录页）。请输出可落到工程中的开发方案。",
+    "intent": "验证路由拦截权限校验场景能路由至 ARKUI-05，方案覆盖 router_map data 声明 + setInterception willShow + getConfigInRouteMap 集中拦截 + 登录回跳。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须在 router_map.json 的 data 字段声明 requireAuth/requireVIP 等权限标记，不得在页面内硬编码权限判断。",
+        "必须使用 setInterception 的 willShow 回调（而非 interception）做集中校验，因 willShow 参数是 NavDestinationContext 可调用 getConfigInRouteMap() 读取 data。",
+        "拦截未通过时必须先 pathStack.pop() 移除已入栈的目标页，再 pushPathByName 到登录页，并把原始目标页名作为参数传入以便登录后回跳。",
+        "登录成功后必须使用 replacePathByName 跳转目标页，使用户按返回键不会回到登录页。",
+        "登录页自身不得标记 requireAuth:true，否则陷入无限拦截循环。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "在每个页面的 onReady 中分散写登录判断逻辑。",
+        "使用 interception 回调读 data（其参数是 NavPathInfo，拿不到 getConfigInRouteMap）。",
+        "登录成功后用 pushPathByName 跳目标页导致返回键回到登录页。",
+        "给登录页标记 requireAuth:true 造成无限拦截。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "未登录时点击需登录页面，被拦截跳转到登录页，路由栈中目标页被移除。",
+        "登录页登录成功后 replace 到原目标页，按返回键不回到登录页。",
+        "已登录状态下访问需登录页面正常进入，不触发拦截。",
+        "公开页面（requireAuth:false）任何时候都不被拦截。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "未登录拦截跳转登录页的路由栈日志",
+        "登录后 replace 到目标页的日志",
+        "data 字段配置文件内容"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-002",
+    "layer": "scene-functional",
+    "title": "NavDestination 页面级方向控制",
+    "phase": "DEV",
+    "user_prompt": "短视频应用视频列表页竖屏浏览，点击进入全屏播放页要横屏全屏观看，返回列表页自动恢复竖屏。请用 NavDestination 的 preferredOrientation 实现页面级方向控制，避免手动管理方向恢复。请输出可落到工程中的开发方案。",
+    "intent": "验证 NavDestination 方向控制场景能路由至 ARKUI-05，方案覆盖 preferredOrientation 声明式方向 + 沉浸式配置 + 生效条件。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须在 NavDestination 上声明 .preferredOrientation(window.Orientation.LANDSCAPE) 实现进入页面自动横屏。",
+        "必须配合 .enableStatusBar(false) 和 .enableNavigationIndicator(false) 隐藏状态栏与导航条，并用 .ignoreLayoutSafeArea 铺满安全区域实现沉浸式。",
+        "Navigation 必须 .width('100%').height('100%') 铺满，否则 preferredOrientation 静默不生效。",
+        "pop 返回时方向由系统自动恢复上一页，不得在 onBackPressed/aboutToDisappear 中手动调用 setPreferredOrientation。",
+        "NavDestination 必须是 STANDARD 模式（非 DIALOG），且属于应用主窗口全屏页面。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 window.setPreferredOrientation 并在 aboutToDisappear 手动恢复方向（易遗漏）。",
+        "Navigation 未铺满导致 preferredOrientation 静默失效。",
+        "pop 后在 onBackPressed/aboutToDisappear 再次调用 setPreferredOrientation 干扰系统自动恢复。",
+        "未配合 ignoreLayoutSafeArea 导致横屏全屏出现黑边。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "进入播放页自动切换为横屏，状态栏与导航条隐藏，内容铺满无黑边。",
+        "pop 返回列表页自动恢复竖屏，无需手动处理。",
+        "多级页面（竖屏→横屏→竖屏）按栈顶方向自动切换。",
+        "转场过程若旋转闪烁可用 systemTransition(FADE) 改为淡入淡出。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "竖屏列表页截图",
+        "横屏沉浸播放页截图（无状态栏/导航条/黑边）",
+        "pop 返回恢复竖屏的截图或日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-003",
+    "layer": "scene-functional",
+    "title": "多模块统一动态路由",
+    "phase": "DEV",
+    "user_prompt": "多模块应用：entry(HAP) + harA + harB 两个业务 HAR，各自有页面，要求 harA 能跳 harB、harB 能跳 harC，但模块间不能有编译期依赖（不能用静态 import，否则启动变慢、可能循环依赖）。请用共享 HAR + 动态 import 实现零编译依赖的跨模块路由。请输出可落到工程中的开发方案。",
+    "intent": "验证多模块动态路由场景能路由至 ARKUI-05，方案覆盖 RouterModule + 动态 import 三层分发 + wrapBuilder 注册。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须实现独立的 RouterModule 共享 HAR，维护全局 builderMap（页面注册表）和 routerMap（路由栈引用）。",
+        "必须用动态 import 三层分发：第1层 import(harName) 加载 HAR 入口、第2层 harInit() 分发到具体页面文件、第3层 wrapBuilder + registerBuilder 注册 @Builder。",
+        "必须用 wrapBuilder() 将 @Builder 包装成 WrappedBuilder 对象存入 builderMap，不能直接存 @Builder 函数。",
+        "HAP 主页必须将 NavPathStack 通过 createRouter 注册到 RouterModule，并用 navDestination 回调从 builderMap 取 builder 渲染。",
+        "页面文件顶层注册代码须用 if(!getBuilder(name)) 防重复注册。",
+        "builderName 命名须为 @ohos/{har模块名}_{页面名}，保证 split('_')[0] 正确解析 HAR 模块名。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "跨模块用静态 import 导致编译期耦合。",
+        "直接将 @Builder 函数存入 Map 传递给 navDestination（未用 wrapBuilder 包装）。",
+        "页面注册不做重复检查导致重复注册。",
+        "builderName 命名不符合 @ohos/{har}_{page} 规则导致 split 解析失败。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 多模块工程（HAP + HAR）",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "entry 跳到 harA 的页面正常显示，模块间无编译期依赖（仅运行时动态 import）。",
+        "harA 页面跳到 harB 页面正常，跨模块返回 pop 正常回到上一页。",
+        "动态 import 只加载目标页面文件，不一次性加载 HAR 内所有页面。",
+        "同一页面多次 import 不会重复注册 builder。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "跨模块跳转截图（entry→harA→harB）",
+        "动态 import 加载日志（harInit 分发）",
+        "builderMap 注册日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-004",
+    "layer": "scene-functional",
+    "title": "闪屏页（启动页）带广告倒计时",
+    "phase": "DEV",
+    "user_prompt": "应用冷启动要做闪屏页：先显示品牌 logo，广告图加载成功后切换为开屏广告，右上角 5 秒倒计时跳过按钮，倒计时结束或点击跳过后无缝进入主页。要求消除冷启动白屏，整个应用只用一个 Navigation 容器、闪屏与主页共享 NavPathStack、靠状态切换而非页面跳转。请输出可落到工程中的开发方案。",
+    "intent": "验证闪屏页场景能路由至 ARKUI-05，方案覆盖 module.json5 启动窗口 + Navigation 内嵌闪屏 + 状态切换 + 定时器清理。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须在 module.json5 配置 startWindowIcon 和 startWindowBackground 消除冷启动白屏，且启动窗口背景色与闪屏页背景色一致避免闪烁。",
+        "必须将闪屏页作为 Navigation 的 NavBar 首屏，用 showSplash 状态驱动闪屏与主页切换（非页面跳转）。",
+        "倒计时期间必须并行预加载数据（SDK 初始化、登录态、首页数据），不阻塞 UI。",
+        "倒计时定时器必须在 aboutToDisappear 中清理，防止内存泄漏。",
+        "闪屏与主页共享同一个 NavPathStack，用户按返回键不会回到闪屏页。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "未配置 startWindowBackground 导致冷启动白屏或背景色不一致闪烁。",
+        "用页面跳转（push）切换闪屏与主页，引入转场动画断裂。",
+        "定时器未在 aboutToDisappear 清理导致内存泄漏。",
+        "闪屏期同步阻塞 UI 加载数据。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "冷启动无白屏，系统启动窗口与闪屏页背景一致无闪烁。",
+        "闪屏页显示广告图与倒计时，倒计时归零或点击跳过后无缝切换到主页。",
+        "主页按返回键不会回到闪屏页。",
+        "热启动（onForeground 回调）不再次显示闪屏页。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "冷启动闪屏页截图（广告+倒计时）",
+        "无缝切换到主页截图",
+        "module.json5 启动窗口配置"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-005",
+    "layer": "scene-functional",
+    "title": "页面路由重定向（页面下线）",
+    "phase": "DEV",
+    "user_prompt": "应用里有旧页面下线需自动跳替代页（OldProductDetail→ProductDetail）。希望统一在一处配置重定向规则，不到处改跳转代码。请用 setInterception 的 willShow 回调实现路由重定向，并保留原始参数。请输出可落到工程中的开发方案。",
+    "intent": "验证路由重定向场景能路由至 ARKUI-05，方案覆盖 willShow 拦截 + pop + pushPathByName 保留参数 + 重定向规则集中管理。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 setInterception 的 willShow 回调拦截页面显示，在回调中按 target.pathInfo.name 匹配重定向规则。",
+        "重定向时必须先 target.pathStack.pop() 移除原目标页，再 pushPathByName 到新页面，并通过 target.pathInfo.param 保留原始参数。",
+        "重定向规则（静态映射表）必须集中在 RouteRedirector 统一管理，不散落各处。",
+        "必须做闭环检测避免循环重定向（如 A→B→A）。",
+        "重定向目标页与原页的 next_scene_refs 一致（都属路由能力 ARKUI-05）。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "重定向时未通过 target.pathInfo.param 保留原始参数导致数据丢失。",
+        "重定向规则散落在各跳转点而非集中管理。",
+        "未做闭环检测导致 A→B→A 无限循环。",
+        "重定向前未 pop 原目标页导致路由栈异常。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "访问下线旧页面自动重定向到新页面，原始参数完整保留。",
+        "重定向规则集中在一处，新增/修改规则不需改各跳转点。",
+        "不存在循环重定向（重定向链有终点）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "旧页面重定向到新页面的路由栈日志",
+        "重定向后参数完整传递的日志",
+        "重定向规则配置文件"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-006",
+    "layer": "scene-functional",
+    "title": "复杂参数传参与返回值",
+    "phase": "DEV",
+    "user_prompt": "多页面跳转要传复杂参数并接收返回结果：商品列表带商品 ID 跳详情页，详情页跳购物车，购物车确认后要带选中的商品列表和总价返回列表页更新角标。地址选择、筛选、日期选择也有类似需求。请用 pushPathByName 的 onPop 回调 + pop(result) 实现传参与返回值链路。请输出可落到工程中的开发方案。",
+    "intent": "验证复杂参数传参与返回值场景能路由至 ARKUI-05，方案覆盖 pushPathByName 第三参 onPop + ctx.pathInfo.param 接收 + pop(result) 携带结果。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 pushPathByName(name, param, onPop) 的第三个参数注册返回回调，onPop 中通过 PopInfo.result 接收目标页返回结果。",
+        "目标页必须在 onReady 中通过 ctx.pathInfo.param 接收上一页传入参数。",
+        "返回页必须用 navStack.pop(result) 携带结果返回，触发发起页 onPop 回调。",
+        "入参/返回值类型类必须集中定义在可共享位置（如 model/ 目录），支持 instanceof 类型检查。",
+        "参数必须可序列化（基本类型+可序列化对象），不得传函数/Symbol；大对象走 AppStorage/PersistentStorage 共享，参数只传索引或 ID。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "传函数、Symbol 等不可序列化值作为路由参数。",
+        "通过参数传递大图片、长列表等大对象。",
+        "目标页不在 onReady 中接收参数导致取不到。",
+        "返回时不带 result 导致发起页 onPop 拿不到数据。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表页跳详情页，详情页能正确读取传入的 productId。",
+        "购物车确认后 pop(result)，列表页 onPop 收到选中商品列表和总价，角标更新。",
+        "多层跳转（A→B→C）的 onPop 回调链按预期逐层触发。",
+        "类型检查（instanceof）正确识别返回结果类型。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "参数传递日志（push 时 param、onReady 时 param）",
+        "返回值传递日志（pop result、onPop result）",
+        "列表页角标更新截图"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-007",
+    "layer": "scene-functional",
+    "title": "三分栏邮箱场景（SideBarContainer + Navigation 多端适配）",
+    "phase": "DEV",
+    "user_prompt": "邮箱应用要适配多设备：手机单栏（列表→详情），折叠屏双栏（列表+详情），平板/PC 三栏（侧边栏+列表+详情）。要解决三个痛点：分栏下每次点邮件 push 导致路由栈无限增长；断点切换路由栈残留；右侧无默认内容留白。请用 SideBarContainer 包 Navigation，分栏用 replacePathByName、单栏用 pushPathByName，并处理空栈占位。请输出可落到工程中的开发方案。",
+    "intent": "验证三分栏邮箱场景能路由至 ARKUI-05，方案覆盖 SideBarContainer 嵌 Navigation + 分栏 replace/单栏 push + splitPlaceholder + onNavigationModeChange。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 SideBarContainer > Column > Navigation 的嵌套顺序（不可颠倒）。",
+        "必须用 RouterHelper 封装：分栏模式邮件切换用 replacePathByName（避免路由栈无限增长），单栏用 pushPathByName。",
+        "必须用断点驱动 Navigation 的 Stack/Split 模式切换，并在 onNavigationModeChange 中同步 RouterHelper 模式状态 + 处理空栈占位。",
+        "分栏详情页必须用 onNewParam 接收 replace 传入的新参数（replace 不重建页面），并用 hideBackButton 隐藏返回按钮。",
+        "切换账户/文件夹必须 clear() 路由栈避免右侧显示旧详情；不得用 NavigationMode.Auto（手机横屏误触分栏）。",
+        "分栏空栈必须用 splitPlaceholder 提供占位页（不占路由栈位）。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "分栏下用 pushPathByName 切换邮件导致路由栈无限增长。",
+        "用 NavigationMode.Auto 导致手机横屏误入分栏。",
+        "Split 模式下 hideNavBar(true) 导致分栏退化为单栏。",
+        "切换账户/文件夹未 clear 路由栈导致右侧显示旧详情。",
+        "嵌套顺序颠倒（非 SideBarContainer>Column>Navigation）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 多端适配工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手机单栏：点邮件 push 进详情，有返回按钮。",
+        "平板/折叠屏分栏：点邮件 replace 右侧详情，路由栈不增长，无返回按钮。",
+        "断点切换（折叠/展开）路由栈正确同步，不残留。",
+        "分栏空栈显示占位页，无留白。",
+        "切换账户/文件夹后右侧清空旧详情。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手机单栏截图",
+        "平板三分栏截图",
+        "分栏连续点击邮件后路由栈深度日志（不增长）",
+        "断点切换截图"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-008",
+    "layer": "scene-functional",
+    "title": "二分栏聊天应用场景（Navigation Split 多端适配）",
+    "phase": "DEV",
+    "user_prompt": "聊天应用（微信/钉钉类）要适配手机（单栏列表→详情）和平板/折叠屏展开态（左右分栏列表+详情）。不需要 SideBarContainer，用 Navigation 的 Stack/Split 即可。分栏列表切换必须用 replacePathByName 避免路由栈爆炸。请输出可落到工程中的开发方案。",
+    "intent": "验证二分栏聊天场景能路由至 ARKUI-05，方案覆盖 Navigation Split + replacePathByName + Navigation+Tabs 单栈方案。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Navigation 的 Split 模式，NavBar 放会话列表、NavDestination 放聊天详情，断点驱动 Stack/Split 切换。",
+        "分栏会话切换必须用 replacePathByName（与三分栏一致），单栏用 pushPathByName，RouterHelper 封装模式判断。",
+        "必须在 onNavigationModeChange 中同步路由策略，分栏空栈时 push 占位页避免右侧留白。",
+        "Navigation+Tabs 单栈方案：切换 Tab 时必须 clear() 路由栈，单一 NavPathStack 管理整个应用路由。",
+        "分栏详情页用 onNewParam 接收 replace 新参数 + hideBackButton 隐藏返回按钮。",
+        "不得用 NavigationMode.Auto，不得在 Split 下 hideNavBar(true)。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "分栏下用 push 切换会话导致路由栈无限增长。",
+        "Navigation+Tabs 单栈方案切换 Tab 未 clear 路由栈导致残留。",
+        "用 NavigationMode.Auto 导致手机横屏误入分栏。",
+        "Split 模式下 hideNavBar(true) 导致分栏退化。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 多端适配工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手机单栏：点会话 push 进聊天详情。",
+        "平板/折叠屏分栏：点会话 replace 右侧详情，路由栈不增长。",
+        "底部 Tab 切换时路由栈清空，加载新 Tab 默认页。",
+        "分栏空栈显示占位页，无留白。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手机单栏聊天截图",
+        "平板二分栏截图",
+        "分栏连续切换会话后路由栈深度日志",
+        "Tab 切换清栈日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-009",
+    "layer": "scene-functional",
+    "title": "前后台切换自动刷新列表数据",
+    "phase": "DEV",
+    "user_prompt": "订单列表页，用户把应用切后台一会儿再回前台，数据可能过期（新订单、状态变更）。希望在 NavDestination 页面重新可见时自动刷新，同时覆盖 pop 返回和应用回前台两种场景。请给出正确的生命周期回调选择和实现方案。",
+    "intent": "验证前后台刷新场景能路由至 ARKUI-05，方案覆盖 onShown（而非 onWillShow）选型 + 最小刷新间隔防抖。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 NavDestination.onShown 回调刷新数据，因 onShown 同时覆盖 pop 返回和前后台切换，而 onWillShow 在前后台切换时不触发。",
+        "必须设置最小刷新间隔（如 30 秒）防抖，避免前后台切换短时间多次触发导致频繁请求。",
+        "首次加载必须在 onReady 中完成，onShown 只负责后续刷新，两者职责分离。",
+        "刷新时须展示 Loading 或静默刷新，避免数据突变导致 UI 闪烁。",
+        "可选：通过 AppStorage 将 UIAbility 的 onForeground 事件传到页面层做精确控制。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 onWillShow 做前后台刷新（前后台切换不触发该回调）。",
+        "无防抖导致前后台切换频繁刷新。",
+        "首次加载和后续刷新都放 onShown 导致职责混乱。",
+        "刷新时数据突变无 Loading 导致 UI 闪烁。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "应用切回前台后，列表页 onShown 触发并刷新数据。",
+        "pop 返回列表页也触发 onShown 刷新。",
+        "30 秒内多次前后台切换只刷新一次（防抖生效）。",
+        "首次进入由 onReady 加载，后续由 onShown 刷新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "前后台切换后刷新的日志（onShown 触发）",
+        "防抖间隔内不重复刷新的日志",
+        "刷新前后列表数据对比截图"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-010",
+    "layer": "scene-functional",
+    "title": "编辑页未保存内容返回确认",
+    "phase": "DEV",
+    "user_prompt": "编辑资料页（昵称、个人简介），用户输入了内容未点保存时按系统返回键会直接退出丢失数据。请用 NavDestination 的 onBackPressed 拦截返回键：有未保存修改时弹 AlertDialog 确认框（继续编辑/放弃修改），只有确认放弃才 pop；无修改时允许默认返回。请输出可落到工程中的开发方案。",
+    "intent": "验证编辑页返回确认场景能路由至 ARKUI-05（onBackPressed 路由返回拦截为主），方案覆盖快照对比 + 返回消费 + 确认弹窗。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 NavDestination.onBackPressed 拦截系统返回键，返回 true 消费事件阻止默认 pop，返回 false 执行默认返回。",
+        "必须在 onReady 中保存表单初始值快照（非 aboutToAppear，因参数可能未就绪），用于对比判断是否有未保存修改。",
+        "有未保存修改时必须弹 AlertDialog 确认框，确认放弃后才手动 navStack.pop()。",
+        "页面取消按钮必须调用与返回键相同的判断逻辑（handleBack），保持行为一致。",
+        "保存成功后直接 pop(result) 返回携带结果，无需弹确认。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "onBackPressed 未返回 true 导致无法拦截默认 pop。",
+        "在 aboutToAppear（而非 onReady）保存初始快照导致参数未就绪对比错误。",
+        "页面取消按钮不走未保存判断直接 pop。",
+        "保存成功后还弹确认框。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "有未保存修改时按返回键，弹出确认框，选择继续编辑留在当前页，选择放弃才 pop。",
+        "无修改时按返回键直接返回（默认行为）。",
+        "页面取消按钮行为与系统返回键一致。",
+        "保存成功后携带结果 pop 返回上一页。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "有修改时返回键弹确认框截图",
+        "无修改时直接返回的日志",
+        "保存后携带结果返回的日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-011",
+    "layer": "scene-functional",
+    "title": "Tab 首页 onNewParam 单例刷新数据",
+    "phase": "DEV",
+    "user_prompt": "底部 Tab 首页用单例模式管理（避免重复创建）。用户从通知页点「回到首页并刷新」时，首页不重建，onReady 不会再触发，无法刷新新消息数和信息流。请用 MOVE_TO_TOP_SINGLETON 把栈中已有首页移到栈顶，用 NavDestination.onNewParam 回调接收新参数并刷新。请输出可落到工程中的开发方案。",
+    "intent": "验证单例首页 onNewParam 刷新场景能路由至 ARKUI-05，方案覆盖 MOVE_TO_TOP_SINGLETON + onNewParam + 与 onReady 职责区分。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 LaunchMode.MOVE_TO_TOP_SINGLETON 将栈中同名首页移到栈顶（不重新创建）。",
+        "必须用 NavDestination.onNewParam 回调接收新参数并刷新数据，因单例模式下 onReady 只触发一次。",
+        "首次创建走 onReady 初始化，后续单例移顶走 onNewParam 刷新，两者职责分离。",
+        "onNewParam 仅在单例模式（MOVE_TO_TOP_SINGLETON 或 POP_TO_SINGLETON 命中已存在同名页）时触发。",
+        "需清除首页上方所有页面时用 POP_TO_SINGLETON（MOVE_TO_TOP_SINGLETON 保留上方页面）。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "单例页面依赖 onReady 做刷新（onReady 只触发一次）。",
+        "普通 push 新实例期望触发 onNewParam。",
+        "需要清栈却用 MOVE_TO_TOP_SINGLETON（保留了上方页面）。",
+        "onReady 和 onNewParam 职责未分离。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "从通知页用 MOVE_TO_TOP_SINGLETON 回首页，首页不重建，onNewParam 触发并按参数刷新。",
+        "首页实例始终唯一，栈中不出现重复首页。",
+        "首次创建由 onReady 初始化，后续刷新由 onNewParam 处理。",
+        "onNewParam 能正确解析刷新标记和新消息数。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "单例回首页不重建的日志（onNewParam 触发、onReady 不触发）",
+        "首页数据刷新截图",
+        "栈状态日志（首页唯一）"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-012",
+    "layer": "scene-functional",
+    "title": "NavDestinationSwitch 实现页面 PV/UV 埋点",
+    "phase": "DEV",
+    "user_prompt": "想给应用做无侵入式页面埋点，统计每个 NavDestination 的 PV（查看次数）、UV（去重独立访问数）和停留时长，不想在每个页面手动写埋点代码。请用 UIObserver 的 navDestinationSwitch 事件做全局监听，用 NavDestinationSwitchInfo 的 from/to 拿页面信息，用 navDestinationId 跟踪每个实例的进入/离开时间。请输出实现方案。",
+    "intent": "验证路由无感监听/页面埋点场景能路由至 ARKUI-05，方案覆盖 UIObserver.on navDestinationSwitch + 单例 PageTracker + 注销防泄漏。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 UIContext 级别的 UIObserver.on('navDestinationSwitch') 做全局监听（非每页手动埋点）。",
+        "必须用 NavDestinationSwitchInfo 的 from/to 获取来源页/目标页信息，用 navDestinationId 跟踪每个页面实例的进入/离开时间计算停留时长。",
+        "PV 计算须在页面从不可见变可见时计数（含 pop 回来），NavBar 不计入 PV。",
+        "UV 去重须用 sessionId/userId。",
+        "必须在 onWindowStageDestroy 中调用 off('navDestinationSwitch') 注销监听，防止内存泄漏。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "在每个 NavDestination 页面手动写埋点代码。",
+        "用页面名（而非 navDestinationId）跟踪实例导致同名多实例停留时长计算错误。",
+        "未在 onWindowStageDestroy 注销监听导致内存泄漏。",
+        "NavBar 也计入 PV。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "页面切换时 navDestinationSwitch 回调触发，PV 正确计数。",
+        "同名页面多实例的停留时长分别正确计算（基于 navDestinationId）。",
+        "UV 按用户去重，同一用户多次访问同页只算一次 UV。",
+        "onWindowStageDestroy 后监听已注销，无内存泄漏。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "页面切换埋点日志（from→to、operation、停留时长）",
+        "PV/UV 统计输出",
+        "注销监听日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-013",
+    "layer": "scene-functional",
+    "title": "queryNavDestinationInfo 子组件感知页面上下文",
+    "phase": "DEV",
+    "user_prompt": "在深层嵌套的自定义子组件里（通用可埋点按钮、调试浮层），需要知道当前属于哪个 NavDestination 子页面、页面名、路由栈位置，不想一层层透传 NavPathStack 或页面参数。请用 queryNavDestinationInfo 让任意子组件直接查询当前页面信息。请输出实现方案。",
+    "intent": "验证 queryNavDestinationInfo 场景能路由至 ARKUI-05，方案覆盖任意子组件查询页面信息 + 与 onReady 互补 + 空值处理。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": [],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03", "ARKUI-09"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 this.queryNavDestinationInfo() 在 NavDestination 内任意子组件（不限根级别）查询当前页面信息（name/index/navDestinationId/param/mode）。",
+        "可配合 this.queryNavigationInfo() 获取 Navigation 的 pathStack。",
+        "必须对返回值做空值检查（返回 undefined 表示不在 NavDestination 中，如在 NavBar 区调用），避免访问 undefined 属性崩溃。",
+        "queryNavDestinationInfo 用于任意子组件随时查询，与 onReady（页面级一次性初始化）互补。",
+        "多实例页面用 navDestinationId 区分不同实例。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "在 NavBar 区域调用 queryNavDestinationInfo 且不做空值检查导致崩溃。",
+        "逐层透传 NavPathStack 或页面参数到深层子组件。",
+        "用 queryNavDestinationInfo 替代 onReady 做页面级一次性初始化（混淆职责）。",
+        "依赖页面名（而非 navDestinationId）区分多实例。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "深层嵌套子组件能正确查询到所在 NavDestination 的 name/index/param。",
+        "NavBar 区域调用返回 undefined 且不崩溃（空值检查生效）。",
+        "queryNavigationInfo 能拿到 pathStack 供子组件做栈操作。",
+        "多实例页面 navDestinationId 各不相同。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "深层子组件查询页面信息的日志",
+        "NavBar 区返回 undefined 不崩溃的日志",
+        "多实例 navDestinationId 对比日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-014",
+    "layer": "scene-functional",
+    "title": "Navigation 系统转场类型配置",
+    "phase": "DEV",
+    "user_prompt": "设置类应用不同页面要不同 Navigation 路由转场风格：主列表→二级页右滑进入、关于页渐变、底部筛选页上滑、某些静默跳转不要动画。请用 NavDestination.systemTransition 为每个页面声明系统转场类型（NavigationSystemTransitionType 的 FADE/SLIDE_RIGHT/SLIDE_BOTTOM 等），不用自己写动画。请输出按页面配置转场类型和关闭动画的实现方案。",
+    "intent": "边界场景：以 Navigation 路由转场（systemTransition）为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖系统转场枚举选型 + 关闭动画两种方式。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 NavDestination.systemTransition(NavigationSystemTransitionType.X) 为每个页面声明系统转场类型（DEFAULT/NONE/TITLE/CONTENT/FADE/EXPLODE/SLIDE_RIGHT/SLIDE_BOTTOM）。",
+        "全局关闭动画用 navStack.disableAnimation(true)（影响所有后续跳转）；单次关闭用 pushPath({name}, false) 的 animated 参数（仅本次）。",
+        "TITLE/CONTENT 可单独控制标题栏或内容区动画。",
+        "与 customTransition 同时设置时后设置的生效，需明确优先级。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "把系统转场时长等物理参数与业务逻辑耦合（不同设备表现不同）。",
+        "用 disableAnimation 全局关闭却期望单次保留动画。",
+        "TITLE/CONTENT 与 NONE 混淆导致内容区无转场。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "不同页面进入时呈现各自的系统转场效果（渐变/右滑/上滑）。",
+        "静默跳转页面无转场动画。",
+        "全局 disableAnimation 关闭所有跳转动画，单次 animated=false 仅本次无动画。",
+        "TITLE/CONTENT 单独控制标题栏/内容区动画生效。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "各转场类型效果截图或录屏",
+        "静默跳转无动画截图",
+        "systemTransition 配置代码"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-015",
+    "layer": "scene-functional",
+    "title": "单页面自定义转场动画（customTransition）",
+    "phase": "DEV",
+    "user_prompt": "有一个底部弹出面板页面（BottomSheet 风格），进入时从底部滑入、背景渐显，退出时向下滑出、背景渐隐。效果只用于这一个 NavDestination 页面，其他页面用系统默认转场。请用 NavDestination.customTransition 配代理函数，按 operation（PUSH/POP）和 isEnter（入场/退场）返回不同动画配置，不需要的方向返回 undefined 走系统默认。请输出实现方案。",
+    "intent": "边界场景：以 NavDestination 路由转场（customTransition）为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖代理函数签名 + PUSH/POP×入场/退场 四象限。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 NavDestination.customTransition(delegate) 实现单页面级自定义转场，代理函数签名 (operation: NavigationOperation, isEnter: boolean) → Array<NavDestinationTransition> | undefined。",
+        "必须按 PUSH 入场/退场、POP 入场/退场 四种情况分别返回动画配置，不需要自定义的方向返回 undefined 走系统默认。",
+        "NavDestinationTransition 的 event 回调须在 animateTo 上下文中直接设置目标状态驱动动画。",
+        "返回多个 NavDestinationTransition 时动画逐层叠加。",
+        "NavDestination 建议 STANDARD 模式（DIALOG 透明叠加转场效果不同）。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "所有方向都返回动画配置而不对不需要的方向返回 undefined。",
+        "customTransition 与 Navigation 级 customNavContentTransition 同时设置未注意优先级（Navigation 级优先）。",
+        "DIALOG 模式下期望 STANDARD 的转场效果。",
+        "event 回调外设置状态导致动画不驱动。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "PUSH 入场：面板从底部滑入 + 背景渐显。",
+        "POP 退场：面板向下滑出 + 背景渐隐。",
+        "不需要自定义的方向（如 PUSH 退场页）走系统默认转场。",
+        "其他页面不受影响，仍用系统默认转场。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "PUSH 入场动画截图/录屏",
+        "POP 退场动画截图/录屏",
+        "customTransition 代理函数代码"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-016",
+    "layer": "scene-functional",
+    "title": "Navigation 全局自定义转场动画（customNavContentTransition）",
+    "phase": "DEV",
+    "user_prompt": "应用要统一品牌化转场：所有页面跳转执行自定义的缩放+渐变动画，并在动画完成后回调（如埋点）。请用 Navigation.customNavContentTransition 在 Navigation 级别统一拦截转场事件。请输出实现方案。",
+    "intent": "边界场景：以 Navigation 全局转场（customNavContentTransition）为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖 Navigation 级拦截 + 单例回调管理 + finishTransition。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Navigation.customNavContentTransition(handler) 在 Navigation 级别统一拦截所有页面转场。",
+        "必须用单例工具类（如 CustomNavigationUtils）管理各页面动画回调，页面在 onReady 注册、aboutToDisappear 注销，防止内存泄漏。",
+        "动画完成后必须调用 transitionProxy.finishTransition() 通知系统，否则系统等 timeout 才完成转场导致页面卡住。",
+        "首页 NavBar（from.index === -1）须跳过自定义转场。",
+        "customNavContentTransition 优先级高于 NavDestination.customTransition，同时设置时 Navigation 级生效。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "未调用 finishTransition 导致系统等 timeout 页面卡住。",
+        "页面回调未在 aboutToDisappear 注销导致内存泄漏。",
+        "未跳过 NavBar（index=-1）参与自定义转场。",
+        "同时设置两级 customTransition 未明确 Navigation 级优先。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "所有页面跳转执行统一的缩放+渐变品牌转场。",
+        "动画完成后 onTransitionEnd 回调触发（埋点等）。",
+        "finishTransition 正确调用，页面不卡住。",
+        "首页 NavBar 跳转不参与自定义转场。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "统一品牌转场效果截图/录屏",
+        "finishTransition 与 onTransitionEnd 日志",
+        "回调注册/注销日志（无泄漏）"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-017",
+    "layer": "scene-functional",
+    "title": "可交互手势返回转场（PanGesture + customNavContentTransition）",
+    "phase": "DEV",
+    "user_prompt": "社交应用点聊天图片进全屏查看器，支持手势下滑关闭：按住图片向下滑实时缩小下移、背景渐变透明，松手后按下滑距离决定完成关闭或弹簧回弹。请用 Navigation.customNavContentTransition 做全局自定义转场 + PanGesture 手势驱动实时更新图片状态 + NavigationTransitionProxy 控制转场完成时机。请输出实现方案。",
+    "intent": "边界场景：以 Navigation 路由转场 + 手势交互为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖可交互转场代理 + 手势驱动 + finishTransition。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须用 Navigation.customNavContentTransition 全局自定义转场 + NavigationTransitionProxy 控制转场完成时机。",
+        "必须用 PanGesture 驱动实时更新图片状态（scale/translate/opacity），松手按下滑距离阈值决定关闭或回弹。",
+        "手势确认关闭时调 navStack.pop(false) 触发退场动画；未超阈值用弹簧动画回弹。",
+        "手势交互场景 timeout 须设较大值（2000~3000ms），因用户可能犹豫或慢速滑动。",
+        "必须调用 finishTransition，否则系统等 timeout 页面卡住。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "未调用 finishTransition 导致页面卡在转场。",
+        "手势场景 timeout 过短导致用户慢速滑动时转场超时。",
+        "松手后不按阈值判断直接关闭或回弹。",
+        "Router 页面转场与 Navigation push 动画同时播放（初始化 push 须关动画）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手势下滑时图片实时缩小下移、背景渐变透明（跟手）。",
+        "松手下滑超阈值完成关闭，未超阈值弹簧回弹。",
+        "finishTransition 正确调用，页面不卡住。",
+        "非手势 pop（系统返回）走正常退场。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手势下滑跟手效果录屏",
+        "松手关闭/回弹两种结果录屏",
+        "finishTransition 日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-018",
+    "layer": "scene-functional",
+    "title": "共享元素一镜到底转场（geometryTransition）",
+    "phase": "DEV",
+    "user_prompt": "商品列表页点商品图片，希望图片平滑过渡到详情页大图区域，实现「一镜到底」Hero 效果。请用 geometryTransition(id) 在列表页和详情页 Image 上标记相同共享元素 id，在 animateTo 闭包内执行 navStack.pushPath 并把 animated 设为 false 关闭默认转场，让系统自动算位置和大小差异过渡。请给出列表→详情（含返回）的完整实现方案。",
+    "intent": "边界场景：以 Navigation 路由跳转 + 共享元素（geometryTransition）为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖共享元素 id 配对 + animateTo 内跳转 + 关闭默认转场。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须在列表页和详情页对应 Image 上用相同 geometryTransition(id) 标记共享元素（id 与商品唯一标识绑定，不得硬编码重复）。",
+        "路由跳转必须在 animateTo 闭包内执行 navStack.pushPath，且 animated 设为 false 关闭默认转场，否则两段动画叠加异常。",
+        "geometryTransition 须设在内容组件（Image）上，不设在 NavDestination 本身。",
+        "仅支持 NavDestination→NavDestination 跳转（NavBar→NavDestination 不支持）。",
+        "返回时也必须在 animateTo 闭包内执行 pop(false) 触发反向共享元素动画。",
+        "NavDestination 不得设置 zIndex（会覆盖系统层级导致动画异常）。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "两端 geometryTransition id 不一致或为空字符串导致配对失败。",
+        "路由跳转未放在 animateTo 闭包内或未关默认转场导致动画叠加异常。",
+        "geometryTransition 设在 NavDestination 而非内容组件。",
+        "列表多商品硬编码同一 id 导致配对到错误元素。",
+        "NavDestination 设置 zIndex 干扰系统层级。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表点商品图片，图片平滑过渡（一镜到底）到详情页大图位置。",
+        "详情页返回时反向共享元素动画回到列表缩略图位置。",
+        "列表不同商品的共享元素 id 各不相同，配对正确。",
+        "无默认转场与共享元素动画叠加的异常。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表→详情一镜到底过渡录屏",
+        "详情→列表反向过渡录屏",
+        "geometryTransition id 配对日志"
+      ]
+    }
+  },
+  {
+    "case_id": "NAV-FUNC-019",
+    "layer": "scene-functional",
+    "title": "Dialog 蒙层渐隐退出动画",
+    "phase": "DEV",
+    "user_prompt": "用 NavDestinationMode.DIALOG 实现底部弹窗，默认转场下 pop 退出时蒙层没有渐隐效果，而是随内容一起向下滑出。期望退出时蒙层渐隐 + 内容下滑同时进行。请将 NavDestination 的 backgroundColor 绑定状态变量，在 onWillAppear 驱动蒙层从透明渐变到半透明（入场），onWillDisappear 驱动从半透明渐回透明（退场）。请输出实现方案。",
+    "intent": "边界场景：以 Navigation 路由 DIALOG 转场（蒙层渐隐）为主体的提问路由至 ARKUI-05 并联动 ARKUI-09，方案覆盖 DIALOG 模式 + 背景色动画 + onWillAppear/onWillDisappear。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-05",
+      "secondary_scenes": ["ARKUI-09"],
+      "next_scene_refs": ["./SKILL.md"],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": ["ARKUI-03"]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 NavDestinationMode.DIALOG 实现透明叠加弹窗。",
+        "必须将 NavDestination 的 backgroundColor 绑定到状态变量（非内容面板），在 onWillAppear 用 animateTo 驱动蒙层从透明渐变到半透明（入场）。",
+        "必须在 onWillDisappear 用 animateTo 驱动蒙层从半透明渐回透明（退场），与系统 DIALOG 内容下滑叠加产生组合效果。",
+        "backgroundColor 须设在 NavDestination 上（非内容面板），否则 pop 时蒙层随内容一起退出。",
+        "入场/退场动画时长建议与系统 DIALOG 转场时长接近以保证视觉协调。"
+      ],
+      "should_reuse_resources": [
+        "./references/routing-navigation-scenario-development.md",
+        "./references/animation-transitions.md"
+      ],
+      "forbidden_patterns": [
+        "将 backgroundColor 设在内容面板而非 NavDestination，导致蒙层随内容一起退出。",
+        "退场动画放在错误生命周期（非 onWillDisappear）导致看不到渐隐。",
+        "入场/退场时长与系统 DIALOG 转场差异过大导致不协调。",
+        "用 STANDARD 模式期望 DIALOG 的透明叠加效果。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "入场：蒙层从透明渐变到半透明，与内容上滑叠加。",
+        "退场：蒙层从半透明渐回透明，与内容下滑叠加（非蒙层随内容滑出）。",
+        "DIALOG 模式透明叠加，背景页面可见。",
+        "动画时长与系统转场协调。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "入场蒙层渐显截图/录屏",
+        "退场蒙层渐隐截图/录屏（关键：蒙层不随内容滑出）",
+        "backgroundColor 绑定代码"
+      ]
+    }
+  }
+]

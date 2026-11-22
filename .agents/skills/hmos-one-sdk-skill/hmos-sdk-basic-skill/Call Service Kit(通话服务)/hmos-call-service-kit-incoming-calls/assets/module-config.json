@@ -1,0 +1,54 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "abilities": [
+      {
+        "name": "VoipCallAbility",
+        "srcEntry": "./ets/VoipCallAbility.ts",
+        "description": "Ability for handling VoIP voice incoming calls",
+        "icon": "$media:icon",
+        "label": "$string:VoipCallAbility_label",
+        "exported": true,
+        "launchType": "singleton",
+        "startWindowIcon": "$media:startWindowIcon",
+        "startWindowBackground": "$color:startWindowBackground"
+      },
+      {
+        "name": "VoipVideoCallAbility",
+        "srcEntry": "./ets/VoipVideoCallAbility.ts",
+        "description": "Ability for handling VoIP video incoming calls",
+        "icon": "$media:icon",
+        "label": "$string:VoipVideoCallAbility_label",
+        "exported": true,
+        "launchType": "singleton",
+        "startWindowIcon": "$media:startWindowIcon",
+        "startWindowBackground": "$color:startWindowBackground"
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "$string:permission_network_info_reason",
+        "usedScene": {
+          "ability": [
+            "VoipCallAbility",
+            "VoipVideoCallAbility"
+          ],
+          "when": "always"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "$string:permission_internet_reason",
+        "usedScene": {
+          "ability": [
+            "VoipCallAbility",
+            "VoipVideoCallAbility"
+          ],
+          "when": "always"
+        }
+      }
+    ]
+  }
+}

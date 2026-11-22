@@ -1,0 +1,150 @@
+[
+  {
+    "case_id": "MI-FUNC-001",
+    "layer": "scene-functional",
+    "title": "商品主图多数据源加载+占位图开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品列表：商品卡片主图需支持三种数据源加载——本地资源图($r)、网络URL图、PixelMap图，每张图80x80圆角，加载失败显示默认占位图，加载完成回调获取图片实际宽高用于布局计算。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-15 图形图像场景中 Image 多数据源（$r/网络URL/PixelMap）+ objectFit + alt 占位图 + onError/onComplete 回调的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-15",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/media-image-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Image 组件加载商品主图，支持三种数据源：本地资源 $r('app.media.xxx')、网络 URL 字符串、PixelMap 对象，不能只用单一数据源。",
+        "必须设置 objectFit: ImageFit.Cover 保持宽高比覆盖裁剪，适配商品卡片 80x80 尺寸。",
+        "必须设置 alt($r('app.media.placeholder')) 加载失败占位图，避免图片失效时页面留白。",
+        "必须设置 width(80).height(80).borderRadius(8) 控制图片尺寸和圆角裁剪效果。",
+        "必须绑定 onError 回调处理加载失败逻辑（如记录错误日志、上报埋点）。",
+        "必须绑定 onComplete 回调获取图片加载完成后的实际宽高，用于布局计算。",
+        "网络 URL 图片必须异步加载，不能阻塞商品列表滚动性能。"
+      ],
+      "should_reuse_resources": [
+        "./references/media-image-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 ImageAnimator 代替 Image 展示静态商品主图，ImageAnimator 用于帧动画播放，静态图不需要逐帧播放。",
+        "用 XComponent 自定义渲染代替 Image，普通图片展示无需如此复杂且开发成本高。",
+        "不设置 alt 占位图，图片加载失败时页面留白严重影响用户体验。",
+        "不绑定 onError/onComplete 回调，无法处理加载失败和获取图片实际尺寸。",
+        "不设置 objectFit 导致图片拉伸变形或留白，无法保持宽高比。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "商品卡片主图能正确加载三种数据源（本地资源、网络URL、PixelMap）并显示。",
+        "图片以 80x80 尺寸、8px 圆角、objectFit.Cover 方式展示，保持宽高比覆盖裁剪。",
+        "图片加载失败时显示 alt 占位图，不留白；onError 回调被触发执行日志记录。",
+        "图片加载完成后 onComplete 回调被触发，能获取图片实际宽高。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "商品列表截图（三种数据源图片均正确显示，80x80圆角）",
+        "图片加载失败兜底显示占位图截图",
+        "onComplete 回调获取图片宽高日志截图"
+      ]
+    }
+  },
+  {
+    "case_id": "MI-FUNC-002",
+    "layer": "scene-functional",
+    "title": "直播礼物特效 ImageAnimator 逐帧播放开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿直播App礼物特效：用户送出礼物时播放由几十张序列帧图片组成的特效动画（如烟花绽放），通过images设置每帧图片路径/尺寸/时长，支持播放/暂停/停止控制，豪华礼物无限循环播放。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-15 图形图像场景中 ImageAnimator images + ImageFrameInfo + state 状态控制 + iterations 循环 + $rawfile 资源引用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-15",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/media-image-scenario-development.md",
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-09"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 ImageAnimator 组件播放序列帧礼物特效，不能用 Image 单张图或 GIF 代替逐帧播放。",
+        "必须通过 getFrameImages() 方法构造 ImageFrameInfo[] 帧数组，每帧设置 src、width、height、duration 属性。",
+        "帧图片 src 必须使用 $rawfile('xxx.png') 返回 Resource 类型引用 rawfile 资源，不能用字符串路径。",
+        "序列帧文件命名必须使用零填充编号（frame_00.png, frame_01.png, ...）保证排序正确。",
+        "必须通过 state 属性控制播放状态，使用 AnimationStatus.Running/Paused/Stopped 实现播放/暂停/停止。",
+        "豪华礼物必须设置 iterations: -1 实现无限循环播放，普通礼物设置 iterations: 1 单次播放。",
+        "images 属性不支持动态更新，切换不同礼物时必须使用条件渲染（if/else）重建 ImageAnimator。"
+      ],
+      "should_reuse_resources": [
+        "./references/media-image-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "用 Image 展示单张图或 GIF 代替 ImageAnimator，无法精确控制每帧时长和播放状态。",
+        "帧图片 src 使用字符串路径而非 $rawfile() 返回 Resource 类型，导致资源引用失败。",
+        "序列帧文件不使用零填充编号，导致排序错乱播放闪烁。",
+        "直接动态更新 images 属性切换礼物，images 不支持动态更新会导致帧错乱。",
+        "不通过 state 控制播放状态，无法实现暂停/停止/恢复。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "用户送出礼物后 ImageAnimator 逐帧播放序列帧特效动画，每帧按 duration 时长切换。",
+        "播放/暂停/停止按钮能通过 state 属性正确控制 AnimationStatus 状态，暂停后可恢复、停止后回首帧。",
+        "豪华礼物 iterations: -1 无限循环播放，普通礼物 iterations: 1 播放一次后停止。",
+        "切换不同礼物时通过条件渲染重建 ImageAnimator，帧动画正确切换不错乱。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "礼物特效逐帧播放截图（序列帧动画播放中）",
+        "播放/暂停/停止控制截图（三种状态切换）",
+        "无限循环播放截图（豪华礼物连续播放）"
+      ]
+    }
+  }
+]

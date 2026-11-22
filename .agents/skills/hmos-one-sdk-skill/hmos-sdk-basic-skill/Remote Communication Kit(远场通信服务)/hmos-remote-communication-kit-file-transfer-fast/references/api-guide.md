@@ -1,0 +1,126 @@
+# 快速实现上传下载
+---
+# 快速实现上传下载
+Remote Communication Kit 结合 Core File Kit 可以实现基于文件、目录、对象的快速上传和下载功能。 Remote Communication Kit 提供了远程通信的功能，包括远程连接、数据传输等 API 接口。而 Core File Kit 则提供了文件管理的功能，包括文件读取、写入等 API 接口。结合起来使用，可以通过 Remote Communication Kit 实现文件、目录、对象的远程传输，并且由于 Core File Kit 的高效文件处理能力，可以实现快速的上传和下载功能。
+#### 约束与限制
+文件上传下载能力支持Phone、2in1、Tablet、Wearable设备。并且从5.1.1(19)开始，新增支持TV设备；从6.1.0(23)开始，新增支持Car设备。
+#### 下载功能实现
+1.
+导入需要的模块，示例中除去发起请求以及响应错误处理，还需用到CoreFileKit中的fileIo，所以需导入以下模块。
+```typescript
+import { rcp } from '@kit.RemoteCommunicationKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { fileIo } from '@kit.CoreFileKit';
+```
+2.
+定义下载路径，并创建相关配置。如还需访问应用文件，可以参考 [应用文件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-file) 。
+```typescript
+// 下载文件保存的文件夹路径，仅为示例，请按需求进行替换。
+const DOWNLOAD_TO_PATH = `/data/storage/el2/base/haps/entry/files`;
+// 创建了一个安全配置对象，其中remoteValidation设置为'skip'，表示将跳过远程验证。
+const securityConfig: rcp.SecurityConfiguration = {
+  remoteValidation: 'skip'
+}
+// 创建了一个下载配置对象，其中kind设置为'folder'，表示下载的目标是文件夹，path设置为之前定义的DOWNLOAD_TO_PATH。
+let downloadToFile: rcp.DownloadToFile = {
+  kind: 'folder',
+  path: DOWNLOAD_TO_PATH
+}
+// 创建一个HTTP会话，其中请求配置包括传输超时设置和安全配置（配置可自定义）
+const session = rcp.createSession({
+  requestConfiguration: {
+    transfer: { timeout: { connectMs: 6000, transferMs: 6000, inactivityMs: 6000 } },
+    security: securityConfig
+  }
+})
+```
+3.
+检查目标路径是否存在，如果存在，则先删除该路径，以确保下载的文件不会覆盖已存在的文件；最后发起请求，使用创建的会话执行下载操作，将“https://example.com/test.png”这个URL的内容下载到指定的本地路径。如果下载成功，会输出成功信息；如果失败，会输出错误信息。
+```typescript
+// 检查目标路径是否存在
+if (fileIo.accessSync(DOWNLOAD_TO_PATH)) {
+  fileIo.rmdirSync(DOWNLOAD_TO_PATH);
+}
+// 发起请求，执行下载操作，这里的'https://example.com/test.png'网址为示例图片网址，模拟下载图片场景
+session.downloadToFile('https://example.com/test.png', downloadToFile)
+  .then((response: rcp.Response) => {
+    console.info(`Successfully received the response, statusCode: ${JSON.stringify(response.statusCode)}`);
+  }).catch((err: BusinessError) => {
+  console.error(`Failed, the error code is ${err.code}, error data is ${err.data}`)
+})
+```
+#### 上传功能实现
+1.
+导入需要的模块，示例中除去发起请求以及响应错误处理，还需用到CoreFileKit中的fileIo，需导入以下模块。
+```typescript
+import { rcp } from '@kit.RemoteCommunicationKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { fileIo } from '@kit.CoreFileKit';
+```
+2.
+定义Session配置，定义一个名为SESSION_CONFIG的对象，用于配置请求会话。配置包括传输超时和安全设置，如远程验证和TLS版本。
+```typescript
+let SESSION_CONFIG: rcp.SessionConfiguration = {
+  requestConfiguration: {
+    transfer: {
+      timeout: {
+        connectMs: 6000
+      }
+    },
+    security: {
+      remoteValidation: 'skip',
+      tlsOptions: {
+        tlsVersion: 'TlsV1.3'
+      }
+    }
+  }
+}
+```
+3.
+定义FdReadFile类，用于读取文件描述符（File Descriptor）指向的文件。read方法异步读取指定的ArrayBuffer缓冲区，并返回实际读取的字节数。
+```typescript
+class FdReadFile {
+  readonly fd: number;
+  constructor(fd: number) {
+    this.fd = fd;
+  }
+  async read(buffer: ArrayBuffer): Promise<number> {
+    return fileIo.read(this.fd, buffer);
+  }
+}
+```
+4.
+创建会话并打开文件，以只读模式打开一个文件。fileIo.openSync方法返回一个文件描述符，如果打开失败，程序会打印错误信息并返回。
+```typescript
+const session = rcp.createSession(SESSION_CONFIG);
+const file = fileIo.openSync('/data/storage/el1/bundle/entry_test/resources/resfile/upload_file.txt',
+  fileIo.OpenMode.READ_ONLY);
+if (!file) {
+  console.error('fileIo.openSync failed');
+  return;
+}
+```
+5.
+读取文件，创建一个FdReadFile实例，并分配一个缓冲区来读取文件。read方法异步执行，等待文件读取完成。
+```typescript
+const fdReadFile = new FdReadFile(file.fd);
+const buffer = new ArrayBuffer(1024 * 1024); // 假设文件大小为1MB
+await fdReadFile.read(buffer);
+```
+6.
+上传文件，使用会话的uploadFromFile方法将文件上传到指定的URL。UploadFromFile构造函数接受一个文件描述符读取文件。上传成功或失败时，会分别打印相应的信息。
+```typescript
+session.uploadFromFile('https://httpbin.org/anything', new rcp.UploadFromFile(fdReadFile))
+  .then((response: rcp.Response) => {
+    console.info(`Upload succeeded: ${response}`)
+  })
+  .catch((err: BusinessError) => {
+    console.error(`Upload failed: error code is ${err.code}, error data is ${err.data}`)
+  });
+```
+7.
+关闭文件和会话，释放资源。
+```typescript
+fileIo.closeSync(file.fd);
+session.close();
+```

@@ -1,0 +1,93 @@
+{
+  "ads-api": {
+    "title": "Ads Kit（广告服务）",
+    "file": "api/ads-api.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:38:50",
+    "size": 311
+  },
+  "ads-arkts": {
+    "title": "ArkTS API",
+    "file": "api/ads-arkts.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:38:50",
+    "size": 534
+  },
+  "js-apis-advertising": {
+    "title": "@ohos.advertising (广告服务框架)",
+    "file": "api/js-apis-advertising.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:38:52",
+    "size": 27062
+  },
+  "js-apis-adsserviceextensionability": {
+    "title": "@ohos.advertising.AdsServiceExtensionAbility(广告扩展服务)",
+    "file": "api/js-apis-adsserviceextensionability.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:39:04",
+    "size": 1111
+  },
+  "ads-advert": {
+    "title": "advertisement",
+    "file": "api/ads-advert.md",
+    "version": "V17",
+    "updatedDate": "2026-06-08 05:39:06",
+    "size": 139
+  },
+  "js-apis-advertisement": {
+    "title": "advertisement (广告内容)",
+    "file": "api/js-apis-advertisement.md",
+    "version": "V17",
+    "updatedDate": "2026-06-08 05:39:12",
+    "size": 1568
+  },
+  "ads-comp": {
+    "title": "ArkTS组件",
+    "file": "api/ads-comp.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:38:51",
+    "size": 296
+  },
+  "js-apis-adcomponent": {
+    "title": "@ohos.advertising.AdComponent (广告展示组件)",
+    "file": "api/js-apis-adcomponent.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:38:52",
+    "size": 4507
+  },
+  "js-apis-autoadcomponent": {
+    "title": "@ohos.advertising.AutoAdComponent (轮播广告展示组件)",
+    "file": "api/js-apis-autoadcomponent.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:39:01",
+    "size": 3659
+  },
+  "ads-arkts-errcode": {
+    "title": "错误码",
+    "file": "api/ads-arkts-errcode.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:38:51",
+    "size": 217
+  },
+  "errorcode-ads": {
+    "title": "广告服务框架错误码",
+    "file": "api/errorcode-ads.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:38:52",
+    "size": 2177
+  },
+  "js-apis-oaid": {
+    "title": "@ohos.identifier.oaid (开放匿名设备标识服务)",
+    "file": "api/js-apis-oaid.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:39:01",
+    "size": 3542
+  },
+  "errorcode-oaid": {
+    "title": "开放匿名设备标识服务错误码",
+    "file": "api/errorcode-oaid.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:39:01",
+    "size": 1094
+  }
+}

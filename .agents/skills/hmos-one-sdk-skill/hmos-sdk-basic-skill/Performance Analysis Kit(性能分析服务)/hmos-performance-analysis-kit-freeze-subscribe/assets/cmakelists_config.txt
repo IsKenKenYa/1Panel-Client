@@ -1,0 +1,43 @@
+# CMakeLists.txt 配置示例
+# 用于订阅应用冻屏事件的Native C++工程
+
+cmake_minimum_required(VERSION 3.4.1)
+project(entry)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+
+# 添加源文件
+# napi_init.cpp: NAPI接口实现
+# jsoncpp.cpp: JSON解析库
+add_library(entry SHARED 
+    napi_init.cpp
+    jsoncpp.cpp
+)
+
+# 添加头文件路径
+target_include_directories(entry PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/json
+)
+
+# 添加依赖库
+target_link_libraries(entry PUBLIC 
+    libace_napi.z.so        # NAPI接口库
+    libhilog_ndk.z.so       # 日志库
+    libhiappevent_ndk.z.so  # HiAppEvent事件订阅库
+)
+
+# 编译选项
+target_compile_options(entry PRIVATE 
+    -Wall
+    -Wextra
+    -Werror
+)
+
+# 说明:
+# 1. jsoncpp.cpp、json.h、json-forwards.h 需要从 https://github.com/open-source-parsers/jsoncpp 下载
+#    并按照 README 的 Amalgamated source 步骤生成
+# 2. 将这三个文件放在 cpp/json 目录下
+# 3. libhiappevent_ndk.z.so 是 HarmonyOS HiAppEvent NDK 库，API version >= 12
+# 4. libhilog_ndk.z.so 用于日志输出
+# 5. libace_napi.z.so 用于 NAPI 接口注册

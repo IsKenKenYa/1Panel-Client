@@ -1,0 +1,755 @@
+[
+  {
+    "case_id": "CPB-FUNC-001",
+    "layer": "scene-functional",
+    "title": "设置页设置项 Column+Row 垂直排列开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿系统设置页：多个设置项（无线网络、蓝牙、亮度等）垂直排列，每行包含左侧图标+标题、右侧副文本或开关。要求间距均匀、开关右对齐。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 Column space 间距 + Row layoutWeight 撑满 + Blank 推靠 + Toggle 开关的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Column({ space: 12 }) 设置行间距，不能用 margin 硬编码每行间距。",
+        "每行设置项必须使用 Row 包裹左侧图标+标题和右侧副文本/Toggle。",
+        "右侧 Toggle 必须使用 layoutWeight(1) 的 Blank 或子组件 layoutWeight 撑满中间空白实现右对齐。",
+        "Toggle 开关必须绑定 @State 布尔状态变量实现开关切换。",
+        "必须提供至少 3 行设置项（无线网络 Toggle、蓝牙 Toggle、亮度 Text 副文本）验证不同右侧内容。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "使用 margin 硬编码每行间距代替 Column space 属性。",
+        "使用 Position 绝对定位将 Toggle 钉在右侧代替 layoutWeight/Blank 方案。",
+        "Toggle 不绑定状态变量，点击无响应。",
+        "所有设置项右侧统一用 Text 而不区分 Toggle 开关场景。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "设置项垂直排列，行间距均匀（space: 12vp）。",
+        "每行左侧图标+标题在左，右侧副文本或 Toggle 开关在右。",
+        "Toggle 开关使用 layoutWeight/Blank 实现右对齐，不随标题长度变化而位移。",
+        "点击 Toggle 开关可切换开/关状态，状态变量正确更新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "设置页截图（多行设置项垂直排列，开关右对齐）",
+        "Toggle 开/关状态切换截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-002",
+    "layer": "scene-functional",
+    "title": "悬浮返回顶部按钮 Stack 层叠开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿通讯录列表：长列表底部悬浮一个返回顶部圆形按钮，不随列表滚动而移动，始终固定在右下角。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 Stack + alignContent(BottomEnd) + 圆形按钮定位 + List 作为底层的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-16"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Stack 作为容器，List 作为底层内容、圆形按钮作为上层叠加。",
+        "必须使用 Stack 的 alignContent(Alignment.BottomEnd) 将按钮定位到右下角。",
+        "圆形按钮必须使用 Circle/BorderRadius 绘制圆形外观，内含返回顶部图标。",
+        "点击按钮必须调用 List 的 scrollToIndex(0) 方法返回顶部。",
+        "按钮必须有 margin/padding 偏移避免紧贴屏幕边缘。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 Column + margin 实现悬浮按钮，导致按钮随列表滚动而移动。",
+        "用 Position 绝对定位代替 Stack alignContent，脱离文档流难以维护。",
+        "按钮不绑定点击事件或点击后不调用 scrollToIndex。",
+        "按钮紧贴屏幕边缘无 margin 偏移。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "List 列表可正常上下滚动。",
+        "圆形返回顶部按钮始终固定在右下角，不随列表滚动而移动。",
+        "按钮使用 Stack + alignContent(BottomEnd) 实现层叠定位。",
+        "点击按钮后列表滚动回到顶部位置。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表滚动截图（按钮始终在右下角）",
+        "点击返回顶部后截图（列表回到顶部）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-003",
+    "layer": "scene-functional",
+    "title": "社交动态卡片 RelativeContainer 相对定位开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交动态卡片：头像左上、昵称在头像右侧、时间在昵称下方、右上角关注按钮、底部操作栏（点赞/评论/转发）相对于卡片底部对齐。要求使用相对定位布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 RelativeContainer + alignRules 锚点 + chainMode 链式定位的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 RelativeContainer 作为卡片根容器。",
+        "头像必须通过 alignRules 设置 top/start 锚点定位到左上角。",
+        "昵称必须通过 alignRules 的 start 锚点关联头像右侧（to_right_of 头像）。",
+        "关注按钮必须通过 alignRules 的 top/end 锚点定位到右上角。",
+        "底部操作栏必须通过 alignRules 的 bottom 锚点对齐到卡片底部，使用 chainMode 实现水平链式分布。",
+        "所有子组件必须设置 .id() 供 alignRules 锚点引用。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用多层 Row/Column 嵌套 + margin 硬编码偏移代替 RelativeContainer 相对定位。",
+        "子组件不设置 .id() 导致 alignRules 锚点引用失效。",
+        "使用 Position 绝对定位代替 alignRules 相对定位。",
+        "底部操作栏不使用 chainMode 而用 margin 硬编码间距。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "头像在卡片左上角，昵称在头像右侧，时间在昵称下方。",
+        "关注按钮在卡片右上角。",
+        "底部操作栏（点赞/评论/转发）在卡片底部水平分布对齐。",
+        "使用 RelativeContainer + alignRules 实现相对定位，无 margin 硬编码偏移。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "社交卡片截图（各元素相对定位正确）",
+        "不同屏幕宽度下卡片布局自适应截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-004",
+    "layer": "scene-functional",
+    "title": "电商商品多设备列数 GridRow+GridCol 响应式开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品列表：手机竖屏2列、手机横屏4列、平板6列，要求根据断点自动调整列数。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 GridRow + GridCol + span 跨列 + breakpoints 断点适配的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 GridRow 定义 breakpoints 断点（如 xs/sm/md/lg），每个断点对应不同列数总数。",
+        "每个商品卡片必须使用 GridCol + span 设置在不同断点下的跨列数（如 sm: span 6 即 2 列、md: span 3 即 4 列）。",
+        "GridRow 的 columns 总数必须为各断点列数的最小公倍数（如 12 总数，sm span 6 = 2 列，md span 3 = 4 列）。",
+        "必须提供商品数据列表通过 ForEach 渲染 GridCol。",
+        "断点切换时商品列数必须自动调整，无需手动监听窗口尺寸变化。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 if-else + 窗口尺寸监听硬编码不同屏幕宽度的列数。",
+        "用 Grid + columnsTemplate 代替 GridRow 做响应式，Grid 不支持断点。",
+        "GridCol 不设置 span 或 span 值不匹配断点列数总数。",
+        "breakpoints 未定义或断点值不合理。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手机竖屏（sm 断点）显示 2 列商品。",
+        "手机横屏（md 断点）显示 4 列商品。",
+        "平板（lg 断点）显示 6 列商品。",
+        "断点切换时列数自动调整，无需手动刷新。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "手机竖屏截图（2 列商品）",
+        "手机横屏截图（4 列商品）",
+        "平板截图（6 列商品）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-005",
+    "layer": "scene-functional",
+    "title": "文件管理器视图切换 DynamicLayout 状态保持开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器：列表视图和网格视图切换时保持各视图滚动位置不丢失。要求使用DynamicLayout实现状态保持。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 DynamicLayout + LayoutAlgorithm + 切换保持状态的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 DynamicLayout 组件作为视图切换容器。",
+        "必须通过 LayoutAlgorithm 或空间索引为不同视图分配独立布局槽位，切换时保持各视图的滚动位置状态。",
+        "必须通过 LayoutAlgorithm 切换实现不同视图：列表视图使用 ColumnLayoutAlgorithm（单列线性排列），网格视图使用 GridLayoutAlgorithm（多列网格排列）。",
+        "切换视图时通过替换 algorithm 实例触发重新布局，不能销毁和重建子组件，保持滚动位置状态。",
+        "必须提供切换按钮（如 SegmentedButton 或 Toggle）绑定视图切换状态变量。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 if-else 直接切换 List 和 Grid 组件（或任何不同布局组件），导致组件销毁重建、滚动位置丢失。",
+        "用 visibility(Visibility.Hidden/Visible) 控制显隐代替 DynamicLayout，两组件同时存在浪费资源。",
+        "切换视图后滚动位置回到顶部而非保持上次位置。",
+        "不使用 DynamicLayout 直接用 @State + if 控制组件树。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "列表视图和网格视图可通过切换按钮自由切换。",
+        "切换视图后各视图的滚动位置保持不丢失。",
+        "使用 DynamicLayout + LayoutAlgorithm 实现状态保持，非 if-else 销毁重建。",
+        "两个视图中的文件数据一致，只是展示形式不同。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表视图截图（滚动到某位置）",
+        "切换到网格视图再切回列表视图截图（滚动位置保持）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-006",
+    "layer": "scene-functional",
+    "title": "通讯录分组吸顶+左滑删除 List 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿手机通讯录：联系人按字母分组，组标题吸顶不随滚动消失；每条联系人可左滑出现删除按钮。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 滚动组件选型场景中 List + ListItemGroup + sticky(Header) + swipeAction 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 List 作为滚动容器，ListItemGroup 实现按字母分组。",
+        "ListItemGroup 的 header 必须设置 sticky(StickyStyle.Header) 实现组标题吸顶。",
+        "每个联系人 ListItem 必须设置 swipeAction({ end: { builder: 删除按钮 } }) 实现左滑删除。",
+        "组标题必须显示字母索引（A/B/C...），联系人按首字母归类到对应分组。",
+        "左滑删除按钮必须绑定点击事件，点击后从数据源移除对应联系人并刷新列表。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 Scroll + Column 代替 List，无法使用 ListItemGroup 分组和 sticky 吸顶。",
+        "用 ListItem 代替 ListItemGroup 实现分组，无法设置组标题吸顶。",
+        "不使用 sticky 导致组标题随滚动消失。",
+        "swipeAction 不设置 end builder 或删除按钮不绑定点击事件。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "联系人按字母分组，组标题（A/B/C...）在滚动时吸顶不消失。",
+        "左滑联系人项出现删除按钮，松手后按钮保持显示。",
+        "点击删除按钮后联系人从列表中移除。",
+        "使用 List + ListItemGroup + sticky + swipeAction 实现，非 Scroll + Column。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "通讯录截图（分组标题吸顶可见）",
+        "左滑删除截图（删除按钮可见）",
+        "删除后列表刷新截图（联系人已移除）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-007",
+    "layer": "scene-functional",
+    "title": "聊天照片九宫格 Grid 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿聊天消息中的照片网格：1-9张照片以九宫格排列，3列等宽，点击可预览大图。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 滚动组件选型场景中 Grid + columnsTemplate('1fr 1fr 1fr') + GridItem + 等宽列的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Grid 组件，设置 columnsTemplate('1fr 1fr 1fr') 实现 3 列等宽。",
+        "照片必须通过 ForEach 渲染到 GridItem 中，GridItem 内含 Image 组件。",
+        "Image 必须设置 objectFit(ImageFit.Cover) 和固定宽高比保证网格整齐。",
+        "点击 GridItem 必须触发大图预览（可使用 ImageAnimator 或全屏 Image 组件）。",
+        "照片数量为 1-9 张时布局正确（1 张占满、4 张 2x2、9 张 3x3）。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 Flex 或 Row + 手动换行代替 Grid，无法保证等宽列。",
+        "不使用 columnsTemplate 导致列宽不一致。",
+        "Image 不设置 objectFit 导致照片变形。",
+        "点击照片无预览大图功能。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "1-9 张照片以 3 列等宽网格排列，列宽一致。",
+        "使用 Grid + columnsTemplate('1fr 1fr 1fr') 实现，非 Flex/Row 手动排列。",
+        "Image 照片不变形（objectFit: Cover）。",
+        "点击照片可预览大图。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "九宫格照片截图（3 列等宽，照片不变形）",
+        "点击预览大图截图"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-008",
+    "layer": "scene-functional",
+    "title": "商品推荐瀑布流 WaterFlow 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商首页推荐流：商品卡片高度不等、参差不齐排列，支持无限滚动加载更多。要求瀑布流布局。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 滚动组件选型场景中 WaterFlow + FlowItem + columnsTemplate + 不等高排列的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 WaterFlow 作为瀑布流容器，设置 columnsTemplate('1fr 1fr') 实现 2 列。",
+        "商品卡片必须通过 ForEach 渲染到 FlowItem 中，FlowItem 高度根据内容自适应。",
+        "商品卡片高度必须不等（含图片+标题+价格，图片高度按宽高比变化）。",
+        "必须实现 onReachEnd 或 onScrollIndex 回调触发加载更多数据。",
+        "加载更多时必须显示底部 loading 指示器，加载完成后追加新 FlowItem。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "用 Grid 代替 WaterFlow，Grid 会强制等高排列无法实现瀑布流效果。",
+        "用 List + 自定义布局手动实现瀑布流，代码复杂且性能差。",
+        "FlowItem 设置固定高度导致卡片等高，失去瀑布流参差不齐效果。",
+        "不实现 onReachEnd 加载更多，列表无法无限滚动。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "商品卡片不等高、参差不齐排列，形成瀑布流效果。",
+        "使用 WaterFlow + FlowItem + columnsTemplate 实现，非 Grid 等高排列。",
+        "滚动到底部时自动触发加载更多，追加新商品卡片。",
+        "加载更多时显示底部 loading 指示器。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "瀑布流截图（不等高卡片参差不齐排列）",
+        "加载更多截图（底部 loading 指示器可见）",
+        "加载完成后截图（新卡片追加）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-009",
+    "layer": "scene-functional",
+    "title": "搜索历史标签 Flex 自适应换行开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿搜索页历史搜索词：多个标签长度不一，要求自动换行排列、每行标签数自适应屏幕宽度，标签间距均匀不被压缩。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 Flex + wrap(Wrap) + flexShrink(0) 防压缩 + 自适应换行的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Flex({ wrap: FlexWrap.Wrap }) 作为标签容器，启用自动换行。",
+        "每个标签必须设置 flexShrink(0) 防止宽度不足时被压缩变形。",
+        "标签间距必须通过 Flex 的 space 属性或子组件 margin 设置均匀间距。",
+        "标签数据必须通过 ForEach 渲染，标签宽度根据文本长度自适应。",
+        "必须验证不同标签数量（3/6/10个）下换行行为正确，每行标签数随屏幕宽度自适应。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "使用 Row + 手动计算换行位置代替 Flex wrap，代码复杂且不可靠。",
+        "标签不设置 flexShrink(0) 导致宽度不足时标签被压缩变形。",
+        "使用 Column 垂直排列标签，无法实现一行多列自适应换行。",
+        "标签宽度固定不随文本长度自适应，短标签和长标签宽度一致。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "多个标签长度不一但间距均匀，不被压缩变形。",
+        "标签自动换行，每行标签数随屏幕宽度自适应。",
+        "使用 Flex({ wrap: FlexWrap.Wrap }) + flexShrink(0) 实现，非 Row 手动换行。",
+        "不同标签数量下换行行为正确。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "搜索历史标签截图（多标签自适应换行排列）",
+        "旋转屏幕截图（标签数自适应变化）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-010",
+    "layer": "scene-functional",
+    "title": "新闻App分类页签 Tabs 切换开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿新闻App首页：顶部多个分类页签（推荐/科技/财经/体育），左右滑动切换页签内容，底部内容区显示对应分类的新闻列表。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-14 布局选型场景中 Tabs + TabContent + TabsController + scrollable 滑动切换的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-14",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Tabs 组件作为页签容器，TabContent 包裹每个分类的内容区。",
+        "必须使用 TabsController 控制页签切换，点击页签标题切换到对应内容。",
+        "Tabs 必须设置 scrollable 或 barMode(BarMode.Scrollable) 支持页签左右滑动切换。",
+        "每个 TabContent 的 tabBar 必须设置分类名称（推荐/科技/财经/体育）。",
+        "内容区必须使用 List 组件展示对应分类的新闻列表，切换页签时内容区更新。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "使用 Row + onClick 手动切换内容区代替 Tabs 组件，无法支持滑动切换。",
+        "不使用 TabContent 包裹内容，直接用 if-else 切换 List。",
+        "Tabs 不设置 scrollable 导致页签多时无法滚动查看全部分类。",
+        "切换页签后新闻列表不更新或状态混乱。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "顶部页签显示多个分类（推荐/科技/财经/体育），可点击切换。",
+        "左右滑动内容区可切换页签，页签标题高亮同步更新。",
+        "每个页签内容区显示对应分类的新闻列表。",
+        "使用 Tabs + TabContent + TabsController 实现，非 Row + if-else 手动切换。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "新闻首页截图（页签可见，默认推荐分类内容）",
+        "滑动切换到科技页签截图（内容区更新，页签高亮切换）"
+      ]
+    }
+  },
+  {
+    "case_id": "CPB-FUNC-011",
+    "layer": "scene-functional",
+    "title": "智能手表圆弧菜单 ArcList 开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿智能手表应用列表：在圆形表盘上展示应用图标列表，列表项沿圆弧排列，支持旋转表冠滚动。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-16 滚动组件选型场景中 ArcList + ArcListItem + 圆形表盘适配 + initialIndex 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-16",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-11"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 ArcList 组件作为圆形表盘列表容器，非普通 List 组件。",
+        "列表项必须使用 ArcListItem 包裹应用图标，沿圆弧排列显示。",
+        "必须设置 ArcList 的 initialIndex 指定初始选中项居中显示。",
+        "必须适配圆形屏幕：图标大小和间距沿圆弧分布，中心项最大。",
+        "必须支持旋转表冠或滑动滚动，滚动时列表项沿圆弧平滑移动。"
+      ],
+      "should_reuse_resources": [
+        "./references/component-page-building-scenario-development.md"
+      ],
+      "forbidden_patterns": [
+        "使用普通 List 代替 ArcList，无法实现圆弧排列效果。",
+        "不使用 ArcListItem 包裹列表项，直接放 Image 在 ArcList 中。",
+        "不设置 initialIndex 导致初始无选中项居中。",
+        "图标等大等距排列，不沿圆弧分布，无法适配圆形表盘。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "应用图标沿圆弧排列显示，中心项最大。",
+        "支持滑动或旋转表冠滚动，列表项沿圆弧平滑移动。",
+        "使用 ArcList + ArcListItem 实现，非普通 List。",
+        "initialIndex 指定的项初始居中显示。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "智能手表圆弧菜单截图（图标沿圆弧排列，中心项最大）",
+        "滚动后截图（列表项沿圆弧移动）"
+      ]
+    }
+  }
+]

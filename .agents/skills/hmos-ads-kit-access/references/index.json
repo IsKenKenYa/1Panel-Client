@@ -1,0 +1,135 @@
+{
+  "ads-introduction": {
+    "title": "Ads Kit简介",
+    "file": "ads-introduction.md",
+    "version": "V221",
+    "updatedDate": "2026-06-08 05:30:25",
+    "size": 1982
+  },
+  "ads-kit-glossary": {
+    "title": "Ads Kit术语",
+    "file": "ads-kit-glossary.md",
+    "version": "V93",
+    "updatedDate": "2026-06-08 05:30:30",
+    "size": 831
+  },
+  "ads-kit-guide": {
+    "title": "Ads Kit（广告服务）",
+    "file": "ads-kit-guide.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:30:25",
+    "size": 653
+  },
+  "ads-publisher-service-dev": {
+    "title": "流量变现服务开发",
+    "file": "ads-publisher-service-dev.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:30:43",
+    "size": 997
+  },
+  "ads-publisher-service-dev-overview": {
+    "title": "流量变现服务开发概述",
+    "file": "ads-publisher-service-dev-overview.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:30:55",
+    "size": 416
+  },
+  "ads-publisher-service-banner": {
+    "title": "横幅广告",
+    "file": "ads-publisher-service-banner.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:31:24",
+    "size": 8973
+  },
+  "ads-publisher-service-native": {
+    "title": "原生广告",
+    "file": "ads-publisher-service-native.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:31:39",
+    "size": 13167
+  },
+  "ads-publisher-service-reward": {
+    "title": "激励广告",
+    "file": "ads-publisher-service-reward.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:31:57",
+    "size": 22501
+  },
+  "ads-publisher-service-interstitial": {
+    "title": "插屏广告",
+    "file": "ads-publisher-service-interstitial.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:32:16",
+    "size": 12612
+  },
+  "ads-publisher-service-splash": {
+    "title": "开屏广告",
+    "file": "ads-publisher-service-splash.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:32:20",
+    "size": 16097
+  },
+  "ads-publisher-service-roll": {
+    "title": "贴片广告",
+    "file": "ads-publisher-service-roll.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:32:25",
+    "size": 17394
+  },
+  "ads-real-time-bidding": {
+    "title": "实时竞价",
+    "file": "ads-real-time-bidding.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:32:29",
+    "size": 8944
+  },
+  "ads-publisher-service-faq": {
+    "title": "流量变现服务常见问题",
+    "file": "ads-publisher-service-faq.md",
+    "version": "V215",
+    "updatedDate": "2026-06-08 05:32:30",
+    "size": 368
+  },
+  "ads-publisher-service-faq-4": {
+    "title": "展示广告时显示白屏",
+    "file": "ads-publisher-service-faq-4.md",
+    "version": "V280",
+    "updatedDate": "2026-06-08 05:32:42",
+    "size": 548
+  },
+  "ads-publisher-service-faq-6": {
+    "title": "鲸鸿动能媒体服务平台打开受限",
+    "file": "ads-publisher-service-faq-6.md",
+    "version": "V280",
+    "updatedDate": "2026-06-08 05:32:55",
+    "size": 212
+  },
+  "ads-publisher-service-faq-7": {
+    "title": "PC设备请求或展示广告时返回了801错误码",
+    "file": "ads-publisher-service-faq-7.md",
+    "version": "V19",
+    "updatedDate": "2026-06-08 05:32:59",
+    "size": 101
+  },
+  "description-of-personal-data": {
+    "title": "鲸鸿动能Ads Kit个人数据处理说明",
+    "file": "description-of-personal-data.md",
+    "version": "V66",
+    "updatedDate": "2026-06-08 05:30:47",
+    "size": 1776
+  },
+  "ad-redirection": {
+    "title": "广告跳转",
+    "file": "ad-redirection.md",
+    "version": "V5",
+    "updatedDate": "2026-06-08 05:35:34",
+    "size": 2732
+  },
+  "web-adsblock": {
+    "title": "使用Web组件的广告过滤功能",
+    "file": "web-adsblock.md",
+    "version": "V213",
+    "updatedDate": "2026-06-08 05:33:39",
+    "size": 13552
+  }
+}

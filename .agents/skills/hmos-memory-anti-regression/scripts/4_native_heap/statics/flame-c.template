@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>{0} — Native Heap Flame Graphs</title>
+  <link rel="stylesheet" type="text/css" href="{1}/d3-flamegraph.css"/>
+  <style>
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 20px; background: #fafafa; color: #222;
+    }}
+    h1 {{ color: #333; margin: 0 0 8px; font-size: 22px; }}
+    .summary {{ color: #666; font-size: 13px; margin-bottom: 24px; }}
+    .so-section {{
+      background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }}
+    .so-section h2 {{
+      color: #1a73e8; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px;
+      margin: 0 0 8px; font-size: 16px; word-break: break-all;
+    }}
+    .so-section .stats {{ color: #666; font-size: 13px; margin-bottom: 12px; }}
+    .chart {{ width: 100%; }}
+    .d3-flame-graph-label {{ font-size: x-small; }}
+  </style>
+</head>
+<body>
+  <h1>{0}</h1>
+  <div class="summary" id="summary"></div>
+  <div id="charts"></div>
+
+  <script type="text/javascript" src="{1}/d3.v7.js"></script>
+  <script type="text/javascript" src="{1}/d3-flamegraph.min.js"></script>
+  <script type="text/javascript" src="{1}/d3-flamegraph-tooltip.min.js"></script>
+
+  <script type="text/javascript">
+    // {0} = 版本名, {1} = statics 目录, {2} = [{name, string_table, tree}, ...]
+    var soData = {2};
+
+    function countNodes(node) {{
+        var n = 1;
+        var children = node.children || [];
+        for (var i = 0; i < children.length; i++) n += countNodes(children[i]);
+        return n;
+    }}
+
+    var container = document.getElementById('charts');
+    var summary = document.getElementById('summary');
+    var totalBytes = 0;
+    var totalNodes = 0;
+
+    soData.forEach(function(so, idx) {{
+        totalBytes += so.tree.value;
+        totalNodes += countNodes(so.tree);
+
+        var section = document.createElement('div');
+        section.className = 'so-section';
+        container.appendChild(section);
+
+        var h2 = document.createElement('h2');
+        h2.textContent = so.name;
+        section.appendChild(h2);
+
+        var stats = document.createElement('div');
+        stats.className = 'stats';
+        stats.textContent = (so.tree.value / 1048576).toFixed(2) + ' MB · '
+            + countNodes(so.tree).toLocaleString() + ' nodes';
+        section.appendChild(stats);
+
+        var chartDiv = document.createElement('div');
+        chartDiv.className = 'chart';
+        chartDiv.id = 'chart-' + idx;
+        section.appendChild(chartDiv);
+
+        var string_table = so.string_table;
+
+        var tip = flamegraph.tooltip.defaultFlamegraphTooltip()
+            .html(function(d) {{
+                var str = "Symbol: " + string_table[d.data.s]
+                    + "<br>Lib: " + string_table[d.data.l]
+                    + "<br>Size: " + d.data.si + "MB"
+                    + "<br>apply_count: " + d.data.ac
+                    + "<br>release_count: " + d.data.rc;
+                if (Object.hasOwn(d.data, "cc")) {{
+                    str += "<br>Callchain: " + d.data.cc
+                        + "<br>apply_size: " + d.data.as
+                        + "<br>release_size: " + d.data.rs
+                        + "<br>type: " + d.data.t;
+                }}
+                return str;
+            }});
+
+        var chart = flamegraph()
+            .width(chartDiv.clientWidth)
+            .cellHeight(18)
+            .transitionDuration(0)
+            .transitionEase(d3.easeCubic)
+            .sort(function(a, b) {{ return d3.descending(a.data.value, b.data.value); }})
+            .title("");
+        chart.minFrameSize(1);
+        chart.inverted(true);
+        chart.tooltip(tip);
+
+        d3.select('#chart-' + idx)
+            .datum(so.tree)
+            .call(chart);
+    }});
+
+    summary.textContent = soData.length + ' SOs · 总 '
+        + (totalBytes / 1048576).toFixed(2) + ' MB · '
+        + totalNodes.toLocaleString() + ' nodes';
+
+    function notifyHeight(){{parent.postMessage({{height:document.body.scrollHeight}},'*');}}
+    var debounced=function(){{var t;return function(){{clearTimeout(t);t=setTimeout(notifyHeight,200);}};}}();
+    notifyHeight();setTimeout(notifyHeight,600);setTimeout(notifyHeight,1500);setTimeout(notifyHeight,3000);
+    try{{new ResizeObserver(debounced).observe(document.body);}}catch(e){{}}
+  </script>
+</body>
+</html>

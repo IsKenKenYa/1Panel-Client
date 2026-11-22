@@ -1,0 +1,40 @@
+{
+  "app": {
+    "bundleName": "com.example.remote_communication",
+    "version": "1.0.0",
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1",
+      "wearable",
+      "tv",
+      "car"
+    ],
+    "reqPermissions": [
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "需要网络权限以进行HTTP通信"
+      }
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ts",
+        "label": "$string:EntryAbility_label",
+        "metaData": {
+          "customizeData": [
+            {
+              "name": "ohos.entry.main",
+              "value": "MainAbility"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

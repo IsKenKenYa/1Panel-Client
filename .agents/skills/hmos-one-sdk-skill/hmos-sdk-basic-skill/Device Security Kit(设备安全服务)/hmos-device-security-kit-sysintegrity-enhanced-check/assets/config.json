@@ -1,0 +1,91 @@
+{
+  "app": {
+    "bundleName": "com.example.myapp",
+    "version": "1.0.0",
+    "apiVersion": {
+      "compatible": 20,
+      "target": 20,
+      "releaseType": "Release"
+    }
+  },
+  "deviceSecurity": {
+    "serviceEnabled": true,
+    "profileConfigured": true,
+    "integrityCheck": {
+      "enabled": true,
+      "maxRetryCount": 3,
+      "retryDelayMs": 1000,
+      "timeoutMs": 10000,
+      "useTaskPool": true,
+      "workerThreadCount": 1
+    },
+    "nonce": {
+      "minLength": 16,
+      "maxLength": 66,
+      "serverEndpoint": "https://your-server.com/api/get-nonce"
+    },
+    "verification": {
+      "serverEndpoint": "https://your-server.com/api/verify-integrity",
+      "rootCACertUrl": "https://pki.consumer.huawei.com/ca/cer/Huawei_CBG_ECC_Device_Attestation_Root_CA.cer",
+      "resultMaxAgeMs": 600000,
+      "strictVerification": true
+    },
+    "fallback": {
+      "useLocalCheck": true,
+      "allowOperationOnFailure": false,
+      "showUserWarning": true
+    },
+    "rateLimit": {
+      "maxCallsPerDay": 10000,
+      "maxCallsPerMinute": 5,
+      "maxConcurrentCalls": 5,
+      "throttleEnabled": true
+    },
+    "errorHandling": {
+      "networkErrorAction": "retry",
+      "apiUnsupportedAction": "fallback",
+      "rateLimitExceededAction": "wait",
+      "verificationFailedAction": "reject"
+    },
+    "logging": {
+      "enabled": true,
+      "level": "info",
+      "logSensitiveData": false
+    }
+  },
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1",
+      "wearable"
+    ],
+    "abilities": [
+      {
+        "name": "MainAbility",
+        "srcEntry": "./ets/MainAbility/MainAbility.ts",
+        "description": "Main ability for the app",
+        "icon": "$media:icon",
+        "label": "MyApp",
+        "visible": true,
+        "skills": [
+          {
+            "actions": [
+              "action.system.home"
+            ],
+            "entities": [
+              "entity.system.home"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "@kit.DeviceSecurityKit": "^6.0.0",
+    "@kit.BasicServicesKit": "^6.0.0",
+    "@kit.PerformanceAnalysisKit": "^6.0.0"
+  }
+}

@@ -1,0 +1,345 @@
+[
+  {
+    "code": "401",
+    "message": "Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/include/preferences_error.h",
+    "description": "参数错误。在 NAPI 层由 ParamTypeError / ParamNumError 抛出（code=401）。常见于 key 非字符串、参数个数不对、callback 类型错误等。"
+  },
+  {
+    "code": "801",
+    "message": "Capability not supported.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/include/preferences_error.h",
+    "description": "能力不支持。当设备不支持 SystemCapability.DistributedDataManager.Preferences.Core 时返回。"
+  },
+  {
+    "code": "15500000",
+    "message": "Inner error.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/include/preferences_error.h",
+    "description": "通用内部错误。当底层返回的错误码无法映射到更具体的 JS 错误码时，统一报 15500000。在 InnerError 类构造函数中，若 GetJsErrorCode 未命中映射表，则回退到此码。"
+  },
+  {
+    "code": "15500010",
+    "message": "Failed to delete the user preferences persistence file.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/src/preferences_error.cpp",
+    "description": "删除preference持久化文件失败。内部错误码 E_DELETE_FILE_FAIL (E_BASE+10) 映射到此码。在 deletePreferences / deletePreferencesSync 中触发。"
+  },
+  {
+    "code": "15500019",
+    "message": "Failed to obtain the subscription service.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/src/preferences_error.cpp",
+    "description": "获取 DataObsMgrClient 失败，导致无法注册/取消注册数据变更观察者。内部错误码 E_GET_DATAOBSMGRCLIENT_FAIL (E_BASE+19) 映射到此码。在 on('dataChange') / off('dataChange') 场景触发。"
+  },
+  {
+    "code": "15501001",
+    "message": "The operations is supported in stage mode only.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/include/preferences_error.h",
+    "description": "仅在 stage 模式下支持此操作。FA 模型调用 getPreferences 等接口时触发。内部错误码 E_NOT_STAGE_MODE 映射到自身。"
+  },
+  {
+    "code": "15501002",
+    "message": "Invalid dataGroupId.",
+    "category": "JS公开错误码",
+    "source_file": "frameworks/common/include/preferences_error.h",
+    "description": "dataGroupId 参数无效。getPreferences 传入的 options 中 dataGroupId 不合法时触发。"
+  },
+  {
+    "code": "-1006",
+    "message": "The key string is null or empty.",
+    "category": "@system.storage 错误码",
+    "source_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "description": "@system.storage 专用。key 为空。内部 E_KEY_EMPTY 映射到 -1006。"
+  },
+  {
+    "code": "-1016",
+    "message": "The key string length should shorter than 32.",
+    "category": "@system.storage 错误码",
+    "source_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "description": "@system.storage 专用。key 超过 32 字符限制。内部 E_KEY_EXCEED_LENGTH_LIMIT (E_BASE+15) 映射到 -1016。"
+  },
+  {
+    "code": "-1017",
+    "message": "The value string length should shorter than 128.",
+    "category": "@system.storage 错误码",
+    "source_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "description": "@system.storage 专用。value 超过 128 字符限制。内部 E_VALUE_EXCEED_LENGTH_LIMIT (E_BASE+16) 映射到 -1017。"
+  },
+  {
+    "code": "-1018",
+    "message": "The default string length should shorter than 128.",
+    "category": "@system.storage 错误码",
+    "source_file": "frameworks/js/napi/system_storage/src/napi_system_storage.cpp",
+    "description": "@system.storage 专用。default 值超过 128 字符限制。内部 E_DEFAULT_EXCEED_LENGTH_LIMIT (E_BASE+17) 映射到 -1018。"
+  },
+  {
+    "code": "0",
+    "message": "Operation successful.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_OK，操作成功。"
+  },
+  {
+    "code": "401",
+    "message": "Invalid args.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_INVALID_PARAM。参数无效。内部 E_INVALID_ARGS/E_KEY_EMPTY/E_KEY_EXCEED_MAX_LENGTH/E_VALUE_EXCEED_MAX_LENGTH 均映射到 401。"
+  },
+  {
+    "code": "801",
+    "message": "Capability not supported.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_NOT_SUPPORTED。能力不支持。"
+  },
+  {
+    "code": "15500010",
+    "message": "Failed to delete a file.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_DELETE_FILE。删除文件失败。"
+  },
+  {
+    "code": "15500011",
+    "message": "Storage error.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_STORAGE。存储错误。OHConvertor::NativeErrToNativeAPI 中未匹配到的内部错误码均回退到此码。"
+  },
+  {
+    "code": "15500012",
+    "message": "Failed to malloc memory.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_MALLOC。内存分配失败。在 OH_Preferences_Open 或 OH_Preferences_GetAll 中 malloc 失败时返回。"
+  },
+  {
+    "code": "15500013",
+    "message": "Key not found error.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_KEY_NOT_FOUND。key 不存在。内部 E_NO_DATA (E_BASE+22) 映射到此码。在 OH_Preferences_GetAll 数据为空时也返回。"
+  },
+  {
+    "code": "15500019",
+    "message": "Failed to get DataObsMgrClient.",
+    "category": "Native API错误码",
+    "source_file": "",
+    "description": "Native API PREFERENCES_ERROR_GET_DATAOBSMGRCLIENT。获取数据观察者服务失败。"
+  },
+  {
+    "code": "E_BASE (27656192 / 0x1A60000)",
+    "message": "The base code of the exception error code.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "内部错误码基址。offset = (13<<21)|(6<<16) = 27656192。E_ERROR = E_BASE，即 15500000 在内部对应的全量值。"
+  },
+  {
+    "code": "E_ERROR (E_BASE)",
+    "message": "The error code for common exceptions.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "通用异常。与 E_BASE 相同。"
+  },
+  {
+    "code": "E_STALE (E_BASE+1)",
+    "message": "Resource has been stopped, killed or destroyed.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "资源已被停止、杀死或销毁。"
+  },
+  {
+    "code": "E_INVALID_ARGS (E_BASE+2)",
+    "message": "The input args is invalid.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "输入参数无效。映射到 JS 401 / Native API 401。"
+  },
+  {
+    "code": "E_OUT_OF_MEMORY (E_BASE+3)",
+    "message": "Out of memory.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "内存不足。"
+  },
+  {
+    "code": "E_NOT_PERMIT (E_BASE+4)",
+    "message": "Operation is not permitted.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "操作不被允许。"
+  },
+  {
+    "code": "E_KEY_EMPTY (E_BASE+5)",
+    "message": "The key is empty.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "key 为空。映射到 JS 401 / Native API 401。在 PreferencesUtils::CheckKey 中触发。"
+  },
+  {
+    "code": "E_KEY_EXCEED_MAX_LENGTH (E_BASE+6)",
+    "message": "The key string length exceed the max length (1024).",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "key 超过 1024 字符。映射到 JS 401 / Native API 401。在 PreferencesUtils::CheckKey 中触发。"
+  },
+  {
+    "code": "E_PTR_EXIST_ANOTHER_HOLDER (E_BASE+7)",
+    "message": "The Preferences object pointer is held by another thread.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "Preferences 对象指针被另一个线程持有，可能无法删除。"
+  },
+  {
+    "code": "E_RELATIVE_PATH (E_BASE+8)",
+    "message": "The file path is relative path.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "文件路径是相对路径。"
+  },
+  {
+    "code": "E_EMPTY_FILE_PATH (E_BASE+9)",
+    "message": "The file path is empty.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "文件路径为空。"
+  },
+  {
+    "code": "E_DELETE_FILE_FAIL (E_BASE+10)",
+    "message": "Deleting a file fails.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "删除文件失败。映射到 JS 15500010 / Native API 15500010。"
+  },
+  {
+    "code": "E_EMPTY_FILE_NAME (E_BASE+11)",
+    "message": "The file name is empty.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "文件名为空。"
+  },
+  {
+    "code": "E_INVALID_FILE_PATH (E_BASE+12)",
+    "message": "The file path is invalid.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "文件路径无效。"
+  },
+  {
+    "code": "E_PATH_EXCEED_MAX_LENGTH (E_BASE+13)",
+    "message": "The file path exceeds the max length.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "文件路径超过最大长度。"
+  },
+  {
+    "code": "E_VALUE_EXCEED_MAX_LENGTH (E_BASE+14)",
+    "message": "The value exceeds the max length (16 * 1024 * 1024).",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "value 超过 16MB。映射到 JS 401 / Native API 401。在 PreferencesUtils::CheckValue 中触发。"
+  },
+  {
+    "code": "E_KEY_EXCEED_LENGTH_LIMIT (E_BASE+15)",
+    "message": "The key exceeds the length limit (32).",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "key 超过 32 字符限制（@system.storage 使用）。映射到 @system.storage -1016。"
+  },
+  {
+    "code": "E_VALUE_EXCEED_LENGTH_LIMIT (E_BASE+16)",
+    "message": "The value exceeds the length limit (128).",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "value 超过 128 字符限制（@system.storage 使用）。映射到 @system.storage -1017。"
+  },
+  {
+    "code": "E_DEFAULT_EXCEED_LENGTH_LIMIT (E_BASE+17)",
+    "message": "The default exceeds the max length (128).",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "default 值超过 128 字符限制（@system.storage 使用）。映射到 @system.storage -1018。"
+  },
+  {
+    "code": "PERMISSION_DENIED (E_BASE+18)",
+    "message": "Permission denied.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "权限被拒绝。"
+  },
+  {
+    "code": "E_GET_DATAOBSMGRCLIENT_FAIL (E_BASE+19)",
+    "message": "Failed to get DataObsMgrClient.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "获取 DataObsMgrClient 失败。映射到 JS 15500019 / Native API 15500019。"
+  },
+  {
+    "code": "E_OBSERVER_RESERVE (E_BASE+20)",
+    "message": "The observer is reserved.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "观察者被保留。在 Native API 中映射为 PREFERENCES_OK。"
+  },
+  {
+    "code": "E_ALREADY_CLOSED (E_BASE+21)",
+    "message": "Database has been closed.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "数据库已关闭。"
+  },
+  {
+    "code": "E_NO_DATA (E_BASE+22)",
+    "message": "The key is not exists.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "key 不存在。映射到 Native API 15500013。在 GetValue 返回时表示 key 未找到。"
+  },
+  {
+    "code": "E_XML_RESTORED_FROM_BACKUP_FILE (E_BASE+23)",
+    "message": "XML file restored from backup file.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "XML 文件从备份文件恢复。"
+  },
+  {
+    "code": "E_OPERAT_IS_LOCKED (E_BASE+24)",
+    "message": "Operating XML file when the screen is locked.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "屏幕锁定时操作 XML 文件。"
+  },
+  {
+    "code": "E_OPERAT_IS_CROSS_PROESS (E_BASE+25)",
+    "message": "Operating XML file when there is a cross process operation.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "跨进程操作 XML 文件。"
+  },
+  {
+    "code": "E_SUBSCRIBE_FAILED (E_BASE+26)",
+    "message": "Subscribe failed.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "订阅失败。"
+  },
+  {
+    "code": "E_OBJECT_NOT_ACTIVE (E_BASE+27)",
+    "message": "Still operated after removePreferencesFromCache or deletePreferences.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "对象在 removePreferencesFromCache 或 deletePreferences 之后仍被操作。IsClose 检查触发，上报 DFX 故障。"
+  },
+  {
+    "code": "E_NOT_SUPPORTED (E_BASE+801)",
+    "message": "The capability not supported.",
+    "category": "内部C++错误码",
+    "source_file": "interfaces/inner_api/include/preferences_errno.h",
+    "description": "能力不支持。映射到 JS 801 / Native API 801。"
+  }
+]

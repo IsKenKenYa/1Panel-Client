@@ -1,0 +1,17 @@
+{
+  "name": "turn_off_minors_mode_example",
+  "version": "1.0.0",
+  "description": "关闭系统未成年人模式示例应用",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@kit.AccountKit": "^5.0.0",
+    "@kit.PerformanceAnalysisKit": "^5.0.0",
+    "@kit.BasicServicesKit": "^5.0.0",
+    "@kit.AbilityKit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@ohos/hypium": "^1.0.0"
+  }
+}

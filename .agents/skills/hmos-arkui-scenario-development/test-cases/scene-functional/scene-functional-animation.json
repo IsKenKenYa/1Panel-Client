@@ -1,0 +1,2736 @@
+[
+  {
+    "case_id": "ANIM-FUNC-001",
+    "layer": "scene-functional",
+    "title": "水波纹涟漪扩散动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿听歌识曲的涟漪扩散效果：点击按钮启动后产生连续向外扩散的水波纹动画，两层涟漪错开 200ms 产生扩散视觉，再次点击立即停止并归位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中 animateTo + iterations:-1 无限循环 + delay 错开 + scale/opacity 双属性联动的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用两层涟漪状态变量，每层维护 opacity 和 scaleX/scaleY 两组 @State 状态。",
+        "必须使用 animateTo({ duration: 1300, iterations: -1, curve: Curve.EaseInOut }) 实现无限循环扩散动画。",
+        "第二层涟漪必须使用 delay: 200 错开开始时间，产生水波扩散视觉。",
+        "停止动画时必须使用 animateTo({ duration: 0 }) 瞬间归零重置所有状态。",
+        "布局必须使用 Stack 叠加两层 Circle + 触发按钮（zIndex: 1）。",
+        "scale 从 1 到 6、opacity 从 0.8 到 0 实现「从中心向外扩散并逐渐消失」的效果。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用单层涟漪不设置 delay 错开，无法产生水波扩散层次感。",
+        "停止动画时使用非零 duration 导致归位过程有延迟感。",
+        "scale 和 opacity 状态只设置一层涟漪的变量，另一层直接复用。",
+        "不用 Stack 叠加而用 Column 垂直排列涟漪 Circle。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后两层涟漪从中心连续向外扩散，动画无限循环不停止。",
+        "两层涟漪有约 200ms 的时间差，形成扩散层次感。",
+        "涟漪扩散过程中 scale 从 1 放大到 6，opacity 从 0.8 渐变到 0。",
+        "再次点击按钮后涟漪立即停止并归位到初始状态（opacity: 0.8, scale: 1）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "涟漪扩散动画截图（两层涟漪可见，错开扩散）",
+        "涟漪停止归位截图（无涟漪显示）",
+        "涟漪扩散动图/录屏（展示无限循环效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-002",
+    "layer": "scene-functional",
+    "title": "侧边栏淡入淡出动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿群聊信息面板：点击侧边按钮后右侧滑出群成员列表面板，主内容区自动缩进，面板内容渐显；再次点击收起，面板渐隐。要求弹性曲线过渡自然。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中 SideBarContainer(Embed) + animateTo 驱动 showSideBar + Curve.Friction 摩擦曲线 + 内容区 opacity 联动的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 SideBarContainer(SideBarContainerType.Embed) 实现侧边栏嵌入模式，内容区自动缩进。",
+        "必须使用 animateTo({ duration: 500, curve: Curve.Friction }) 驱动 isShowSideBar 切换。",
+        "侧边栏内容必须通过 .opacity(this.isShowSideBar ? 1 : 0) 实现展开/收起时的渐显/渐隐联动。",
+        "必须设置 sideBarPosition(SideBarPosition.End) 使侧边栏在右侧。",
+        "必须设置 showControlButton(false) 隐藏默认控制按钮，使用自定义切换按钮。",
+        "切换按钮必须放在主内容区的 Stack 中使用 Alignment.End 定位，使按钮跟随内容区边缘移动。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 SideBarContainerType.Overlay 覆盖模式，内容区不缩进导致侧边栏遮挡内容。",
+        "不使用 Curve.Friction 摩擦曲线，过渡效果生硬不自然。",
+        "侧边栏内容不设置 opacity 联动，展开/收起时内容突现突隐。",
+        "切换按钮固定在屏幕边缘不跟随内容区移动。",
+        "使用 translate 手动偏移侧边栏而非依赖 Embed 模式的自动缩进。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击切换按钮后右侧侧边栏平滑滑出，主内容区自动缩进，无突变跳跃。",
+        "侧边栏内容在展开过程中渐显，收起过程中渐隐。",
+        "切换按钮跟随主内容区右边缘移动，始终可见可点击。",
+        "再次点击切换按钮后侧边栏平滑收起，内容区恢复原始宽度。",
+        "过渡动画使用 Curve.Friction 摩擦曲线，动画自然流畅。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "侧边栏展开截图（内容区缩进，面板可见）",
+        "侧边栏收起截图（内容区恢复全宽）",
+        "侧边栏展开/收起动图/录屏（展示平滑过渡和渐显渐隐）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-003",
+    "layer": "scene-functional",
+    "title": "数字滚动动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿抢票/库存数字刷新：下拉页面后多位数字各自滚动到新的随机值，变化量越大的数字滚动越久，支持千分位逗号分隔显示。需要父子组件拆分，子组件监听刷新状态触发滚动动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中父子组件拆分 + 双重 ForEach 渲染 + translate({y}) 偏移 + clip(true) 裁剪 + animateTo 按差值计算 duration 的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-03",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须拆分为父子两个组件：子组件（数字滚动区）通过 @Prop @Watch('onDataRefresh') 监听 isRefresh 变化触发动画；父组件持有 isRefresh 状态包裹 Refresh 提供下拉刷新。",
+        "子组件必须维护 scrollYList(number[])、currentData(number[])、preData(number[])、dataItem([0-9]) 四组数据。",
+        "aboutToAppear 中必须根据初始数字计算 scrollYList 初始偏移（-数字值 × ITEM_HEIGHT），否则首次渲染数字堆叠在 y=0。",
+        "动画 duration 必须按差值计算：duration = Math.abs(item - preData[index]) × DURATION_TIME，差值越大动画越长。",
+        "onFinish 中必须使用展开运算符 [...this.currentData] 更新 preData，确保 ArkUI 检测到数组引用变化。",
+        "布局必须使用双重 ForEach：外层 ForEach 遍历 currentData（含千分位逗号判断），内层 ForEach 遍历 dataItem([0-9]) 渲染数字列。",
+        "每个 Text 必须设置 .translate({ y: this.scrollYList[index] })，translate 必须在 Text 上而非外层 Column。",
+        "Column 必须设置 .clip(true) 裁剪溢出，FONT_SIZE 必须 ≤ ITEM_HEIGHT（推荐差 4px，如 22 vs 26）。",
+        "每个 Text 必须设置 .height('100%') 和 .textAlign(TextAlign.Center) 确保数字垂直等间距排列。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "scrollYList 不在 aboutToAppear 中初始化，首次渲染数字堆叠在 y=0 位置。",
+        "所有数字使用统一 duration 不按差值计算，无法体现「变化越大滚动越久」的效果。",
+        "translate 应用在 Column 上而非 Text 上，clip 裁剪的是 Column 相对父容器溢出，数字滚动失效。",
+        "FONT_SIZE 大于 ITEM_HEIGHT 导致数字底部截断、顶部溢出到相邻区域。",
+        "onFinish 中直接赋值 preData = this.currentData 不使用展开运算符，ArkUI 无法检测引用变化。",
+        "Text 不设置 height('100%') 导致数字垂直排列不均匀。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "首次渲染时数字正确显示在对应位置，不堆叠在 y=0。",
+        "下拉刷新后每位数字各自滚动到新值，变化量越大的数字滚动越久。",
+        "千分位逗号正确显示（每三位一个逗号）。",
+        "数字滚动过程中 clip 裁剪正确，只显示当前位的一个数字。",
+        "数字滚动过程中无截断或溢出到相邻区域。",
+        "连续下拉刷新多次，每次数字都能正确滚动到新值。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "初始数字显示截图（数字正确定位，无堆叠）",
+        "下拉刷新数字滚动截图（多位数字各自滚动中）",
+        "滚动完成截图（新值正确显示，千分位逗号正确）",
+        "数字滚动动图/录屏（展示差值越大滚动越久效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-004",
+    "layer": "scene-functional",
+    "title": "投票PK宽度过渡动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿投票PK效果：投票前左右双方各占 50% 宽度，投票后双方宽度按实际得票比例平滑过渡，所选一方完整高亮显示，未选一方变暗衬托（opacity: 0.5）。要求宽度过渡和高亮变化同步进行。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中 animateTo 驱动 width 百分比字符串 + Curve.EaseOut 减速曲线 + 三级 opacity 高亮/变暗逻辑 + .animation() 隐式动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 leftWidth/rightWidth 字符串状态（如 '50%'）记录双方宽度百分比。",
+        "必须使用 selectedOption 状态变量记录用户选择（'left' | 'right' | ''），投票前为空字符串。",
+        "投票时必须使用 animateTo({ duration: 600, curve: Curve.EaseOut }) 驱动宽度百分比过渡。",
+        "selectedOption 必须在 animateTo 外部赋值，使高亮样式变化与宽度动画同步触发。",
+        "opacity 必须使用三级逻辑：投票前双方 opacity:1，投票后选中方 opacity:1（高亮），未选中方 opacity:0.5（变暗）。",
+        "opacity 变化必须通过 .animation({ duration: 600, curve: Curve.EaseOut }) 隐式动画自动补间。",
+        "布局必须使用 Flex 包裹两段 Stack，每段 width 绑定百分比状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用全局 fillOpacity 统一控制透明度，无法实现选中方高亮、未选中方变暗的差异化效果。",
+        "selectedOption 在 animateTo 内部赋值，导致高亮变化与宽度动画不同步。",
+        "宽度使用固定 number 而非百分比字符串，Flex 布局无法正确分配空间。",
+        "opacity 变化不使用 .animation() 隐式动画，高亮/变暗突变不自然。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "投票前左右双方各占 50% 宽度，双方完整显示。",
+        "投票后左右双方宽度按实际得票比例平滑过渡，过渡动画自然减速。",
+        "投票后选中方完整高亮显示（opacity: 1），未选中方变暗衬托（opacity: 0.5）。",
+        "宽度过渡与高亮/变暗变化同步进行，无先后差异。",
+        "宽度百分比过渡精确（如 70%:30%），Flex 布局正确分配空间。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "投票前截图（双方各占 50%，完整显示）",
+        "投票后截图（宽度按比例过渡，高亮/变暗差异明显）",
+        "投票过渡动图/录屏（展示宽度过渡和高亮变化同步）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-005",
+    "layer": "scene-functional",
+    "title": "悬浮窗拖拽弹性吸附动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿客服悬浮球：手指拖拽时悬浮窗弹性跟手移动，松手后自动弹性吸附到最近的屏幕左/右边缘，吸附过程有弹性回弹效果。需要获取容器宽度和悬浮窗宽度计算吸附位置，并限制 Y 轴在屏幕范围内。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中 curves.responsiveSpringMotion() 拖拽跟手 + curves.springMotion() 松手吸附 + .position() 绝对定位 + onTouch 事件的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 onTouch 事件处理拖拽，区分 TouchType.Move 和 TouchType.Up 两种触摸类型。",
+        "TouchType.Move 时必须使用 animateTo({ curve: curves.responsiveSpringMotion() }) 实现弹性延迟跟手移动。",
+        "TouchType.Up 时必须使用 animateTo({ curve: curves.springMotion() }) 实现弹性回弹吸附。",
+        "吸附位置必须根据悬浮窗中心点与容器中线的比较计算：中心点在左半边吸附到左侧 margin，在右半边吸附到右侧（containerWidth - windowWidth - margin）。",
+        "必须使用 .position({ top, left }) 绝对定位悬浮窗位置。",
+        "必须对 Y 轴进行边界限制（clamp），防止悬浮窗拖出屏幕顶部或底部。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "拖拽时使用 Curve.Linear 或固定曲线，无法实现弹性延迟跟手效果。",
+        "松手时使用普通 EaseOut 曲线而非 curves.springMotion()，无弹性回弹感。",
+        "吸附位置不根据中线判断左右，直接吸附到固定一侧。",
+        "不限制 Y 轴边界，悬浮窗可拖出屏幕。",
+        "使用 translate 偏移而非 .position() 绝对定位，坐标计算混乱。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手指拖拽时悬浮窗弹性跟手移动，有轻微延迟产生跟手感。",
+        "松手后悬浮窗自动弹性吸附到最近的左/右屏幕边缘。",
+        "吸附过程有弹性回弹效果，非刚性停止。",
+        "悬浮窗 Y 轴被限制在屏幕范围内，不会拖出顶部或底部。",
+        "从屏幕左侧拖到右侧再松手，悬浮窗吸附到右侧边缘。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "拖拽跟手截图（悬浮窗跟随手指移动）",
+        "左边缘吸附截图（松手后吸附到左侧）",
+        "右边缘吸附截图（松手后吸附到右侧）",
+        "拖拽吸附动图/录屏（展示弹性跟手和弹性回弹吸附效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-006",
+    "layer": "scene-functional",
+    "title": "列表边缘渐变遮罩动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿应用推荐页的水平滑动列表：列表内容超出可视区域时可水平滚动，滚动到起始位置时左端遮罩消失、右端遮罩渐显提示还有内容；滚动到末尾时右端遮罩消失、左端渐显；滚动到中间时两端同时显示遮罩。遮罩显隐需有平滑过渡。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中两个独立 opacity 布尔状态控制遮罩 + .overlay() 叠加渐变 + linearGradient({angle:90}) 左右渐变 + .animation() 隐式动画 + Scroller + onReachStart/onReachEnd/onDidScroll 精确检测滚动位置的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用两个独立 boolean 状态 showStartFade/showEndFade 分别控制左右遮罩，初始状态：左端 false（已在起始位置）、右端 true（提示右侧还有内容）。",
+        "必须使用 Scroller + onReachStart/onReachEnd/onDidScroll 三个回调精确检测滚动位置更新遮罩状态。",
+        "onReachStart 时设置 showStartFade=false/showEndFade=true，onReachEnd 时设置 showStartFade=true/showEndFade=false，onDidScroll 中使用 isAtStart()/isAtEnd() 判断中间位置时两端都显示。",
+        "onDidScroll 中必须加边界判断（!isAtStart() && !isAtEnd()），否则会覆盖 onReachStart/onReachEnd 的设置导致遮罩闪烁。",
+        "遮罩必须封装为 @Builder，使用 .overlay() 绑定到 List 上，尺寸自动匹配。",
+        "linearGradient 必须设置 angle: 90（左→右方向），不设置默认上→下导致遮罩出现在上下边缘。",
+        "布尔状态到颜色的映射：true 时用 GRADIENT_COLOR（有色遮罩），false 时用 '#00000000'（完全透明）。",
+        "遮罩必须使用 .animation({ curve: Curve.Ease, duration: 220 }) 实现显隐的平滑过渡。",
+        "遮罩必须设置 hitTestBehavior(HitTestMode.Transparent) 不拦截触摸事件。",
+        "List 必须设置 .edgeEffect(EdgeEffect.None) 避免弹簧弹跳导致遮罩闪烁。",
+        "List 必须设置 .scrollBar(BarState.Off) 隐藏滚动条。",
+        "overlay 的 Column 必须设置 .width('100%') 和 .height('100%') 覆盖整个 List 区域。",
+        "渐变中间区域（0.15 ~ 0.85）必须保持完全透明，不影响列表内容显示。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "直接操作渐变颜色字符串而非使用布尔状态控制，逻辑复杂易出错。",
+        "不设置 linearGradient 的 angle: 90，导致遮罩出现在上下边缘而非左右边缘。",
+        "onDidScroll 中不加边界判断，覆盖 onReachStart/onReachEnd 的设置导致遮罩闪烁。",
+        "使用默认 EdgeEffect 弹簧效果，边界处回弹导致遮罩状态频繁切换闪烁。",
+        "不设置 hitTestBehavior(Transparent)，遮罩拦截触摸事件导致列表无法滚动。",
+        "使用 Stack 叠加遮罩而非 .overlay()，遮罩尺寸不自动匹配 List。",
+        "遮罩不设置 .animation()，布尔状态切换时遮罩突变无过渡。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "初始状态：左端无遮罩（已在起始位置），右端显示渐变遮罩提示还有内容。",
+        "向右滚动到中间位置时，两端同时显示渐变遮罩。",
+        "滚动到最右端时，右端遮罩消失，左端遮罩显示。",
+        "遮罩显隐切换有约 220ms 平滑过渡，无突变闪烁。",
+        "遮罩不拦截触摸事件，列表可正常滚动。",
+        "滚动条隐藏，列表内容在中间透明区域正常显示。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "起始位置截图（左端无遮罩，右端有遮罩）",
+        "中间位置截图（两端都有遮罩）",
+        "末尾位置截图（左端有遮罩，右端无遮罩）",
+        "滚动过程动图/录屏（展示遮罩平滑过渡效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-007",
+    "layer": "scene-functional",
+    "title": "振动抖动动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿登录页：未勾选协议时点击一键登录，手机产生振动反馈的同时「请阅读并勾选协议」提示文本左右抖动数轮。需要硬件振动与关键帧抖动动画同步触发。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 属性动画场景中 vibrator.startVibration 硬件振动 + keyframeAnimateTo 关键帧抖动 + translateX 位移动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 vibrator.startVibration({ type: 'time', duration: 600 }, { id: 0, usage: 'alarm' }, callback) 触发硬件振动。",
+        "必须从 @kit.SensorServiceKit 导入 vibrator 模块。",
+        "必须使用 keyframeAnimateTo({ iterations: 2 }, [...]) 关键帧动画实现抖动效果。",
+        "关键帧必须定义 translateX 从 0→5→0→5→0 的位移序列（iterations:2 时抖动 2 轮）。",
+        "动画开始前必须将 translateX 重置为 0，确保每次抖动从初始位置开始。",
+        "必须在 module.json5 中声明 ohos.permission.VIBRATE 权限。",
+        "提示文本必须通过 .translate({ x: this.translateX }) 绑定位移状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不声明 ohos.permission.VIBRATE 权限导致振动调用失败。",
+        "使用 animateTo 而非 keyframeAnimateTo，无法精确控制关键帧位移序列。",
+        "动画开始前不重置 translateX 为 0，连续触发时从上次结束位置开始抖动。",
+        "振动和抖动动画不同步触发，用户体验割裂。",
+        "不使用 try-catch 包裹 vibrator.startVibration 调用，未处理异常。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "未勾选协议时点击一键登录，手机产生振动反馈。",
+        "振动的同时提示文本左右抖动 2 轮（0→5→0→5→0），抖动结束后回到初始位置。",
+        "勾选协议后点击一键登录，不触发振动和抖动。",
+        "连续多次点击（未勾选协议），每次都能正确触发振动和抖动。",
+        "振动调用失败时不影响抖动动画的执行（异常处理正确）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "振动+抖动触发截图（提示文本处于抖动偏移状态）",
+        "抖动结束截图（提示文本回到初始位置）",
+        "振动+抖动动图/录屏（展示振动反馈和文本抖动同步效果）",
+        "module.json5 中 ohos.permission.VIBRATE 权限声明"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-008",
+    "layer": "scene-functional",
+    "title": "标签下划线滑动动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿今日头条 Tab 栏：点击不同标签时底部下划线指示器平滑滑动到对应标签下方，下划线宽度同时逐帧变化，跟手滑动切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景中 @AnimatableExtend(Column) 扩展 width 逐帧布局 + @AnimatableExtend(Row) 扩展 translate 位移 + .animation() 隐式动画 + onAreaChange 测量 Tab 栏宽度的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定义 @AnimatableExtend(Column) function animatableIndicatorWidth(w: number) 扩展 Column 的 width 属性，用 number 类型驱动逐帧布局变化。",
+        "必须定义 @AnimatableExtend(Row) function animatableTranslateX(x: number) 扩展 Row 的 translate 位移，驱动下划线水平位置。",
+        "必须使用 onAreaChange 在首次布局完成时获取 Tab 栏实际宽度（newArea.width as number），据此计算每个 Tab 的等分宽度和下划线初始偏移量。",
+        "点击 Tab 时必须根据 tabBarWidth / tabs.length 计算等分宽度，indicatorOffsetX = tabWidth * index 更新下划线偏移。",
+        "内层 Column 必须通过 .animatableIndicatorWidth(indicatorWidth) 控制下划线宽度，绑定 .animation({ duration: 300, curve: Curve.EaseInOut })。",
+        "外层 Row 必须通过 .animatableTranslateX(indicatorOffsetX) 控制下划线所在 Tab 格子的水平偏移，绑定 .animation({ duration: 300, curve: Curve.EaseInOut })。",
+        "两个 .animation() 必须分别绑定在各自的 @AnimatableExtend 调用之后，驱动各自的逐帧插值。",
+        "外层 Row 的宽度必须根据 tabBarWidth 动态计算（tabBarWidth > 0 ? tabBarWidth / tabs.length : 默认值），使下划线格子与单个 Tab 等宽。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/custom-property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 @AnimatableExtend 而用 animateTo 直接修改 width，width 不支持逐帧布局插值导致动画不生效。",
+        "不使用 onAreaChange 测量 Tab 栏宽度，首次渲染时 indicatorOffsetX 为 0 或未定义导致下划线位置错误。",
+        "两个 .animation() 都绑定在最外层组件上而非各自的 @AnimatableExtend 之后，导致插值逻辑混乱。",
+        "外层 Row 使用固定宽度而非根据 tabBarWidth / tabs.length 等分计算，下划线格子宽度与 Tab 不匹配。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "首次渲染时下划线指示器正确定位在当前 Tab（默认第一个）下方。",
+        "点击不同 Tab 时下划线平滑滑动到对应位置，动画时长 300ms，使用 EaseInOut 曲线。",
+        "滑动过程中下划线宽度逐帧变化，无突变跳跃。",
+        "页面尺寸变化（如旋转）后 onAreaChange 触发，下划线位置自动重新计算。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "Tab 初始状态截图（下划线在第一个 Tab 下方）",
+        "点击其他 Tab 截图（下划线滑动到目标 Tab 下方）",
+        "下划线滑动动图/录屏（展示逐帧宽度+位置联动过渡）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-009",
+    "layer": "scene-functional",
+    "title": "天气图标变形动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿天气 App：点击不同天气类型（晴/多云/雨/阴）时，太阳半径、云朵透明度、雨滴透明度等图标元素通过逐帧插值平滑变形过渡，背景渐变色同步切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景中 AnimatableArithmetic 只含 number 字段的 WeatherAnimData + 独立 WeatherStyle 管理颜色等不可插值数据 + 多个 @AnimatableExtend 分别驱动不同元素 + .animation() 隐式动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须将数据拆分为两个 class：WeatherAnimData 只包含参与逐帧插值的 number 字段（sunRadius、cloudOpacity、rainOpacity），实现 AnimatableArithmetic<WeatherAnimData> 接口的 plus/subtract/multiply/equals 四个方法；WeatherStyle 包含颜色、温度、名称等不可数值插值的字段，作为普通 class 不实现接口。",
+        "WeatherAnimData 的 plus/subtract/multiply 必须对每个 number 字段做精确的数值运算：plus 逐字段相加、subtract 逐字段相减、multiply 所有字段乘以系数。",
+        "WeatherAnimData 的 equals 必须逐字段使用 === 严格比较，全部相等才返回 true。",
+        "必须定义多个 @AnimatableExtend，每个参数类型为 WeatherAnimData：animatableSunSize 驱动太阳 width/height/borderRadius，animatableCloudOpacity 驱动云朵 opacity，animatableRainOpacity 驱动雨滴 opacity。",
+        "切换天气时 WeatherAnimData 赋值触发框架逐帧插值（subtract/multiply），WeatherStyle 直接赋值由 .animation() 隐式动画过渡颜色变化。",
+        "三个 @AnimatableExtend 必须绑定同一个 this.animData 状态，框架对 WeatherAnimData 做整体插值，每帧将中间值分别传入三个函数。",
+        "Stack 背景的 linearGradient 必须绑定 this.style.bgColor1/bgColor2 并使用 .animation({ duration: 600, curve: Curve.EaseInOut }) 实现背景色平滑过渡。",
+        "必须使用天气配置数组 [WeatherAnimData, WeatherStyle][] 同时存储可动画数据和不可动画数据。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/custom-property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "将颜色等 string 字段放入 WeatherAnimData 中实现 AnimatableArithmetic，plus/subtract/multiply 中对 string 做无意义的原样返回。",
+        "WeatherAnimData 的 equals 使用 != 或 != 全部比较而非逐字段 === 严格比较，导致动画提前终止或无法终止。",
+        "三个 @AnimatableExtend 绑定不同的状态变量而非同一个 this.animData，导致太阳、云朵、雨滴动画不同步。",
+        "背景色变化不使用 .animation() 隐式动画，颜色切换突变无过渡。",
+        "WeatherAnimData 缺少 constructor 默认参数，导致 new WeatherAnimData() 时字段为 undefined。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "切换天气类型时太阳半径、云朵透明度、雨滴透明度平滑变形过渡（如晴天太阳放大、雨天太阳消失云朵变暗）。",
+        "背景渐变色同步平滑过渡，无突变。",
+        "三个图标元素（太阳/云朵/雨滴）同步变化，无先后差异。",
+        "从晴天切换到雨天再切回晴天，图标变形过渡正确无残留。",
+        "每种天气类型的温度、名称、图标正确显示。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "晴天状态截图（太阳完整显示，无云无雨）",
+        "切换天气截图（图标变形过渡中）",
+        "雨天状态截图（太阳消失，云朵和雨滴显示）",
+        "天气切换动图/录屏（展示逐帧变形和背景色过渡）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-010",
+    "layer": "scene-functional",
+    "title": "图表数据切换动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿数据看板：点击切换不同数据集（营收/用户/订单）时，柱状图所有柱子高度通过自定义类型逐帧插值平滑变化到新值，柱子颜色同步切换。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 自定义属性动画场景中 ChartData 类实现 AnimatableArithmetic<ChartData> 接口 + @AnimatableExtend(Column) 扩展 height + .animation() 驱动逐帧柱高变化 + 颜色等不可插值属性独立 @State 管理的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-03"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定义 ChartData 类实现 AnimatableArithmetic<ChartData> 接口，values: number[] 数组中每个元素独立参与插值运算。",
+        "ChartData 的 plus/subtract 必须逐元素运算：遍历 values 数组对应索引相加/相减；multiply 必须所有元素乘以系数。",
+        "ChartData 的 equals 必须逐元素使用 === 比较。",
+        "ChartData 中不得包含 color 等 string 字段，颜色必须由独立的 @State chartColor 单独管理。",
+        "必须定义 @AnimatableExtend(Column) function animatableBarHeight(h: number) 扩展 Column 的 height 属性。",
+        "ForEach 中每个柱子必须通过 .animatableBarHeight(this.animatableData.values[index] * 2) 绑定高度，并设置 .animation({ duration: 500, curve: Curve.EaseInOut })。",
+        "所有柱子必须共享同一个 animatableData 状态，数据集切换时所有柱子同步平滑过渡。",
+        "切换数据集时必须使用 new ChartData([...values]) 展开运算符创建新数组，确保 ArkUI 检测到 values 引用变化。",
+        "chartColor 必须在切换数据集时单独赋值，不参与 AnimatableArithmetic 运算。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/custom-property-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "ChartData 中包含 color 等 string 字段，plus/subtract/multiply 中对 color 做无意义的原样返回。",
+        "切换数据集时直接赋值 this.animatableData.values = newValues 而非创建新 ChartData 对象，ArkUI 无法检测到引用变化。",
+        "每个柱子使用独立的 ChartData 状态而非共享同一个 animatableData，柱子动画不同步。",
+        "柱高不通过 @AnimatableExpand 驱动而直接 .height()，height 不支持逐帧插值导致动画不生效。",
+        "chartColor 放入 ChartData 中参与 AnimatableArithmetic 运算。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "切换数据集时所有柱子高度平滑过渡到新值，动画时长约 500ms。",
+        "柱子颜色随数据集同步切换，无残留旧颜色。",
+        "所有柱子同步变化，无先后差异。",
+        "连续多次切换数据集，每次都能正确过渡到新值。",
+        "柱状图底部对齐，柱高变化方向正确（从底部向上生长或缩短）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "初始数据集截图（柱状图显示第一个数据集）",
+        "切换数据集过渡截图（柱高正在变化中）",
+        "切换完成截图（新数据集柱高和颜色正确）",
+        "图表切换动图/录屏（展示逐帧柱高过渡效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-011",
+    "layer": "scene-functional",
+    "title": "分享面板模态转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交分享面板：点击按钮后从底部弹出包含微信/朋友圈/QQ 等分享渠道的半模态面板，面板内使用 4 列网格排列分享渠道图标和名称，底部有取消按钮，支持拖拽关闭。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindSheet 半模态 + Grid 4 列布局 + dragBar 拖拽关闭 + @Builder 内容构建的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 bindSheet($$this.isPresent, this.ShareSheetBuilder(), { height: 360, dragBar: true, showClose: false }) 实现半模态面板。",
+        "必须使用 $$ 双向绑定 isPresent 状态控制面板显隐。",
+        "面板内容必须封装为 @Builder ShareSheetBuilder()，包含标题、分享渠道 Grid、取消按钮。",
+        "分享渠道必须使用 Grid + columnsTemplate('1fr 1fr 1fr 1fr') 4 列布局，ForEach 遍历分享项。",
+        "每个 GridItem 必须包含图标 Image 和名称 Text 的纵向 Column 布局。",
+        "必须设置 onDisappear 回调在面板关闭后重置 isPresent 为 false。",
+        "取消按钮必须通过 onClick 将 isPresent 设为 false 关闭面板。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 bindSheet 时不使用 $$ 双向绑定，手动管理 isPresent 导致关闭不同步。",
+        "分享渠道不使用 Grid 4 列布局而用 Column 垂直排列，无法展示多列网格效果。",
+        "不设置 dragBar: true 导致无法拖拽关闭面板。",
+        "面板内容不封装为 @Builder 而直接内联，代码结构不清晰。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后半模态面板从底部弹出，面板高度为 360。",
+        "面板内分享渠道以 4 列网格排列，每个渠道显示图标和名称。",
+        "面板顶部有拖拽条，可向下拖拽关闭面板。",
+        "点击取消按钮后面板关闭，isPresent 自动重置为 false。",
+        "面板弹出和关闭有系统默认的半模态转场动画。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "分享面板弹出截图（4 列网格排列分享渠道）",
+        "分享面板关闭截图（按钮触发关闭）",
+        "拖拽关闭动图/录屏（展示 dragBar 拖拽关闭效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-012",
+    "layer": "scene-functional",
+    "title": "深色弹出菜单开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿微信聊天列表：顶部标题栏含「+」按钮，点击弹出深色下拉菜单（发起群聊/添加朋友/扫一扫/收付款），菜单使用自定义背景色和圆角，带箭头指向触发按钮。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindPopup 自定义深色弹出菜单 + placement: Placement.Bottom + enableArrow 箭头指向 + backgroundBlurStyle: BlurStyle.NONE 关闭默认模糊的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 bindPopup(this.showMenu, { builder: this.wechatMenu, placement: Placement.Bottom, ... }) 绑定自定义弹出菜单。",
+        "必须显式设置 backgroundBlurStyle: BlurStyle.NONE 关闭手机端默认的 COMPONENT_ULTRA_THICK 模糊背景，否则 popupColor 深色背景失效。",
+        "必须设置 popupColor: '#4C4C4C' 实现深色背景。",
+        "必须设置 enableArrow: true 和 arrowPointPosition: ArrowPointPosition.END 显示箭头指向触发组件。",
+        "菜单内容必须封装为 @Builder wechatMenu()，Column 内 ForEach 渲染菜单项（图标 + 白色文字）。",
+        "@Builder 内的 Column 必须设置固定宽度（如 .width(160)），否则弹窗宽度随内容撑开过大。",
+        "必须设置 maskColor: 'rgba(0,0,0,0)' 透明遮罩，使弹窗下方内容仍可交互。",
+        "必须设置 onStateChange 回调在弹窗隐藏时将 showMenu 重置为 false。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不设置 backgroundBlurStyle: BlurStyle.NONE，手机端默认模糊背景覆盖 popupColor 导致深色背景失效。",
+        "@Builder 内 Column 不设置固定宽度，弹窗宽度随内容撑开过大影响布局。",
+        "不设置 enableArrow: true，弹窗无箭头指向触发按钮。",
+        "不设置 onStateChange 回调，点击外部关闭弹窗后 showMenu 仍为 true 导致再次点击无法弹出。",
+        "菜单项文字不设置 fontColor(Color.White)，深色背景上白字看不清。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击「+」按钮后弹出深色下拉菜单，背景色为 #4C4C4C。",
+        "菜单项文字为白色，深色背景上清晰可读。",
+        "菜单带箭头指向触发按钮（箭头位置在 End 端）。",
+        "菜单宽度固定为 160vp，不随内容撑开过大。",
+        "点击外部区域后菜单关闭，showMenu 自动重置为 false。",
+        "菜单背景无模糊效果（backgroundBlurStyle: NONE 生效）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "深色弹出菜单截图（背景色正确、箭头指向、宽度固定）",
+        "菜单关闭截图（点击外部关闭）",
+        "菜单弹出/关闭动图/录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-013",
+    "layer": "scene-functional",
+    "title": "滑动选择器模态转场开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿城市选择器：点击按钮后从底部弹出选择面板（高度 380），顶部有取消/确定按钮，中间为可滚动城市列表，选中项字体放大加粗高亮显示，底部无拖拽条。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindSheet 380px 面板 + List 可滚动选择 + 选中项字体放大加粗高亮的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 bindSheet(this.isPresent, this.pickerBuilder(), { height: 380, dragBar: false, showClose: false }) 实现选择面板。",
+        "面板内容必须封装为 @Builder pickerBuilder()，顶部 Row 包含取消/标题/确定三段。",
+        "中间必须使用 List + ForEach 渲染城市列表，每个 ListItem 可点击切换选中状态。",
+        "选中项必须通过条件样式高亮：fontSize(selectedIndex === index ? 20 : 16)、fontWeight(selectedIndex === index ? FontWeight.Bold : FontWeight.Normal)、fontColor(selectedIndex === index ? '#333' : '#999')。",
+        "点击 ListItem 必须更新 selectedIndex 实现选中切换。",
+        "取消和确定按钮必须通过 onClick 将 isPresent 设为 false 关闭面板。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 bindSheet 的 $$ 双向绑定而非单向绑定 this.isPresent，导致面板内部关闭与外部状态不同步。",
+        "选中项不高亮显示（不区分字体大小/粗细/颜色），用户无法感知当前选择。",
+        "不设置 dragBar: false，面板顶部显示拖拽条影响布局。",
+        "列表项不使用 ForEach 而手动逐个渲染，无法适配动态数据。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后选择面板从底部弹出，高度为 380。",
+        "面板顶部有取消/标题/确定三段，无拖拽条。",
+        "城市列表可滚动，选中项字体放大（20）、加粗、深色高亮。",
+        "点击不同城市项，选中高亮立即切换。",
+        "点击取消或确定按钮后面板关闭。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "选择面板弹出截图（列表可见，选中项高亮）",
+        "切换选中项截图（高亮转移到新选中项）",
+        "面板关闭截图（按钮触发关闭）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-014",
+    "layer": "scene-functional",
+    "title": "全屏模态登录转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿全屏登录弹窗：点击按钮后全屏覆盖弹出登录页，默认显示一键登录（手机号+协议勾选），切换到其他登录方式时界面淡入淡出过渡，返回按钮根据当前页面执行不同操作（默认页关闭模态、其他页返回默认）。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindContentCover 全屏模态 + 预定义 TransitionEffect 变量复用 + Stack 叠加返回按钮 + expandSafeArea 延伸安全区的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 bindContentCover($$this.isPresent, this.fullCoverContent()) 实现全屏模态覆盖。",
+        "必须预定义 TransitionEffect 变量：TransitionEffect.OPACITY.animation({ duration: EFFECT_DURATION }).combine(TransitionEffect.opacity(EFFECT_OPACITY))。",
+        "必须使用 if 条件渲染根据 isDefaultLogin 切换默认登录页和其他登录方式页。",
+        "其他登录方式页必须绑定 .transition(this.effect) 实现淡入淡出（从 opacity 0.4 渐变到 1.0，持续 800ms）。",
+        "默认登录页不绑定 .transition()，切换回默认页时无淡入淡出效果。",
+        "必须使用 Stack({ alignContent: Alignment.TopStart }) 将返回按钮叠加在条件渲染内容顶层。",
+        "返回按钮的 onClick 必须根据 isDefaultLogin 执行不同逻辑：默认页关闭模态（isPresent = false），其他页返回默认登录（isDefaultLogin = true）。",
+        "全屏模态容器必须设置 expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM]) 延伸安全区，避免底部被系统导航栏遮挡。",
+        "必须使用常量 EFFECT_DURATION / EFFECT_OPACITY 提取转场参数，便于统一调整。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "默认登录页也绑定 .transition(this.effect)，导致切换回默认页时也有淡入淡出效果（与设计不符）。",
+        "返回按钮不使用 Stack 叠加而放在条件渲染内部，导致不同页面需要重复放置返回按钮。",
+        "不预定义 TransitionEffect 变量而每次内联，转场参数不统一难以维护。",
+        "不设置 expandSafeArea，全屏模态底部被系统导航栏遮挡。",
+        "使用 bindSheet 而非 bindContentCover，无法实现全屏覆盖效果。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后全屏模态覆盖弹出登录页，底部不被系统导航栏遮挡。",
+        "默认登录页显示一键登录（手机号+协议勾选），有其他方式登录入口。",
+        "点击「其他方式登录」后界面淡入淡出过渡到其他登录方式页（800ms，从 0.4 透明度渐变到 1.0）。",
+        "其他登录方式页点击返回按钮切回默认登录页（无淡入淡出效果）。",
+        "默认登录页点击返回按钮关闭全屏模态。",
+        "返回按钮始终可见，叠在页面顶层。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "全屏模态默认登录页截图（一键登录界面）",
+        "切换其他登录方式截图（淡入淡出过渡中）",
+        "其他登录方式页截图（返回按钮可见）",
+        "登录页切换动图/录屏（展示淡入淡出转场效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-015",
+    "layer": "scene-functional",
+    "title": "列表项操作菜单开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿文件管理器列表：每个文件项右侧有「⋮」按钮，点击后弹出系统级操作菜单（复制/移动/重命名/分享/删除），菜单项点击后执行对应操作并自动关闭。文件列表项包含图标、文件名、文件大小。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindMenu 绑定菜单数组 + MenuElement 菜单项配置 + action 回调处理点击的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 List + ForEach 渲染文件列表，每个 ListItem 包含图标、文件名、文件大小和「⋮」按钮。",
+        "「⋮」按钮必须通过 .bindMenu([{ value, action }, ...]) 绑定操作菜单数组。",
+        "每个菜单项必须配置 value（显示文本）和 action（点击回调），包含复制/移动/重命名/分享/删除五项。",
+        "菜单项点击后必须自动关闭菜单（bindMenu 由系统自动处理显隐，无需手动管理状态）。",
+        "文件列表数据必须定义为 Record<string, string>[] 或类似结构，包含 title、size、icon 字段。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "手动管理菜单显隐状态（如 @State showMenu）而非使用 bindMenu 自动处理。",
+        "菜单项不配置 action 回调，点击后无操作。",
+        "使用 bindPopup 而非 bindMenu，无法享受系统级菜单的自动定位和关闭。",
+        "文件列表不使用 ForEach 而手动渲染，无法适配动态数据。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "文件列表正确渲染，每项包含图标、文件名和文件大小。",
+        "点击「⋮」按钮后弹出系统级操作菜单（复制/移动/重命名/分享/删除）。",
+        "点击菜单项后执行对应 action 回调，菜单自动关闭。",
+        "菜单自动定位在绑定组件附近。",
+        "无需手动管理菜单显隐状态。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "文件列表截图（每项含图标、名称、大小、「⋮」按钮）",
+        "操作菜单弹出截图（5 项菜单可见）",
+        "菜单项点击截图（操作执行后菜单关闭）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-016",
+    "layer": "scene-functional",
+    "title": "长按弹出菜单开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿桌面图标和图片长按操作：长按桌面应用图标弹出快捷操作菜单（分享/应用信息/卸载），长按图片弹出图片操作菜单（保存图片/收藏/识图搜索/复制链接/转发），通过 Tab 切换两种场景。菜单使用自定义布局，包含图标+文字和分隔线。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 bindContextMenu + ResponseType.LongPress + @Builder 自定义菜单布局 + Tab 切换场景的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 bindContextMenu(this.MenuBuilder, ResponseType.LongPress) 将自定义菜单绑定到长按手势。",
+        "必须使用 ResponseType.LongPress 指定长按触发方式，区别于 bindMenu 的点击触发。",
+        "必须为不同组件绑定不同的 @Builder 菜单（桌面图标菜单 vs 图片菜单），实现场景化差异。",
+        "@Builder 内必须自定义菜单布局：Column 包含多个 Row（图标+文字），Row 之间用 Divider 分隔。",
+        "@Builder 内的 Column 必须设置固定宽度（如 .width(180)）、backgroundColor(Color.White)、borderRadius(12)。",
+        "必须通过 Tab（或条件渲染 currentTab）切换桌面图标和图片长按两种场景。",
+        "Tab 切换时选中项必须高亮：fontColor('#007dff')、fontWeight(FontWeight.Bold)。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "使用 bindMenu 而非 bindContextMenu，触发方式为点击而非长按。",
+        "不同场景（桌面图标/图片）绑定同一个 @Builder 菜单，无法实现场景化差异。",
+        "@Builder 内 Column 不设置固定宽度，菜单宽度随内容撑开过大。",
+        "菜单项之间不使用 Divider 分隔，菜单项视觉不清晰。",
+        "不使用 ResponseType.LongPress 而使用其他 ResponseType，触发方式不正确。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "长按桌面应用图标后弹出快捷操作菜单（分享/应用信息/卸载）。",
+        "切换 Tab 到图片长按场景后，长按图片弹出图片操作菜单（保存图片/收藏/识图搜索/复制链接/转发）。",
+        "两个场景的菜单内容不同，各自绑定不同的 @Builder。",
+        "菜单使用自定义布局，包含图标+文字和分隔线，宽度固定 180vp。",
+        "菜单弹出和关闭由系统自动处理，无需手动管理状态。",
+        "Tab 切换时选中项高亮显示。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "桌面图标长按菜单截图（分享/应用信息/卸载）",
+        "图片长按菜单截图（保存图片/收藏/识图搜索/复制链接/转发）",
+        "Tab 切换截图（两种场景切换）",
+        "长按弹出菜单动图/录屏"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-017",
+    "layer": "scene-functional",
+    "title": "登录注册交叉模态转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿登录注册流程：点击「登录」按钮后登录页从底部弹性滑入覆盖全屏，点击「注册」按钮后注册页从右侧弹性滑入；登录页内可切换手机号/密码登录方式，登录与注册之间可互相跳转，切换时旧页面先淡出再新页面淡入形成交叉转场。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 模态转场动画场景中 if 条件渲染 + TransitionEffect.OPACITY.combine(translate) + curves.springMotion(0.6, 0.9) 弹性曲线 + setTimeout 编排交叉转场的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 if 条件渲染 showLogin / showRegister 控制登录页和注册页的显隐。",
+        "登录页必须绑定 .transition(TransitionEffect.OPACITY.combine(TransitionEffect.translate({ y: 300 })).animation({ duration: 400, curve: curves.springMotion(0.6, 0.9) })) 实现从底部弹性滑入。",
+        "注册页必须绑定 .transition(TransitionEffect.OPACITY.combine(TransitionEffect.translate({ x: '100%' })).combine(TransitionEffect.scale({ x: 0.95, y: 0.95 })).animation({ duration: 400, curve: curves.springMotion(0.6, 0.9) })) 实现从右侧弹性滑入并带缩放纵深。",
+        "登录与注册之间的交叉转场必须使用 setTimeout(200) 编排：先 animateTo 关闭当前页（300ms），200ms 后 animateTo 打开目标页，形成 100ms 交叉。",
+        "必须使用 getUIContext()?.animateTo() 包裹 showLogin / showRegister 状态切换，驱动条件渲染转场。",
+        "登录页内必须支持 isPhoneLogin 切换手机号/密码登录方式（if 条件渲染不同的输入框）。",
+        "登录页和注册页的返回按钮必须通过 toggleLogin() / toggleRegister() 关闭对应页面。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/modal-transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "登录页和注册页使用相同的 translate 方向（如都从底部滑入），无法区分页面层级关系。",
+        "交叉转场不使用 setTimeout 编排，登录和注册同时出现/消失导致视觉混乱。",
+        "不使用 curves.springMotion(0.6, 0.9) 弹性曲线，滑入动画无回弹效果。",
+        "注册页不叠加 scale({ x: 0.95, y: 0.95 })，缺少纵深感。",
+        "不使用 getUIContext()?.animateTo() 包裹状态切换，transition 转场不触发。",
+        "使用 animateTo 而非 getUIContext()?.animateTo()（后者为推荐 API）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击「登录」按钮后登录页从底部弹性滑入覆盖全屏，有回弹效果。",
+        "点击「注册」按钮后注册页从右侧弹性滑入，带有缩放纵深感。",
+        "登录页内可切换手机号/密码登录方式，切换时输入框正确变化。",
+        "从登录页点击「立即注册」后，登录页先淡出，约 200ms 后注册页淡入，形成交叉转场。",
+        "从注册页点击「立即登录」后，注册页先淡出，约 200ms 后登录页淡入。",
+        "点击返回按钮后当前页面以弹性动画消失。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "登录页从底部滑入截图",
+        "注册页从右侧滑入截图",
+        "交叉转场截图（旧页面淡出、新页面淡入中）",
+        "登录注册交叉转场动图/录屏（展示底部/右侧不同方向滑入和 setTimeout 交叉效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-018",
+    "layer": "scene-functional",
+    "title": "页面滑动转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿页面切换效果：点击按钮后当前页面向左淡出，新页面从右侧滑入，形成 A→B 的页面跳转过渡。要求使用弹性曲线，过渡自然流畅。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中 TransitionEffect.OPACITY.combine(translate) 左移淡出 + TransitionEffect.move(TransitionEdge.END) 右侧滑入 + curves.springMotion() 弹性曲线的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 if 条件渲染控制 Page A 和 Page B 的显隐。",
+        "Page A 必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 400, curve: curves.springMotion() }).combine(TransitionEffect.translate({ x: -100 }))) 实现向左淡出。",
+        "Page B 必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 400, curve: curves.springMotion() }).combine(TransitionEffect.move(TransitionEdge.END))) 实现从右侧滑入。",
+        "必须通过状态变量切换（如 showPageB = !showPageB）触发条件渲染转场。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "Page A 和 Page B 使用相同的 TransitionEffect，无法区分进入和退出方向。",
+        "不使用 curves.springMotion() 弹性曲线，转场生硬不自然。",
+        "不使用 if 条件渲染而依赖 visibility 控制，transition 转场不触发。",
+        "translate 和 move 混用在同一页面上，转场方向混乱。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后 Page A 向左淡出、Page B 从右侧弹性滑入，同步进行。",
+        "转场动画时长约 400ms，使用 springMotion 弹性曲线，过渡自然。",
+        "再次点击后 Page B 退出、Page A 恢复，方向正确。",
+        "转场过程中无闪烁或白屏。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "Page A 显示截图",
+        "Page B 显示截图",
+        "页面切换动图/录屏（展示左移淡出 + 右侧滑入效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-019",
+    "layer": "scene-functional",
+    "title": "手势侧滑返回转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿 iOS 手势侧滑返回：手指从屏幕左边缘向右拖拽时顶层页面跟手右移，滑动超过阈值（150px）后自动退出，未超过则弹回原位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中 PanGesture 水平拖拽 + translate({x: offsetX}) 跟手 + 松手判断偏移阈值 + TransitionEffect 退出动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 PanGesture({ direction: PanDirection.Horizontal }) 处理水平拖拽手势。",
+        "onActionUpdate 中必须更新 this.offsetX = event.offsetX 实现跟手右移。",
+        "页面必须通过 .translate({ x: this.offsetX }) 绑定位移实现跟手。",
+        "onActionEnd 中必须判断阈值：offsetX > 150 时 animateTo 向右滑出退出（offsetX = 300），否则 animateTo 弹回原位（offsetX = 0）。",
+        "退出动画必须使用 animateTo({ duration: 250, curve: Curve.EaseOut }) 或 curves.springMotion()。",
+        "页面必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 250 }).combine(TransitionEffect.move(TransitionEdge.START))) 作为退出转场效果。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "onActionUpdate 中不更新 translate，页面不跟手移动。",
+        "不判断阈值直接退出，轻微触碰即触发返回。",
+        "弹回时不使用 animateTo，offsetX 瞬间跳回无过渡。",
+        "使用 onClick 而非 PanGesture，无法实现跟手拖拽。",
+        "PanGesture 不设置 direction: PanDirection.Horizontal，垂直滑动也触发。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "手指从左边缘向右拖拽时页面跟手右移，位移实时跟随。",
+        "拖拽超过 150px 后松手，页面自动向右滑出退出。",
+        "拖拽不足 150px 后松手，页面弹性弹回原位。",
+        "退出动画和弹回动画均有 250ms 平滑过渡。",
+        "垂直方向滑动不触发侧滑返回。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "跟手拖拽截图（页面随手指右移）",
+        "退出动画截图（页面向右滑出）",
+        "弹回截图（页面回到原位）",
+        "侧滑返回动图/录屏（展示跟手 + 阈值判断 + 弹回效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-020",
+    "layer": "scene-functional",
+    "title": "底部抽屉转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿底部操作面板：点击按钮后从屏幕底部弹出半透明遮罩 + 内容面板（高度 400），面板顶部有圆角，点击遮罩或关闭按钮后面板向下滑出消失。要求弹性曲线过渡自然。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中条件渲染 + TransitionEffect.OPACITY.combine(translate({y:400})) + curves.springMotion() 弹性曲线 + 半透明遮罩点击关闭的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Stack 布局叠加主内容层、遮罩层和抽屉层。",
+        "必须使用 if 条件渲染控制遮罩和抽屉的显隐。",
+        "遮罩层必须设置 backgroundColor('rgba(0,0,0,0.4)') 半透明效果，点击关闭抽屉。",
+        "抽屉面板必须设置 .width('100%')、固定高度（如 400）、borderRadius({ topLeft: 16, topRight: 16 })。",
+        "抽屉面板必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 350, curve: curves.springMotion() }).combine(TransitionEffect.translate({ y: 400 }))) 实现从底部弹性滑入/滑出。",
+        "Stack 必须设置 .justifyContent(FlexAlign.End) 使抽屉底部对齐。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "抽屉不使用 translate({ y: 400 }) 而用 move(TransitionEdge.BOTTOM)，方向控制不精确。",
+        "不使用条件渲染而用 visibility 控制，transition 转场不触发。",
+        "遮罩层不设置半透明背景色或不可点击关闭。",
+        "不使用 curves.springMotion() 弹性曲线，滑入滑出生硬。",
+        "Stack 不设置 justifyContent(FlexAlign.End)，抽屉位置不正确。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后半透明遮罩出现，底部抽屉从屏幕底部弹性滑入（350ms）。",
+        "抽屉顶部有圆角，宽度铺满屏幕。",
+        "点击遮罩区域后抽屉向下滑出消失，遮罩同步消失。",
+        "抽屉滑入滑出使用 springMotion 弹性曲线，过渡自然。",
+        "遮罩半透明（rgba(0,0,0,0.4)），不完全遮挡背景内容。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "抽屉展开截图（遮罩 + 面板可见，圆角顶部）",
+        "抽屉关闭截图（面板滑出消失）",
+        "抽屉转场动图/录屏（展示弹性滑入/滑出效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-021",
+    "layer": "scene-functional",
+    "title": "分组列表展开折叠转场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿设置页分组列表：每组卡片有图标+标题+箭头，点击分组标题后箭头旋转 180 度指示展开状态，子选项容器整体淡入、内部各行从左侧依次交错滑入；再次点击折叠收起。卡片使用 clip(true) 裁剪，展开内容不溢出圆角边界。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中 animateTo + springMotion 触发展开 + 箭头 rotate 隐式动画 + 容器级 TransitionEffect.OPACITY 整体淡入 + 子项级 OPACITY.combine(translate({x:-30})) + delay 交错入场 + clip(true) 裁剪溢出的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 expandedItems: boolean[] 数组管理每组的展开状态。",
+        "点击分组标题必须使用 getUIContext().animateTo({ duration: 300, curve: curves.springMotion(0.6, 0.9) }) 包裹 expandedItems[index] 状态切换。",
+        "箭头必须使用 .rotate({ angle: expanded ? 180 : 0 }) + .animation({ duration: 250, curve: Curve.EaseInOut }) 隐式动画实现旋转过渡。",
+        "子项容器 Column 必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 200, curve: Curve.EaseOut })) 实现整体淡入淡出。",
+        "每行子项 Row 必须绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 300, curve: curves.springMotion(0.6, 0.9), delay: 30 * subIndex }).combine(TransitionEffect.translate({ x: -30 }))) 实现从左侧交错滑入。",
+        "卡片容器必须设置 .borderRadius(12) + .clip(true)，裁剪子内容在圆角范围内。",
+        "delay: 30 * subIndex 必须使用子项索引递增，实现从上到下依次展开的瀑布效果。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "箭头旋转放在 animateTo 内而非使用 .animation() 隐式动画，与展开动画无法并行播放。",
+        "子项不设置 delay 交错延迟，所有行同时入场无瀑布效果。",
+        "卡片不设置 clip(true)，子项从 translate({x:-30}) 滑入时超出圆角边界。",
+        "只有行级转场无容器级转场，折叠时整体无淡出效果。",
+        "不使用 if 条件渲染控制子项容器显隐，transition 转场不触发。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击分组标题后箭头旋转 180 度，使用 EaseInOut 曲线平滑过渡。",
+        "展开时子项容器整体淡入，内部各行从左侧依次交错滑入（delay 递增 30ms）。",
+        "折叠时各行反向逐行退出，容器整体淡出。",
+        "展开内容被 clip(true) 裁剪在圆角边界内，不溢出卡片。",
+        "展开/折叠使用 springMotion(0.6, 0.9) 弹性曲线，手感自然。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "折叠状态截图（仅显示分组标题行，箭头朝下）",
+        "展开状态截图（子选项可见，箭头旋转 180 度）",
+        "展开过程截图（子项交错滑入中）",
+        "展开折叠动图/录屏（展示箭头旋转 + 交错滑入 + 裁剪效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-022",
+    "layer": "scene-functional",
+    "title": "相册宫格旋转自适应开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿相册浏览页：竖屏时宫格列数较少适配窄屏（3 列），横屏时列数自动增多（4-6 列）充分利用宽屏空间，旋转时图片居中缩放、列数平滑过渡。每个缩略图为正方形。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中 GridRow 断点系统 {sm,md,lg,xl} 自动适配列数 + GridCol({span:1}) 均分列宽 + .aspectRatio(1) 正方形缩略图的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 GridRow({ columns: { sm: 3, md: 4, lg: 5, xl: 6 }, gutter: 4 }) 断点系统自动适配列数。",
+        "每个缩略图必须使用 GridCol({ span: 1 }) 占 1 列。",
+        "每个缩略图 Stack 必须设置 .aspectRatio(1) 保证正方形。",
+        "缩略图必须设置 .borderRadius(4) + .clip(true)。",
+        "module.json5 必须配置 orientation: auto_rotation 支持屏幕旋转。",
+        "断点阈值由系统自动管理：sm < 520vp、md 520-844vp、lg > 844vp，无需手动监听方向。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "手动监听方向变化切换列数，而非使用 GridRow 断点系统自动适配。",
+        "缩略图不设置 .aspectRatio(1)，旋转后图片变形非正方形。",
+        "不配置 module.json5 的 orientation: auto_rotation，屏幕旋转不生效。",
+        "使用固定 columns 数值而非 {sm,md,lg,xl} 对象，无法响应断点变化。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "竖屏时宫格显示 3 列（sm 断点）。",
+        "旋转到横屏后列数自动增加到 4-6 列（md/lg/xl 断点）。",
+        "缩略图始终保持正方形（aspectRatio(1)）。",
+        "旋转过程中图片居中缩放，布局平滑过渡。",
+        "缩略图圆角和裁剪正确，无变形。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "竖屏宫格截图（3 列正方形缩略图）",
+        "横屏宫格截图（4-6 列正方形缩略图）",
+        "旋转过渡动图/录屏（展示列数自适应切换）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-023",
+    "layer": "scene-functional",
+    "title": "商品详情横竖屏旋转转场开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商商品详情页：竖屏时为单列滚动布局（商品大图+价格信息+详情描述+评价+底部操作栏），横屏时自动切换为左右分栏（左侧商品大图+右侧详情评价+操作栏），旋转时整体缩放淡入淡出平滑过渡，公共组件复用。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 转场动画场景中 mediaquery 监听方向变化 + TransitionEffect.OPACITY.combine(scale) 缩放淡入淡出 + curves.springMotion() 弹性过渡 + 竖屏 Scroll 单列/横屏 Row 双栏 + 公共 @Builder 组件复用的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 mediaquery.matchMediaSync('(orientation: landscape)') 监听横竖屏切换。",
+        "listener.on('change') 回调中必须使用 animateTo({ duration: 350, curve: curves.springMotion() }) 包裹 isPortrait 状态变更触发转场。",
+        "竖屏布局必须使用 Scroll + Column 单列结构，绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 300, curve: curves.springMotion() }).combine(TransitionEffect.scale({ x: 0.96, y: 0.96 })))。",
+        "横屏布局必须使用 Row 双栏结构，绑定 .transition(TransitionEffect.OPACITY.animation({ duration: 300, curve: curves.springMotion() }).combine(TransitionEffect.scale({ x: 1.04, y: 1.04 })))。",
+        "商品信息、评价列表、操作栏必须抽取为 @Builder，竖屏/横屏共用避免代码重复。",
+        "aboutToDisappear 中必须调用 listener.off('change') 释放媒体查询监听。",
+        "module.json5 必须配置 orientation: auto_rotation。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/transition-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 mediaquery 监听方向变化，无法响应旋转。",
+        "旋转回调中不使用 animateTo 包裹状态变更，布局无过渡动画硬切。",
+        "竖屏和横屏使用相同的 scale 方向（如都缩小），无视差感。",
+        "公共组件不抽取 @Builder 导致竖屏/横屏代码重复。",
+        "aboutToDisappear 中不调用 listener.off('change')，媒体查询监听内存泄漏。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "竖屏时商品详情为单列滚动布局（大图+信息+评价+操作栏）。",
+        "旋转到横屏后自动切换为左右分栏布局（左大图+右详情）。",
+        "旋转过程中整体缩放淡入淡出过渡（竖屏缩小淡出、横屏放大淡入）。",
+        "过渡动画使用 springMotion 弹性曲线，约 300-350ms。",
+        "竖屏和横屏的公共内容一致（同一套 @Builder）。",
+        "页面销毁后媒体查询监听正确释放。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "竖屏单列布局截图",
+        "横屏双栏布局截图",
+        "旋转过渡动图/录屏（展示缩放淡入淡出转场）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-024",
+    "layer": "scene-functional",
+    "title": "朋友圈图片共享元素浏览开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿朋友圈图片浏览：点击九宫格中的小图后图片放大过渡到全屏大图预览，点击大图反向缩小回缩略图位置。要求使用弹性曲线，图片使用非正方形 JPG/PNG（缩略图 Cover 裁切、大图 Contain 完整显示）。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景中 geometryTransition 共享元素过渡 + animateTo 驱动 + curves.springMotion(0.6,0.8) 弹性曲线 + 条件 ID 配对的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "缩略图必须使用条件 geometryTransition ID：showViewer && viewerPostIndex===postIndex && viewerImageIndex===imgIndex 时 ID 置空（隐藏缩略图），否则保持 moment_${postIndex}_${imgIndex}。",
+        "ID 必须包含 postIndex 和 imgIndex 两个维度，保证跨帖子图片 ID 全局唯一。",
+        "Viewer 大图必须始终持有对应 ID（不附加条件）：geometryTransition(`moment_${viewerPostIndex}_${viewerImageIndex}`)。",
+        "打开/关闭 Viewer 必须使用 getUIContext()?.animateTo({ duration: 350, curve: curves.springMotion(0.6, 0.8) }) 驱动 showViewer 状态切换。",
+        "缩略图必须使用 objectFit(ImageFit.Cover) + .aspectRatio(1)，Viewer 大图必须使用 objectFit(ImageFit.Contain)。",
+        "Viewer 必须使用 Stack 叠加在帖子列表顶层，通过 if 条件渲染控制显隐。",
+        "Viewer 必须是单张裸 Image，不要用 Swiper 包裹，不要添加额外 @State/.transition()。",
+        "图片资源必须使用 JPG/PNG 等非正方形栅格图片（不能用 SVG）。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/shared-element-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "缩略图 geometryTransition ID 不加条件判断始终持有，Viewer 无法从缩略图位置放大。",
+        "Viewer 大图 ID 附加条件（关闭时变空），无法与缩略图配对缩小回原位。",
+        "使用 SVG 图片，Cover 与 Contain 无差异导致过渡无缩放效果。",
+        "Viewer 使用 Swiper 包裹多张 Image，多张图片同时持有不同 ID 导致配对混乱。",
+        "不使用 Stack 叠加而用页面跳转，无法实现共享元素过渡。",
+        "geometryTransition 添加 { follow: true }（两个都是 Image 组件无需 follow，加上反而改变过渡行为）。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击九宫格缩略图后图片从缩略图位置弹性放大到全屏大图预览（350ms）。",
+        "点击大图后图片反向缩小回缩略图位置，弹性过渡自然。",
+        "九宫格缩略图为正方形（aspectRatio(1) + Cover），大图为完整显示（Contain）。",
+        "不同帖子的不同图片均可正确放大和缩小回位。",
+        "Viewer 显示时背景为深色（#0a0a0a）。",
+        "打开和关闭使用相同的 springMotion(0.6, 0.8) 曲线。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "九宫格列表截图（缩略图正方形 Cover 显示）",
+        "全屏大图预览截图（Contain 完整显示）",
+        "放大/缩小动图/录屏（展示共享元素过渡效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-025",
+    "layer": "scene-functional",
+    "title": "瀑布流卡片一镜到底转场开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿电商瀑布流：点击瀑布流卡片后卡片封面图放大过渡到全屏详情页，详情页其他内容（标题、正文等）淡入显示；返回时详情页封面图缩小回原卡片封面位置，其他内容淡出。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景中 WaterFlow 瀑布流 + geometryTransition('cardImg_${index}') 共享元素过渡 + curves.springMotion(0.6,0.9) 弹性曲线 + TransitionEffect.OPACITY 详情页淡入淡出 + clip(true) 裁剪的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 WaterFlow + FlowItem 构建瀑布流卡片列表，columnsTemplate('1fr 1fr') 双列。",
+        "卡片封面图必须使用条件 geometryTransition ID：isDetailShow && selectedIndex===index 时置空，否则保持 cardImg_${index}。",
+        "详情页封面图必须始终持有 geometryTransition(`cardImg_${selectedIndex}`)，不附加条件。",
+        "点击卡片必须设置防重复点击（if (isDetailShow) return），并通过 getUIContext().animateTo({ duration: 400, curve: curves.springMotion(0.6, 0.9) }) 驱动 isDetailShow = true。",
+        "详情页封面图必须设置 .clip(true) 确保过渡过程中不溢出详情页边界。",
+        "详情页整体必须通过 Stack 叠加在瀑布流顶层，使用 if 条件渲染控制显隐。",
+        "返回时必须使用与打开相同的 springMotion(0.6, 0.9) 曲线驱动 isDetailShow = false。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/shared-element-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "卡片封面图不使用条件 ID，始终持有 cardImg_${index}，详情页封面无法接管共享元素。",
+        "详情页封面图 ID 附加条件，关闭时无法与卡片封面配对缩小回位。",
+        "不设置防重复点击，详情页已显示时再次点击触发动画异常。",
+        "详情页封面图不设置 clip(true)，过渡过程中封面溢出详情页边界。",
+        "不使用 WaterFlow 而用 Grid，无法实现不等高瀑布流布局。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击瀑布流卡片后封面图从卡片位置弹性放大到全屏详情页（400ms）。",
+        "详情页其他内容（标题、正文）在封面图放大后淡入显示。",
+        "点击返回后详情页内容淡出，封面图缩小回原卡片位置。",
+        "封面图在过渡过程中不溢出详情页边界（clip(true) 生效）。",
+        "双列瀑布流卡片不等高排列。",
+        "打开和关闭使用相同的 springMotion(0.6, 0.9) 曲线。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "瀑布流列表截图（双列不等高卡片）",
+        "详情页截图（封面图全屏、其他内容可见）",
+        "卡片一镜到底动图/录屏（展示共享元素放大/缩小过渡）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-026",
+    "layer": "scene-functional",
+    "title": "搜索框一镜到底转场开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿搜索一镜到底：点击首页搜索框后搜索框无缝放大过渡为全屏搜索页，搜索页 Search 自动获焦弹出键盘，输入关键词后显示搜索结果，点击结果或返回箭头后搜索框缩小回原位。要求禁用系统模态动画仅保留几何过渡。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景中 geometryTransition(id,{follow:true}) + bindContentCover(modalTransition:NONE) + curves.interpolatingSpring 插值弹簧 + TransitionEffect.asymmetric 非对称转场的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-08"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": []
+    },
+    "solution_contract": {
+      "must_cover": [
+        "首页搜索框和搜索页 Search 必须使用相同的 geometryId 通过 geometryTransition(this.geometryId, { follow: true }) 配对。",
+        "bindContentCover 必须设置 modalTransition: ModalTransition.NONE 禁用系统模态动画，仅保留 geometryTransition 实现一镜到底。",
+        "首页搜索框必须设置 focusOnTouch(false) + focusable(false) + enableKeyboardOnFocus(false) 三重保险阻止获焦弹出键盘。",
+        "搜索页 Search 必须设置 defaultFocus(true) 自动获焦弹出键盘。",
+        "打开搜索页必须先设置 geometryId = 'search'，再使用 getUIContext()?.animateTo({ curve: curves.interpolatingSpring(0, 1, 324, 38) }) 驱动 isSearchPageShow = true。",
+        "所有关闭路径（返回箭头、点击结果、系统手势返回）都必须设置 geometryId = 'search' 确保 geometryTransition 配对生效。",
+        "返回按钮必须使用 TransitionEffect.asymmetric 实现非对称转场（进入 delay:150、退出无延迟）。",
+        "搜索页整体必须绑定 .transition(TransitionEffect.opacity(0)) 实现模态淡出。",
+        "bindContentCover 的 onDisappear 必须处理系统手势返回，重置搜索状态。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/shared-element-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不设置 modalTransition: ModalTransition.NONE，系统默认模态动画干扰一镜到底效果。",
+        "不使用 { follow: true }，组件不跟随共享元素运动。",
+        "关闭路径不设置 geometryId = 'search'，搜索框无法缩小回原位。",
+        "首页搜索框不禁止获焦，点击时弹出键盘影响过渡。",
+        "不使用 interpolatingSpring 而用固定时长曲线，弹簧效果不自然。",
+        "返回按钮不使用 asymmetric 转场，进入退出时机不正确。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击首页搜索框后搜索框无缝放大为全屏搜索页（一镜到底效果）。",
+        "搜索页打开后 Search 自动获焦弹出键盘。",
+        "输入关键词后实时显示搜索结果。",
+        "点击返回箭头后搜索页缩小回搜索框原位。",
+        "点击搜索结果后搜索页快速收起（20ms）。",
+        "系统手势返回正确触发关闭并重置状态。",
+        "无系统默认模态动画干扰（ModalTransition.NONE 生效）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "首页搜索框截图",
+        "全屏搜索页截图（Search 获焦、键盘弹出）",
+        "搜索结果截图",
+        "一镜到底动图/录屏（展示搜索框放大/缩小无缝过渡）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-027",
+    "layer": "scene-functional",
+    "title": "卡片展开详情节点复用动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿商品卡片展开：点击列表中的卡片后封面图从卡片位置展开为全屏详情页，封面图节点在卡片和详情页之间复用（非销毁重建），返回时收起回卡片。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景中 NodeController + BuilderNode 封面图节点复用 + getComponentUtils().getRectangleById() 获取位置 + curves.springMotion(0.6,0.9) 弹性展开 + position/translate/height 属性插值动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 NodeController 封装 BuilderNode 实现封面图节点在不同父容器间的迁移（从卡片容器移到展开页容器）。",
+        "CardNodeCtrl.makeNode() 必须在 isRemove 为 true 时返回 null，实现从卡片容器移除节点但 BuilderNode 实例仍存活。",
+        "CardNodeCtrl.update(isExpand) 必须更新 BuilderNode 数据（封面高度 80vp ↔ 220vp、圆角切换）。",
+        "必须使用全局 gNodeMap: Map<string, CardNodeCtrl> 通过卡片 ID 获取同一个 NodeController 实例。",
+        "必须使用 getComponentUtils().getRectangleById(key) 获取卡片在屏幕上的精确位置。",
+        "展开动画必须通过 position 定位在卡片位置 + translate 平移到全屏原点 + height 从卡片高度切换到 100%。",
+        "展开/收起动画必须使用 getUIContext()?.animateTo({ curve: curves.springMotion(0.6, 0.9) }) 驱动。",
+        "展开页收起完成后必须通过 callCallback() 通知卡片恢复 NodeContainer。",
+        "主页面 Stack 必须设置 .key('rootStack') 供 calculateData 定位参考原点。",
+        "动画期间必须通过 .enabled(isEnabled) 禁用交互防止重入。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/shared-element-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 NodeController/BuilderNode 而直接销毁重建封面图，无法实现节点复用。",
+        "makeNode() 不处理 isRemove 标志，节点无法从卡片容器移除。",
+        "不使用 getComponentUtils().getRectangleById() 获取卡片位置，展开页初始位置错误。",
+        "展开动画只使用 translate 不使用 position，展开页不从卡片位置开始。",
+        "收起完成后不调用 callCallback()，卡片中的 NodeContainer 无法恢复。",
+        "不使用 .enabled(isEnabled) 禁用交互，动画期间可重复点击触发异常。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击卡片后封面图从卡片位置弹性展开为全屏详情页。",
+        "封面图节点在卡片和详情页之间复用（非销毁重建），无闪烁。",
+        "展开过程中封面图从 80vp 放大到 220vp，圆角从 6 变为 0。",
+        "返回时详情页收起回卡片位置，封面图恢复卡片尺寸。",
+        "收起完成后卡片中的封面图正确恢复显示。",
+        "动画期间无法重复点击（交互禁用）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "卡片列表截图（封面图在卡片中显示）",
+        "展开详情页截图（封面图全屏、其他内容可见）",
+        "卡片展开动图/录屏（展示节点复用 + 弹性展开效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-028",
+    "layer": "scene-functional",
+    "title": "Navigation 跨页面新闻封面转场开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿新闻 Feed 流转场：点击新闻列表中的卡片后封面图从卡片位置展开为全屏新闻详情页，列表页同步淡出，返回时封面图缩小回列表中卡片位置。需要在 Navigation 的两个 NavDestination 页面之间共享封面节点并自定义转场动画。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 共享元素动画场景中 Navigation.customNavContentTransition + CustomTransition 单例注册转场回调 + CoverNodeController 跨页面共享封面 + interpolatingSpring + scale/translate/clip 组合动画的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-05"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Navigation.customNavContentTransition 回调返回 NavigationAnimatedTransition，仅在指定页面间（如 NewsList ↔ NewsDetailContent）启用自定义转场。",
+        "必须使用 CustomTransition 单例 + Map<pageId, AnimateCallback> 存储每个 NavDestination 注册的转场回调。",
+        "customNavContentTransition 回调中必须通过 from.index/to.index 查找对应页面的注册回调，分别执行 from 退出动画和 to 进入动画。",
+        "必须使用 CoverNodeController extends NodeController 封装封面图 BuilderNode，实现跨页面封面节点共享。",
+        "列表页点击卡片时必须通过 getComponentUtils().getRectangleById() 获取卡片位置并传递给详情页。",
+        "详情页必须使用 AnimationProperties.doAnimation() 计算缩放比例（取卡片与屏幕宽高比中差异较大的方向）+ translate/clip 组合动画。",
+        "进入动画必须使用 curves.interpolatingSpring(0, 1, 328, 36) 弹性展开，退出动画必须使用 Curve.EaseInOut 平滑收起。",
+        "进入动画完成后必须调用 transitionProxy.finishTransition()，退出动画完成后同样调用。",
+        "列表页必须注册 opacity 淡出/淡入动画（push 时 listOpacity→0，pop 时 listOpacity→1）。",
+        "详情页背景色必须从透明渐变到不透明白色（navDestinationBgColor），防止收起时露出底层内容。",
+        "详情页 showDetailContent 必须仅在展开完成后显示，收起时先隐藏。",
+        "页面 onDisAppear 中必须调用 CustomTransition.getInstance().unRegisterNavParam(pageId) 防止回调泄漏。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/shared-element-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 customNavContentTransition 而使用系统默认转场，无法实现封面图跨页面共享过渡。",
+        "CustomTransition 不使用单例模式，各页面注册的回调无法被 Navigation 回调统一查找。",
+        "进入和退出动画使用相同曲线（如都用 EaseInOut），弹性展开效果缺失。",
+        "不调用 transitionProxy.finishTransition()，转场动画无法正常结束。",
+        "缩放比例计算不取宽高比中较大差异方向，封面图无法完整填充屏幕。",
+        "详情页背景色不变，收起时露出底层列表内容。",
+        "onDisAppear 中不注销回调，CustomTransition Map 中残留无效回调。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击新闻卡片后封面图从卡片位置弹性展开为全屏详情页（interpolatingSpring 曲线）。",
+        "列表页同步淡出（opacity 从 1 到 0）。",
+        "展开完成后详情页内容（标题、正文等）淡入显示，导航栏出现。",
+        "点击返回后详情页内容淡出，封面图缩小回列表中卡片位置（EaseInOut 曲线）。",
+        "列表页同步淡入恢复显示。",
+        "封面图在缩放过程中被 clip(true) 裁剪，不溢出边界。",
+        "详情页背景色从透明渐变到白色，无底层内容透出。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "新闻列表截图",
+        "详情页全屏截图（封面图展开、内容可见）",
+        "转场过程中截图（封面图缩放过渡中）",
+        "跨页面转场动图/录屏（展示封面图展开/缩小 + 列表淡出/淡入）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-029",
+    "layer": "scene-functional",
+    "title": "加载动画帧动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿 Loading 加载效果：同时展示三种加载动画（五个圆点依次弹跳起伏的跳动加载、系统圆形进度旋转、脉冲圆环从中心向外扩散的呼吸效果），点击按钮同时启动。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景中 AnimatorResult(createAnimator) + onFrame 逐帧回调 + direction:'alternate' 反向 + progress 计算活跃点的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "圆点跳动必须使用 createAnimator({ duration: 2000, iterations: 1, begin: 0, end: 1 }) 创建动画器。",
+        "圆点跳动的 onFrame 必须通过 progress * 4 * 5 计算 cycleProgress，Math.floor(cycleProgress) % 5 得到 activeIndex，活跃点 scale=1.5/opacity=1，其余 scale=1/opacity=0.3。",
+        "脉冲圆环必须使用 createAnimator({ duration: 1000, direction: 'alternate', iterations: 6, begin: 1, end: 1.5 }) 创建交替方向动画器。",
+        "脉冲圆环的 onFrame 必须将 value 赋给 pulseScale 驱动圆环缩放。",
+        "三种动画必须可以同时独立运行，各自维护独立的 AnimatorResult 和状态变量。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/frame-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "圆点跳动使用固定数组而非 onFrame 逐帧计算活跃点，无法实现依次弹跳效果。",
+        "脉冲圆环不使用 direction: 'alternate' 而用 iterations 正反向切换，呼吸效果不自然。",
+        "三个动画器共用同一个状态变量，互相干扰。",
+        "不使用 createAnimator 而用 animateTo，无法实现逐帧精确控制。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击启动后五个圆点依次弹跳起伏，活跃点放大（scale=1.5）且高亮（opacity=1）。",
+        "系统圆形进度指示器持续旋转。",
+        "脉冲圆环在 scale 1 到 1.5 之间交替呼吸扩散（6 次循环）。",
+        "三种动画同时运行互不干扰。",
+        "动画结束后所有元素归位到初始状态。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "加载动画截图（三种动画同时运行）",
+        "圆点跳动截图（活跃点高亮放大）",
+        "加载动图/录屏（展示三种动画效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-030",
+    "layer": "scene-functional",
+    "title": "支付成功打勾串行动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿支付成功页：点击按钮后依次出现绿色圆形从中心弹出 → 勾号在圆中画出 → 一圈涟漪向外扩散 → 支付成功文字从下方上移淡入，四段动画串行衔接。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景中四个 AnimatorResult 串行 delay + onFinish 链式触发 + easing:'friction' 弹出 + 涟漪扩散的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "第一段（绿色圆形弹出）必须使用 createAnimator({ duration: 400, easing: 'friction', delay: 100, begin: 0, end: 1 })，onFrame 驱动 circleScale 和 circleOpacity。",
+        "第二段（勾号弹出）必须使用 createAnimator({ duration: 300, easing: 'friction', delay: 400, begin: 0, end: 1 })，onFrame 驱动 checkScale 和 checkOpacity。",
+        "第二段的 onFinish 必须触发第三段涟漪扩散动画。",
+        "第三段（涟漪扩散）必须使用 createAnimator({ duration: 600, easing: 'ease-out', begin: 1, end: 1.5 })，onFrame 驱动 rippleScale 和 rippleOpacity（2 - value）。",
+        "第四段（文字上移）必须使用 createAnimator({ duration: 400, easing: 'ease-out', delay: 700, begin: 20, end: 0 })，onFrame 驱动 textOffsetY 和 textOpacity（1 - v/20）。",
+        "四段动画必须通过 delay 和 onFinish 链式编排，形成串行衔接效果。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/frame-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "四段动画同时启动无 delay 编排，所有元素同时出现而非串行。",
+        "不使用 onFinish 链式触发，涟漪动画无法在勾号完成后才开始。",
+        "涟漪 opacity 不使用 (2 - value) 公式，涟漪扩散时透明度不减反增。",
+        "文字动画 begin/end 方向错误（如从 0 到 20），文字向下移动而非上移。",
+        "不使用 easing: 'friction' 而用 linear，弹出效果生硬无弹性。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后约 100ms 绿色圆形从中心弹性弹出（scale 和 opacity 同步增长）。",
+        "约 400ms 后勾号在圆中弹出显示。",
+        "勾号弹出完成后涟漪从圆形向外扩散并逐渐透明。",
+        "约 700ms 后支付成功文字从下方上移淡入。",
+        "四段动画串行衔接，总时长约 1100ms。",
+        "动画结束后绿色圆形和勾号保持显示，涟漪消失。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "圆形弹出截图",
+        "勾号弹出截图",
+        "涟漪扩散截图",
+        "文字上移截图",
+        "成功打勾动图/录屏（展示四段串行衔接动画）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-031",
+    "layer": "scene-functional",
+    "title": "骨架屏 Shimmer 加载占位开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交 Feed 流加载占位：数据加载中时显示灰色骨架占位块（头像、标题行、正文行），每个占位块内有一道高光同步从左到右循环扫过产生闪烁效果；加载完成后骨架与真实内容交叉淡入切换，Shimmer 扫动同步停止。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景中 AnimatorResult 无限循环 linear 水平扫动 + linearGradient 5 档透明度高光条带 + 可复用 @Builder + clip(true) 裁剪防溢出 + Stack 双层交叉淡入的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 createAnimator({ duration: 1500, easing: 'linear', iterations: -1, begin: -350, end: 350 }) 创建无限循环扫动动画器，onFrame 将 value 赋给全局 shimmerTranslateX。",
+        "所有占位块必须共享同一个 shimmerTranslateX，单动画器驱动整页同步扫动。",
+        "每次调用 showLoading() 前必须先 cancel 旧 shimmerAnimator 避免叠加。",
+        "高光层必须使用 5 档 linearGradient：两侧完全透明（#00ffffff）、中心半透明白（#33ffffff），形成仅 30% 宽度的窄条高光。",
+        "linearGradient 必须设置 angle: 90（水平方向），配合 .translate({ x: shimmerTranslateX }) 产生水平扫动。",
+        "占位块必须封装为 @Builder shimmerLine/shimmerSquare，使用 Stack 叠加灰色底色层 + 高光渐变层。",
+        "Stack 必须设置 .clip(true) 裁剪高光超出占位块范围的部分。",
+        "showContent() 必须先 cancel + 置 undefined 彻底销毁 shimmerAnimator，再创建单次 fadeAnimator 驱动交叉淡入。",
+        "fadeAnimator.onFrame 必须同步更新 contentOpacity = value 和 skeletonOpacity = 1 - value，保证两层透明度始终互补。",
+        "骨架层和真实内容层必须通过 Stack 叠加（非 if/else 条件渲染），分别绑定各自 opacity。",
+        "aboutToDisappear 中必须将 shimmerAnimator 置为 undefined 防止页面销毁后动画器泄漏。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/frame-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 iterations: -1 无限循环，高光只扫一次就停止。",
+        "不使用 easing: 'linear' 匀速，扫动有加速/减速感不自然。",
+        "begin/end 不超出组件宽度（如设为 0 到组件宽度），高光在边缘突现/突消失。",
+        "每个占位块使用独立动画器而非共享 shimmerTranslateX，性能浪费且扫动不同步。",
+        "linearGradient 不设置 angle: 90，高光垂直方向扫动而非水平方向。",
+        "Stack 不设置 clip(true)，高光在 translate 过程中超出占位块可见。",
+        "showContent 不先销毁 shimmerAnimator，交叉淡入期间高光仍在扫动造成视觉干扰。",
+        "使用 if/else 条件渲染切换骨架和内容，切换瞬间有空白闪烁。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "加载中时显示灰色骨架占位块（头像圆形、标题/正文矩形）。",
+        "每个占位块内有一道窄条高光从左到右匀速循环扫过，所有占位块同步扫动。",
+        "高光在占位块范围内可见，超出部分被 clip(true) 裁剪。",
+        "加载完成后骨架层淡出、真实内容层淡入，交叉过渡无缝（两层 opacity 互补）。",
+        "加载完成后高光扫动完全停止（shimmerAnimator 已销毁）。",
+        "连续多次加载/完成切换，每次都正确启动/停止 Shimmer。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "骨架屏加载截图（灰色占位块 + 高光扫动可见）",
+        "交叉淡入截图（骨架淡出、内容淡入中）",
+        "加载完成截图（真实内容显示、无高光扫动）",
+        "骨架屏 Shimmer 动图/录屏（展示高光循环扫动 + 交叉淡入效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-032",
+    "layer": "scene-functional",
+    "title": "自定义扫码框帧动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿扫码界面：屏幕中央显示方形扫码框，框内一道蓝色扫描线上下往复扫动，扫描线上方有菱形光斑跟随并缩放呼吸，四角有装饰角标标定识别区域。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景中 AnimatorResult + direction:'alternate' 上下扫动 + onRepeat 翻转阴影 + .position() 扫描线/角标定位的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 createAnimator({ duration: 2000, direction: 'alternate', iterations: -1, begin: 0, end: 100 }) 创建扫描线动画器。",
+        "onFrame 必须将 value 归一化后计算 linePosition（扫描线 y 位置）和 shadowScale（前半段放大、后半段缩小的菱形呼吸缩放）。",
+        "shadowScale 计算必须分段：normalized < 0.389 时 0.5 + normalized * 2，否则 0.5 + (1 - normalized) * 2。",
+        "必须使用 onRepeat 翻转 scanAngle（0 ↔ 180），实现菱形光斑到达端点时翻转方向。",
+        "扫描线必须使用 .position({ x: '10%', y: this.linePosition }) 定位。",
+        "菱形光斑必须使用 .scale({ x: shadowScale, y: shadowScale }) + .rotate({ angle: scanAngle }) + .position() 定位。",
+        "四角角标必须使用 .position() 分别定位在扫码框四个角落。",
+        "扫码框 Stack 必须设置固定宽高（如 200x200）+ .clip(true) 裁剪扫描线超出范围。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/frame-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 direction: 'alternate' 而手动在 onFrame 中反转方向，逻辑复杂易出错。",
+        "shadowScale 不分段计算，菱形光斑只放大不缩小无呼吸效果。",
+        "不使用 onRepeat 翻转 scanAngle，菱形到达端点时方向不翻转。",
+        "扫描线和菱形使用 translate 而非 .position()，定位不准确。",
+        "扫码框不设置 clip(true)，扫描线超出框边界可见。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "蓝色扫描线在扫码框内上下往复扫动（alternate 方向）。",
+        "菱形光斑跟随扫描线移动，同时缩放呼吸（前半段放大、后半段缩小）。",
+        "菱形光斑到达端点时旋转翻转方向（onRepeat 触发 scanAngle 翻转）。",
+        "四角角标正确标定扫码框四角。",
+        "扫描线和光斑不超出扫码框边界（clip(true) 生效）。",
+        "扫描动画无限循环不停止。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "扫码框截图（四角角标 + 扫描线可见）",
+        "扫描线顶部截图（菱形光斑翻转方向）",
+        "扫描线底部截图",
+        "扫码动画动图/录屏（展示上下扫动 + 菱形呼吸翻转效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-033",
+    "layer": "scene-functional",
+    "title": "迷你播放器展开收起手势动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿音乐播放器：页面底部有迷你播放器栏显示封面和歌曲名，点击后无缝展开为全屏播放详情页（封面从左上角放大移至屏幕中央、详情页从底部滑入），在详情页向下拖拽可实时跟随收起，松手后根据位置阈值决定弹回或完全收起。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 帧动画场景中 AnimatorResult 双向复用 + 自定义 expandCollapseAnimation(progress) 逐帧多属性联动 + 双封面图层切换 + PanGesture.onActionUpdate 手势实时驱动 + onActionEnd + animateTo 阈值判断的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须使用 Stack 将迷你播放器（zIndex 10）和详情页（zIndex 20）叠加，使用双封面图策略（静态封面 + 动画封面独立 Image）。",
+        "收起态详情页必须定位到屏幕外（position y = stackHeight + 100），而非依赖 opacity = 0 隐藏（opacity=0 的 zIndex(20) 仍拦截触摸）。",
+        "aboutToAppear 中必须将两层初始 position 设为 9999 避免 onAreaChange 触发前首帧闪烁。",
+        "必须使用 onAreaChange 在首次布局后获取 stackHeight/stackWidth 真实尺寸用于位置计算。",
+        "必须定义 expandCollapseAnimation(progress) 函数接收 0→1 进度值，同步更新 8+ 个状态变量（封面尺寸/位移/透明度/详情页位置等）。",
+        "expandCollapseAnimation 必须在 progress = 0.3 处分两阶段：前 30% 迷你播放器淡出 + 详情页上移；后 70% 详情页显现 + 封面继续放大居中。",
+        "必须使用单个 AnimatorResult 以 begin:0/end:distance 创建，onFrame 内通过 isExpand 标志区分展开/收起方向。",
+        "doExpand() 中必须先计算距离参数（miniDistanceToBottom/miniDistanceToTop/miniImgToDetailsPageImgDistance），再切换封面图层（miniImgOpacity=0、miniImgAnimateOpacity=1）。",
+        "必须使用 isAnimating 防重入锁防止动画进行中接受新请求。",
+        "手势收起必须使用 PanGesture.onActionUpdate 将 offsetY 映射为 progress（1→0），直接操作状态变量（不调用 expandCollapseAnimation，详情页始终可见）。",
+        "onActionEnd 必须使用 animateTo 根据阈值（detailsPagePositionY > stackHeight/2）决定弹回展开或完全收起。",
+        "收起分支必须将 detailsPagePositionY 设为 stackHeight（屏幕下方），避免停留在可视区域拦截触摸。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/frame-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "收起态详情页使用 opacity = 0 而非定位到屏幕外，zIndex(20) 拦截迷你播放器触摸事件。",
+        "不使用双封面图策略，同一 Image 同时绑定两套布局约束导致冲突。",
+        "expandCollapseAnimation 不分两阶段，详情页过早显现造成视觉突兀。",
+        "手势 onActionUpdate 调用 expandCollapseAnimation 而非直接操作状态变量，详情页在手势阶段闪烁。",
+        "不使用 isAnimating 防重入锁，动画进行中可重复触发。",
+        "onActionEnd 不判断阈值直接收起，轻微拖拽即完全收起。",
+        "收起分支不将详情页定位到屏幕外，收起后详情页仍拦截触摸。",
+        "aboutToAppear 不将两层设为 9999，首帧出现位置错误闪烁。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击迷你播放器后封面从左上角放大移至屏幕中央，详情页从底部滑入。",
+        "展开过程中迷你播放器先淡出（前 30%），详情页后显现（后 70%）。",
+        "详情页中向下拖拽时页面实时跟随收起，封面同步缩小。",
+        "松手后若拖拽超过屏幕中线则完全收起为迷你播放器，否则弹回全屏展开。",
+        "收起后详情页定位到屏幕外，迷你播放器可正常点击。",
+        "动画进行中无法重复触发（isAnimating 锁生效）。",
+        "首帧无位置错误闪烁（aboutToAppear 9999 定位生效）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "迷你播放器截图（底部栏显示封面和歌曲名）",
+        "全屏详情页截图（封面居中放大、播放控件可见）",
+        "手势拖拽截图（页面跟随手指下移）",
+        "展开/收起/手势动图/录屏（展示双向动画 + 手势跟手 + 阈值判断）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-034",
+    "layer": "scene-functional",
+    "title": "列表交错入场动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿社交 App 首页刷新：点击按钮后 12 条列表项从底部依次弹入，每项间隔 80ms 产生瀑布式交错入场效果。要求使用弹性曲线，入场自然流畅。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景中 TransitionEffect.OPACITY.combine(translate({y:80})) + delay: index * 80 交错 + curves.springMotion() 弹性曲线的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须通过先清空 items 数组再延迟填充触发 if 条件渲染的进入转场（setTimeout 50ms 后赋值新数组）。",
+        "每个 ListItem 必须绑定 .transition(TransitionEffect.OPACITY.combine(TransitionEffect.translate({ y: 80 })).animation({ duration: 400, curve: curves.springMotion(), delay: index * 80 }))。",
+        "delay 必须使用 index * 80 递增，产生 80ms 间隔的瀑布式交错入场效果。",
+        "列表项必须从 y=80 偏移位置向上弹入并同时淡入（OPACITY + translate 联动）。",
+        "必须使用 curves.springMotion() 弹性曲线，入场有回弹感。",
+        "列表必须使用 List + ForEach + ListItem 结构渲染。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/component-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不先清空 items 数组直接填充，已存在的列表项不触发进入转场。",
+        "不使用 delay: index * 80，所有列表项同时入场无瀑布交错效果。",
+        "使用 Curve.Linear 而非 curves.springMotion()，入场生硬无弹性。",
+        "translate 只设置 y: 0 或不设置偏移，列表项原地淡入无从下方弹入的效果。",
+        "不使用条件渲染（如始终保持 items 不变），transition 转场不触发。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "点击按钮后 12 条列表项从底部依次弹入，每项间隔约 80ms。",
+        "每项从 y=80 偏移位置向上弹入并淡入，使用 springMotion 弹性曲线。",
+        "入场顺序从第一项到最后一项依次出现（瀑布式交错）。",
+        "所有项入场完成后列表完整显示，无缺失。",
+        "再次点击按钮（先清空再填充），列表项重新交错入场。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "列表交错入场截图（部分项已入场、部分项仍在弹入中）",
+        "列表完整显示截图（所有项入场完成）",
+        "交错入场动图/录屏（展示 80ms 间隔瀑布式效果）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-035",
+    "layer": "scene-functional",
+    "title": "列表项拖拽交换动画开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿支付宝银行卡管理/快捷支付排序：长按列表项后卡片浮起（阴影+放大+半透明），跟随手指上下拖拽，拖拽过程中邻居项根据距离动态收缩让位，超过相邻项一半高度时自动交换位置，松手后两段弹簧动画弹性归位。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景中 AttributeModifier<ListItemAttribute> 封装动画属性 + GestureGroup(Sequence, LongPress + Pan) 组合手势 + curves.initCurve(Curve.Sharp).interpolate() 计算邻居收缩比例 + curves.interpolatingSpring 两段弹性归位的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-02",
+        "ARKUI-07"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "必须定义 ListItemModifier implements AttributeModifier<ListItemAttribute>，封装 hasShadow、scale、offsetY 三个动画属性，通过 applyNormalAttribute 映射到 shadow/zIndex/opacity/translate/scale。",
+        "数据数组与 Modifier 数组必须保持 1:1 映射关系，每个 ListItem 通过 .attributeModifier() 绑定对应 Modifier。",
+        "必须使用 GestureGroup(GestureMode.Sequence, LongPressGesture, PanGesture) 串行组合手势实现先长按再拖拽。",
+        "长按触发必须使用 animateTo({ curve: Curve.Friction, duration: 300 }) 修改 Modifier 的 hasShadow=true 和 scale=1.04，卡片浮起产生悬浮感。",
+        "拖拽过程中必须直接更新 Modifier 的 offsetY（无动画，跟随手指），同时使用 curves.initCurve(Curve.Sharp).interpolate() 计算邻居收缩比例（最多缩小到 0.9）。",
+        "邻居收缩方向必须根据拖拽方向判断：向下拖拽时收缩下方邻居，向上拖拽时收缩上方邻居。",
+        "超过半项高度（|offsetY| > ITEM_HEIGHT/2）时必须使用 animateTo({ curve: Curve.Friction, duration: 300 }) 交换数据数组和 Modifier 数组（splice 同步操作）。",
+        "必须使用 dragRefOffset 累计已交换偏移量，确保连续多次交换时 offsetY 计算正确。",
+        "交换时必须进行边界检查：第一项不能上移，最后一项不能下移。",
+        "松手归位必须使用两段 interpolatingSpring 弹簧动画：第一段 interpolatingSpring(0, 1, 400, 38) 复位邻居 scale（阻尼大、回弹少），第二段 interpolatingSpring(14, 1, 170, 17) 复位拖拽项 shadow/scale/offsetY（阻尼小、回弹明显）。",
+        "ForEach 的 keyGenerator 必须使用 JSON.stringify(item) 确保交换后正确跟踪。",
+        "被拖拽项必须设置 zIndex(2) 浮于其他项之上。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/component-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 AttributeModifier 而直接在组件上绑定动画属性，无法在 animateTo 中动态修改。",
+        "使用单独的 onClick + PanGesture 而非 GestureGroup(Sequence)，轻触即可拖拽无长按门槛。",
+        "邻居收缩不使用 curves.initCurve(Curve.Sharp).interpolate() 而用线性计算，收缩前期变化不够快。",
+        "交换时只操作数据数组不操作 Modifier 数组，两者映射关系断裂。",
+        "不使用 dragRefOffset 累计偏移，连续多次交换后 offsetY 计算错误。",
+        "松手归位只使用一段弹簧动画，邻居和拖拽项同时复位无层次感。",
+        "两段弹簧使用相同参数，无法体现邻居先让位、拖拽项再落下的效果。",
+        "不做边界检查，第一项可上移到列表外。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "长按列表项后卡片浮起（阴影 + 放大到 1.04 + 半透明），有 300ms 过渡。",
+        "拖拽过程中卡片跟随手指移动，邻居项根据距离动态收缩让位（最多缩小到 0.9）。",
+        "拖拽超过相邻项一半高度时自动交换位置，数据和 Modifier 数组同步更新。",
+        "连续多次交换位置时 offsetY 计算正确（dragRefOffset 累计生效）。",
+        "第一项不能上移，最后一项不能下移（边界检查生效）。",
+        "松手后邻居先弹性复位（阻尼大），拖拽项再弹性归位（阻尼小、回弹明显）。",
+        "被拖拽项 zIndex(2) 浮于其他项之上。",
+        "归位后所有项恢复正常状态（无阴影、scale=1、offsetY=0）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "长按浮起截图（阴影+放大+半透明）",
+        "拖拽中截图（卡片跟手、邻居收缩让位）",
+        "交换后截图（位置已交换）",
+        "松手归位截图（弹性复位完成）",
+        "拖拽交换动图/录屏（展示浮起+跟手+邻居收缩+交换+两段弹簧归位）"
+      ]
+    }
+  },
+  {
+    "case_id": "ANIM-FUNC-036",
+    "layer": "scene-functional",
+    "title": "网格元素删除滑移与拖拽排序开发方案验证",
+    "phase": "DEV",
+    "user_prompt": "仿桌面快捷方式管理：进入编辑模式后图标右上角出现红色删除按钮，点击删除后相邻图标滑移填补空位（同行左移、行尾跳到下一行首位），同时支持长按拖拽重新排序。请输出完整的开发方案。",
+    "intent": "验证 ARKUI-09 组件动画场景中 Grid.editMode + supportAnimation(true) + AttributeModifier<GridItemAttribute> 驱动删除位移 + animateTo 被删项淡出与邻居滑移填补的完整开发方案能转成工程可编译、可验证的契约。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "ARKUI-09",
+      "secondary_scenes": [
+        "ARKUI-07",
+        "ARKUI-02"
+      ],
+      "next_scene_refs": [
+        "./SKILL.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "ARKUI-08"
+      ]
+    },
+    "solution_contract": {
+      "must_cover": [
+        "数据项必须使用 @Observed 装饰（AppInfo），Modifier 类也必须使用 @Observed 装饰（GridItemModifier）。",
+        "必须定义 GridItemModifier implements AttributeModifier<GridItemAttribute>，封装 offsetX、offsetY、opacity 三个属性，通过 applyNormalAttribute 映射到 translate 和 opacity。",
+        "GridItemDeletionCtrl 必须为每个网格项持有一个 GridItemModifier，数据数组与 Modifier 数组 1:1 映射。",
+        "删除动画必须使用 animateTo({ curve: Curve.Friction, duration: 200 }) 同时驱动被删项 opacity=0（淡出）和后续项位移。",
+        "后续项位移逻辑：非行首项（ind % COLUMN_COUNT !== 0）向左平移一个 itemAreaWidth；行首项（ind % COLUMN_COUNT === 0）向右移动 (COLUMN_COUNT-1) 格 + 向上移动一格实现换行回填。",
+        "onFinish 中必须先重置所有 Modifier 偏移，再从数据数组和 Modifier 数组中同步移除该项。",
+        "必须使用防重入锁（deletionStatus === FINISH 时才执行删除，执行前置为 IDLE）。",
+        "主网格必须使用 Grid.editMode(this.isEdit) 开启长按拖拽编辑模式。",
+        "主网格必须设置 .supportAnimation(true) 使拖拽排序时非拖拽项自动产生位移动画。",
+        "必须使用 onItemDragStart 返回自定义 @Builder 作为拖拽浮层图标。",
+        "必须使用 onItemDrop 中 splice 交换数组位置完成排序。",
+        "删除按钮必须通过 isEdit 条件渲染，编辑模式下右上角出现红色删除按钮。",
+        "itemAreaWidth 必须通过 onAreaChange 获取，用于计算删除时邻居项位移距离。"
+      ],
+      "should_reuse_resources": [
+        "./references/animation-transitions-scenario-development/component-animation-scenario-development.md",
+        "./SKILL.md"
+      ],
+      "forbidden_patterns": [
+        "不使用 AttributeModifier 而直接绑定动画属性，无法在 animateTo 中动态修改位移。",
+        "删除动画不区分行首项和非行首项，所有后续项统一左移导致换行回填错误。",
+        "onFinish 中不重置 Modifier 偏移直接移除数据，残留偏移状态影响后续渲染。",
+        "不使用防重入锁，连续快速点击删除按钮导致动画叠加异常。",
+        "不设置 supportAnimation(true)，拖拽排序时其他项无位移动画。",
+        "不设置 editMode(true)，Grid 不支持长按拖拽。",
+        "数据项不使用 @Observed 装饰，Modifier 属性变化不触发 UI 更新。",
+        "itemAreaWidth 硬编码而非通过 onAreaChange 获取，不同设备位移距离错误。"
+      ]
+    },
+    "execution_contract": {
+      "execution_type": "harmonyos_project",
+      "target_project_type": "HarmonyOS NEXT Stage/ArkTS 工程",
+      "compile_command_template": "./hvigorw assembleHap",
+      "test_command_template": "./hvigorw test",
+      "runtime_assertions": [
+        "进入编辑模式后图标右上角出现红色删除按钮。",
+        "点击删除后被删项淡出，后续项滑移填补空位（同行左移、行尾跳到下一行首位）。",
+        "删除动画使用 Curve.Friction 200ms，滑移自然减速。",
+        "删除完成后数据数组和 Modifier 数组同步移除该项，无残余偏移。",
+        "长按图标进入拖拽模式，拖拽时其他项自动产生位移动画让位（supportAnimation 生效）。",
+        "拖拽放下后图标位置正确交换排序。",
+        "非编辑模式下不显示删除按钮，点击图标不触发删除。",
+        "连续快速点击删除按钮不会导致动画叠加（防重入锁生效）。"
+      ],
+      "pass_evidence": [
+        "编译成功日志",
+        "编辑模式截图（删除按钮可见）",
+        "删除动画截图（被删项淡出、邻居滑移中）",
+        "删除完成截图（空位已填补）",
+        "拖拽排序截图（拖拽浮层可见、其他项让位）",
+        "网格删除+拖拽动图/录屏（展示淡出滑移 + 拖拽排序效果）"
+      ]
+    }
+  }
+]

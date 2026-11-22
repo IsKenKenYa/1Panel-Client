@@ -1,0 +1,45 @@
+import { RichEditor, RichEditorController, RichEditorOptions, RichEditorChangeValue } from '@ohos.arkui';
+
+@Entry
+@Component
+struct RichEditorCrossDeviceCustom {
+  controller: RichEditorController = new RichEditorController();
+  options: RichEditorOptions = { controller: this.controller };
+
+  private customImageSize: string[] = ['300px', '300px'];
+  private customBorderRadius: string = '15px';
+  private customMargin: string = '10px';
+
+  build() {
+    Column() {
+      Column() {
+        RichEditor(this.options)
+          .onWillChange((value: RichEditorChangeValue) => {
+            if (value?.replacedImageSpans[0]?.imageStyle?.objectFit != 0) {
+              return true;
+            }
+            for (let item of value.replacedImageSpans) {
+              this.controller.addImageSpan(item.valuePixelMap, {
+                imageStyle: {
+                  size: this.customImageSize,
+                  layoutStyle: {
+                    borderRadius: this.customBorderRadius,
+                    margin: this.customMargin
+                  }
+                }
+              });
+            }
+            return false;
+          })
+          .borderWidth(1)
+          .borderColor(Color.Blue)
+          .width('100%')
+          .height('100%')
+      }
+      .borderWidth(1)
+      .borderColor(Color.Orange)
+      .width('100%')
+      .height('70%')
+    }
+  }
+}

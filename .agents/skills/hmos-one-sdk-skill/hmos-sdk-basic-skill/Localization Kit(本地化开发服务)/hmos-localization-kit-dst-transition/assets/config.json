@@ -1,0 +1,198 @@
+{
+  "skill_metadata": {
+    "name": "hmos-localization-kit-dst-transition",
+    "version": "1.0.0",
+    "description": "计算夏令时跳变前后时间差小时数，支持多种时区配置",
+    "kit": "LocalizationKit",
+    "api_version": {
+      "min": 8,
+      "max": 12
+    },
+    "supported_languages": ["ArkTS"],
+    "tags": ["夏令时", "DST", "时间计算", "国际化", "时区"]
+  },
+  "dependencies": {
+    "@kit.LocalizationKit": {
+      "description": "HarmonyOS本地化Kit，提供国际化能力",
+      "version": "系统Kit，无需额外安装",
+      "required": true
+    },
+    "@kit.BasicServicesKit": {
+      "description": "基础服务Kit，提供BusinessError错误处理",
+      "version": "系统Kit，无需额外安装",
+      "required": false
+    }
+  },
+  "api_references": {
+    "getCalendar": {
+      "signature": "getCalendar(locale: string, type?: string): Calendar",
+      "description": "获取指定区域和历法的日历对象",
+      "api_version": 8,
+      "parameters": {
+        "locale": {
+          "type": "string",
+          "required": true,
+          "description": "区域ID，如zh-Hans"
+        },
+        "type": {
+          "type": "string",
+          "required": false,
+          "description": "历法类型，如gregory、chinese、buddhist等"
+        }
+      },
+      "return_value": {
+        "type": "Calendar",
+        "description": "日历对象"
+      }
+    },
+    "setTimeZone": {
+      "signature": "setTimeZone(timezone: string): void",
+      "description": "设置日历对象的时区",
+      "api_version": 8,
+      "parameters": {
+        "timezone": {
+          "type": "string",
+          "required": true,
+          "description": "合法的时区ID，如Europe/London、Asia/Shanghai、UTC"
+        }
+      },
+      "return_value": {
+        "type": "void",
+        "description": "无返回值"
+      }
+    },
+    "set": {
+      "signature": "set(year: number, month: number, date: number, hour?: number, minute?: number, second?: number): void",
+      "description": "设置日历对象的年、月、日、时、分、秒",
+      "api_version": 8,
+      "parameters": {
+        "year": {
+          "type": "number",
+          "required": true,
+          "description": "设置的年"
+        },
+        "month": {
+          "type": "number",
+          "required": true,
+          "description": "设置的月（0表示一月，11表示十二月）"
+        },
+        "date": {
+          "type": "number",
+          "required": true,
+          "description": "设置的日"
+        },
+        "hour": {
+          "type": "number",
+          "required": false,
+          "description": "设置的小时，默认值：系统当前时间"
+        },
+        "minute": {
+          "type": "number",
+          "required": false,
+          "description": "设置的分钟，默认值：系统当前时间"
+        },
+        "second": {
+          "type": "number",
+          "required": false,
+          "description": "设置的秒，默认值：系统当前时间"
+        }
+      },
+      "return_value": {
+        "type": "void",
+        "description": "无返回值"
+      }
+    },
+    "getTimeInMillis": {
+      "signature": "getTimeInMillis(): number",
+      "description": "获取当前日历对象的时间戳",
+      "api_version": 11,
+      "parameters": {},
+      "return_value": {
+        "type": "number",
+        "description": "Unix时间戳（毫秒）"
+      }
+    },
+    "getTimeZone": {
+      "signature": "getTimeZone(): string",
+      "description": "获取日历对象的时区ID",
+      "api_version": 8,
+      "parameters": {},
+      "return_value": {
+        "type": "string",
+        "description": "时区ID字符串"
+      }
+    }
+  },
+  "timezones": {
+    "common_examples": [
+      "Europe/London",
+      "Europe/Paris",
+      "America/New_York",
+      "America/Los_Angeles",
+      "Asia/Shanghai",
+      "Asia/Tokyo",
+      "Asia/Hong_Kong",
+      "Australia/Sydney",
+      "UTC",
+      "GMT"
+    ],
+    "dst_enabled_regions": [
+      "Europe/London",
+      "Europe/Paris",
+      "America/New_York",
+      "America/Los_Angeles",
+      "Australia/Sydney"
+    ],
+    "no_dst_regions": [
+      "Asia/Shanghai",
+      "Asia/Tokyo",
+      "Asia/Hong_Kong",
+      "UTC",
+      "GMT"
+    ]
+  },
+  "dst_rules": {
+    "london": {
+      "start": "每年3月最后一个星期日 01:00 -> 02:00",
+      "end": "每年10月最后一个星期日 02:00 -> 01:00",
+      "hours_on_start_day": 23,
+      "hours_on_end_day": 25
+    },
+    "new_york": {
+      "start": "每年3月第二个星期日 02:00 -> 03:00",
+      "end": "每年11月第一个星期日 02:00 -> 01:00",
+      "hours_on_start_day": 23,
+      "hours_on_end_day": 25
+    }
+  },
+  "error_codes": {
+    "401": {
+      "description": "Parameter error. 参数错误",
+      "possible_causes": [
+        "必填参数未指定",
+        "参数类型不正确"
+      ],
+      "solution": "检查参数类型和必填项"
+    },
+    "890001": {
+      "description": "Invalid parameter. 无效参数",
+      "possible_causes": [
+        "时区ID格式不正确",
+        "时间参数超范围",
+        "参数验证失败"
+      ],
+      "solution": "验证参数合法性，使用正确的时区ID和时间范围"
+    }
+  },
+  "best_practices": {
+    "storage": "使用UTC/GMT时间存储和传输，避免夏令时跳变影响",
+    "display": "通过Calendar对象自动转换为本地时间显示",
+    "validation": "使用getTimeZone()验证时区设置是否成功",
+    "error_handling": "捕获BusinessError异常，根据错误码提供友好提示"
+  },
+  "examples": {
+    "basic": "计算伦敦2021年夏令时开始当天的小时数",
+    "advanced": "处理多个时区的夏令时跳变计算",
+    "fallback": "时区无效时使用UTC时区作为降级方案"
+  }
+}

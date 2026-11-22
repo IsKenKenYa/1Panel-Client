@@ -1,0 +1,134 @@
+[
+  {
+    "case_id": "SMOKE-MVVM-01",
+    "layer": "smoke",
+    "title": "V1购物车MVVM三层分层架构验证",
+    "phase": "DEV",
+    "user_prompt": "我正在开发一个手机电商App的购物车页面，需要按MVVM架构分层。购物车展示商品列表，每条商品有名称、单价、数量，支持勾选/取消勾选商品、调整数量（加/减）、删除商品，底部实时显示选中商品总价。商品数据从rawfile的JSON文件加载。当前项目使用V1状态管理。要求按Model/ViewModel/View/Page四层组织代码，View层不可直接操作Model层数据。请输出完整的开发方案。",
+    "intent": "验证 V1 版本下购物车场景的MVVM三层分层架构能稳定命中 MVVM-01，覆盖 @Observed+@Track 可观察ViewModel、@Observed extends Array 子类化数组观测push/splice、@ObjectLink 子组件观测数组项属性、@State 页面绑定ViewModel、@Builder 复用UI结构、单向数据流 Model→ViewModel→View。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-01",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md",
+        "./references/mvvm-scenario-development_V1.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-02"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-MVVM-02",
+    "layer": "smoke",
+    "title": "V1音乐播放列表MVVM分层架构验证",
+    "phase": "DEV",
+    "user_prompt": "我正在开发一个手机音乐App的播放列表页面，需要按MVVM架构分层。播放列表展示歌曲列表，每条歌曲有标题、歌手、时长、播放状态，支持点击歌曲切换播放/暂停、当前播放歌曲高亮并显示播放图标、删除歌曲。顶部展示当前播放歌曲信息。当前项目使用V1状态管理。要求按Model/ViewModel/View/Page四层组织代码，View层通过ViewModel方法间接操作数据。请输出完整的开发方案。",
+    "intent": "验证 V1 版本下音乐播放列表场景的MVVM三层分层架构能稳定命中 MVVM-01，覆盖 @Observed+@Track 属性级精准刷新播放图标、@ObjectLink 子组件观测歌曲状态、@State 页面绑定ViewModel、@Builder 复用播放/暂停图标、单向数据流 Model→ViewModel→View。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-01",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md",
+        "./references/mvvm-scenario-development_V1.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-02"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-MVVM-03",
+    "layer": "smoke",
+    "title": "V2通讯录联系人MVVM分层架构验证",
+    "phase": "DEV",
+    "user_prompt": "我正在开发一个手机通讯录App的联系人页面，需要按MVVM架构分层。通讯录展示联系人列表，每条联系人有姓名、电话、收藏状态，支持点击星标收藏/取消收藏、删除联系人、按关键词搜索联系人。顶部显示收藏联系人数量统计。当前项目使用V2状态管理。要求按Model/ViewModel/View/Page四层组织代码，子组件用@Param接收数据（只读）、@Event回传事件，列表用Repeat替代ForEach。请输出完整的开发方案。",
+    "intent": "验证 V2 版本下通讯录场景的MVVM三层分层架构能稳定命中 MVVM-02，覆盖 @ObservedV2+@Trace 深度属性观测收藏状态、@Param+@Event 严格单向数据流、Repeat替代ForEach循环渲染、@Computed自动计算收藏数量、@ComponentV2+@Local页面组装。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-02",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md",
+        "./references/mvvm-scenario-development_V2.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-01"
+      ]
+    }
+  },
+  {
+    "case_id": "SMOKE-MVVM-04",
+    "layer": "smoke",
+    "title": "V2天气预报城市管理MVVM分层架构验证",
+    "phase": "DEV",
+    "user_prompt": "我正在开发一个手机天气App的城市管理页面，需要按MVVM架构分层。页面展示城市天气列表，每条有城市名、温度、天气描述，支持添加城市、删除城市、点击设为默认城市。顶部显示所有城市平均温度。当前项目使用V2状态管理。要求按Model/ViewModel/View/Page四层组织代码，子组件用@Param接收数据、@Event回传事件，列表用Repeat渲染。请输出完整的开发方案。",
+    "intent": "验证 V2 版本下天气预报场景的MVVM三层分层架构能稳定命中 MVVM-02，覆盖 @ObservedV2+@Trace 属性级观测温度变化、@Param只读传递+@Event回调修改数据源、Repeat循环渲染城市列表、@Computed自动计算平均温度、@ComponentV2+@Local页面组装。",
+    "expected": {
+      "primary_phase": "DEV",
+      "primary_scene": "MVVM-02",
+      "primary_scene_ref": "./SKILL.md",
+      "secondary_scenes": [],
+      "next_scene_refs": [
+        "./SKILL.md",
+        "./references/mvvm-scenario-development_V2.md"
+      ],
+      "required_output_fields": [
+        "active_phases",
+        "primary_phase",
+        "primary_scene",
+        "secondary_scenes",
+        "route_reason",
+        "next_scene_refs",
+        "code_touchpoints",
+        "reuse_resources",
+        "implementation_notes",
+        "integration_risks"
+      ],
+      "forbidden_scenes": [
+        "MVVM-01"
+      ]
+    }
+  }
+]
