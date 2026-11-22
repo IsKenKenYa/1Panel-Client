@@ -341,3 +341,21 @@ class ContainerSectionModelTests: XCTestCase {
     XCTAssertEqual(ContainerSection.volumes.titleKey, "containerTabVolumes")
   }
 }
+
+class MacReleaseManifestTests: XCTestCase {
+  func testPrivacyManifestDeclaresUserDefaultsReason() throws {
+    let url = try XCTUnwrap(
+      Bundle.main.url(forResource: "PrivacyInfo", withExtension: "xcprivacy")
+    )
+    let data = try Data(contentsOf: url)
+    let plist = try PropertyListSerialization.propertyList(from: data, format: nil)
+    let manifest = try XCTUnwrap(plist as? [String: Any])
+    XCTAssertEqual(manifest["NSPrivacyTracking"] as? Bool, false)
+    let apis = try XCTUnwrap(manifest["NSPrivacyAccessedAPITypes"] as? [[String: Any]])
+    let declared = apis.contains { entry in
+      (entry["NSPrivacyAccessedAPIType"] as? String)
+        == "NSPrivacyAccessedAPICategoryUserDefaults"
+    }
+    XCTAssertTrue(declared)
+  }
+}
