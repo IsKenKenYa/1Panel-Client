@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 import AppleSharedUI
 @testable import Runner
@@ -451,5 +452,31 @@ class OperationsRouteTests: XCTestCase {
         for route in ModuleRoute.allCases {
             XCTAssertFalse(route.title(translations).isEmpty)
         }
+    }
+}
+
+class ReleaseManifestTests: XCTestCase {
+    func testInfoPlistContainsReleaseKeys() throws {
+        let info = try XCTUnwrap(Bundle.main.infoDictionary)
+        XCTAssertEqual(info["ITSAppUsesNonExemptEncryption"] as? Bool, false)
+        XCTAssertFalse((info["NSLocalNetworkUsageDescription"] as? String ?? "").isEmpty)
+        let scene = try XCTUnwrap(info["UIApplicationSceneManifest"] as? [String: Any])
+        XCTAssertEqual(scene["UIApplicationSupportsMultipleScenes"] as? Bool, false)
+    }
+
+    func testPrivacyManifestDeclaresUserDefaultsReason() throws {
+        let url = try XCTUnwrap(
+            Bundle.main.url(forResource: "PrivacyInfo", withExtension: "xcprivacy")
+        )
+        let data = try Data(contentsOf: url)
+        let plist = try PropertyListSerialization.propertyList(from: data, format: nil)
+        let manifest = try XCTUnwrap(plist as? [String: Any])
+        XCTAssertEqual(manifest["NSPrivacyTracking"] as? Bool, false)
+        let apis = try XCTUnwrap(manifest["NSPrivacyAccessedAPITypes"] as? [[String: Any]])
+        let declared = apis.contains { entry in
+            (entry["NSPrivacyAccessedAPIType"] as? String)
+                == "NSPrivacyAccessedAPICategoryUserDefaults"
+        }
+        XCTAssertTrue(declared)
     }
 }
