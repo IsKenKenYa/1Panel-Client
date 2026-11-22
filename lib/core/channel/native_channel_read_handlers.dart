@@ -41,6 +41,8 @@ import '../../features/toolbox/services/toolbox_device_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
 import '../../features/alert/alert_service.dart';
 import 'native_alert_payloads.dart';
+import '../../features/ai/model_downloader_service.dart';
+import 'native_model_downloader_payloads.dart';
 import '../../features/vm/vm_service.dart';
 import 'native_vm_payloads.dart';
 import '../../features/server/server_repository.dart';
@@ -1787,6 +1789,96 @@ class NativeChannelReadHandlers {
       clams: results[1] as List<AlertClam>,
       cronJobs: results[2] as List<AlertCronJob>,
     );
+  }
+
+  // ── 模型下载器 ──────────────────────────────────────────────────────────
+
+  /// 推荐模型。参数：`{family?, page?, pageSize?}`。POST /xpack/model/downloader/featured/search。
+  static Future<dynamic> getModelDownloaderFeatured(dynamic arguments) async {
+    final family = (arguments?['family'] as String? ?? '').trim();
+    final page = int.tryParse('${arguments?['page'] ?? 1}') ?? 1;
+    final pageSize = int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50;
+    final result = await ModelDownloaderService().searchFeatured(
+      page: page,
+      pageSize: pageSize,
+      family: family.isEmpty ? null : family,
+    );
+    return <String, dynamic>{
+      'items':
+          result.items.map(modelDownloaderFeaturedPayload).toList(growable: false),
+      'total': result.total,
+      'families': result.families,
+    };
+  }
+
+  /// 市场搜索。参数：`{source: hf|modelScope, query?, sort?, page?, pageSize?}`。
+  static Future<dynamic> getModelDownloaderSearch(dynamic arguments) async {
+    final source = (arguments?['source'] as String? ?? 'hf').trim();
+    final query = (arguments?['query'] as String? ?? '').trim();
+    final sort = (arguments?['sort'] as String? ?? 'trending').trim();
+    final page = int.tryParse('${arguments?['page'] ?? 1}') ?? 1;
+    final pageSize = int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50;
+    final service = ModelDownloaderService();
+    final result = source == 'hf'
+        ? await service.searchHuggingFace(
+            page: page,
+            pageSize: pageSize,
+            query: query.isEmpty ? null : query,
+            sort: sort.isEmpty ? null : sort,
+          )
+        : await service.searchModelScope(
+            page: page,
+            pageSize: pageSize,
+            query: query.isEmpty ? null : query,
+            sort: sort.isEmpty ? null : sort,
+          );
+    return <String, dynamic>{
+      'items':
+          result.items.map(modelDownloaderMarketPayload).toList(growable: false),
+      'total': result.total,
+    };
+  }
+
+  /// 下载任务。参数：`{status?}`。
+  static Future<dynamic> getModelDownloaderTasks(dynamic arguments) async {
+    final status = (arguments?['status'] as String? ?? '').trim();
+    final result = await ModelDownloaderService().searchTasks(
+      page: 1,
+      pageSize: 100,
+      status: status.isEmpty ? null : status,
+      includeLocal: true,
+    );
+    return <String, dynamic>{
+      'items':
+          result.items.map(modelDownloaderTaskPayload).toList(growable: false),
+      'total': result.total,
+    };
+  }
+
+  /// 本地模型。参数：`{info?}`。
+  static Future<dynamic> getModelDownloaderLocal(dynamic arguments) async {
+    final info = (arguments?['info'] as String? ?? '').trim();
+    final result = await ModelDownloaderService().searchLocal(
+      page: 1,
+      pageSize: 100,
+      info: info.isEmpty ? null : info,
+    );
+    return <String, dynamic>{
+      'items':
+          result.items.map(modelDownloaderLocalPayload).toList(growable: false),
+      'total': result.total,
+    };
+  }
+
+  /// 下载设置。GET /xpack/model/downloader/settings。
+  static Future<dynamic> getModelDownloaderSettings(dynamic arguments) async {
+    final setting = await ModelDownloaderService().getSettings();
+    return modelDownloaderSettingsPayload(setting);
+  }
+
+  /// 下载器固定选项：来源、排序、下载内容与任务状态。
+  static Future<dynamic> getModelDownloaderOptions(dynamic arguments) async {
+    return modelDownloaderOptionsPayload();
   }
 }
 

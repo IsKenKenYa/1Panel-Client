@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import '../../features/alert/alert_service.dart';
 import '../../features/alert/alert_types.dart';
+import '../../features/ai/model_downloader_service.dart';
+import '../../data/models/setting_models.dart';
 import '../../data/models/alert_models.dart';
 import 'native_alert_payloads.dart';
 
@@ -3372,6 +3374,172 @@ class NativeChannelWriteHandlers {
       advancedParams: advancedParams.isEmpty ? null : advancedParams,
       id: id,
     );
+  }
+
+  // ── 模型下载器 ──────────────────────────────────────────────────────────
+
+  /// 同步推荐模型目录。参数：`{}`。
+  static Future<Map<String, dynamic>> syncModelDownloaderFeatured(
+      dynamic arguments) async {
+    try {
+      await ModelDownloaderService().syncFeatured();
+      return _ok();
+    } catch (e) {
+      appLogger.e('syncModelDownloaderFeatured failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 切换推荐模型自动同步。参数：`{enabled: bool}`。
+  static Future<Map<String, dynamic>> setModelDownloaderFeaturedSync(
+      dynamic arguments) async {
+    try {
+      final enabled = arguments?['enabled'] as bool? ?? false;
+      await ModelDownloaderService().updateFeaturedSyncStatus(enabled);
+      return _ok();
+    } catch (e) {
+      appLogger.e('setModelDownloaderFeaturedSync failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 提交下载。参数：`{repoID, source: hf|modelScope, downloadType?, revision?}`
+  static Future<Map<String, dynamic>> downloadModel(dynamic arguments) async {
+    try {
+      final repoID = (arguments?['repoID'] as String? ?? '').trim();
+      final source = (arguments?['source'] as String? ?? 'hf').trim();
+      if (repoID.isEmpty) {
+        return <String, dynamic>{'success': false, 'error': 'repoID is required'};
+      }
+      final revision = (arguments?['revision'] as String? ?? '').trim();
+      final downloadType =
+          (arguments?['downloadType'] as String? ?? 'all').trim();
+      final service = ModelDownloaderService();
+      if (source == 'hf') {
+        await service.downloadHuggingFace(
+          repoID: repoID,
+          revision: revision.isEmpty ? null : revision,
+          downloadType: downloadType,
+        );
+      } else {
+        await service.downloadModelScope(
+          repoID: repoID,
+          revision: revision.isEmpty ? null : revision,
+          downloadType: downloadType,
+        );
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('downloadModel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 取消下载任务。参数：`{id: int, withFile?: bool}`
+  static Future<Map<String, dynamic>> cancelModelTask(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      await ModelDownloaderService().cancelTask(
+        id,
+        withFile: arguments?['withFile'] as bool? ?? false,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('cancelModelTask failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 重试下载任务。参数：`{id: int}`。
+  static Future<Map<String, dynamic>> retryModelTask(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      await ModelDownloaderService().retryTask(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('retryModelTask failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 移除下载任务记录。参数：`{id: int, withFile?: bool}`
+  static Future<Map<String, dynamic>> removeModelTask(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      await ModelDownloaderService().removeTask(
+        id,
+        withFile: arguments?['withFile'] as bool?,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('removeModelTask failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除本地模型。参数：`{name, downloadType?, withFile?: bool}`
+  static Future<Map<String, dynamic>> deleteLocalModel(
+      dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return <String, dynamic>{'success': false, 'error': 'name is required'};
+      }
+      final downloadType = (arguments?['downloadType'] as String? ?? '').trim();
+      await ModelDownloaderService().deleteLocalModel(
+        name: name,
+        downloadType: downloadType.isEmpty ? null : downloadType,
+        withFile: arguments?['withFile'] as bool? ?? true,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteLocalModel failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 保存下载设置。参数：
+  /// `{modelDir, featuredSync: bool, hfEndpoint?, hfToken?, modelScopeEndpoint?, modelScopeToken?}`
+  static Future<Map<String, dynamic>> updateModelDownloaderSettings(
+      dynamic arguments) async {
+    try {
+      final modelDir = (arguments?['modelDir'] as String? ?? '').trim();
+      if (modelDir.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'modelDir is required',
+        };
+      }
+      final featuredSync = arguments?['featuredSync'] as bool? ?? true;
+      await ModelDownloaderService().updateSettings(
+        ModelDownloaderSetting(
+          modelDir: modelDir,
+          featuredModelsSync: featuredSync ? 'Enable' : 'Disable',
+          hfEndpoint: (arguments?['hfEndpoint'] as String? ?? '').trim(),
+          hfToken: (arguments?['hfToken'] as String? ?? '').trim(),
+          modelScopeEndpoint:
+              (arguments?['modelScopeEndpoint'] as String? ?? '').trim(),
+          modelScopeToken:
+              (arguments?['modelScopeToken'] as String? ?? '').trim(),
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateModelDownloaderSettings failed: $e');
+      return _err(e);
+    }
   }
 
   // ── 内部工具 ──────────────────────────────────────────────────────────────

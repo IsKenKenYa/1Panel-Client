@@ -193,6 +193,20 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getAlertChannels(arguments);
       case 'getAlertOptions':
         return NativeChannelReadHandlers.getAlertOptions(arguments);
+
+      // ── Read: 模型下载器 ────────────────────────────────────────────────
+      case 'getModelDownloaderFeatured':
+        return NativeChannelReadHandlers.getModelDownloaderFeatured(arguments);
+      case 'getModelDownloaderSearch':
+        return NativeChannelReadHandlers.getModelDownloaderSearch(arguments);
+      case 'getModelDownloaderTasks':
+        return NativeChannelReadHandlers.getModelDownloaderTasks(arguments);
+      case 'getModelDownloaderLocal':
+        return NativeChannelReadHandlers.getModelDownloaderLocal(arguments);
+      case 'getModelDownloaderSettings':
+        return NativeChannelReadHandlers.getModelDownloaderSettings(arguments);
+      case 'getModelDownloaderOptions':
+        return NativeChannelReadHandlers.getModelDownloaderOptions(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -510,6 +524,24 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.toggleAlertChannel(arguments);
       case 'testAlertChannel':
         return NativeChannelWriteHandlers.testAlertChannel(arguments);
+
+      // ── Write: 模型下载器 ───────────────────────────────────────────────
+      case 'syncModelDownloaderFeatured':
+        return NativeChannelWriteHandlers.syncModelDownloaderFeatured(arguments);
+      case 'setModelDownloaderFeaturedSync':
+        return NativeChannelWriteHandlers.setModelDownloaderFeaturedSync(arguments);
+      case 'downloadModel':
+        return NativeChannelWriteHandlers.downloadModel(arguments);
+      case 'cancelModelTask':
+        return NativeChannelWriteHandlers.cancelModelTask(arguments);
+      case 'retryModelTask':
+        return NativeChannelWriteHandlers.retryModelTask(arguments);
+      case 'removeModelTask':
+        return NativeChannelWriteHandlers.removeModelTask(arguments);
+      case 'deleteLocalModel':
+        return NativeChannelWriteHandlers.deleteLocalModel(arguments);
+      case 'updateModelDownloaderSettings':
+        return NativeChannelWriteHandlers.updateModelDownloaderSettings(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':
