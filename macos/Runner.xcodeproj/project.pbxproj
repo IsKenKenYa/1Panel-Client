@@ -74,6 +74,7 @@
 		AA11BB22CC33DD44EE55FF03 /* VMSnapshotSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660003 /* VMSnapshotSheet.swift */; };
 		AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */; };
 		AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */; };
+		AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,6 +178,7 @@
 		BB22CC33DD44EE55FF660003 /* VMSnapshotSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMSnapshotSheet.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMHealthSheet.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlertModuleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,6 +371,7 @@
 				2F04AF5CEFAD0621B386F9ED /* Backups */,
 				5829D420822819963EF13FFF /* AI */,
 				CC33DD44EE55FF6600770001 /* VirtualMachines */,
+				CC33DD44EE55FF6600770002 /* Alerts */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -472,6 +475,14 @@
 				BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */,
 			);
 			path = VirtualMachines;
+			sourceTree = "<group>";
+		};
+		CC33DD44EE55FF6600770002 /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */,
+			);
+			path = Alerts;
 			sourceTree = "<group>";
 		};
 		D892C033D9AEA8AC158ACF26 /* Files */ = {
@@ -777,6 +788,7 @@
 				AA11BB22CC33DD44EE55FF03 /* VMSnapshotSheet.swift in Sources */,
 				AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */,
 				AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
