@@ -12988,8 +12988,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firewallV2DockerImportAction => 'Import JSON';
 
   @override
+  String get firewallV2DockerChooseFile => 'Choose JSON file';
+
+  @override
+  String get firewallV2DockerPreview => 'Preview';
+
+  @override
   String get firewallV2DockerImportHint =>
-      'Paste a policy array or an object with a policies array.';
+      'Select a JSON policy file; duplicate endpoints are removed in the preview.';
 
   @override
   String get firewallV2DockerImportInvalid => 'Invalid JSON.';

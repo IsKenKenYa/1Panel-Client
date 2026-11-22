@@ -12601,7 +12601,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get firewallV2DockerImportAction => '导入 JSON';
 
   @override
-  String get firewallV2DockerImportHint => '粘贴策略数组或包含 policies 数组的对象。';
+  String get firewallV2DockerChooseFile => '选择 JSON 文件';
+
+  @override
+  String get firewallV2DockerPreview => '预览';
+
+  @override
+  String get firewallV2DockerImportHint => '选择 JSON 策略文件，预览中会移除重复的端点。';
 
   @override
   String get firewallV2DockerImportInvalid => 'JSON 无效。';

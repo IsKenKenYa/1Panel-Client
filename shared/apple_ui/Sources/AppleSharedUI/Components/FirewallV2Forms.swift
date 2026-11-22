@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// 转发规则创建表单，两端共用。
 public struct ForwardRuleFormView: View {
@@ -283,6 +284,65 @@ public struct DockerPolicyFormView: View {
     }
 }
 
+/// Docker 端口策略导入行：按端点标识去重后的预览条目。
+public struct DockerPolicyImportRow: Identifiable {
+    public let id: String
+    public let family: String
+    public let hostIP: String
+    public let hostPort: Int
+    public let protocolName: String
+    public let mode: String
+    public let sources: [String]
+
+    public var hostText: String {
+        "\(hostIP.isEmpty ? "*" : hostIP):\(hostPort)/\(protocolName)"
+    }
+
+    public var payload: [String: Any] {
+        [
+            "family": family,
+            "hostIP": hostIP,
+            "hostPort": hostPort,
+            "protocol": protocolName,
+            "mode": mode,
+            "sources": sources,
+        ]
+    }
+
+    init?(payload: [String: Any]) {
+        let family = firewallText(payload["family"])
+        let hostIP = firewallText(payload["hostIP"])
+        let protocolName = firewallText(payload["protocol"])
+        let mode = firewallText(payload["mode"])
+        let hostPort = Int(firewallText(payload["hostPort"])) ?? 0
+        let validModes = [
+            "deny_sources", "allow_sources", "deny_all",
+            "accept_sources", "accept_all",
+        ]
+        guard !hostIP.isEmpty, (1...65535).contains(hostPort),
+              ["tcp", "udp"].contains(protocolName),
+              validModes.contains(mode) else {
+            return nil
+        }
+        let normalizedFamily = family.isEmpty
+            ? (hostIP.contains(":") ? "ipv6" : "ipv4")
+            : family
+        guard ["ipv4", "ipv6"].contains(normalizedFamily) else {
+            return nil
+        }
+        let sources = (payload["sources"] as? [Any] ?? []).map {
+            firewallText($0)
+        }.filter { !$0.isEmpty }
+        self.id = "\(normalizedFamily)|\(hostIP)|\(hostPort)|\(protocolName)"
+        self.family = normalizedFamily
+        self.hostIP = hostIP
+        self.hostPort = hostPort
+        self.protocolName = protocolName
+        self.mode = mode
+        self.sources = sources
+    }
+}
+
 /// Docker 端口策略批量修改与 JSON 导入，两端共用。
 public struct DockerPolicyBatchFormView: View {
     @ObservedObject private var store: FirewallV2Store
@@ -293,7 +353,10 @@ public struct DockerPolicyBatchFormView: View {
     @State private var selectedIDs: Set<String> = []
     @State private var mode = "deny_sources"
     @State private var sources = ""
-    @State private var importText = ""
+    @State private var importRows: [DockerPolicyImportRow] = []
+    @State private var importSelection: Set<String> = []
+    @State private var importFileName = ""
+    @State private var showFileImporter = false
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -350,20 +413,59 @@ public struct DockerPolicyBatchFormView: View {
                            "Separate multiple addresses with commas."))
                 }
                 Section {
-                    TextEditor(text: $importText)
-                        .font(.system(.footnote, design: .monospaced))
-                        .frame(minHeight: 120)
                     Button {
-                        Task { await importPolicies() }
+                        showFileImporter = true
+                    } label: {
+                        Label(t("firewallV2DockerChooseFile", "Choose JSON file"),
+                              systemImage: "doc.badge.plus")
+                    }
+                    if !importFileName.isEmpty {
+                        Text(importFileName)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if !importRows.isEmpty {
+                        Text("\(t("firewallV2DockerPreview", "Preview")): \(importRows.count)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        ForEach(importRows) { row in
+                            Button {
+                                toggleImport(row.id)
+                            } label: {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(row.hostText)
+                                        Text(modeTitle(row.mode))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        if !row.sources.isEmpty {
+                                            Text(row.sources.joined(separator: ", "))
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    Spacer()
+                                    if importSelection.contains(row.id) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                    } else {
+                                        Image(systemName: "circle")
+                                    }
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    Button {
+                        Task { await importSelected() }
                     } label: {
                         Text(t("firewallV2DockerImportAction", "Import JSON"))
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || importSelection.isEmpty)
                 } header: {
                     Text(t("firewallV2DockerImportAction", "Import JSON"))
                 } footer: {
                     Text(t("firewallV2DockerImportHint",
-                           "Paste a policy array or an object with a policies array."))
+                           "Select a JSON policy file; duplicate endpoints are removed in the preview."))
                 }
                 if let errorMessage {
                     Section {
@@ -377,6 +479,13 @@ public struct DockerPolicyBatchFormView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(t("commonCancel", "Cancel")) { dismiss() }
                 }
+            }
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [.json],
+                allowsMultipleSelection: false
+            ) { result in
+                handleFileResult(result)
             }
         }
     }
@@ -409,24 +518,57 @@ public struct DockerPolicyBatchFormView: View {
         isSaving = false
     }
 
-    private func importPolicies() async {
-        let text = importText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else {
-            errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
-            return
-        }
-        let data = Data(text.utf8)
-        let object = try? JSONSerialization.jsonObject(with: data)
-        let policies: [[String: Any]]
-        if let array = object as? [[String: Any]] {
-            policies = array
-        } else if let dict = object as? [String: Any],
-                  let list = dict["policies"] as? [[String: Any]] {
-            policies = list
+    private func toggleImport(_ id: String) {
+        if importSelection.contains(id) {
+            importSelection.remove(id)
         } else {
-            errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
-            return
+            importSelection.insert(id)
         }
+    }
+
+    private func handleFileResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .failure(let error):
+            if (error as NSError).code == NSUserCancelledError {
+                return
+            }
+            errorMessage = error.localizedDescription
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            loadImportFile(url)
+        }
+    }
+
+    private func loadImportFile(_ url: URL) {
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer {
+            if accessing {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+        do {
+            let data = try Data(contentsOf: url)
+            guard let rows = Self.parseImportRows(data) else {
+                errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
+                return
+            }
+            guard !rows.isEmpty else {
+                errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
+                return
+            }
+            importRows = rows
+            importSelection = Set(rows.map(\.id))
+            importFileName = url.lastPathComponent
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func importSelected() async {
+        let policies = importRows
+            .filter { importSelection.contains($0.id) }
+            .map(\.payload)
         guard !policies.isEmpty else {
             errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
             return
@@ -439,6 +581,29 @@ public struct DockerPolicyBatchFormView: View {
             errorMessage = actionMessage(error)
         }
         isSaving = false
+    }
+
+    public static func parseImportRows(_ data: Data) -> [DockerPolicyImportRow]? {
+        guard let object = try? JSONSerialization.jsonObject(with: data) else {
+            return nil
+        }
+        let policies: [[String: Any]]
+        if let array = object as? [[String: Any]] {
+            policies = array
+        } else if let dict = object as? [String: Any],
+                  let list = dict["policies"] as? [[String: Any]] {
+            policies = list
+        } else {
+            return nil
+        }
+        var seen = Set<String>()
+        return policies.compactMap { policy in
+            guard let row = DockerPolicyImportRow(payload: policy),
+                  seen.insert(row.id).inserted else {
+                return nil
+            }
+            return row
+        }
     }
 
     private func modeTitle(_ value: String) -> String {

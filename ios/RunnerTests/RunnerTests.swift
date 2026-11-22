@@ -683,3 +683,42 @@ final class FirewallV2StoreMutationTests: XCTestCase {
         }
     }
 }
+
+class DockerPolicyImportTests: XCTestCase {
+    func testPreviewRemovesDuplicateEndpoints() throws {
+        let data = try XCTUnwrap("""
+        [
+          {"family":"ipv4","hostIP":"0.0.0.0","hostPort":8080,"protocol":"tcp",
+           "mode":"deny_sources","sources":["10.0.0.0/8"]},
+          {"family":"ipv4","hostIP":"0.0.0.0","hostPort":8080,"protocol":"tcp",
+           "mode":"allow_sources","sources":["192.0.2.0/24"]},
+          {"family":"ipv6","hostIP":"::","hostPort":8443,"protocol":"tcp",
+           "mode":"accept_all","sources":[]}
+        ]
+        """.data(using: .utf8))
+
+        let rows = try XCTUnwrap(DockerPolicyBatchFormView.parseImportRows(data))
+
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.first?.hostPort, 8080)
+        XCTAssertEqual(rows.first?.sources, ["10.0.0.0/8"])
+        XCTAssertEqual(rows.last?.family, "ipv6")
+    }
+
+    func testPreviewSkipsInvalidPoliciesAndAcceptsPoliciesObject() throws {
+        let data = try XCTUnwrap("""
+        {"policies":[
+          {"hostIP":"0.0.0.0","hostPort":70000,"protocol":"tcp","mode":"deny_all"},
+          {"family":"ipv4","hostIP":"127.0.0.1","hostPort":9090,"protocol":"udp",
+           "mode":"deny_all","sources":[]}
+        ]}
+        """.data(using: .utf8))
+
+        let rows = try XCTUnwrap(DockerPolicyBatchFormView.parseImportRows(data))
+
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.hostIP, "127.0.0.1")
+        XCTAssertEqual(rows.first?.protocolName, "udp")
+        XCTAssertEqual(rows.first?.payload["hostPort"] as? Int, 9090)
+    }
+}

@@ -24481,10 +24481,22 @@ abstract class AppLocalizations {
   /// **'Import JSON'**
   String get firewallV2DockerImportAction;
 
+  /// No description provided for @firewallV2DockerChooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose JSON file'**
+  String get firewallV2DockerChooseFile;
+
+  /// No description provided for @firewallV2DockerPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get firewallV2DockerPreview;
+
   /// No description provided for @firewallV2DockerImportHint.
   ///
   /// In en, this message translates to:
-  /// **'Paste a policy array or an object with a policies array.'**
+  /// **'Select a JSON policy file; duplicate endpoints are removed in the preview.'**
   String get firewallV2DockerImportHint;
 
   /// No description provided for @firewallV2DockerImportInvalid.
