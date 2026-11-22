@@ -480,3 +480,45 @@ class ReleaseManifestTests: XCTestCase {
         XCTAssertTrue(declared)
     }
 }
+
+class OperationsDetailModelTests: XCTestCase {
+    func testBackupModelPreservesDetailFields() {
+        let backup = BackupModel(
+            id: 7,
+            name: "site-backup",
+            type: "website",
+            size: "4096",
+            status: "Success",
+            createdAt: "2026-11-23 00:00:00",
+            detailName: "example.test",
+            fileName: "backup.tar.gz",
+            fileDir: "/opt/1panel/backup",
+            downloadAccountID: 3
+        )
+
+        XCTAssertEqual(backup.detailName, "example.test")
+        XCTAssertEqual(backup.fileName, "backup.tar.gz")
+        XCTAssertEqual(backup.fileDir, "/opt/1panel/backup")
+        XCTAssertEqual(backup.downloadAccountID, 3)
+    }
+
+    func testCronjobDetailLabelsResolve() {
+        let translations = TranslationsManager.shared
+        for key in [
+            "cronjobsDetailTitle", "cronjobsGroupLabel", "cronjobsCommandLabel",
+            "cronjobsSpecLabel", "cronjobsNextRunLabel", "cronjobsRecordsAction",
+        ] {
+            XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+        }
+    }
+
+    func testBackupDetailLabelsResolve() {
+        let translations = TranslationsManager.shared
+        for key in [
+            "backupRecordsDetailTitle", "backupRecordsFileNameLabel",
+            "backupRecordsFilePathLabel", "backupRecordsAccountLabel",
+        ] {
+            XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+        }
+    }
+}

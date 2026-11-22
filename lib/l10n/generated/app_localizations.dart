@@ -24372,6 +24372,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter at least one forwarding port.'**
   String get websitesStreamPortsRequired;
+
+  /// No description provided for @backupRecordsDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Details'**
+  String get backupRecordsDetailTitle;
+
+  /// No description provided for @backupRecordsFileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get backupRecordsFileNameLabel;
+
+  /// No description provided for @backupRecordsFilePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'File path'**
+  String get backupRecordsFilePathLabel;
+
+  /// No description provided for @backupRecordsAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download account'**
+  String get backupRecordsAccountLabel;
+
+  /// No description provided for @cronjobsDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjob Details'**
+  String get cronjobsDetailTitle;
+
+  /// No description provided for @cronjobsGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get cronjobsGroupLabel;
+
+  /// No description provided for @cronjobsCommandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get cronjobsCommandLabel;
 }
 
 class _AppLocalizationsDelegate

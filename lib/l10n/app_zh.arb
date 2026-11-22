@@ -4993,5 +4993,12 @@
   "websitesStreamServersEmpty": "暂无上游服务器，请先配置负载均衡。",
   "websitesStreamHelper": "多个端口使用逗号分隔。",
   "websitesStreamAlgorithmLabel": "调度算法",
-  "websitesStreamPortsRequired": "请至少填写一个转发端口。"
+  "websitesStreamPortsRequired": "请至少填写一个转发端口。",
+  "backupRecordsDetailTitle": "备份详情",
+  "backupRecordsFileNameLabel": "文件名",
+  "backupRecordsFilePathLabel": "文件路径",
+  "backupRecordsAccountLabel": "下载账号",
+  "cronjobsDetailTitle": "任务详情",
+  "cronjobsGroupLabel": "分组",
+  "cronjobsCommandLabel": "命令"
 }

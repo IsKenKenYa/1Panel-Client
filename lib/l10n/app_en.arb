@@ -5291,5 +5291,12 @@
   "websitesStreamServersEmpty": "No upstream servers; configure load balance first.",
   "websitesStreamHelper": "Separate multiple ports with commas.",
   "websitesStreamAlgorithmLabel": "Algorithm",
-  "websitesStreamPortsRequired": "Enter at least one forwarding port."
+  "websitesStreamPortsRequired": "Enter at least one forwarding port.",
+  "backupRecordsDetailTitle": "Backup Details",
+  "backupRecordsFileNameLabel": "File name",
+  "backupRecordsFilePathLabel": "File path",
+  "backupRecordsAccountLabel": "Download account",
+  "cronjobsDetailTitle": "Cronjob Details",
+  "cronjobsGroupLabel": "Group",
+  "cronjobsCommandLabel": "Command"
 }

@@ -12545,4 +12545,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesStreamPortsRequired => '请至少填写一个转发端口。';
+
+  @override
+  String get backupRecordsDetailTitle => '备份详情';
+
+  @override
+  String get backupRecordsFileNameLabel => '文件名';
+
+  @override
+  String get backupRecordsFilePathLabel => '文件路径';
+
+  @override
+  String get backupRecordsAccountLabel => '下载账号';
+
+  @override
+  String get cronjobsDetailTitle => '任务详情';
+
+  @override
+  String get cronjobsGroupLabel => '分组';
+
+  @override
+  String get cronjobsCommandLabel => '命令';
 }

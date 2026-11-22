@@ -12932,4 +12932,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get websitesStreamPortsRequired =>
       'Enter at least one forwarding port.';
+
+  @override
+  String get backupRecordsDetailTitle => 'Backup Details';
+
+  @override
+  String get backupRecordsFileNameLabel => 'File name';
+
+  @override
+  String get backupRecordsFilePathLabel => 'File path';
+
+  @override
+  String get backupRecordsAccountLabel => 'Download account';
+
+  @override
+  String get cronjobsDetailTitle => 'Cronjob Details';
+
+  @override
+  String get cronjobsGroupLabel => 'Group';
+
+  @override
+  String get cronjobsCommandLabel => 'Command';
 }

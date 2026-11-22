@@ -94,6 +94,7 @@ struct BackupsView: View {
     @State private var showDeleteConfirm = false
     @State private var pendingRestore: BackupModel?
     @State private var showRestoreConfirm = false
+    @State private var detailBackup: BackupModel?
     @State private var toastText: String?
 
     var body: some View {
@@ -133,6 +134,10 @@ struct BackupsView: View {
                             .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 4)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            detailBackup = backup
+                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 pendingDelete = backup
@@ -206,6 +211,10 @@ struct BackupsView: View {
             }
         }
         .operationNotice(toastText)
+        .sheet(item: $detailBackup) { backup in
+            BackupDetailView(backup: backup, viewModel: viewModel)
+                .environmentObject(translations)
+        }
         .onAppear {
             viewModel.fetch()
         }

@@ -225,6 +225,8 @@ struct CronjobsView: View {
     @State private var pendingDelete: CronjobModel?
     @State private var showDeleteConfirm = false
     @State private var showRecordsFor: CronjobModel?
+    @State private var detailJob: CronjobModel?
+    @State private var pendingEditJob: CronjobModel?
     @State private var toastText: String?
     @State private var showFormSheet = false
     @State private var editingJob: CronjobModel?
@@ -269,7 +271,7 @@ struct CronjobsView: View {
                         .padding(.vertical, 4)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            showRecordsFor = job
+                            detailJob = job
                         }
                         .contextMenu {
                             Button {
@@ -342,6 +344,18 @@ struct CronjobsView: View {
         }
         .sheet(isPresented: $showFormSheet) {
             formSheet
+        }
+        .sheet(item: $detailJob, onDismiss: {
+            if let job = pendingEditJob {
+                pendingEditJob = nil
+                openEditor(job)
+            }
+        }) { job in
+            CronjobDetailView(job: job, viewModel: viewModel) { editJob in
+                pendingEditJob = editJob
+                detailJob = nil
+            }
+            .environmentObject(translations)
         }
         .sheet(item: $showRecordsFor) { job in
             CronjobRecordsView(job: job)
