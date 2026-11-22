@@ -310,3 +310,77 @@ class AlertModelTests: XCTestCase {
         XCTAssertEqual(ModuleRoute(rawValue: "alerts"), .alerts)
     }
 }
+
+class ModelDownloaderModelTests: XCTestCase {
+    func testFeaturedPayloadDecodesPreferredSource() {
+        let model = FeaturedModelItem(payload: [
+            "key": "qwen",
+            "repoID": "Qwen/Qwen3",
+            "family": "Qwen",
+            "architecture": "Transformer",
+            "weightGB": 8.5,
+            "sources": ["modelScope", "hf"],
+            "preferredSource": "modelScope",
+            "preferredRepoID": "Qwen/Qwen3-ms",
+            "description": ["en": "General model", "zh": "通用模型"],
+        ])
+
+        XCTAssertEqual(model.id, "qwen")
+        XCTAssertEqual(model.preferredSource, "modelScope")
+        XCTAssertEqual(model.preferredRepoID, "Qwen/Qwen3-ms")
+        XCTAssertEqual(model.weightGB, 8.5)
+        XCTAssertFalse(model.localizedDescription().isEmpty)
+    }
+
+    func testTaskPayloadDecodesProgressAndActions() {
+        let task = DownloadTaskItem(payload: [
+            "id": 12,
+            "modelName": "qwen",
+            "status": "running",
+            "statusTone": "info",
+            "progressRatio": 0.42,
+            "downloadedSize": 1024,
+            "totalSize": 4096,
+            "canCancel": true,
+            "canRetry": false,
+            "canRemoveRecord": true,
+        ])
+
+        XCTAssertEqual(task.taskId, 12)
+        XCTAssertEqual(task.progressRatio, 0.42)
+        XCTAssertEqual(task.statusTone, "info")
+        XCTAssertTrue(task.canCancel)
+        XCTAssertTrue(task.canRemoveRecord)
+    }
+
+    func testSettingsPayloadDecodesSyncFlag() {
+        let settings = DownloaderSettingsModel(payload: [
+            "modelDir": "/models",
+            "featuredSyncEnabled": true,
+            "hfEndpoint": "https://hf.example.test",
+            "hfToken": "token",
+        ])
+
+        XCTAssertEqual(settings.modelDir, "/models")
+        XCTAssertTrue(settings.featuredSyncEnabled)
+        XCTAssertEqual(settings.hfEndpoint, "https://hf.example.test")
+    }
+
+    func testOptionsDecodeSourcesAndStatuses() {
+        let options = DownloaderOptions(payload: [
+            "sources": ["hf", "modelScope"],
+            "sorts": ["trending", "downloads"],
+            "downloadTypes": ["all", "tokenizer"],
+            "taskStatuses": ["running", "completed"],
+        ])
+
+        XCTAssertEqual(options.sources, ["hf", "modelScope"])
+        XCTAssertEqual(options.downloadTypes, ["all", "tokenizer"])
+        XCTAssertTrue(options.taskStatuses.contains("running"))
+    }
+
+    func testModuleRouteExposesModelDownloaderEntry() {
+        XCTAssertTrue(ModuleRoute.allCases.contains(.modelDownloader))
+        XCTAssertEqual(ModuleRoute(rawValue: "modelDownloader"), .modelDownloader)
+    }
+}

@@ -63,6 +63,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
     case logs
     case virtualMachines
     case alerts
+    case modelDownloader
 
     var id: String { rawValue }
 
@@ -97,6 +98,8 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
             return translations.get("serverModuleVm", fallback: "Virtual Machines")
         case .alerts:
             return translations.get("alertPageTitle", fallback: "Alert Center")
+        case .modelDownloader:
+            return translations.get("modelDownloaderTabLabel", fallback: "Model Download")
         }
     }
 
@@ -114,6 +117,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .logs: return "doc.text.magnifyingglass"
         case .virtualMachines: return "desktopcomputer"
         case .alerts: return "bell.badge"
+        case .modelDownloader: return "arrow.down.circle"
         }
     }
 
@@ -132,6 +136,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .logs: LogsModuleView()
         case .virtualMachines: VirtualMachinesModuleView()
         case .alerts: AlertModuleView()
+        case .modelDownloader: ModelDownloaderModuleView()
         }
     }
 }
