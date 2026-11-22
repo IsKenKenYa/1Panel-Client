@@ -227,6 +227,14 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getFirewallV2Docker(arguments);
       case 'getFirewallV2Settings':
         return NativeChannelReadHandlers.getFirewallV2Settings(arguments);
+
+      // ── Read: 运维入口 ──────────────────────────────────────────────────
+      case 'getRuntimes':
+        return NativeChannelReadHandlers.getRuntimes(arguments);
+      case 'getToolboxDiskSnapshot':
+        return NativeChannelReadHandlers.getToolboxDiskSnapshot(arguments);
+      case 'getHostAssets':
+        return NativeChannelReadHandlers.getHostAssets(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -578,6 +586,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateFirewallIpRule(arguments);
       case 'updateFirewallRuleDescription':
         return NativeChannelWriteHandlers.updateFirewallRuleDescription(arguments);
+
+      // ── Write: 运维入口 ────────────────────────────────────────────────
+      case 'operateRuntime':
+        return NativeChannelWriteHandlers.operateRuntime(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

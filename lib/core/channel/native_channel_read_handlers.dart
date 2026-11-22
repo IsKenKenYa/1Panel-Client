@@ -40,6 +40,10 @@ import '../../features/settings/panel_ssl/services/panel_ssl_service.dart';
 import '../../features/websites/services/website_certificate_service.dart';
 import '../../features/ssh/services/ssh_service.dart';
 import '../../features/toolbox/services/toolbox_device_service.dart';
+import '../../features/toolbox/services/toolbox_disk_service.dart';
+import '../../features/runtimes/services/runtime_service.dart';
+import '../../features/host_assets/services/host_asset_service.dart';
+import '../../data/models/host_asset_models.dart';
 import '../../features/monitoring/monitoring_service.dart';
 import 'native_monitoring_payloads.dart';
 import '../../features/alert/alert_service.dart';
@@ -1935,6 +1939,82 @@ class NativeChannelReadHandlers {
       appLogger.w('getMonitoringOptions io failed: $e');
     }
     return monitoringOptionsPayload(networks: networks, ios: ios);
+  }
+
+  // ── 运维模块入口数据 ────────────────────────────────────────────────────
+
+  /// 运行环境列表：按 PHP、Node、Java、Go、Python、.NET 依次汇总。
+  static Future<dynamic> getRuntimes(dynamic arguments) async {
+    final service = RuntimeService();
+    final pages = await Future.wait(
+      RuntimeService.orderedTypes.map(
+        (type) => service.searchRuntimes(type: type),
+      ),
+    );
+    return pages
+        .expand((page) => page.items)
+        .map((runtime) => <String, Object?>{
+              'id': runtime.id ?? 0,
+              'name': runtime.name ?? '',
+              'type': runtime.type ?? '',
+              'version': runtime.version ?? '',
+              'status': runtime.status ?? '',
+              'port': runtime.port ?? '',
+              'image': runtime.image ?? '',
+              'containerStatus': runtime.containerStatus ?? '',
+              'remark': runtime.remark ?? '',
+            })
+        .toList(growable: false);
+  }
+
+  /// 工具箱磁盘快照：磁盘与未分区磁盘。
+  static Future<dynamic> getToolboxDiskSnapshot(dynamic arguments) async {
+    final snapshot = await ToolboxDiskService().loadSnapshot();
+    return <String, dynamic>{
+      'totalDisks': snapshot.totalDisks,
+      'totalCapacity': snapshot.totalCapacity,
+      'disks': snapshot.disks
+          .map((disk) => <String, Object?>{
+                'device': disk.device,
+                'model': disk.model,
+                'size': disk.size,
+                'diskType': disk.diskType,
+                'mountPoint': disk.mountPoint,
+                'usePercent': disk.usePercent,
+                'isSystem': disk.isSystem,
+                'isMounted': disk.isMounted,
+              })
+          .toList(growable: false),
+      'unpartitioned': snapshot.unpartitionedDisks
+          .map((disk) => <String, Object?>{
+                'device': disk.device,
+                'model': disk.model,
+                'size': disk.size,
+                'diskType': disk.diskType,
+                'isRemovable': disk.isRemovable,
+              })
+          .toList(growable: false),
+    };
+  }
+
+  /// 主机资源列表。POST /hosts/search。
+  static Future<dynamic> getHostAssets(dynamic arguments) async {
+    final page = await HostAssetService().searchHosts(
+      const HostSearchRequest(page: 1, pageSize: 100),
+    );
+    return page.items
+        .map((host) => <String, Object?>{
+              'id': host.id,
+              'name': host.name,
+              'addr': host.addr ?? '',
+              'port': host.port ?? 0,
+              'user': host.user ?? '',
+              'group': host.groupBelong ?? '',
+              'status': host.status,
+              'osType': host.osType ?? '',
+              'osArch': host.osArch ?? '',
+            })
+        .toList(growable: false);
   }
 }
 

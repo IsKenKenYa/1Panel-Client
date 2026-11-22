@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import '../../features/alert/alert_service.dart';
 import '../../features/alert/alert_types.dart';
+import '../../features/runtimes/services/runtime_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
 import '../../features/ai/model_downloader_service.dart';
 import '../../data/models/setting_models.dart';
@@ -3670,6 +3671,31 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('updateFirewallRuleDescription failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 运行环境操作 ────────────────────────────────────────────────────────
+
+  /// 运行环境启停重启。参数：`{id: int, operation: start|stop|restart}`
+  static Future<Map<String, dynamic>> operateRuntime(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      final operation = (arguments?['operation'] as String? ?? '').trim();
+      const allowed = <String>{'start', 'stop', 'restart'};
+      if (id == null || id <= 0) {
+        return <String, dynamic>{'success': false, 'error': 'id is required'};
+      }
+      if (!allowed.contains(operation)) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'Unsupported operation: $operation',
+        };
+      }
+      await RuntimeService().operateRuntime(id, operation);
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateRuntime failed: $e');
       return _err(e);
     }
   }
