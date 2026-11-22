@@ -1165,6 +1165,7 @@ class NativeChannelWriteHandlers {
       final payload = <String, dynamic>{
         'name': name,
         'driver': arguments['driver'] as String? ?? 'bridge',
+        'ipv4': true,
       };
       final subnet = (arguments['subnet'] as String? ?? '').trim();
       if (subnet.isNotEmpty) payload['subnet'] = subnet;

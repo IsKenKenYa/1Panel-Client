@@ -916,17 +916,22 @@ class NativeChannelReadHandlers {
   }
 
 
-  /// Compose 项目内容。参数：`{path: String}`。POST /containers/compose。
+  /// Compose 项目内容。参数：`{name: String, path: String}`。POST /containers/inspect。
   static Future<dynamic> getComposeContent(dynamic arguments) async {
     try {
+      final name = (arguments?['name'] as String? ?? '').trim();
       final path = (arguments?['path'] as String? ?? '').trim();
-      if (path.isEmpty) {
+      if (name.isEmpty || path.isEmpty) {
         return '';
       }
       final client = await ApiClientManager.instance.getCurrentClient();
       final response = await client.post<Map<String, dynamic>>(
-        ApiConstants.buildApiPath('/containers/compose'),
-        data: <String, dynamic>{'path': path},
+        ApiConstants.buildApiPath('/containers/inspect'),
+        data: <String, dynamic>{
+          'id': name,
+          'type': 'compose',
+          'detail': path,
+        },
       );
       final data = response.data?['data'];
       return data is String ? data : '';
@@ -936,36 +941,30 @@ class NativeChannelReadHandlers {
     }
   }
 
-  /// Compose 项目容器列表。参数：`{name: String}`。POST /containers/search。
+  /// Compose 项目容器列表。参数：`{name: String}`，来自 Compose 列表的 containers。
   static Future<dynamic> getComposeContainers(dynamic arguments) async {
     try {
       final name = (arguments?['name'] as String? ?? '').trim();
       if (name.isEmpty) {
         return [];
       }
-      final client = await ApiClientManager.instance.getCurrentClient();
-      final response = await client.post<Map<String, dynamic>>(
-        ApiConstants.buildApiPath('/containers/search'),
-        data: <String, dynamic>{
-          'page': 1,
-          'pageSize': 100,
-          'compose': name,
-        },
-      );
-      final items = ApiResponseParser.asList(
-        response.data,
-        nestedItemsKey: 'items',
-      );
-      return items
-          .whereType<Map>()
-          .map((item) => <String, Object?>{
-                'id': item['id']?.toString() ?? '',
-                'name': item['name']?.toString() ?? '',
-                'image': item['image']?.toString() ?? '',
-                'state': item['state']?.toString() ?? '',
-                'status': item['status']?.toString() ?? '',
-              })
-          .toList();
+      final composes = await OrchestrationService().loadComposes(pageSize: 100);
+      final matches = composes.where((compose) => compose.name == name).toList();
+      final containers =
+          matches.isEmpty ? const <dynamic>[] : matches.first.containers ?? const <dynamic>[];
+      return containers.whereType<Map>().map((item) {
+        final ports = (item['ports'] as List? ?? const <dynamic>[])
+            .map((port) => '$port')
+            .toList(growable: false);
+        return <String, Object?>{
+          'id': item['containerID']?.toString() ?? '',
+          'name': item['name']?.toString() ?? '',
+          'image': '',
+          'state': item['state']?.toString() ?? '',
+          'status': item['createTime']?.toString() ?? '',
+          'ports': ports,
+        };
+      }).toList();
     } catch (e) {
       appLogger.e('Failed to get compose containers for native: $e');
       return [];
@@ -1014,6 +1013,7 @@ class NativeChannelReadHandlers {
                 'createTime': c.createTime ?? '',
                 'containerCount': c.containerCount ?? 0,
                 'runningCount': c.runningCount ?? 0,
+                'containers': c.containers ?? const <dynamic>[],
               })
           .toList();
     } catch (e) {
