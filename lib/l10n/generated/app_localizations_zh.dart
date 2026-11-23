@@ -12795,4 +12795,112 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get containerVolumeMountpointLabel => '挂载点';
+
+  @override
+  String get containerCreateRepo => '创建仓库';
+
+  @override
+  String get databaseUserEmpty => '暂无用户';
+
+  @override
+  String get hostAuthTitle => '基础认证';
+
+  @override
+  String get hostAuthEnable => '启用';
+
+  @override
+  String get hostAuthEmpty => '暂无认证用户';
+
+  @override
+  String get hostAuthAddPath => '添加路径';
+
+  @override
+  String get hostAuthAddUser => '添加用户';
+
+  @override
+  String get hostAuthRootSectionTitle => '基础认证';
+
+  @override
+  String get hostLeechProtection => '防盗链';
+
+  @override
+  String get panelSslTitle => '面板 SSL';
+
+  @override
+  String get panelSslUnavailable => '面板 SSL 信息不可用。';
+
+  @override
+  String get sshServiceTitle => 'SSH 服务';
+
+  @override
+  String get sshStartAction => '启动';
+
+  @override
+  String get sshStopAction => '停止';
+
+  @override
+  String get sshRestartAction => '重启';
+
+  @override
+  String get sshLoadFailedHint => '加载 SSH 配置失败。';
+
+  @override
+  String get websiteAuthTitle => '认证';
+
+  @override
+  String get websiteRewriteTitle => '伪静态';
+
+  @override
+  String get websiteCertificatesTitle => '证书';
+
+  @override
+  String get websiteCertificatesEmpty => '暂无证书';
+
+  @override
+  String get websitesDomainAddAction => '添加域名';
+
+  @override
+  String get websitesDomainsEmpty => '暂无域名';
+
+  @override
+  String get websitesPortLabel => '端口';
+
+  @override
+  String get websitesProxyCreateAction => '添加反向代理';
+
+  @override
+  String get websitesProxyDeleteAction => '删除反向代理';
+
+  @override
+  String get websitesProxyEmpty => '暂无反向代理';
+
+  @override
+  String get websitesProxyMatchLabel => '路径';
+
+  @override
+  String get websitesHttpsTitle => 'HTTPS';
+
+  @override
+  String get websitesHttpsCertificateLabel => '证书';
+
+  @override
+  String get websitesHttpsCertificateRequired => '启用 HTTPS 需要选择证书。';
+
+  @override
+  String get websitesHttpsNoCertificate => '未绑定';
+
+  @override
+  String get websitesHttpsHTTPConfigLabel => 'HTTP 模式';
+
+  @override
+  String get websitesHttpsHTTPConfigHTTP => 'HTTP';
+
+  @override
+  String get websitesHttpsHTTPConfigHTTPS => 'HTTPS';
+
+  @override
+  String get websitesHttpsAdvancedTitle => '高级设置';
+
+  @override
+  String get websitesHttpsHstsSubdomains => 'HSTS 应用到子域名';
 }

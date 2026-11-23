@@ -24870,6 +24870,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mount point'**
   String get containerVolumeMountpointLabel;
+
+  /// No description provided for @containerCreateRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Repository'**
+  String get containerCreateRepo;
+
+  /// No description provided for @databaseUserEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No users'**
+  String get databaseUserEmpty;
+
+  /// No description provided for @hostAuthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic authentication'**
+  String get hostAuthTitle;
+
+  /// No description provided for @hostAuthEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get hostAuthEnable;
+
+  /// No description provided for @hostAuthEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No auth users'**
+  String get hostAuthEmpty;
+
+  /// No description provided for @hostAuthAddPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Add path'**
+  String get hostAuthAddPath;
+
+  /// No description provided for @hostAuthAddUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Add user'**
+  String get hostAuthAddUser;
+
+  /// No description provided for @hostAuthRootSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic authentication'**
+  String get hostAuthRootSectionTitle;
+
+  /// No description provided for @hostLeechProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Anti-Leech'**
+  String get hostLeechProtection;
+
+  /// No description provided for @panelSslTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel SSL'**
+  String get panelSslTitle;
+
+  /// No description provided for @panelSslUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel SSL information is not available.'**
+  String get panelSslUnavailable;
+
+  /// No description provided for @sshServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH service'**
+  String get sshServiceTitle;
+
+  /// No description provided for @sshStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get sshStartAction;
+
+  /// No description provided for @sshStopAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get sshStopAction;
+
+  /// No description provided for @sshRestartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get sshRestartAction;
+
+  /// No description provided for @sshLoadFailedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the SSH configuration.'**
+  String get sshLoadFailedHint;
+
+  /// No description provided for @websiteAuthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get websiteAuthTitle;
+
+  /// No description provided for @websiteRewriteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite'**
+  String get websiteRewriteTitle;
+
+  /// No description provided for @websiteCertificatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificates'**
+  String get websiteCertificatesTitle;
+
+  /// No description provided for @websiteCertificatesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificates'**
+  String get websiteCertificatesEmpty;
+
+  /// No description provided for @websitesDomainAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add domain'**
+  String get websitesDomainAddAction;
+
+  /// No description provided for @websitesDomainsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No domains'**
+  String get websitesDomainsEmpty;
+
+  /// No description provided for @websitesPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get websitesPortLabel;
+
+  /// No description provided for @websitesProxyCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add proxy'**
+  String get websitesProxyCreateAction;
+
+  /// No description provided for @websitesProxyDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete proxy'**
+  String get websitesProxyDeleteAction;
+
+  /// No description provided for @websitesProxyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No proxies'**
+  String get websitesProxyEmpty;
+
+  /// No description provided for @websitesProxyMatchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get websitesProxyMatchLabel;
+
+  /// No description provided for @websitesHttpsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get websitesHttpsTitle;
+
+  /// No description provided for @websitesHttpsCertificateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get websitesHttpsCertificateLabel;
+
+  /// No description provided for @websitesHttpsCertificateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a certificate to enable HTTPS.'**
+  String get websitesHttpsCertificateRequired;
+
+  /// No description provided for @websitesHttpsNoCertificate.
+  ///
+  /// In en, this message translates to:
+  /// **'Not bound'**
+  String get websitesHttpsNoCertificate;
+
+  /// No description provided for @websitesHttpsHTTPConfigLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP mode'**
+  String get websitesHttpsHTTPConfigLabel;
+
+  /// No description provided for @websitesHttpsHTTPConfigHTTP.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP'**
+  String get websitesHttpsHTTPConfigHTTP;
+
+  /// No description provided for @websitesHttpsHTTPConfigHTTPS.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get websitesHttpsHTTPConfigHTTPS;
+
+  /// No description provided for @websitesHttpsAdvancedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get websitesHttpsAdvancedTitle;
+
+  /// No description provided for @websitesHttpsHstsSubdomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply HSTS to subdomains'**
+  String get websitesHttpsHstsSubdomains;
 }
 
 class _AppLocalizationsDelegate

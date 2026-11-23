@@ -13196,4 +13196,113 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get containerVolumeMountpointLabel => 'Mount point';
+
+  @override
+  String get containerCreateRepo => 'Create Repository';
+
+  @override
+  String get databaseUserEmpty => 'No users';
+
+  @override
+  String get hostAuthTitle => 'Basic authentication';
+
+  @override
+  String get hostAuthEnable => 'Enable';
+
+  @override
+  String get hostAuthEmpty => 'No auth users';
+
+  @override
+  String get hostAuthAddPath => 'Add path';
+
+  @override
+  String get hostAuthAddUser => 'Add user';
+
+  @override
+  String get hostAuthRootSectionTitle => 'Basic authentication';
+
+  @override
+  String get hostLeechProtection => 'Anti-Leech';
+
+  @override
+  String get panelSslTitle => 'Panel SSL';
+
+  @override
+  String get panelSslUnavailable => 'Panel SSL information is not available.';
+
+  @override
+  String get sshServiceTitle => 'SSH service';
+
+  @override
+  String get sshStartAction => 'Start';
+
+  @override
+  String get sshStopAction => 'Stop';
+
+  @override
+  String get sshRestartAction => 'Restart';
+
+  @override
+  String get sshLoadFailedHint => 'Failed to load the SSH configuration.';
+
+  @override
+  String get websiteAuthTitle => 'Authentication';
+
+  @override
+  String get websiteRewriteTitle => 'Rewrite';
+
+  @override
+  String get websiteCertificatesTitle => 'Certificates';
+
+  @override
+  String get websiteCertificatesEmpty => 'No certificates';
+
+  @override
+  String get websitesDomainAddAction => 'Add domain';
+
+  @override
+  String get websitesDomainsEmpty => 'No domains';
+
+  @override
+  String get websitesPortLabel => 'Port';
+
+  @override
+  String get websitesProxyCreateAction => 'Add proxy';
+
+  @override
+  String get websitesProxyDeleteAction => 'Delete proxy';
+
+  @override
+  String get websitesProxyEmpty => 'No proxies';
+
+  @override
+  String get websitesProxyMatchLabel => 'Path';
+
+  @override
+  String get websitesHttpsTitle => 'HTTPS';
+
+  @override
+  String get websitesHttpsCertificateLabel => 'Certificate';
+
+  @override
+  String get websitesHttpsCertificateRequired =>
+      'Select a certificate to enable HTTPS.';
+
+  @override
+  String get websitesHttpsNoCertificate => 'Not bound';
+
+  @override
+  String get websitesHttpsHTTPConfigLabel => 'HTTP mode';
+
+  @override
+  String get websitesHttpsHTTPConfigHTTP => 'HTTP';
+
+  @override
+  String get websitesHttpsHTTPConfigHTTPS => 'HTTPS';
+
+  @override
+  String get websitesHttpsAdvancedTitle => 'Advanced';
+
+  @override
+  String get websitesHttpsHstsSubdomains => 'Apply HSTS to subdomains';
 }
