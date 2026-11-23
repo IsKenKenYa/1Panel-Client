@@ -85,7 +85,7 @@ class ApiClientManager {
   Future<DioClient> getClientForServer(ApiConfig expected) async {
     final config = await ApiConfigManager.getConfig(expected.id);
     if (config.revision != expected.revision) {
-      throw StateError('服务器配置已更改，请重新打开设置页面');
+      throw StateError('Server configuration changed; reopen settings');
     }
     return getClientForConfig(config);
   }

@@ -73,7 +73,7 @@ class ServerRepository {
 
   Future<Map<String, PanelAccess>> capabilitiesFor(ApiConfig config) async {
     final session = await _panels.savedSessionFor(config);
-    if (session == null) throw StateError('服务器配置已更改');
+    if (session == null) throw StateError('Server configuration changed');
     return Map.unmodifiable(await session.loadCapabilities());
   }
 

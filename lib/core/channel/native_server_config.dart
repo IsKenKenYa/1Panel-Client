@@ -22,7 +22,7 @@ ApiConfig readNativeServerConfig(
   if (existing != null) {
     final revision = fields['revision'];
     if (revision is! String || revision.isEmpty || revision != existing.revision) {
-      throw StateError('服务器配置已更改，请重新打开编辑页面');
+      throw StateError('Server configuration changed; reopen the editor');
     }
   }
   final type = fields['panelType'] as String? ?? existing?.panelType;
@@ -30,7 +30,7 @@ ApiConfig readNativeServerConfig(
     throw ArgumentError('panelType is required');
   }
   if (existing != null && type != existing.panelType) {
-    throw ArgumentError('已有连接不能更改面板类型');
+    throw ArgumentError('Panel type cannot change for an existing connection');
   }
   final key = fields['apiKey'] as String?;
   final fieldsValue = fields['additionalCredentials'] as Map?;
@@ -38,11 +38,11 @@ ApiConfig readNativeServerConfig(
   final sameAddress = existing != null && url == existing.url;
   if (!sameAddress && (key == null || key.isEmpty) &&
       (type == ApiConfig.onePanelType || (existing?.apiKey.isNotEmpty ?? false))) {
-    throw ArgumentError('请为该服务器地址输入 API Key');
+    throw ArgumentError('Enter an API key for this server address');
   }
   if (!sameAddress && fieldsValue == null &&
       (existing?.additionalCredentials.isNotEmpty ?? false)) {
-    throw ArgumentError('请为新地址提供面板凭据');
+    throw ArgumentError('Provide credentials for the new address');
   }
   return ApiConfig(
     id: id,

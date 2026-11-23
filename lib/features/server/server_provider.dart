@@ -58,12 +58,12 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
       });
     }
     final config = cardFor(serverId)?.config;
-    if (config == null) return Future.error(StateError('找不到指定的服务器'));
+    if (config == null) return Future.error(StateError('Server not found'));
     return _capabilityReads.putIfAbsent(
       config,
       () => _repository.capabilitiesFor(config).then((access) {
         if (isDisposed || _cards[serverId]?.config != config) {
-          throw StateError('服务器配置已更改');
+          throw StateError('Server configuration changed');
         }
         return access;
       }).whenComplete(() {
