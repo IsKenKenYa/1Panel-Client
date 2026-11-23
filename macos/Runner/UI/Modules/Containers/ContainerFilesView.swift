@@ -23,6 +23,9 @@ struct ContainerFilesView: View {
     @State private var files: [ContainerFileRow] = []
     @State private var isLoading = false
     @State private var preview: ContainerFilePreview?
+    @State private var pendingDelete: ContainerFileRow?
+    @State private var actionError: String?
+    @State private var isUploading = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,6 +43,19 @@ struct ContainerFilesView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .truncationMode(.middle)
+                if isUploading {
+                    ProgressView().controlSize(.small)
+                }
+                Button {
+                    upload()
+                } label: {
+                    Label(translations.get("containerFileUploadAction",
+                                           fallback: "Upload file"),
+                          systemImage: "arrow.up.circle")
+                }
+                .disabled(isUploading)
+                .help(translations.get("containerFileUploadAction",
+                                       fallback: "Upload file"))
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 6)
@@ -81,6 +97,15 @@ struct ContainerFilesView: View {
                                         Image(systemName: "chevron.forward")
                                             .font(.caption)
                                             .foregroundStyle(.tertiary)
+                                    } else {
+                                        RowActionButton(
+                                            title: translations.get(
+                                                "containerFileDeleteAction",
+                                                fallback: "Delete file"
+                                            ),
+                                            systemImage: "trash",
+                                            destructive: true
+                                        ) { pendingDelete = file }
                                     }
                                 }
                                 .contentShape(Rectangle())
@@ -98,6 +123,39 @@ struct ContainerFilesView: View {
                     }
                 }
             }
+        }
+        .confirmationDialog(
+            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
+            isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("commonDelete", fallback: "Delete"),
+                   role: .destructive) {
+                guard let file = pendingDelete else { return }
+                pendingDelete = nil
+                delete(file)
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"),
+                   role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text(translations.get("deleteCannotUndoMessage",
+                                  fallback: "This action cannot be undone."))
+        }
+        .alert(
+            translations.get("commonError", fallback: "Error"),
+            isPresented: Binding(
+                get: { actionError != nil },
+                set: { if !$0 { actionError = nil } }
+            )
+        ) {
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) {
+                actionError = nil
+            }
+        } message: {
+            Text(actionError ?? "")
         }
         .navigationTitle(translations.get("containerTabFiles", fallback: "Files"))
         #if os(iOS)
@@ -164,6 +222,44 @@ struct ContainerFilesView: View {
                     content: dict["content"] as? String ?? "",
                     isBinary: dict["isBinary"] as? Bool ?? false
                 )
+            }
+        }
+    }
+
+    private func upload() {
+        isUploading = true
+        ChannelManager.shared.invokeDataMethod(
+            "uploadFilesToContainer",
+            arguments: ["containerId": containerId, "path": path]
+        ) { result in
+            DispatchQueue.main.async {
+                isUploading = false
+                let payload = result as? [String: Any] ?? [:]
+                if payload["success"] as? Bool == true {
+                    fetch()
+                    return
+                }
+                if payload["cancelled"] as? Bool == true { return }
+                actionError = payload["error"] as? String
+                    ?? translations.get("filesUploadFailed", fallback: "Upload failed")
+            }
+        }
+    }
+
+    private func delete(_ file: ContainerFileRow) {
+        ChannelManager.shared.invokeDataMethod(
+            "deleteContainerFiles",
+            arguments: ["containerId": containerId, "paths": [file.path]]
+        ) { result in
+            DispatchQueue.main.async {
+                let payload = result as? [String: Any] ?? [:]
+                if payload["success"] as? Bool == true {
+                    files = []
+                    fetch()
+                    return
+                }
+                actionError = payload["error"] as? String
+                    ?? translations.get("commonDeleteFailed", fallback: "Delete failed")
             }
         }
     }

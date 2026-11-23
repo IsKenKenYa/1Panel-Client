@@ -77,6 +77,43 @@ final class ContainersViewModel: ObservableObject {
         )
     }
 
+    func killContainer(id: String) async {
+        await loader.killContainer(
+            id: id,
+            failureFallback: fallback("commonOperationFailed")
+        )
+    }
+
+    func pauseContainer(id: String) async {
+        await loader.pauseContainer(
+            id: id,
+            failureFallback: fallback("commonOperationFailed")
+        )
+    }
+
+    func unpauseContainer(id: String) async {
+        await loader.unpauseContainer(
+            id: id,
+            failureFallback: fallback("commonOperationFailed")
+        )
+    }
+
+    func uploadFiles(containerId: String, path: String) async -> Bool {
+        await loader.uploadFiles(
+            containerId: containerId,
+            path: path,
+            failureFallback: fallback("commonOperationFailed")
+        )
+    }
+
+    func deleteFiles(containerId: String, paths: [String]) async {
+        await loader.deleteFiles(
+            containerId: containerId,
+            paths: paths,
+            failureFallback: fallback("commonOperationFailed")
+        )
+    }
+
     private func fallback(_ key: String) -> String {
         TranslationsManager.shared.get(key, fallback: "Operation failed")
     }

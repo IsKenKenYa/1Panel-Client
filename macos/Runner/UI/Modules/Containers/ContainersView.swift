@@ -225,6 +225,32 @@ struct ContainersView: View {
                     title: translations.get("containerActionLogs", fallback: "Logs"),
                     systemImage: "doc.text"
                 ) { logsContainer = container }
+                let isPaused = container.state.lowercased() == "paused"
+                if isRunning || isPaused {
+                    RowActionButton(
+                        title: isPaused
+                            ? translations.get("containerActionResume", fallback: "Resume")
+                            : translations.get("containerActionPause", fallback: "Pause"),
+                        systemImage: isPaused ? "play.circle" : "pause.circle"
+                    ) {
+                        Task {
+                            if isPaused {
+                                await viewModel.unpauseContainer(id: container.originalId)
+                            } else {
+                                await viewModel.pauseContainer(id: container.originalId)
+                            }
+                        }
+                    }
+                }
+                if isRunning {
+                    RowActionButton(
+                        title: translations.get("containerActionForceStop",
+                                                fallback: "Force stop"),
+                        systemImage: "xmark.octagon"
+                    ) {
+                        Task { await viewModel.killContainer(id: container.originalId) }
+                    }
+                }
                 RowActionButton(
                     title: translations.get("commonDelete", fallback: "Delete"),
                     systemImage: "trash",
@@ -270,6 +296,36 @@ struct ContainersView: View {
                 Label(translations.get("containerActionLogs", fallback: "Logs"),
                       systemImage: "doc.text")
             }
+            let isPausedMenu = container.state.lowercased() == "paused"
+            if isPausedMenu || isRunning {
+                Button {
+                    Task {
+                        if isPausedMenu {
+                            await viewModel.unpauseContainer(id: container.originalId)
+                        } else {
+                            await viewModel.pauseContainer(id: container.originalId)
+                        }
+                    }
+                } label: {
+                    Label(
+                        isPausedMenu
+                            ? translations.get("containerActionResume", fallback: "Resume")
+                            : translations.get("containerActionPause", fallback: "Pause"),
+                        systemImage: isPausedMenu ? "play.circle" : "pause.circle"
+                    )
+                }
+                .disabled(viewModel.isBusy)
+            }
+            if isRunning {
+                Button {
+                    Task { await viewModel.killContainer(id: container.originalId) }
+                } label: {
+                    Label(translations.get("containerActionForceStop",
+                                           fallback: "Force stop"),
+                          systemImage: "xmark.octagon")
+                }
+                .disabled(viewModel.isBusy)
+            }
             Divider()
             Button(role: .destructive) {
                 containerToDelete = container
@@ -304,6 +360,18 @@ private struct ContainerLogsSheet: View {
     @State private var loadError: String?
     @State private var isLoading = true
     @State private var refreshCount = 0
+    @StateObject private var stream = ContainerLogStreamStore(
+        start: { container, tail, onChunk, onDone, onError in
+            try await ChannelManager.shared.startContainerLogStream(
+                container: container,
+                tail: tail,
+                onChunk: onChunk,
+                onDone: onDone,
+                onError: onError
+            )
+        },
+        stop: { await ChannelManager.shared.stopContainerLogStream() }
+    )
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -317,6 +385,23 @@ private struct ContainerLogsSheet: View {
                 if isLoading && logs != nil {
                     ProgressView().controlSize(.small)
                 }
+                Toggle(
+                    translations.get("containerLogsAutoRefresh", fallback: "Auto Refresh"),
+                    isOn: Binding(
+                        get: { stream.isFollowing },
+                        set: { follow in
+                            Task {
+                                if follow {
+                                    await stream.follow(container: containerName)
+                                } else {
+                                    await stream.stopFollowing()
+                                }
+                            }
+                        }
+                    )
+                )
+                .toggleStyle(.switch)
+                .controlSize(.small)
                 Button {
                     refreshCount += 1
                 } label: {
@@ -326,7 +411,23 @@ private struct ContainerLogsSheet: View {
                 .disabled(isLoading)
                 .help(translations.get("commonRefresh", fallback: "Refresh"))
             }
-            if let logs {
+            if stream.isFollowing {
+                if !stream.text.isEmpty {
+                    ScrollView {
+                        Text(verbatim: stream.text)
+                            .font(.system(.caption, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    LoadingView()
+                }
+                if let streamError = stream.errorMessage {
+                    Label(streamError, systemImage: "exclamationmark.triangle")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            } else if let logs {
                 if let loadError {
                     Label(loadError, systemImage: "exclamationmark.triangle")
                         .font(.callout)
@@ -355,6 +456,9 @@ private struct ContainerLogsSheet: View {
         }
         .padding(20)
         .frame(width: 640, height: 480)
+        .onDisappear {
+            Task { await stream.stopFollowing() }
+        }
         .task(id: refreshCount) {
             isLoading = true
             loadError = nil
