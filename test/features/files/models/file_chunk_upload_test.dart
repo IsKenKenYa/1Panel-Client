@@ -73,6 +73,29 @@ void main() {
       expect(result.success, isFalse);
       expect(result.totalChunks, isNull);
     });
+
+    test('服务端布尔信封被识别为成功', () {
+      final result = FileChunkResult.fromPayload(<String, dynamic>{
+        'code': 200,
+        'message': 'success',
+        'data': true,
+      });
+
+      expect(result.success, isTrue);
+      expect(result.message, 'success');
+    });
+
+    test('服务端返回 false 或非 JSON 载荷时为失败', () {
+      expect(
+        FileChunkResult.fromPayload(<String, dynamic>{
+          'code': 200,
+          'data': false,
+        }).success,
+        isFalse,
+      );
+      expect(FileChunkResult.fromPayload(null).success, isFalse);
+      expect(FileChunkResult.fromPayload('oops').success, isFalse);
+    });
   });
 
   group('chunk partition', () {

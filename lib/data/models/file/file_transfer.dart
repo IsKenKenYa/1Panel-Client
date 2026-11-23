@@ -214,6 +214,31 @@ class FileChunkResult extends Equatable {
     );
   }
 
+  /// 解析 `/files/chunkupload` 的原始响应。
+  ///
+  /// 服务端成功时返回 `{code: 200, message: 'success', data: true}`，`data`
+  /// 是布尔值；失败时由拦截器抛出，因此这里只按信封判定成功与否。
+  factory FileChunkResult.fromPayload(dynamic payload) {
+    if (payload is bool) {
+      return FileChunkResult(success: payload);
+    }
+    if (payload is! Map) {
+      return const FileChunkResult(success: false);
+    }
+    final map = Map<String, dynamic>.from(payload);
+    final data = map['data'];
+    if (data is bool) {
+      return FileChunkResult(
+        success: data,
+        message: map['message'] as String?,
+      );
+    }
+    if (data is Map) {
+      return FileChunkResult.fromJson(Map<String, dynamic>.from(data));
+    }
+    return FileChunkResult.fromJson(map);
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'success': success,

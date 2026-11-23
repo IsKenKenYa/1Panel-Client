@@ -5,7 +5,6 @@ import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/file_models.dart';
-import 'api_response_parser.dart';
 
 class FileV2Api {
   final DioClient _client;
@@ -353,9 +352,10 @@ class FileV2Api {
       data: formData,
       options: Options(contentType: 'multipart/form-data'),
     );
+    // 服务端成功时返回 `{code, message, data: true}`，`data` 是布尔值而不是
+    // 对象；按 map 解析会把成功当成空结构。这里按原始载荷判定。
     return Response<FileChunkResult>(
-      data: FileChunkResult.fromJson(
-          ApiResponseParser.asMap(response.data)),
+      data: FileChunkResult.fromPayload(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
