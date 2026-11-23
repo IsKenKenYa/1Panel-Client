@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import '../config/api_config.dart';
 import '../config/api_constants.dart';
 import '../network/api_client_manager.dart';
+import '../utils/error_message_utils.dart';
 import '../../api/v2/api_response_parser.dart';
 import '../../api/v2/website_v2.dart';
 import '../../data/models/ai/agent_account_model_pool_models.dart';
@@ -416,17 +417,29 @@ class NativeChannelReadHandlers {
   }
 
   static StreamSubscription<String>? _containerLogSubscription;
+  static int _containerLogSession = 0;
 
   /// 开始跟随容器日志。
   ///
   /// 服务端以 base64 SSE 帧持续推送；每个文本块通过方法通道回调
   /// `containerLogChunk` 交给原生侧，结束时回调 `containerLogDone`。
-  /// 参数：`{container: String, tail?: String, since?: String, follow?: bool}`。
+  /// 每次开始分配新的会话编号并随回调下发，原生侧据此丢弃旧订阅的
+  /// 在途回调。参数：`{container: String, tail?: String, since?: String, follow?: bool}`。
   static Future<dynamic> startContainerLogStream(dynamic arguments) async {
-    await stopContainerLogStream();
     final container = (arguments?['container'] as String? ?? '').trim();
     if (container.isEmpty) {
       throw ArgumentError('container is required');
+    }
+    final session = ++_containerLogSession;
+    final previous = _containerLogSubscription;
+    _containerLogSubscription = null;
+    await previous?.cancel();
+    if (session != _containerLogSession) {
+      return <String, dynamic>{
+        'success': false,
+        'error': 'superseded',
+        'session': _containerLogSession,
+      };
     }
     final follow = arguments?['follow'] as bool? ?? true;
     _containerLogSubscription = ContainerService()
@@ -438,32 +451,40 @@ class NativeChannelReadHandlers {
         )
         .listen(
           (chunk) {
+            if (session != _containerLogSession) return;
             _logChannel?.invokeMethod<void>('containerLogChunk', {
               'container': container,
+              'session': session,
               'chunk': chunk,
             });
           },
           onError: (Object error) {
+            if (session != _containerLogSession) return;
             _logChannel?.invokeMethod<void>('containerLogError', {
               'container': container,
-              'error': '$error',
+              'session': session,
+              'error': ErrorMessageUtils.userFacingMessage(error),
             });
           },
           onDone: () {
+            if (session != _containerLogSession) return;
             _logChannel?.invokeMethod<void>('containerLogDone', {
               'container': container,
+              'session': session,
             });
           },
+          cancelOnError: true,
         );
-    return <String, dynamic>{'success': true};
+    return <String, dynamic>{'success': true, 'session': session};
   }
 
   /// 停止跟随容器日志。
   static Future<dynamic> stopContainerLogStream() async {
+    _containerLogSession++;
     final subscription = _containerLogSubscription;
     _containerLogSubscription = null;
     await subscription?.cancel();
-    return <String, dynamic>{'success': true};
+    return <String, dynamic>{'success': true, 'session': _containerLogSession};
   }
 
   /// 由通道管理器注入同一个方法通道，供日志块回调使用。

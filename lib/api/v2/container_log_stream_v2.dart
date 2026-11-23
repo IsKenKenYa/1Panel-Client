@@ -21,7 +21,8 @@ class ContainerLogStreamV2Api {
   /// 订阅容器日志流。
   ///
   /// [follow] 为 true 时服务端持续推送新日志；[tail] 控制起始行数；
-  /// [timestamps] 控制是否携带时间戳。每个事件为一个已解码的日志文本块。
+  /// [timestamps] 控制是否携带时间戳。普通帧为已解码的日志文本块；
+  /// 服务端以 `event: error` 发送的错误转为流错误并结束本次订阅。
   Stream<String> streamContainerLogs({
     required String container,
     String? since,
@@ -31,7 +32,8 @@ class ContainerLogStreamV2Api {
   }) {
     final cancelToken = CancelToken();
     bool cancelled = false;
-    StreamSubscription<String>? subscription;
+    bool finished = false;
+    StreamSubscription<SseFrame>? subscription;
     late final StreamController<String> events;
     Future<void> listen() async {
       try {
@@ -78,15 +80,45 @@ class ContainerLogStreamV2Api {
           }
           throw const FormatException('面板未返回容器日志事件流');
         }
+        final textSink = const Utf8Decoder(allowMalformed: true)
+            .startChunkedConversion(events);
         subscription = body.stream
             .cast<List<int>>()
             .transform(const Utf8Decoder())
             .transform(const LineSplitter())
             .transform(const SseFrameDecoder())
-            .listen(events.add, onError: events.addError, onDone: events.close);
+            .listen(
+          (frame) {
+            if (cancelled || finished) return;
+            final errorText = frame.errorText;
+            if (errorText != null) {
+              finished = true;
+              events.addError(SseServerError(errorText));
+              cancelToken.cancel();
+              final active = subscription;
+              if (active != null) unawaited(active.cancel());
+              unawaited(events.close());
+              return;
+            }
+            textSink.add(frame.bytes);
+          },
+          onError: (Object error, StackTrace trace) {
+            if (cancelled || finished) return;
+            finished = true;
+            events.addError(error, trace);
+            unawaited(events.close());
+          },
+          onDone: () {
+            if (cancelled || finished) return;
+            finished = true;
+            textSink.close();
+            unawaited(events.close());
+          },
+        );
         if (events.isPaused) subscription!.pause();
       } catch (error, trace) {
         if (cancelled) return;
+        finished = true;
         events.addError(error, trace);
         unawaited(events.close());
       }
@@ -99,7 +131,6 @@ class ContainerLogStreamV2Api {
       onCancel: () {
         cancelled = true;
         cancelToken.cancel();
-        return subscription?.cancel();
       },
     );
     return events.stream;
