@@ -281,8 +281,24 @@ struct VirtualMachinesView: View {
                     }
                     Section {
                         ForEach(store.vms) { vm in
-                            NavigationLink(value: vm.name) {
-                                VMInstanceRow(vm: vm)
+                            HStack(spacing: 8) {
+                                NavigationLink(value: vm.name) {
+                                    VMInstanceRow(vm: vm)
+                                }
+                                Spacer(minLength: 8)
+                                RowActions {
+                                    ForEach(VMPowerAction.available(vm.capabilities)) { action in
+                                        RowActionButton(
+                                            title: powerTitle(action),
+                                            systemImage: action.icon,
+                                            destructive: action.destructive
+                                        ) {
+                                            pendingName = vm.name
+                                            pendingAction = action
+                                        }
+                                    }
+                                }
+                                .fixedSize()
                             }
                             .contextMenu {
                                 ForEach(VMPowerAction.available(vm.capabilities)) { action in

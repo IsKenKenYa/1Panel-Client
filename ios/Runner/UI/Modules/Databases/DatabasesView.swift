@@ -56,6 +56,21 @@ class DatabasesViewModel: ObservableObject {
         }
     }
 
+    /// 删除数据库记录（deleteDatabase 通道）。
+    func delete(_ database: DatabaseModel,
+                completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "deleteDatabase",
+            arguments: ["id": database.id]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+                if success { self.fetch() }
+            }
+        }
+    }
+
     /// 新建 MySQL 数据库（createDatabase 通道，目标实例由通道自动发现）。
     func createDatabase(name: String, description: String,
                         completion: @escaping (Bool, String?) -> Void) {
@@ -83,6 +98,7 @@ struct DatabasesView: View {
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var showCreateSheet = false
+    @State private var pendingDelete: DatabaseModel?
     @State private var newName = ""
     @State private var newDescription = ""
     @State private var toastText: String?
@@ -120,6 +136,14 @@ struct DatabasesView: View {
                             .padding(.vertical, 4)
                         }
                         .tint(.primary)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                pendingDelete = database
+                            } label: {
+                                Label(translations.get("commonDelete", fallback: "Delete"),
+                                      systemImage: "trash")
+                            }
+                        }
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -129,6 +153,31 @@ struct DatabasesView: View {
             }
         }
         .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))
+        .confirmationDialog(
+            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
+            isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("commonDelete", fallback: "Delete"),
+                   role: .destructive) {
+                guard let database = pendingDelete else { return }
+                pendingDelete = nil
+                viewModel.delete(database) { success in
+                    if !success {
+                        toastText = translations.get("commonDeleteFailed",
+                                                     fallback: "Delete failed")
+                    }
+                }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"),
+                   role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text(translations.get("deleteCannotUndoMessage",
+                                  fallback: "This action cannot be undone."))
+        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 ModuleSwitcherMenu(current: .databases)

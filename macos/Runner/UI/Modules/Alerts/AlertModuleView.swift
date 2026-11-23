@@ -215,8 +215,22 @@ struct AlertModuleView: View {
                     }
                     Section {
                         ForEach(store.rules) { rule in
-                            MacAlertRuleRow(rule: rule) { enable in
-                                rulePending = .toggle(rule, enable)
+                            HStack(spacing: 8) {
+                                MacAlertRuleRow(rule: rule) { enable in
+                                    rulePending = .toggle(rule, enable)
+                                }
+                                RowActions {
+                                    RowActionButton(
+                                        title: translations.get("commonEdit", fallback: "Edit"),
+                                        systemImage: "pencil"
+                                    ) { ruleEditor = AlertRuleEditor(rule: rule) }
+                                    RowActionButton(
+                                        title: translations.get("commonDelete", fallback: "Delete"),
+                                        systemImage: "trash",
+                                        destructive: true
+                                    ) { rulePending = .delete(rule) }
+                                }
+                                .fixedSize()
                             }
                             .contextMenu {
                                 Button {
