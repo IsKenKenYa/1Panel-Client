@@ -12899,6 +12899,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesHttpsHTTPConfigHTTP => 'HTTP';
 
   @override
+  String get websitesHttpsHTTPConfigToHttps => 'HTTP 跳转 HTTPS';
+
+  @override
+  String get websitesHttpsHTTPConfigAlso => '同时支持 HTTP 与 HTTPS';
+
+  @override
+  String get websitesHttpsHTTPConfigOnly => '仅 HTTPS';
+
+  @override
   String get websitesHttpsHTTPConfigHTTPS => 'HTTPS';
 
   @override

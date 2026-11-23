@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:synchronized/synchronized.dart';
 
+import '../services/logger/logger_service.dart';
+
 /// 桌面端的凭据文件存储。
 ///
 /// 取舍：macOS 钥匙串在读取条目时会要求输入系统密码，数据保护钥匙串还要
@@ -74,11 +76,30 @@ class LocalCredentialVault {
   }
 
   /// 先写临时文件再改名，避免写入中断留下半截内容。
+  ///
+  /// 文件是明文凭据，创建后把权限收紧到仅所有者可读写；
+  /// POSIX 平台的默认 0644 会让同机其他用户读到。
   Future<void> _persist(Map<String, String> entries) async {
     final file = await _file();
     await file.parent.create(recursive: true);
     final temp = File('${file.path}.tmp');
     await temp.writeAsString(jsonEncode(entries), flush: true);
+    await _restrictPermissions(temp);
     await temp.rename(file.path);
+    await _restrictPermissions(file);
+  }
+
+  Future<void> _restrictPermissions(File file) async {
+    if (Platform.isWindows) return;
+    try {
+      final result = await Process.run('chmod', ['600', file.path]);
+      if (result.exitCode != 0) {
+        appLogger.w(
+          'chmod 600 failed for credential file: ${result.stderr}',
+        );
+      }
+    } on ProcessException catch (error) {
+      appLogger.w('chmod unavailable for credential file: $error');
+    }
   }
 }

@@ -5409,6 +5409,9 @@
   "websitesHttpsNoCertificate": "Not bound",
   "websitesHttpsHTTPConfigLabel": "HTTP mode",
   "websitesHttpsHTTPConfigHTTP": "HTTP",
+  "websitesHttpsHTTPConfigToHttps": "HTTP to HTTPS",
+  "websitesHttpsHTTPConfigAlso": "HTTP and HTTPS",
+  "websitesHttpsHTTPConfigOnly": "HTTPS only",
   "websitesHttpsHTTPConfigHTTPS": "HTTPS",
   "websitesHttpsAdvancedTitle": "Advanced",
   "websitesHttpsHstsSubdomains": "Apply HSTS to subdomains"

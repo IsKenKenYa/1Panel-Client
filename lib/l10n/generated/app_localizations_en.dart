@@ -13301,6 +13301,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesHttpsHTTPConfigHTTP => 'HTTP';
 
   @override
+  String get websitesHttpsHTTPConfigToHttps => 'HTTP to HTTPS';
+
+  @override
+  String get websitesHttpsHTTPConfigAlso => 'HTTP and HTTPS';
+
+  @override
+  String get websitesHttpsHTTPConfigOnly => 'HTTPS only';
+
+  @override
   String get websitesHttpsHTTPConfigHTTPS => 'HTTPS';
 
   @override

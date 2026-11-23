@@ -5111,6 +5111,9 @@
   "websitesHttpsNoCertificate": "未绑定",
   "websitesHttpsHTTPConfigLabel": "HTTP 模式",
   "websitesHttpsHTTPConfigHTTP": "HTTP",
+  "websitesHttpsHTTPConfigToHttps": "HTTP 跳转 HTTPS",
+  "websitesHttpsHTTPConfigAlso": "同时支持 HTTP 与 HTTPS",
+  "websitesHttpsHTTPConfigOnly": "仅 HTTPS",
   "websitesHttpsHTTPConfigHTTPS": "HTTPS",
   "websitesHttpsAdvancedTitle": "高级设置",
   "websitesHttpsHstsSubdomains": "HSTS 应用到子域名"

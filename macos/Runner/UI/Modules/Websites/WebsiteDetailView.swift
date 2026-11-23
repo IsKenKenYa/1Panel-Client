@@ -65,7 +65,7 @@ struct WebsiteDetailView: View {
     @State private var httpsSSLId: Int?
     @State private var httpsSSLName = ""
     @State private var httpsLoaded = false
-    @State private var httpsHTTPConfig = "HTTP"
+    @State private var httpsHTTPConfig = "HTTPToHTTPS"
     @State private var httpsHSTS = false
     @State private var httpsHSTSSubdomains = false
     @State private var httpsHTTP3 = false
@@ -348,12 +348,19 @@ struct WebsiteDetailView: View {
                             .tag(certificate.certificateId)
                     }
                 }
-                Picker(translations.get("websitesHttpsHTTPConfigLabel", fallback: "HTTP"),
+                // 服务端只接受 HTTPSOnly / HTTPAlso / HTTPToHTTPS 三个值。
+                Picker(translations.get("websitesHttpsHTTPConfigLabel",
+                                        fallback: "HTTP mode"),
                        selection: $httpsHTTPConfig) {
-                    Text(translations.get("websitesHttpsHTTPConfigHTTP", fallback: "HTTP"))
-                        .tag("HTTP")
-                    Text(translations.get("websitesHttpsHTTPConfigHTTPS", fallback: "HTTPS"))
-                        .tag("HTTPS")
+                    Text(translations.get("websitesHttpsHTTPConfigToHttps",
+                                          fallback: "HTTP to HTTPS"))
+                        .tag("HTTPToHTTPS")
+                    Text(translations.get("websitesHttpsHTTPConfigAlso",
+                                          fallback: "HTTP and HTTPS"))
+                        .tag("HTTPAlso")
+                    Text(translations.get("websitesHttpsHTTPConfigOnly",
+                                          fallback: "HTTPS only"))
+                        .tag("HTTPSOnly")
                 }
             } footer: {
                 if httpsSSLId == nil {
@@ -518,7 +525,9 @@ struct WebsiteDetailView: View {
             let sslId = ssl?["id"] as? Int ?? 0
             httpsSSLId = sslId > 0 ? sslId : nil
             httpsSSLName = ssl?["primaryDomain"] as? String ?? ""
-            httpsHTTPConfig = dict["httpConfig"] as? String ?? "HTTP"
+            let storedConfig = dict["httpConfig"] as? String ?? ""
+            httpsHTTPConfig = ["HTTPToHTTPS", "HTTPAlso", "HTTPSOnly"]
+                .contains(storedConfig) ? storedConfig : "HTTPToHTTPS"
             httpsHSTS = dict["hsts"] as? Bool ?? false
             httpsHSTSSubdomains = dict["hstsIncludeSubDomains"] as? Bool ?? false
             httpsHTTP3 = dict["http3"] as? Bool ?? false

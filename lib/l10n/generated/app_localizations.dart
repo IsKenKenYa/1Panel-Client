@@ -25075,6 +25075,24 @@ abstract class AppLocalizations {
   /// **'HTTP'**
   String get websitesHttpsHTTPConfigHTTP;
 
+  /// No description provided for @websitesHttpsHTTPConfigToHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP to HTTPS'**
+  String get websitesHttpsHTTPConfigToHttps;
+
+  /// No description provided for @websitesHttpsHTTPConfigAlso.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP and HTTPS'**
+  String get websitesHttpsHTTPConfigAlso;
+
+  /// No description provided for @websitesHttpsHTTPConfigOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS only'**
+  String get websitesHttpsHTTPConfigOnly;
+
   /// No description provided for @websitesHttpsHTTPConfigHTTPS.
   ///
   /// In en, this message translates to:

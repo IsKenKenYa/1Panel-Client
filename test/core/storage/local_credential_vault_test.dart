@@ -68,6 +68,18 @@ void main() {
       expect(await file.readAsString(), '[1,2,3]');
     });
 
+    test('写入后文件权限仅所有者可读写', () async {
+      final vault = build();
+      await vault.write('k1', 'value');
+
+      final file = File('${directory.path}/panel_credentials.json');
+      final mode = (await file.stat()).mode & 0x1FF;
+      // 0o600；Windows 无 POSIX 权限位，跳过断言。
+      if (!Platform.isWindows) {
+        expect(mode, 0x180);
+      }
+    });
+
     test('文件里非字符串值被忽略，其余键仍可读', () async {
       final file = File('${directory.path}/panel_credentials.json');
       await file.writeAsString(jsonEncode({'k1': 'value', 'k2': 12}));
