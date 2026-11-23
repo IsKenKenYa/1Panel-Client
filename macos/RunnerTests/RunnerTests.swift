@@ -1,4 +1,5 @@
 import AppKit
+import AppleSharedUI
 import FlutterMacOS
 import XCTest
 @testable import onepanel_client
@@ -428,6 +429,76 @@ class MacContainerDetailModelTests: XCTestCase {
       "containerVolumeMountpointLabel", "containerTabTemplates",
       "containerTemplateCreateTitle", "containerTemplateContentHint",
       "containerTemplateViewContent",
+    ] {
+      XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+    }
+  }
+}
+
+class MacWebsiteLoadBalancerTests: XCTestCase {
+  func testParsesBalancerPayload() throws {
+    let balancer = try XCTUnwrap(WebsiteLoadBalancer(payload: [
+      "name": "lb-mac",
+      "algorithm": "ip_hash",
+      "servers": [
+        ["server": "10.0.0.8:9000", "weight": 5, "flag": "down",
+         "maxFails": 2, "maxConns": 0, "failTimeout": 7,
+         "failTimeoutUnit": "m"],
+      ],
+    ]))
+
+    XCTAssertEqual(balancer.name, "lb-mac")
+    XCTAssertEqual(balancer.algorithm, "ip_hash")
+    let server = try XCTUnwrap(balancer.servers.first)
+    XCTAssertEqual(server.weight, 5)
+    XCTAssertEqual(server.maxFails, 2)
+    XCTAssertNil(server.maxConns)
+    XCTAssertEqual(server.failTimeout, 7)
+    XCTAssertEqual(server.failTimeoutUnit, "m")
+    XCTAssertTrue(server.summary.contains("weight 5"))
+  }
+
+  func testValidationRejectsIncorrectInput() {
+    XCTAssertEqual(
+      WebsiteLoadBalancerValidator.validate(
+        name: "  ",
+        algorithm: "default",
+        servers: [WebsiteLoadBalancerServer(server: "10.0.0.9:80")]
+      ),
+      .nameRequired
+    )
+    XCTAssertEqual(
+      WebsiteLoadBalancerValidator.validate(
+        name: "lb",
+        algorithm: "random_round_robin",
+        servers: [WebsiteLoadBalancerServer(server: "10.0.0.9:80")]
+      ),
+      .algorithmRequired
+    )
+    XCTAssertEqual(
+      WebsiteLoadBalancerValidator.validate(
+        name: "lb",
+        algorithm: "default",
+        servers: [WebsiteLoadBalancerServer(server: "", weight: 1)]
+      ),
+      .serverRequired
+    )
+    XCTAssertEqual(
+      WebsiteLoadBalancerValidator.validate(
+        name: "lb",
+        algorithm: "default",
+        servers: [WebsiteLoadBalancerServer(server: "10.0.0.9:80", maxConns: 10_001)]
+      ),
+      .invalidMaxConns
+    )
+  }
+
+  func testLoadBalanceLabelsResolve() {
+    let translations = TranslationsManager.shared
+    for key in [
+      "websitesLoadBalanceTitle", "websitesLoadBalanceEmpty",
+      "websitesLoadBalanceCreateTitle", "websitesLoadBalanceEditTitle",
+      "websitesLoadBalanceServerLabel", "websitesLoadBalanceMaxConnsRange",
     ] {
       XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
     }

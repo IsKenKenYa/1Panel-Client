@@ -761,3 +761,108 @@ class DockerPolicyImportTests: XCTestCase {
         XCTAssertEqual(rows.first?.payload["hostPort"] as? Int, 9090)
     }
 }
+
+class WebsiteLoadBalancerTests: XCTestCase {
+    func testParsesServersAndSkipsZeroParameters() throws {
+        let balancer = try XCTUnwrap(WebsiteLoadBalancer(payload: [
+            "name": "lb-main",
+            "algorithm": "least_conn",
+            "servers": [
+                ["server": "127.0.0.1:8080", "weight": 3, "flag": "down",
+                 "maxFails": 0, "maxConns": 12, "failTimeout": 0,
+                 "failTimeoutUnit": "s"],
+            ],
+        ]))
+
+        XCTAssertEqual(balancer.name, "lb-main")
+        XCTAssertEqual(balancer.algorithm, "least_conn")
+        XCTAssertEqual(balancer.servers.count, 1)
+        let server = try XCTUnwrap(balancer.servers.first)
+        XCTAssertEqual(server.weight, 3)
+        XCTAssertNil(server.maxFails)
+        XCTAssertEqual(server.maxConns, 12)
+        XCTAssertEqual(server.flag, "down")
+        XCTAssertEqual(server.payload["maxFails"] as? Int, 0)
+    }
+
+    func testValidationRejectsDuplicateAndOutOfRangeParameters() {
+        let duplicate = WebsiteLoadBalancerValidator.validate(
+            name: "lb",
+            algorithm: "default",
+            servers: [
+                WebsiteLoadBalancerServer(server: "10.0.0.1:80"),
+                WebsiteLoadBalancerServer(server: "10.0.0.1:80"),
+            ]
+        )
+        XCTAssertEqual(duplicate, .duplicateServer)
+
+        let weight = WebsiteLoadBalancerValidator.validate(
+            name: "lb",
+            algorithm: "default",
+            servers: [WebsiteLoadBalancerServer(server: "10.0.0.2:80", weight: 101)]
+        )
+        XCTAssertEqual(weight, .invalidWeight)
+
+        let timeout = WebsiteLoadBalancerValidator.validate(
+            name: "lb",
+            algorithm: "default",
+            servers: [
+                WebsiteLoadBalancerServer(
+                    server: "10.0.0.3:80",
+                    failTimeout: 301
+                ),
+            ]
+        )
+        XCTAssertEqual(timeout, .invalidFailTimeout)
+
+        XCTAssertNil(WebsiteLoadBalancerValidator.validate(
+            name: "lb",
+            algorithm: "least_conn",
+            servers: [
+                WebsiteLoadBalancerServer(
+                    server: "10.0.0.4:80",
+                    weight: 100,
+                    flag: "backup",
+                    maxFails: 1000,
+                    maxConns: 10000,
+                    failTimeout: 300
+                ),
+            ]
+        ))
+    }
+
+    func testIpHashRejectsBackupServer() {
+        let issue = WebsiteLoadBalancerValidator.validate(
+            name: "lb",
+            algorithm: "ip_hash",
+            servers: [
+                WebsiteLoadBalancerServer(server: "10.0.0.5:80", flag: "backup"),
+            ]
+        )
+        XCTAssertEqual(issue, .ipHashBackup)
+    }
+
+    func testLoadBalanceLabelsResolve() {
+        let translations = TranslationsManager.shared
+        for key in [
+            "websitesLoadBalanceTitle", "websitesLoadBalanceEmpty",
+            "websitesLoadBalanceCreateTitle", "websitesLoadBalanceEditTitle",
+            "websitesLoadBalanceAlgorithmLabel",
+            "websitesLoadBalanceAlgorithmDefault",
+            "websitesLoadBalanceAlgorithmIpHash",
+            "websitesLoadBalanceAlgorithmLeastConn",
+            "websitesLoadBalanceServerLabel", "websitesLoadBalanceWeightLabel",
+            "websitesLoadBalanceFlagLabel", "websitesLoadBalanceFlagNone",
+            "websitesLoadBalanceFlagDown", "websitesLoadBalanceFlagBackup",
+            "websitesLoadBalanceMaxFailsLabel",
+            "websitesLoadBalanceFailTimeoutLabel",
+            "websitesLoadBalanceMaxConnsLabel",
+            "websitesLoadBalanceAddServer",
+            "websitesLoadBalanceRemoveServer",
+            "websitesLoadBalanceWeightRange",
+            "websitesLoadBalanceIpHashBackup",
+        ] {
+            XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
+        }
+    }
+}

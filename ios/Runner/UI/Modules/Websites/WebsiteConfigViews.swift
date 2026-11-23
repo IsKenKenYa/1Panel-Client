@@ -56,6 +56,13 @@ struct WebsiteConfigHubView: View {
                           systemImage: "network.badge.shield.half.filled")
                 }
                 NavigationLink {
+                    WebsiteLoadBalancerPage(websiteId: websiteId)
+                } label: {
+                    Label(translations.get("websitesLoadBalanceTitle",
+                                           fallback: "Load Balance"),
+                          systemImage: "arrow.triangle.branch")
+                }
+                NavigationLink {
                     WebsiteStreamView(websiteId: websiteId)
                 } label: {
                     Label(translations.get("websitesStreamTitle",
@@ -597,5 +604,21 @@ struct WebsiteRewriteView: View {
                 toastText = nil
             }
         }
+    }
+}
+
+/// 网站负载均衡页：复用共享列表与编辑表单。
+struct WebsiteLoadBalancerPage: View {
+    let websiteId: Int
+    @EnvironmentObject var translations: TranslationsManager
+
+    var body: some View {
+        WebsiteLoadBalancerListView(
+            channel: IOSDataChannel(channelManager: .shared),
+            websiteID: websiteId
+        )
+        .navigationTitle(translations.get("websitesLoadBalanceTitle",
+                                          fallback: "Load Balance"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

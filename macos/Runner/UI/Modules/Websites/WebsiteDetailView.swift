@@ -204,6 +204,11 @@ struct WebsiteDetailView: View {
                 WebsiteProxyCacheSection(websiteId: websiteId)
             case "realip":
                 WebsiteRealIPSection(websiteId: websiteId)
+            case "loadbalance":
+                WebsiteLoadBalancerListView(
+                    channel: MacOSDataChannel(channelManager: .shared),
+                    websiteID: websiteId
+                )
             case "stream":
                 WebsiteStreamSection(websiteId: websiteId)
             case "leech":
@@ -757,6 +762,7 @@ struct WebsiteDetailView: View {
         case "cors": return translations.get("websiteCorsTitle", fallback: "CORS")
         case "cache": return translations.get("websitesCacheTitle", fallback: "Proxy Cache")
         case "realip": return translations.get("websitesRealIpTitle", fallback: "Real IP")
+        case "loadbalance": return translations.get("websitesLoadBalanceTitle", fallback: "Load Balance")
         case "stream": return translations.get("websitesStreamTitle", fallback: "TCP/UDP Forwarding")
         case "leech": return translations.get("websiteLeechTitle", fallback: "Anti-Leech")
         case "auth": return translations.get("websiteAuthTitle", fallback: "Authentication")
@@ -775,6 +781,7 @@ struct WebsiteDetailView: View {
         ("cors", ""),
         ("cache", ""),
         ("realip", ""),
+        ("loadbalance", ""),
         ("stream", ""),
         ("leech", ""),
         ("auth", ""),
