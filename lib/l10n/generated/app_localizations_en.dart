@@ -1541,6 +1541,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get databasePermission => 'Permission';
 
   @override
+  String get databasePermissionIps => 'Allowed IPs';
+
+  @override
+  String get databasePermissionIpsHint =>
+      'Comma separated, e.g. 192.168.0.0/16';
+
+  @override
   String get databaseCharsetLabel => 'Charset';
 
   @override
@@ -5087,6 +5094,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerCommitPause => 'Pause Container';
 
   @override
+  String get containerActionForceStop => 'Force stop';
+
+  @override
+  String get containerActionPause => 'Pause';
+
+  @override
+  String get containerActionResume => 'Resume';
+
+  @override
+  String get containerFileUploadAction => 'Upload file';
+
+  @override
+  String get containerFileDeleteAction => 'Delete file';
+
+  @override
   String get containerCpuShares => 'CPU Shares';
 
   @override
@@ -6213,6 +6235,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupAccountsTokenRefreshed => 'Token refreshed';
+
+  @override
+  String get backupAccountsSectionTitle => 'Backup accounts';
+
+  @override
+  String get backupAccountsCreateTitle => 'New backup account';
+
+  @override
+  String get backupAccountsCheckAction => 'Check connection';
+
+  @override
+  String get backupAccountsNameLabel => 'Account name';
+
+  @override
+  String get backupAccountsTypeLabel => 'Account type';
 
   @override
   String get backupAccountsConnectionOk => 'Connection ok';

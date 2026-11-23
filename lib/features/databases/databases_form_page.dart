@@ -38,6 +38,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _permissionIpsController = TextEditingController();
   String _mysqlPermission = '%';
   bool _postgresqlSuperUser = true;
   DatabaseListItem? _selectedDatabaseTarget;
@@ -58,6 +59,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
     _usernameController.dispose();
     _passwordController.dispose();
     _descriptionController.dispose();
+    _permissionIpsController.dispose();
     super.dispose();
   }
 
@@ -428,7 +430,13 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
               ? 'UTF8'
               : null,
       permission: _scope == DatabaseScope.mysql ? _mysqlPermission : null,
-      permissionIps: null,
+      permissionIps: _mysqlPermission == 'ip'
+          ? _permissionIpsController.text
+              .split(',')
+              .map((part) => part.trim())
+              .where((part) => part.isNotEmpty)
+              .join(',')
+          : null,
       superUser:
           _scope == DatabaseScope.postgresql ? _postgresqlSuperUser : null,
     );

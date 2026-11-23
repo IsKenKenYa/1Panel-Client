@@ -1501,6 +1501,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get databasePermission => '权限';
 
   @override
+  String get databasePermissionIps => '允许的 IP';
+
+  @override
+  String get databasePermissionIpsHint => '使用逗号分隔，例如 192.168.0.0/16';
+
+  @override
   String get databaseCharsetLabel => '字符集';
 
   @override
@@ -4920,6 +4926,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerCommitPause => '暂停容器';
 
   @override
+  String get containerActionForceStop => '强制停止';
+
+  @override
+  String get containerActionPause => '暂停';
+
+  @override
+  String get containerActionResume => '恢复';
+
+  @override
+  String get containerFileUploadAction => '上传文件';
+
+  @override
+  String get containerFileDeleteAction => '删除文件';
+
+  @override
   String get containerCpuShares => 'CPU 配额';
 
   @override
@@ -6029,6 +6050,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupAccountsTokenRefreshed => 'Token 已刷新';
+
+  @override
+  String get backupAccountsSectionTitle => '备份账户';
+
+  @override
+  String get backupAccountsCreateTitle => '新建备份账户';
+
+  @override
+  String get backupAccountsCheckAction => '检测连通性';
+
+  @override
+  String get backupAccountsNameLabel => '账户名称';
+
+  @override
+  String get backupAccountsTypeLabel => '账户类型';
 
   @override
   String get backupAccountsConnectionOk => '连接成功';

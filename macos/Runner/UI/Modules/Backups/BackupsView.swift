@@ -8,8 +8,34 @@ struct BackupsView: View {
 
     @State private var backupToDelete: BackupModel?
     @State private var showDeleteConfirm = false
+    @State private var section = "records"
 
     var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $section) {
+                Text(translations.get("backupRecordsTitle", fallback: "Records"))
+                    .tag("records")
+                Text(translations.get("backupAccountsSectionTitle",
+                                      fallback: "Backup accounts"))
+                    .tag("accounts")
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            Divider()
+            Group {
+                if section == "accounts" {
+                    BackupAccountsSectionView()
+                } else {
+                    recordsContent
+                }
+            }
+        }
+        .navigationTitle(translations.get("operationsBackupsTitle", fallback: "Backups"))
+    }
+
+    private var recordsContent: some View {
         Group {
             if viewModel.isLoading {
                 LoadingView()
@@ -27,16 +53,17 @@ struct BackupsView: View {
                 .listStyle(.inset)
             }
         }
-        .navigationTitle(translations.get("operationsBackupsTitle", fallback: "Backups"))
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                if viewModel.isProcessing {
-                    ProgressView().scaleEffect(0.6)
-                } else {
-                    Button { viewModel.fetchBackups() } label: {
-                        Image(systemName: "arrow.clockwise")
+            if section == "records" {
+                ToolbarItem(placement: .automatic) {
+                    if viewModel.isProcessing {
+                        ProgressView().scaleEffect(0.6)
+                    } else {
+                        Button { viewModel.fetchBackups() } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        .help(translations.get("commonRefresh", fallback: "Refresh"))
                     }
-                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }

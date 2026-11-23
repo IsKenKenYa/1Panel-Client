@@ -2966,6 +2966,18 @@ abstract class AppLocalizations {
   /// **'Permission'**
   String get databasePermission;
 
+  /// No description provided for @databasePermissionIps.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed IPs'**
+  String get databasePermissionIps;
+
+  /// No description provided for @databasePermissionIpsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Comma separated, e.g. 192.168.0.0/16'**
+  String get databasePermissionIpsHint;
+
   /// No description provided for @databaseCharsetLabel.
   ///
   /// In en, this message translates to:
@@ -9548,6 +9560,36 @@ abstract class AppLocalizations {
   /// **'Pause Container'**
   String get containerCommitPause;
 
+  /// No description provided for @containerActionForceStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Force stop'**
+  String get containerActionForceStop;
+
+  /// No description provided for @containerActionPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get containerActionPause;
+
+  /// No description provided for @containerActionResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get containerActionResume;
+
+  /// No description provided for @containerFileUploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload file'**
+  String get containerFileUploadAction;
+
+  /// No description provided for @containerFileDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete file'**
+  String get containerFileDeleteAction;
+
   /// No description provided for @containerCpuShares.
   ///
   /// In en, this message translates to:
@@ -11725,6 +11767,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Token refreshed'**
   String get backupAccountsTokenRefreshed;
+
+  /// No description provided for @backupAccountsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup accounts'**
+  String get backupAccountsSectionTitle;
+
+  /// No description provided for @backupAccountsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New backup account'**
+  String get backupAccountsCreateTitle;
+
+  /// No description provided for @backupAccountsCheckAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Check connection'**
+  String get backupAccountsCheckAction;
+
+  /// No description provided for @backupAccountsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name'**
+  String get backupAccountsNameLabel;
+
+  /// No description provided for @backupAccountsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account type'**
+  String get backupAccountsTypeLabel;
 
   /// No description provided for @backupAccountsConnectionOk.
   ///

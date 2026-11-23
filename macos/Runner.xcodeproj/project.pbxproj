@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		AA11BB22CC33DD44EE55FF24 /* BackupAccountsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660024 /* BackupAccountsSectionView.swift */; };
 		9E1F2A3B4C5D6E7F80910A21 /* ModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1F2A3B4C5D6E7F80910A22 /* ModuleRow.swift */; };
 		005328ABD7AA27E35B54EB1E /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D695296FE7F4CF8AAD51CC39 /* FilesView.swift */; };
 		0FA1CBDC5DBB26BAB27A6DE8 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F32D7C8CF28CE96026BC83A /* MonitoringViewModel.swift */; };
@@ -135,6 +136,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BB22CC33DD44EE55FF660024 /* BackupAccountsSectionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupAccountsSectionView.swift; sourceTree = "<group>"; };
 		9E1F2A3B4C5D6E7F80910A22 /* ModuleRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ModuleRow.swift; sourceTree = "<group>"; };
 		030E5442101A5308C9BEEE86 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		03EA651BE7A119BC2C44C711 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@ children = (
 			children = (
 				5B6FDF289CEC86A11BB13AFD /* BackupsViewModel.swift */,
 				ED28EFBA32961CBCB8FCA361 /* BackupsView.swift */,
+				BB22CC33DD44EE55FF660024 /* BackupAccountsSectionView.swift */,
 			);
 			path = Backups;
 			sourceTree = "<group>";
@@ -888,6 +891,7 @@ children = (
 				533AEE81E936D419173E6EF7 /* CronJobsView.swift in Sources */,
 				111510452946E14C5FEEF321 /* BackupsViewModel.swift in Sources */,
 				3F69FA042C58502CC174FF80 /* BackupsView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF24 /* BackupAccountsSectionView.swift in Sources */,
 				D8FE37A8818B1D24E4EB8CAD /* AIViewModel.swift in Sources */,
 				EA96488EAB55560EF40525A4 /* AIView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF01 /* VirtualMachinesView.swift in Sources */,
