@@ -1,11 +1,12 @@
 import 'package:onepanel_client/data/models/cronjob_form_request_models.dart';
 
-/// 定时任务编辑请求构造。
+/// 定时任务新建与编辑请求构造。
 ///
 /// 服务端 `/cronjobs/update` 用请求字段整体覆盖数据库列，未提交的字段会
 /// 被写成空值。原生编辑表单只收集名称、表达式与脚本文本，所以其余字段
 /// 必须从原始记录回填，否则 nginx 日志切割、清理、快照等任务会丢失站点、
-/// 排除规则、保留份数与告警配置。
+/// 排除规则、保留份数与告警配置。新建表单固定创建 shell 任务，未提交
+/// 类型时按 shell 提交。
 CronjobOperateRequest buildCronjobOperateRequest(
   Map<dynamic, dynamic> arguments, {
   int? id,
@@ -18,7 +19,7 @@ CronjobOperateRequest buildCronjobOperateRequest(
   }
   final type =
       (arguments['type'] as String? ?? existing['type'] as String? ?? '').trim();
-  if (type.isEmpty) {
+  if (type.isEmpty && id != null) {
     throw ArgumentError('type is required');
   }
 
@@ -43,7 +44,7 @@ CronjobOperateRequest buildCronjobOperateRequest(
     id: id,
     name: name,
     groupID: pickInt('groupID', (existing['groupID'] as int?) ?? 0),
-    type: type,
+    type: type.isEmpty ? 'shell' : type,
     specCustom: pickBool('specCustom', (existing['specCustom'] as bool?) ?? true),
     spec: spec,
     executor: pick('executor', (existing['executor'] as String?) ?? ''),

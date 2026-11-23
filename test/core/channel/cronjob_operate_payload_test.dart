@@ -53,7 +53,16 @@ void main() {
       expect(request.groupID, 9);
     });
 
-    test('缺少类型且原记录也没有类型时拒绝构造', () {
+    test('新建任务未提交类型时按 shell 构造', () {
+      final request = buildCronjobOperateRequest(
+        <String, dynamic>{'name': 'task', 'spec': '* * * * *'},
+      );
+
+      expect(request.id, isNull);
+      expect(request.type, 'shell');
+    });
+
+    test('编辑任务缺少类型且原记录也没有类型时拒绝构造', () {
       expect(
         () => buildCronjobOperateRequest(
           <String, dynamic>{'name': 'task', 'spec': '* * * * *'},
