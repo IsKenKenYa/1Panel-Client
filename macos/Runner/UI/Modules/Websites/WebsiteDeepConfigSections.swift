@@ -394,21 +394,6 @@ struct WebsiteRealIPSection: View {
     }
 }
 
-struct WebsiteStreamServer: Identifiable, Equatable {
-    let server: String
-    let weight: Int?
-    let flag: String?
-
-    var id: String { "\(server)-\(weight ?? 0)-\(flag ?? "")" }
-
-    var summary: String {
-        var parts = [server]
-        if let weight, weight > 0 { parts.append("weight \(weight)") }
-        if let flag, !flag.isEmpty { parts.append(flag) }
-        return parts.joined(separator: " · ")
-    }
-}
-
 /// macOS 网站 TCP/UDP 转发分区：端口、UDP 标记与上游服务器。
 struct WebsiteStreamSection: View {
     @EnvironmentObject private var translations: TranslationsManager
@@ -418,8 +403,7 @@ struct WebsiteStreamSection: View {
     @State private var udp = false
     @State private var name = ""
     @State private var algorithm = ""
-    @State private var servers: [WebsiteStreamServer] = []
-    @State private var rawServers: [[String: Any]] = []
+    @State private var upstreamServers: [WebsiteLoadBalancerServer] = []
     @State private var isLoading = true
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -433,29 +417,27 @@ struct WebsiteStreamSection: View {
                           text: $streamPorts)
                 Toggle(translations.get("websitesStreamUdpLabel", fallback: "UDP"),
                        isOn: $udp)
+                HStack {
+                    Text(translations.get("websitesStreamAlgorithmLabel",
+                                          fallback: "Algorithm"))
+                    Spacer()
+                    Picker("", selection: $algorithm) {
+                        ForEach(WebsiteLoadBalancerAlgorithm.allCases) { item in
+                            Text(item.title(translations)).tag(item.rawValue)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 180)
+                }
             } footer: {
                 Text(translations.get("websitesStreamHelper",
                                       fallback: "Separate multiple ports with commas."))
                     .font(.footnote)
             }
-            Section(translations.get("websitesStreamServersLabel",
-                                     fallback: "Upstream servers")) {
-                if servers.isEmpty {
-                    Text(translations.get("websitesStreamServersEmpty",
-                                          fallback: "No upstream servers; configure load balance first."))
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(servers) { server in
-                        Text(server.summary)
-                            .font(.subheadline)
-                    }
-                    if !algorithm.isEmpty {
-                        Text("\(translations.get("websitesStreamAlgorithmLabel", fallback: "Algorithm")): \(algorithm)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
+            WebsiteUpstreamServersEditor(
+                servers: $upstreamServers,
+                algorithm: algorithm
+            )
             Section {
                 saveButton
             }
@@ -518,17 +500,10 @@ struct WebsiteStreamSection: View {
             streamPorts = dict["streamPorts"] as? String ?? ""
             udp = dict["udp"] as? Bool ?? false
             name = dict["name"] as? String ?? ""
-            algorithm = dict["algorithm"] as? String ?? ""
-            rawServers = (dict["servers"] as? [[String: Any]] ?? [])
-            servers = rawServers.compactMap { item in
-                let server = item["server"] as? String ?? ""
-                guard !server.isEmpty else { return nil }
-                return WebsiteStreamServer(
-                    server: server,
-                    weight: item["weight"] as? Int,
-                    flag: item["flag"] as? String
-                )
-            }
+            let loaded = dict["algorithm"] as? String ?? ""
+            algorithm = loaded.isEmpty ? WebsiteLoadBalancerAlgorithm.standard.rawValue : loaded
+            upstreamServers = (dict["servers"] as? [[String: Any]] ?? [])
+                .compactMap(WebsiteLoadBalancerServer.init(payload:))
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -542,6 +517,12 @@ struct WebsiteStreamSection: View {
                                             fallback: "Enter at least one forwarding port.")
             return
         }
+        if algorithm == WebsiteLoadBalancerAlgorithm.ipHash.rawValue &&
+            upstreamServers.contains(where: { $0.flag == "backup" }) {
+            errorMessage = translations.get("websitesLoadBalanceIpHashBackup",
+                                            fallback: "IP hash does not support backup servers.")
+            return
+        }
         isSaving = true
         do {
             let raw = try await ChannelManager.shared.invokeDataMethodAsync(
@@ -552,7 +533,7 @@ struct WebsiteStreamSection: View {
                     "udp": udp,
                     "name": name,
                     "algorithm": algorithm,
-                    "servers": rawServers,
+                    "servers": upstreamServers.map(\.payload),
                 ]
             )
             let payload = raw as? [String: Any] ?? [:]

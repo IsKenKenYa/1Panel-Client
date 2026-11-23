@@ -861,8 +861,45 @@ class WebsiteLoadBalancerTests: XCTestCase {
             "websitesLoadBalanceRemoveServer",
             "websitesLoadBalanceWeightRange",
             "websitesLoadBalanceIpHashBackup",
+            "websiteSourceFileLabel",
+            "websitesLoadBalanceFileEmpty",
+            "websitesUpstreamServersEmpty",
+            "websitesUpstreamServersHint",
         ] {
             XCTAssertFalse(translations.get(key, fallback: "").isEmpty)
         }
+    }
+
+    func testBalancerCarriesSourceFileContent() throws {
+        let balancer = try XCTUnwrap(WebsiteLoadBalancer(payload: [
+            "name": "upstream-main",
+            "algorithm": "default",
+            "servers": [],
+            "content": "upstream upstream-main {\n    server 127.0.0.1:8080;\n}",
+        ]))
+
+        XCTAssertTrue(balancer.content.contains("127.0.0.1:8080"))
+    }
+
+    func testServerKeepsIdentityAcrossFieldEdits() {
+        let original = WebsiteLoadBalancerServer(
+            server: "10.0.0.1:80",
+            weight: 4
+        )
+        let edited = WebsiteLoadBalancerServer(
+            id: original.id,
+            server: "10.0.0.2:80",
+            weight: 4,
+            flag: "backup",
+            maxFails: nil,
+            maxConns: nil,
+            failTimeout: nil,
+            failTimeoutUnit: "s"
+        )
+
+        XCTAssertEqual(edited.id, original.id)
+        XCTAssertEqual(edited.server, "10.0.0.2:80")
+        XCTAssertEqual(edited.flag, "backup")
+        XCTAssertEqual(edited.payload["weight"] as? Int, 4)
     }
 }

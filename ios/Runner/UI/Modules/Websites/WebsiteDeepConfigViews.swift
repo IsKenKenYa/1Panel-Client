@@ -376,7 +376,7 @@ struct WebsiteStreamView: View {
     @State private var udp = false
     @State private var name = ""
     @State private var algorithm = ""
-    @State private var servers: [[String: Any]] = []
+    @State private var upstreamServers: [WebsiteLoadBalancerServer] = []
     @State private var isLoading = true
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -392,28 +392,25 @@ struct WebsiteStreamView: View {
                     .textInputAutocapitalization(.never)
                 Toggle(translations.get("websitesStreamUdpLabel", fallback: "UDP"),
                        isOn: $udp)
+                HStack {
+                    Text(translations.get("websitesStreamAlgorithmLabel",
+                                          fallback: "Algorithm"))
+                    Spacer()
+                    Picker("", selection: $algorithm) {
+                        ForEach(WebsiteLoadBalancerAlgorithm.allCases) { item in
+                            Text(item.title(translations)).tag(item.rawValue)
+                        }
+                    }
+                    .labelsHidden()
+                }
             } footer: {
                 Text(translations.get("websitesStreamHelper",
                                       fallback: "Separate multiple ports with commas."))
             }
-            Section(translations.get("websitesStreamServersLabel",
-                                     fallback: "Upstream servers")) {
-                if servers.isEmpty {
-                    Text(translations.get("websitesStreamServersEmpty",
-                                          fallback: "No upstream servers; configure load balance first."))
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(Array(servers.enumerated()), id: \.offset) { _, server in
-                        Text(serverSummary(server))
-                            .font(.subheadline)
-                    }
-                    if !algorithm.isEmpty {
-                        Text("\(translations.get("websitesStreamAlgorithmLabel", fallback: "Algorithm")): \(algorithm)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
+            WebsiteUpstreamServersEditor(
+                servers: $upstreamServers,
+                algorithm: algorithm
+            )
             Section {
                 saveButton
             }
@@ -457,17 +454,6 @@ struct WebsiteStreamView: View {
         .disabled(isLoading || isSaving)
     }
 
-    private func serverSummary(_ server: [String: Any]) -> String {
-        var parts: [String] = [server["server"] as? String ?? ""]
-        if let weight = server["weight"] as? Int, weight > 0 {
-            parts.append("weight \(weight)")
-        }
-        if let flag = server["flag"] as? String, !flag.isEmpty {
-            parts.append(flag)
-        }
-        return parts.joined(separator: " · ")
-    }
-
     private func load() async {
         isLoading = true
         do {
@@ -479,8 +465,10 @@ struct WebsiteStreamView: View {
             streamPorts = dict["streamPorts"] as? String ?? ""
             udp = dict["udp"] as? Bool ?? false
             name = dict["name"] as? String ?? ""
-            algorithm = dict["algorithm"] as? String ?? ""
-            servers = dict["servers"] as? [[String: Any]] ?? []
+            let loaded = dict["algorithm"] as? String ?? ""
+            algorithm = loaded.isEmpty ? WebsiteLoadBalancerAlgorithm.standard.rawValue : loaded
+            upstreamServers = (dict["servers"] as? [[String: Any]] ?? [])
+                .compactMap(WebsiteLoadBalancerServer.init(payload:))
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -494,6 +482,12 @@ struct WebsiteStreamView: View {
                                             fallback: "Enter at least one forwarding port.")
             return
         }
+        if algorithm == WebsiteLoadBalancerAlgorithm.ipHash.rawValue &&
+            upstreamServers.contains(where: { $0.flag == "backup" }) {
+            errorMessage = translations.get("websitesLoadBalanceIpHashBackup",
+                                            fallback: "IP hash does not support backup servers.")
+            return
+        }
         isSaving = true
         do {
             let raw = try await ChannelManager.shared.invokeDataMethodAsync(
@@ -504,7 +498,7 @@ struct WebsiteStreamView: View {
                     "udp": udp,
                     "name": name,
                     "algorithm": algorithm,
-                    "servers": servers,
+                    "servers": upstreamServers.map(\.payload),
                 ]
             )
             let payload = raw as? [String: Any] ?? [:]
