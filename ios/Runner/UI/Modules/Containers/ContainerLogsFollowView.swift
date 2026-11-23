@@ -45,6 +45,10 @@ struct ContainerLogsFollowView: View {
             await stream.follow(container: containerName)
         }
         .onChange(of: navigation.activeServerID) { serverID in
+            if followServerID == nil {
+                followServerID = serverID
+                return
+            }
             guard stream.isActive, followServerID != serverID else { return }
             followServerID = serverID
             Task { await stream.stopFollowing() }
