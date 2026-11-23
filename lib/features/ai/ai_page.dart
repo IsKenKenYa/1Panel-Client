@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/agents/widgets/ai_agents_tab_widget.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
+import 'package:onepanel_client/features/ai/providers/model_downloader_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_domain_tab_widget.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_gpu_tab_widget.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_mcp_tab_widget.dart';
@@ -44,7 +45,15 @@ class _AIPageState extends State<AIPage> with SingleTickerProviderStateMixin {
       builder: (context, provider, _, __) {
         return ServerAwarePageScaffold(
           title: l10n.serverModuleAi,
-          onServerChanged: () => provider.searchOllamaModels(),
+          // 切换服务器后每个分页的数据来源都变了：模型列表、GPU 指标、
+          // 模型下载器缓存、MCP 服务列表与智能体账号都要按新连接重读，
+          // 只刷新模型列表会让其余分页继续显示上一台服务器的数据。
+          onServerChanged: () async {
+            provider.searchOllamaModels();
+            provider.loadGpuInfo();
+            context.read<ModelDownloaderProvider>().onServerChanged();
+            context.read<McpServerProvider>().load();
+          },
           bottom: TabBar(
             controller: _tabController,
             // 六个分页在手机宽度下无法等分，标签会被截断成 "Mode"、"Doma"，

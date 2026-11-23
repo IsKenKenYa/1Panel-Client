@@ -218,24 +218,44 @@ class AIRepository {
   }
 
   /// Search GPU monitor data for history chart (R5 frontend alignment).
-  Future<List<Map<String, dynamic>>> searchGpu(
+  /// 读取 GPU 历史序列。
+  ///
+  /// 上游 `/ai/gpu/search` 要求携带设备（deviceID 或 productName），
+  /// 否则直接返回业务错误；返回体是 `{memoryActivity, computeUtil, ...}`
+  /// 这样的时间序列对象，不是设备列表。这里先经 `/ai/gpu/options`
+  /// 取得设备，再按对象返回原始序列。
+  Future<Map<String, dynamic>> searchGpu(
       Map<String, dynamic> request) async {
     final api = await _getApi();
     final response = await api.searchGpu(request);
-    final raw = response.data?['data'];
-    if (raw is List) {
-      return raw
-          .whereType<Map>()
-          .map((e) => Map<String, dynamic>.from(e))
-          .toList();
-    }
-    return const <Map<String, dynamic>>[];
+    return response.data ?? const <String, dynamic>{};
   }
 
-  /// Get GPU options (R5 frontend alignment).
-  Future<List<Map<String, dynamic>>> getGpuOptions() async {
+  /// 读取 GPU 设备选项。
+  ///
+  /// 上游返回 `{chartHide: [...], chartSelect: [...]}` 对象，设备列表在
+  /// `chartHide` 里；按数组解析会得到空列表。
+  Future<Map<String, dynamic>> getGpuOptions() async {
     final api = await _getApi();
-    final response = await api.getGpuOptions();
-    return response.data ?? const <Map<String, dynamic>>[];
+    final response = await api.getGpuOptionsRaw();
+    return response;
+  }
+
+  /// 解析设备选项里的第一台 GPU，没有设备时返回 null。
+  static ({String deviceId, String productName, bool legacy})? firstGpuDevice(
+    Map<String, dynamic> options,
+  ) {
+    final chartHide = options['chartHide'];
+    if (chartHide is! List || chartHide.isEmpty) return null;
+    final first = chartHide.first;
+    if (first is! Map) return null;
+    final deviceId = (first['deviceID'] as String? ?? '').trim();
+    final productName = (first['productName'] as String? ?? '').trim();
+    if (deviceId.isEmpty && productName.isEmpty) return null;
+    return (
+      deviceId: deviceId,
+      productName: productName,
+      legacy: first['legacy'] == true,
+    );
   }
 }

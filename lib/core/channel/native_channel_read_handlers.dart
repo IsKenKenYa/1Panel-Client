@@ -1627,34 +1627,50 @@ class NativeChannelReadHandlers {
     }
   }
 
-  /// GPU 选项（监控图表类型列表）。参数：`{}`。GET /ai/gpu/options。
+  /// GPU 设备选项。参数：`{}`。GET /ai/gpu/options。
+  /// 返回 `{chartHide: [...], chartSelect: [...]}` 原始对象。
   static Future<dynamic> getGpuOptions(dynamic arguments) async {
     try {
       return await AIRepository().getGpuOptions();
     } catch (e) {
       appLogger.e('Failed to get gpu options for native: $e');
-      return [];
+      return <String, dynamic>{};
     }
   }
 
   /// GPU 历史监控。参数：
-  /// `{productName: String, startTime: String, endTime: String}`。
-  /// POST /ai/gpu/search，返回时间序列列表。
+  /// `{deviceID?: String, productName?: String, startTime: String, endTime: String}`。
+  /// POST /ai/gpu/search，返回时间序列对象；缺少设备时服务端报错，这里
+  /// 先经 `/ai/gpu/options` 取设备，无 GPU 时直接返回空对象。
   static Future<dynamic> searchGpuHistory(dynamic arguments) async {
     try {
       final startTime = arguments?['startTime'] as String? ?? '';
       final endTime = arguments?['endTime'] as String? ?? '';
       if (startTime.isEmpty || endTime.isEmpty) {
-        return [];
+        return <String, dynamic>{};
       }
-      return await AIRepository().searchGpu(<String, dynamic>{
-        'productName': arguments?['productName'] as String? ?? '',
+      final repository = AIRepository();
+      var deviceId = arguments?['deviceID'] as String? ?? '';
+      var productName = arguments?['productName'] as String? ?? '';
+      var legacy = arguments?['legacy'] as bool? ?? false;
+      if (deviceId.isEmpty && productName.isEmpty) {
+        final device =
+            AIRepository.firstGpuDevice(await repository.getGpuOptions());
+        if (device == null) return <String, dynamic>{};
+        deviceId = device.deviceId;
+        productName = device.productName;
+        legacy = device.legacy;
+      }
+      return await repository.searchGpu(<String, dynamic>{
+        'deviceID': deviceId,
+        'productName': productName,
+        'legacy': legacy,
         'startTime': startTime,
         'endTime': endTime,
       });
     } catch (e) {
       appLogger.e('Failed to search gpu history for native: $e');
-      return [];
+      return <String, dynamic>{};
     }
   }
 

@@ -1226,6 +1226,24 @@ class AIV2Api {
     );
   }
 
+  /// 读取 GPU 设备选项原始对象。
+  ///
+  /// 上游返回 `{chartHide: [...], chartSelect: [...]}`，设备列表在
+  /// `chartHide` 内；按数组解析拿不到设备。
+  Future<Map<String, dynamic>> getGpuOptionsRaw() async {
+    final response = await _client.get<dynamic>(
+      ApiConstants.buildApiPath('/ai/gpu/options'),
+    );
+    final payload = response.data;
+    if (payload is Map) {
+      final body = Map<String, dynamic>.from(payload);
+      final data = body['data'];
+      if (data is Map) return Map<String, dynamic>.from(data);
+      return body;
+    }
+    return const <String, dynamic>{};
+  }
+
   /// Search GPU monitor data (chart time-series).
   Future<Response<Map<String, dynamic>>> searchGpu(
       Map<String, dynamic> request) async {
