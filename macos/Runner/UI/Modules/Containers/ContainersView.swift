@@ -37,19 +37,45 @@ struct ContainersView: View {
     @State private var detailContainer: ContainerModel?
     @State private var showCreateSheet = false
 
-    var body: some View {
-        VStack(spacing: 0) {
-            Picker("", selection: $section) {
+    /// 七个分区用标题菜单承载。分段控件在窄窗口会被压到最小宽度，
+    /// 把 NavigationSplitView 侧栏一起挤掉，菜单不占横向空间。
+    private var sectionPicker: some View {
+        HStack(spacing: 8) {
+            Menu {
                 ForEach(ContainerSection.allCases) { item in
-                    Text(translations.get(item.titleKey,
-                                          fallback: fallbackTitle(item)))
-                        .tag(item)
+                    Button {
+                        section = item
+                    } label: {
+                        if section == item {
+                            Label(title(item), systemImage: "checkmark")
+                        } else {
+                            Text(title(item))
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(title(section))
+                        .font(.headline)
+                    Image(systemName: "chevron.down")
+                        .font(.caption.weight(.semibold))
                 }
             }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .menuStyle(.borderlessButton)
+            .fixedSize()
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+    }
+
+    private func title(_ item: ContainerSection) -> String {
+        translations.get(item.titleKey, fallback: fallbackTitle(item))
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            sectionPicker
             Divider()
             Group {
                 switch section {

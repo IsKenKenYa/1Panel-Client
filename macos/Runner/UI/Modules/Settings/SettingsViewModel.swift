@@ -37,7 +37,7 @@ class SettingsViewModel: ObservableObject {
     let appVersion: String
     let buildNumber: String
     private let initialRenderMode: MacOSRenderMode
-    private let initialLanguage: String
+    private var initialLanguage: String
 
     var showRenderModeRestartHint: Bool {
         renderMode != initialRenderMode
@@ -72,6 +72,19 @@ class SettingsViewModel: ObservableObject {
     func updateLanguage(_ lang: String) {
         selectedLanguage = lang
         UserDefaults.standard.set(lang, forKey: "flutter.app_locale")
+        // Dart 侧写入同一偏好键并重载原生文案，切换语言无需重启应用。
+        ChannelManager.shared.invokeDataMethod(
+            "updateSetting",
+            arguments: ["key": "language", "value": lang]
+        ) { result in
+            let succeeded = (result as? [String: Any])?["success"] as? Bool ?? false
+            DispatchQueue.main.async {
+                if succeeded {
+                    TranslationsManager.shared.load {}
+                    self.initialLanguage = lang
+                }
+            }
+        }
     }
 
     func updateTheme(_ theme: String) {
