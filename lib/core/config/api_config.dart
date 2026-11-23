@@ -214,15 +214,26 @@ abstract final class ApiConfigManager {
   static ServerDirectory _readLegacy(SharedPreferences prefs) {
     final legacy = prefs.getString(_legacyConfigsKey);
     if (legacy == null) return (servers: <ApiConfig>[], selectedId: null);
-    final decoded = jsonDecode(legacy);
-    if (decoded is! List) return (servers: <ApiConfig>[], selectedId: null);
-    return (
-      servers: [
-        for (final item in decoded)
-          if (item is Map<String, dynamic>) ApiConfig.fromJson(item),
-      ],
-      selectedId: prefs.getString(_legacySelectedIdKey),
-    );
+    try {
+      final decoded = jsonDecode(legacy);
+      if (decoded is! List) return (servers: <ApiConfig>[], selectedId: null);
+      final servers = <ApiConfig>[];
+      for (final item in decoded) {
+        if (item is! Map) continue;
+        try {
+          servers.add(ApiConfig.fromJson(Map<String, dynamic>.from(item)));
+        } catch (_) {
+          // 单条损坏不影响其余条目。
+        }
+      }
+      return (
+        servers: servers,
+        selectedId: prefs.getString(_legacySelectedIdKey),
+      );
+    } catch (_) {
+      appLogger.e('Legacy server directory is unreadable; starting empty');
+      return (servers: <ApiConfig>[], selectedId: null);
+    }
   }
 
   static Future<ServerDirectory> getServerDirectory() =>

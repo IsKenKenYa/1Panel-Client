@@ -126,6 +126,34 @@ void main() {
       expect(directory.selectedId, 'good');
     });
 
+    test('旧数组内容损坏时读取空目录，不抛出', () async {
+      for (final broken in ['not-json', '{"servers": []}', '12345']) {
+        SharedPreferences.setMockInitialValues(<String, Object>{
+          legacyListKey: broken,
+        });
+
+        final directory = await ApiConfigManager.getServerDirectory();
+
+        expect(directory.servers, isEmpty);
+        expect(directory.selectedId, isNull);
+      }
+    });
+
+    test('旧数组单条记录损坏时跳过该条，保留其余', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        legacyListKey: jsonEncode([
+          {'id': 'broken'},
+          legacyEntry('good', 'Good'),
+        ]),
+        legacySelectedKey: 'good',
+      });
+
+      final directory = await ApiConfigManager.getServerDirectory();
+
+      expect(directory.servers.map((s) => s.id), ['good']);
+      expect(directory.selectedId, 'good');
+    });
+
     test('品牌命名键被读入并迁移到新键，随后移除旧键', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         brandServersKey: jsonEncode({
