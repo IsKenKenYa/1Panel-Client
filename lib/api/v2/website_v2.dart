@@ -4,6 +4,7 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/file/file_info.dart';
 import '../../data/models/website_models.dart';
+import '../../data/models/website_log_models.dart';
 import '../../data/models/website_template_models.dart';
 import '../../data/models/ssl_models.dart';
 import 'api_response_parser.dart';
@@ -807,17 +808,31 @@ class WebsiteV2Api {
     );
   }
 
-  /// Search website logs.
-  Future<Response<List<dynamic>>> searchWebsiteLogs(
-      Map<String, dynamic> request) async {
-    final response = await _client.post<dynamic>(
+  /// 读取网站日志。
+  ///
+  /// 上游 `/websites/log/search` 请求体是 `{id, logType, page, pageSize}`，
+  /// `logType` 只能取 `access.log` 或 `error.log`；响应是
+  /// `{enable, content, end, path}` 对象，`content` 为按行拼接的文本，
+  /// 而不是日志行数组。
+  Future<Response<WebsiteLogContent>> loadWebsiteLog({
+    required int websiteId,
+    required String logType,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/log/search'),
-      data: request,
+      data: <String, dynamic>{
+        'id': websiteId,
+        'logType': logType,
+        'page': page,
+        'pageSize': pageSize,
+      },
     );
-    return Response<List<dynamic>>(
-      data: response.data is List
-          ? List<dynamic>.from(response.data as List)
-          : const <dynamic>[],
+    return Response<WebsiteLogContent>(
+      data: WebsiteLogContent.fromJson(
+        ApiResponseParser.asMap(response.data),
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/data/models/website_log_models.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
 import 'package:onepanel_client/features/websites/services/websites_service.dart';
@@ -21,9 +22,10 @@ class WebsiteLogTabWidget extends StatefulWidget {
 class _WebsiteLogTabWidgetState extends State<WebsiteLogTabWidget> {
   final WebsiteConfigRepository _repo = WebsiteConfigRepository();
   final WebsitesService _websiteService = WebsitesService();
-  List<Map<String, dynamic>> _logs = [];
+  WebsiteLogContent _logContent = const WebsiteLogContent();
   List<WebsiteInfo> _websites = [];
   int? _selectedWebsiteId;
+  String _logType = 'access.log';
   bool _isLoading = true;
   bool _isLoadingWebsites = false;
   String? _error;
@@ -63,18 +65,25 @@ class _WebsiteLogTabWidgetState extends State<WebsiteLogTabWidget> {
   }
 
   Future<void> _load() async {
-    if (_selectedWebsiteId == null) {
-      if (mounted) setState(() { _logs = []; _isLoading = false; });
+    final websiteId = _selectedWebsiteId;
+    if (websiteId == null) {
+      if (mounted) {
+        setState(() {
+          _logContent = const WebsiteLogContent();
+          _isLoading = false;
+        });
+      }
       return;
     }
     setState(() { _isLoading = true; _error = null; });
     try {
-      final result = await _repo.searchWebsiteLogs({
-        'websiteId': _selectedWebsiteId,
-        'page': 1,
-        'pageSize': 50,
-      });
-      if (mounted) setState(() { _logs = result; _isLoading = false; });
+      final content = await _repo.loadWebsiteLog(
+        websiteId: websiteId,
+        logType: _logType,
+      );
+      if (mounted) {
+        setState(() { _logContent = content; _isLoading = false; });
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -117,6 +126,22 @@ class _WebsiteLogTabWidgetState extends State<WebsiteLogTabWidget> {
               },
             ),
           ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(value: 'access.log', label: Text('access.log')),
+              ButtonSegment(value: 'error.log', label: Text('error.log')),
+            ],
+            selected: {_logType},
+            onSelectionChanged: (selection) {
+              final type = selection.first;
+              if (type == _logType) return;
+              setState(() => _logType = type);
+              _load();
+            },
+          ),
+        ),
         Expanded(
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -134,22 +159,28 @@ class _WebsiteLogTabWidgetState extends State<WebsiteLogTabWidget> {
                         ],
                       ),
                     )
-                  : _logs.isEmpty
+                  : !_logContent.enable
                       ? Center(child: Text(l10n.websiteLogEmpty))
-                      : RefreshIndicator(
-                          onRefresh: _load,
-                          child: ListView.builder(
-                            itemCount: _logs.length,
-                            itemBuilder: (context, index) {
-                              final log = _logs[index];
-                              return ListTile(
-                                title: Text(log['message']?.toString() ?? ''),
-                                subtitle: Text(log['time']?.toString() ?? ''),
-                                dense: true,
-                              );
-                            },
-                          ),
-                        ),
+                      : _logContent.lines.isEmpty
+                          ? Center(child: Text(l10n.websiteLogEmpty))
+                          : RefreshIndicator(
+                              onRefresh: _load,
+                              child: ListView.builder(
+                                itemCount: _logContent.lines.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(
+                                      _logContent.lines[index],
+                                      style: const TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    dense: true,
+                                  );
+                                },
+                              ),
+                            ),
         ),
       ],
     );

@@ -4,6 +4,7 @@ import 'package:onepanel_client/data/models/file/file_info.dart';
 import 'package:onepanel_client/data/models/openresty_models.dart';
 import 'package:onepanel_client/data/models/ssl_models.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
+import 'package:onepanel_client/data/models/website_log_models.dart';
 
 class WebsiteConfigRepository {
   WebsiteConfigRepository({WebsiteV2Api? api}) : _api = api;
@@ -238,15 +239,22 @@ class WebsiteConfigRepository {
     await api.updateWebsiteRealIpConfig(request);
   }
 
-  /// Search website logs.
-  Future<List<Map<String, dynamic>>> searchWebsiteLogs(
-      Map<String, dynamic> request) async {
+  /// 读取网站日志。上游请求体为 `{id, logType, page, pageSize}`，
+  /// 返回的 `content` 是行文本而不是日志行数组。
+  Future<WebsiteLogContent> loadWebsiteLog({
+    required int websiteId,
+    required String logType,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
     final api = await _ensureApi();
-    final response = await api.searchWebsiteLogs(request);
-    return (response.data ?? const <dynamic>[])
-        .whereType<Map>()
-        .map((e) => Map<String, dynamic>.from(e))
-        .toList();
+    final response = await api.loadWebsiteLog(
+      websiteId: websiteId,
+      logType: logType,
+      page: page,
+      pageSize: pageSize,
+    );
+    return response.data ?? const WebsiteLogContent();
   }
 
   /// Operate website log (download/clear).

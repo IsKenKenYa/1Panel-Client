@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/website_log_models.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
 import 'package:onepanel_client/features/websites/widgets/website_async_state_view.dart';
 
@@ -20,7 +21,8 @@ class WebsiteLogPage extends StatefulWidget {
 
 class _WebsiteLogPageState extends State<WebsiteLogPage> {
   final WebsiteConfigRepository _repo = WebsiteConfigRepository();
-  List<Map<String, dynamic>> _logs = [];
+  WebsiteLogContent _logContent = const WebsiteLogContent();
+  String _logType = 'access.log';
   bool _isLoading = true;
   String? _error;
 
@@ -33,12 +35,16 @@ class _WebsiteLogPageState extends State<WebsiteLogPage> {
   Future<void> _load() async {
     setState(() { _isLoading = true; _error = null; });
     try {
-      final result = await _repo.searchWebsiteLogs({
-        'websiteId': widget.websiteId,
-        'page': 1,
-        'pageSize': 50,
-      });
-      if (mounted) setState(() { _logs = result; _isLoading = false; });
+      final content = await _repo.loadWebsiteLog(
+        websiteId: widget.websiteId,
+        logType: _logType,
+      );
+      if (mounted) {
+        setState(() {
+          _logContent = content;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       if (mounted) setState(() { _error = e.toString(); _isLoading = false; });
     }
@@ -62,6 +68,19 @@ class _WebsiteLogPageState extends State<WebsiteLogPage> {
               _load();
             },
           ),
+          SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(value: 'access.log', label: Text('access.log')),
+              ButtonSegment(value: 'error.log', label: Text('error.log')),
+            ],
+            selected: {_logType},
+            onSelectionChanged: (selection) {
+              final type = selection.first;
+              if (type == _logType) return;
+              setState(() => _logType = type);
+              _load();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh_outlined),
             tooltip: context.l10n.commonRefresh,
@@ -73,15 +92,19 @@ class _WebsiteLogPageState extends State<WebsiteLogPage> {
         isLoading: _isLoading,
         error: _error,
         onRetry: _load,
-        child: _logs.isEmpty
-            ?  Center(child: Text(context.l10n.websiteLogEmpty))
+        child: !_logContent.enable || _logContent.lines.isEmpty
+            ? Center(child: Text(context.l10n.websiteLogEmpty))
             : ListView.builder(
-                itemCount: _logs.length,
+                itemCount: _logContent.lines.length,
                 itemBuilder: (context, index) {
-                  final log = _logs[index];
                   return ListTile(
-                    title: Text(log['message']?.toString() ?? ''),
-                    subtitle: Text(log['time']?.toString() ?? ''),
+                    title: Text(
+                      _logContent.lines[index],
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
+                    ),
                     dense: true,
                   );
                 },
