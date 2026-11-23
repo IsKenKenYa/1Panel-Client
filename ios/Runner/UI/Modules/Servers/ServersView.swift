@@ -8,8 +8,7 @@ struct ServersView: View {
     @EnvironmentObject private var navigation: ServerNavigation
     @EnvironmentObject var translations: TranslationsManager
 
-    @State private var showAddSheet = false
-    @State private var editingServer: ServerModel?
+    @State private var editorTarget: ServerEditorTarget?
     @State private var serverToDelete: ServerModel?
     @State private var showDeleteConfirm = false
     @State private var toastText: String?
@@ -40,8 +39,7 @@ struct ServersView: View {
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: false) {
                                 Button {
-                                    editingServer = server
-                                    showAddSheet = true
+                                    editorTarget = ServerEditorTarget(server: server)
                                 } label: {
                                     Label(translations.get("commonEdit", fallback: "Edit"),
                                           systemImage: "pencil")
@@ -62,7 +60,7 @@ struct ServersView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if !viewModel.servers.isEmpty {
                     Button {
-                        showAddSheet = true
+                        editorTarget = ServerEditorTarget(server: nil)
                     } label: {
                         Label(translations.get("addServer", fallback: "Add Server"), systemImage: "plus")
                     }
@@ -75,10 +73,8 @@ struct ServersView: View {
                 .disabled(viewModel.isLoading)
             }
         }
-        .sheet(isPresented: $showAddSheet, onDismiss: {
-            editingServer = nil
-        }) {
-            AddServerSheet(viewModel: viewModel, editingServer: editingServer)
+        .sheet(item: $editorTarget) { target in
+            AddServerSheet(viewModel: viewModel, editingServer: target.server)
                 .environmentObject(translations)
         }
         .confirmationDialog(
@@ -99,7 +95,7 @@ struct ServersView: View {
                 applyLaunchHooks()
             }
             if ProcessInfo.processInfo.environment["ONEPANEL_OPEN_ADD_SERVER"] == "1" {
-                showAddSheet = true
+                editorTarget = ServerEditorTarget(server: nil)
             }
         }
     }
@@ -134,7 +130,7 @@ struct ServersView: View {
 
     private var addServerButton: some View {
         Button {
-            showAddSheet = true
+            editorTarget = ServerEditorTarget(server: nil)
         } label: {
             Label(translations.get("addServer", fallback: "Add Server"), systemImage: "plus")
         }
@@ -197,6 +193,15 @@ struct ServersView: View {
             }
         }
     }
+}
+
+/// 服务器表单的打开目标。`server` 为空表示创建，非空表示编辑。
+///
+/// 表单由 `.sheet(item:)` 绑定目标呈现，避免「先写选中项再置布尔值」
+/// 在快速点击或动画期间读到空选中项，编辑操作退化成创建表单。
+struct ServerEditorTarget: Identifiable {
+    let id = UUID()
+    let server: ServerModel?
 }
 
 private struct ServerRow: View {
