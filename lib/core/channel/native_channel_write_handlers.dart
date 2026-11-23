@@ -10,6 +10,7 @@ import '../../features/ai/model_downloader_service.dart';
 import '../../data/models/setting_models.dart';
 import '../../data/models/alert_models.dart';
 import 'native_alert_payloads.dart';
+import 'cronjob_operate_payload.dart';
 
 import '../../features/ai/ai_repository.dart';
 import '../../api/v2/file_v2.dart';
@@ -1959,25 +1960,18 @@ class NativeChannelWriteHandlers {
     }
   }
 
-  // ── 定时任务（建/改/执行一次，shell 类型最小集） ─────────────────────────
+  // ── 定时任务（建/改/执行一次） ───────────────────────────────────────────
 
-  static CronjobOperateRequest _buildCronjobRequest(dynamic arguments, {int? id}) {
-    final name = (arguments['name'] as String? ?? '').trim();
-    final spec = (arguments['spec'] as String? ?? '').trim();
-    if (name.isEmpty || spec.isEmpty) {
-      throw ArgumentError('name and spec are required');
-    }
-    final script = arguments['script'] as String? ?? '';
-    return CronjobOperateRequest(
-      id: id,
-      name: name,
-      groupID: int.tryParse('${arguments['groupID'] ?? 0}') ?? 0,
-      type: 'shell',
-      specCustom: true,
-      spec: spec,
-      script: script,
-    );
-  }
+  static CronjobOperateRequest _buildCronjobRequest(
+    dynamic arguments, {
+    int? id,
+    Map<String, dynamic> existing = const <String, dynamic>{},
+  }) =>
+      buildCronjobOperateRequest(
+        arguments as Map,
+        id: id,
+        existing: existing,
+      );
 
   /// 新建 shell 定时任务。参数：
   /// `{name: String, spec: String(cron 表达式), script?: String, groupID?: int}`
@@ -1999,7 +1993,41 @@ class NativeChannelWriteHandlers {
       if (id == null) {
         return {'success': false, 'error': 'id is required'};
       }
-      final request = _buildCronjobRequest(arguments, id: id);
+      final info = await ApiClientManager.instance
+          .getCronjobApi()
+          .then((api) => api.loadCronjobInfo(id));
+      final existing = <String, dynamic>{
+        'type': info.data?.type ?? '',
+        'groupID': info.data?.groupID ?? 0,
+        'executor': info.data?.executor ?? '',
+        'scriptMode': info.data?.scriptMode ?? 'input',
+        'command': info.data?.command ?? '',
+        'containerName': info.data?.containerName ?? '',
+        'user': info.data?.user ?? '',
+        'scriptID': info.data?.scriptID ?? 0,
+        'appID': info.data?.appID ?? '',
+        'website': info.data?.website ?? '',
+        'exclusionRules': info.data?.exclusionRules ?? '',
+        'dbType': info.data?.dbType ?? '',
+        'dbName': info.data?.dbName ?? '',
+        'url': info.data?.url ?? '',
+        'isDir': info.data?.isDir ?? false,
+        'sourceDir': info.data?.sourceDir ?? '',
+        'snapshotRule': info.data?.snapshotRule.toJson() ?? const {},
+        'sourceAccountIDs': info.data?.sourceAccountIDs ?? '',
+        'downloadAccountID': info.data?.downloadAccountID ?? 0,
+        'retainCopies': info.data?.retainCopies ?? 1,
+        'retryTimes': info.data?.retryTimes ?? 0,
+        'timeout': info.data?.timeout ?? 3600,
+        'ignoreErr': info.data?.ignoreErr ?? false,
+        'secret': info.data?.secret ?? '',
+        'args': info.data?.args ?? '',
+        'alertCount': info.data?.alertCount ?? 0,
+        'alertTitle': info.data?.alertTitle ?? '',
+        'alertMethod': info.data?.alertMethod ?? '',
+        'scopes': info.data?.scopes ?? const <String>[],
+      };
+      final request = _buildCronjobRequest(arguments, id: id, existing: existing);
       await CronjobFormRepository().updateCronjob(request);
       return _ok();
     } catch (e) {
