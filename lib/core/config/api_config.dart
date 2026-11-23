@@ -116,6 +116,22 @@ class ConfigStorageException implements Exception {
 
 typedef ServerDirectory = ({List<ApiConfig> servers, String? selectedId});
 
+/// 安全存储里没有该连接的凭据。界面据此提示重新录入，而不是显示堆栈类型。
+class MissingCredentialException implements Exception {
+  const MissingCredentialException();
+
+  @override
+  String toString() => 'Saved credential for this connection is missing. Open the server and enter the API key again.';
+}
+
+/// 安全存储里有条目但内容无法解析，通常来自旧版本的不同结构。
+class CredentialUnreadableException implements Exception {
+  const CredentialUnreadableException();
+
+  @override
+  String toString() => 'Saved credential for this connection cannot be read. Open the server and enter the API key again.';
+}
+
 abstract final class ApiConfigManager {
   /// 存储键按「连接」语义命名，不绑定具体面板品牌；新增面板类型时继续复用。
   static const _serversKey = 'panel_server_directory';
@@ -126,6 +142,8 @@ abstract final class ApiConfigManager {
   static const _legacyConfigsKey = 'api_configs';
   static const _legacySelectedIdKey = 'current_api_config_id';
   static const _legacyCredentialPrefix = 'api_config_api_key_';
+  // 早期桌面调试写在偏好设置里的明文回退键前缀。
+  static const _plaintextFallbackPrefix = 'secure_api_key_fallback_';
   static final _lock = Lock();
   static PlatformSecureStorage? _storage;
   static bool _requiresReload = false;
@@ -228,11 +246,12 @@ abstract final class ApiConfigManager {
     // 新键缺失或无法识别时，依次尝试品牌命名键与明文旧键。
     final migrated = await _tryMigrateLegacy(config, vault);
     if (migrated != null) return migrated;
-    if (raw == null) throw StateError('Saved panel credential is missing');
-    throw const FormatException('Saved panel credential is not readable');
+    if (raw == null) throw const MissingCredentialException();
+    throw const CredentialUnreadableException();
   }
 
-  /// 迁移品牌命名凭据键与明文旧键；成功搬移后才清理来源键。
+  /// 迁移历史凭据：品牌命名键、明文旧键与偏好设置里的明文回退键。
+  /// 成功搬移到新键后才清理来源键。
   static Future<ApiConfig?> _tryMigrateLegacy(
     ApiConfig config,
     PlatformSecureStorage vault,
@@ -253,16 +272,39 @@ abstract final class ApiConfigManager {
     }
     final legacyKey = '$_legacyCredentialPrefix${config.id}';
     final legacy = await vault.read(key: legacyKey);
-    if (legacy == null || legacy.isEmpty) return null;
-    final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
-    // 与正常保存使用同一结构，避免后续读取走不同的解析分支。
+    if (legacy != null && legacy.isNotEmpty) {
+      final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
+      // 与正常保存使用同一结构，避免后续读取走不同的解析分支。
+      await _writeCredential(
+        migrated,
+        legacy,
+        migrated.additionalCredentials,
+        vault,
+      );
+      await vault.delete(key: legacyKey);
+      return migrated;
+    }
+    return _migratePrefsFallback(config, vault);
+  }
+
+  /// 早期桌面调试把密钥写进了偏好设置的明文回退键。
+  /// 读入后立即搬进安全存储并删除明文，避免继续留存在偏好设置。
+  static Future<ApiConfig?> _migratePrefsFallback(
+    ApiConfig config,
+    PlatformSecureStorage vault,
+  ) async {
+    final prefs = await _preferences();
+    final fallbackKey = '$_plaintextFallbackPrefix$_legacyCredentialPrefix${config.id}';
+    final plaintext = prefs.getString(fallbackKey);
+    if (plaintext == null || plaintext.isEmpty) return null;
+    final migrated = ApiConfig.fromJson(config.toJson(), apiKey: plaintext);
     await _writeCredential(
       migrated,
-      legacy,
+      plaintext,
       migrated.additionalCredentials,
       vault,
     );
-    await vault.delete(key: legacyKey);
+    await prefs.remove(fallbackKey);
     return migrated;
   }
 
