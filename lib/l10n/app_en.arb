@@ -822,6 +822,7 @@
   "serverMetricsAvailable": "Metrics loaded",
   "serverTokenValidity": "Token validity (minutes)",
   "serverTokenValidityHint": "Set to 0 to skip timestamp validation",
+  "serverFormApiKeyKeepHint": "Leave empty to keep the saved key.",
   "serverFormAllowInsecureTls": "Ignore TLS certificate validation",
   "serverFormAllowInsecureTlsHint": "Only enable for trusted self-signed or internal endpoints.",
   "serverFormMinutes": "minutes",

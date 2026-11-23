@@ -12,6 +12,8 @@ struct AddServerSheet: View {
     @State private var name = ""
     @State private var url = ""
     @State private var apiKey = ""
+    @State private var tokenValidity = "0"
+    @State private var allowInsecureTls = false
     @State private var isSaving = false
     @State private var errorText: String?
     @State private var didPrefill = false
@@ -38,7 +40,29 @@ struct AddServerSheet: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 } footer: {
-                    if let errorText {
+                    if isEditing, editingServer?.url == url.trimmingCharacters(in: .whitespaces) {
+                        Text(translations.get("serverFormApiKeyKeepHint",
+                                              fallback: "Leave empty to keep the saved key."))
+                    }
+                }
+                Section {
+                    TextField(
+                        translations.get("serverTokenValidity",
+                                         fallback: "Token validity (minutes)"),
+                        text: $tokenValidity
+                    )
+                    .keyboardType(.numberPad)
+                    Toggle(
+                        translations.get("serverFormAllowInsecureTls",
+                                         fallback: "Ignore TLS certificate validation"),
+                        isOn: $allowInsecureTls
+                    )
+                } footer: {
+                    Text(translations.get("serverTokenValidityHint",
+                                          fallback: "Set to 0 to skip timestamp validation"))
+                }
+                if let errorText {
+                    Section {
                         Text(errorText)
                             .foregroundStyle(.red)
                     }
@@ -71,6 +95,8 @@ struct AddServerSheet: View {
                 didPrefill = true
                 name = server.name
                 url = server.url
+                tokenValidity = String(server.tokenValidity)
+                allowInsecureTls = server.allowInsecureTls
             }
         }
     }
@@ -81,6 +107,8 @@ struct AddServerSheet: View {
         let trimmedName = name.trimmingCharacters(in: .whitespaces)
         let trimmedUrl = url.trimmingCharacters(in: .whitespaces)
         let trimmedKey = apiKey.trimmingCharacters(in: .whitespaces)
+        let validity = Int(tokenValidity.trimmingCharacters(in: .whitespaces)) ?? 0
+        let insecureTls = allowInsecureTls
 
         let finish: (Bool, String?) -> Void = { success, error in
             isSaving = false
@@ -102,6 +130,8 @@ struct AddServerSheet: View {
                 name: trimmedName,
                 url: trimmedUrl,
                 apiKey: trimmedKey,
+                tokenValidity: validity,
+                allowInsecureTls: insecureTls,
                 completion: finish
             )
         } else {
@@ -109,6 +139,8 @@ struct AddServerSheet: View {
                 name: trimmedName,
                 url: trimmedUrl,
                 apiKey: trimmedKey,
+                tokenValidity: validity,
+                allowInsecureTls: insecureTls,
                 completion: finish
             )
         }

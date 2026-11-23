@@ -1870,6 +1870,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverTokenValidityHint => 'Set to 0 to skip timestamp validation';
 
   @override
+  String get serverFormApiKeyKeepHint => 'Leave empty to keep the saved key.';
+
+  @override
   String get serverFormAllowInsecureTls => 'Ignore TLS certificate validation';
 
   @override

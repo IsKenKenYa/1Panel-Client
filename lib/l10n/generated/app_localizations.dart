@@ -3578,6 +3578,12 @@ abstract class AppLocalizations {
   /// **'Set to 0 to skip timestamp validation'**
   String get serverTokenValidityHint;
 
+  /// No description provided for @serverFormApiKeyKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to keep the saved key.'**
+  String get serverFormApiKeyKeepHint;
+
   /// No description provided for @serverFormAllowInsecureTls.
   ///
   /// In en, this message translates to:

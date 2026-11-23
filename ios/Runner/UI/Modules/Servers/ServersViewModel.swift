@@ -8,8 +8,32 @@ struct ServerModel: Identifiable, Hashable {
     let isCurrent: Bool
     let cpu: Double
     let memory: Double
+    let tokenValidity: Int
+    let allowInsecureTls: Bool
 
     var id: String { originalId }
+
+    init(
+        originalId: String,
+        revision: String,
+        name: String,
+        url: String,
+        isCurrent: Bool,
+        cpu: Double,
+        memory: Double,
+        tokenValidity: Int = 0,
+        allowInsecureTls: Bool = false
+    ) {
+        self.originalId = originalId
+        self.revision = revision
+        self.name = name
+        self.url = url
+        self.isCurrent = isCurrent
+        self.cpu = cpu
+        self.memory = memory
+        self.tokenValidity = tokenValidity
+        self.allowInsecureTls = allowInsecureTls
+    }
 }
 
 class ServersViewModel: ObservableObject {
@@ -36,11 +60,20 @@ class ServersViewModel: ObservableObject {
         name: String,
         url: String,
         apiKey: String,
+        tokenValidity: Int,
+        allowInsecureTls: Bool,
         completion: @escaping (Bool, String?) -> Void
     ) {
         ChannelManager.shared.invokeDataMethod(
             "addServer",
-            arguments: ["panelType": "1panel", "name": name, "url": url, "apiKey": apiKey]
+            arguments: [
+                "panelType": "1panel",
+                "name": name,
+                "url": url,
+                "apiKey": apiKey,
+                "tokenValidity": tokenValidity,
+                "allowInsecureTls": allowInsecureTls,
+            ]
         ) { result in
             DispatchQueue.main.async {
                 let dict = result as? [String: Any]
@@ -73,12 +106,21 @@ class ServersViewModel: ObservableObject {
         name: String,
         url: String,
         apiKey: String,
+        tokenValidity: Int,
+        allowInsecureTls: Bool,
         completion: @escaping (Bool, String?) -> Void
     ) {
         ChannelManager.shared.invokeDataMethod(
             "updateServer",
-            arguments: ["id": server.originalId, "revision": server.revision,
-                        "name": name, "url": url, "apiKey": apiKey]
+            arguments: [
+                "id": server.originalId,
+                "revision": server.revision,
+                "name": name,
+                "url": url,
+                "apiKey": apiKey,
+                "tokenValidity": tokenValidity,
+                "allowInsecureTls": allowInsecureTls,
+            ]
         ) { result in
             DispatchQueue.main.async {
                 let dict = result as? [String: Any]
@@ -106,8 +148,13 @@ class ServersViewModel: ObservableObject {
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
                     let cpu = dict["cpu"] as? Double ?? 0
                     let memory = dict["memory"] as? Double ?? 0
-                    return ServerModel(originalId: originalId, revision: revision, name: name,
-                                       url: url, isCurrent: isCurrent, cpu: cpu, memory: memory)
+                    return ServerModel(
+                        originalId: originalId, revision: revision,
+                        name: name, url: url, isCurrent: isCurrent,
+                        cpu: cpu, memory: memory,
+                        tokenValidity: dict["tokenValidity"] as? Int ?? 0,
+                        allowInsecureTls: dict["allowInsecureTls"] as? Bool ?? false
+                    )
                 }
                 completion?()
             }

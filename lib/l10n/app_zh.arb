@@ -821,6 +821,7 @@
   "serverMetricsAvailable": "监控数据已加载",
   "serverTokenValidity": "接口密钥有效期",
   "serverTokenValidityHint": "设置为0时不校验时间戳",
+  "serverFormApiKeyKeepHint": "留空则沿用已保存的密钥。",
   "serverFormAllowInsecureTls": "忽略 TLS 证书校验",
   "serverFormAllowInsecureTlsHint": "仅在可信的自签名或内网环境中启用。",
   "serverFormMinutes": "分钟",

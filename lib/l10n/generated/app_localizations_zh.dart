@@ -1821,6 +1821,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverTokenValidityHint => '设置为0时不校验时间戳';
 
   @override
+  String get serverFormApiKeyKeepHint => '留空则沿用已保存的密钥。';
+
+  @override
   String get serverFormAllowInsecureTls => '忽略 TLS 证书校验';
 
   @override
