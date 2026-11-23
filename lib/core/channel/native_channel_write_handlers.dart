@@ -687,6 +687,134 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 新建网站负载均衡。参数：
+  /// `{websiteID: int, name: String, algorithm: String, servers: List<Map>}`。
+  /// POST /websites/lbs/create。
+  static Future<Map<String, dynamic>> createWebsiteLoadBalancer(
+      dynamic arguments) {
+    return _submitWebsiteLoadBalancer(arguments, update: false);
+  }
+
+  /// 修改网站负载均衡。参数同新建。POST /websites/lbs/update。
+  static Future<Map<String, dynamic>> updateWebsiteLoadBalancer(
+      dynamic arguments) {
+    return _submitWebsiteLoadBalancer(arguments, update: true);
+  }
+
+  /// 删除网站负载均衡。参数：`{websiteID: int, name: String}`。
+  /// POST /websites/lbs/del。
+  static Future<Map<String, dynamic>> deleteWebsiteLoadBalancer(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (websiteID == null || name.isEmpty) {
+        return {'success': false, 'error': 'websiteID and name are required'};
+      }
+      await (await _websiteApi())
+          .deleteWebsiteLoadBalancer({'websiteID': websiteID, 'name': name});
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteWebsiteLoadBalancer failed: $e');
+      return _err(e);
+    }
+  }
+
+  static Future<Map<String, dynamic>> _submitWebsiteLoadBalancer(
+    dynamic arguments, {
+    required bool update,
+  }) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      final algorithm = (arguments['algorithm'] as String? ?? '').trim();
+      if (websiteID == null || name.isEmpty || algorithm.isEmpty) {
+        return {
+          'success': false,
+          'error': 'websiteID, name and algorithm are required',
+        };
+      }
+      if (!_loadBalancerAlgorithms.contains(algorithm)) {
+        return {'success': false, 'error': 'Unsupported algorithm: $algorithm'};
+      }
+      final servers = _loadBalancerServers(arguments['servers']);
+      if (servers == null || servers.isEmpty) {
+        return {'success': false, 'error': 'servers are required'};
+      }
+      if (algorithm == 'ip_hash' &&
+          servers.any((server) => server['flag'] == 'backup')) {
+        return {
+          'success': false,
+          'error': 'ip_hash does not support backup servers',
+        };
+      }
+      final payload = <String, dynamic>{
+        'websiteID': websiteID,
+        'name': name,
+        'algorithm': algorithm,
+        'servers': servers,
+      };
+      final api = await _websiteApi();
+      if (update) {
+        await api.updateWebsiteLoadBalancer(payload);
+      } else {
+        await api.createWebsiteLoadBalancer(payload);
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('submitWebsiteLoadBalancer failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _loadBalancerAlgorithms = {
+    'default',
+    'ip_hash',
+    'least_conn',
+  };
+
+  static const Set<String> _loadBalancerFlags = {'', 'down', 'backup'};
+
+  static List<Map<String, dynamic>>? _loadBalancerServers(Object? raw) {
+    if (raw is! List) return null;
+    final servers = <Map<String, dynamic>>[];
+    for (final entry in raw) {
+      if (entry is! Map) return null;
+      final server = (entry['server'] as String? ?? '').trim();
+      final weight = _loadBalancerInt(entry['weight'], 100);
+      final maxFails = _loadBalancerInt(entry['maxFails'], 1000);
+      final maxConns = _loadBalancerInt(entry['maxConns'], 10000);
+      final failTimeout = _loadBalancerInt(entry['failTimeout'], 300);
+      final unit = (entry['failTimeoutUnit'] as String? ?? 's').trim();
+      final flag = (entry['flag'] as String? ?? '').trim();
+      if (server.isEmpty ||
+          weight == null ||
+          maxFails == null ||
+          maxConns == null ||
+          failTimeout == null ||
+          !_loadBalancerFlags.contains(flag)) {
+        return null;
+      }
+      servers.add(<String, dynamic>{
+        'server': server,
+        'weight': weight,
+        'maxFails': maxFails,
+        'maxConns': maxConns,
+        'failTimeout': failTimeout,
+        'failTimeoutUnit': unit.isEmpty ? 's' : unit,
+        'flag': flag,
+      });
+    }
+    return servers;
+  }
+
+  static int? _loadBalancerInt(Object? value, int max) {
+    if (value == null || '$value'.trim().isEmpty) return 0;
+    final parsed = int.tryParse('$value');
+    if (parsed == null || parsed < 0 || parsed > max) return null;
+    return parsed;
+  }
+
   static int? _boundedInt(Object? value, String field) {
     final parsed = int.tryParse('$value');
     if (parsed == null || parsed < 0 || parsed > 9999) {

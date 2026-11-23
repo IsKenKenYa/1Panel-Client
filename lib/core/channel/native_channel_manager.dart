@@ -265,6 +265,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getWebsiteRealIP(arguments);
       case 'getWebsiteStream':
         return NativeChannelReadHandlers.getWebsiteStream(arguments);
+      case 'getWebsiteLoadBalancers':
+        return NativeChannelReadHandlers.getWebsiteLoadBalancers(arguments);
       case 'getWebsiteDomains':
         return NativeChannelReadHandlers.getWebsiteDomains(arguments);
       case 'getWebsiteLogs':
@@ -346,6 +348,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateWebsiteRealIP(arguments);
       case 'updateWebsiteStream':
         return NativeChannelWriteHandlers.updateWebsiteStream(arguments);
+      case 'createWebsiteLoadBalancer':
+        return NativeChannelWriteHandlers.createWebsiteLoadBalancer(arguments);
+      case 'updateWebsiteLoadBalancer':
+        return NativeChannelWriteHandlers.updateWebsiteLoadBalancer(arguments);
+      case 'deleteWebsiteLoadBalancer':
+        return NativeChannelWriteHandlers.deleteWebsiteLoadBalancer(arguments);
       case 'addWebsiteDomains':
         return NativeChannelWriteHandlers.addWebsiteDomains(arguments);
       case 'deleteWebsiteDomain':

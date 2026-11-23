@@ -1476,6 +1476,27 @@ class NativeChannelReadHandlers {
     }
   }
 
+  /// 网站负载均衡列表。参数：`{id: int}`。GET /websites/{id}/lbs。
+  static Future<dynamic> getWebsiteLoadBalancers(dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments?['id'] ?? ''}');
+      if (id == null) {
+        return [];
+      }
+      final items = await (await _websiteApi()).getWebsiteLoadBalancers(id);
+      return items
+          .map((item) => <String, dynamic>{
+                'name': item['name']?.toString() ?? '',
+                'algorithm': item['algorithm']?.toString() ?? '',
+                'servers': item['servers'] is List ? item['servers'] : const [],
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get website load balancers for native: $e');
+      return [];
+    }
+  }
+
   /// 网站域名列表。参数：`{id: int}`。GET /websites/domains/{id}。
   static Future<dynamic> getWebsiteDomains(dynamic arguments) async {
     try {

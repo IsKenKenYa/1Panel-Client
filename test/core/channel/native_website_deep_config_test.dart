@@ -92,6 +92,104 @@ void main() {
       expect(result['success'], isFalse);
     });
 
+    test('负载均衡缺少网站标识时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.createWebsiteLoadBalancer(
+        <String, dynamic>{
+          'name': 'lb',
+          'algorithm': 'default',
+          'servers': <dynamic>[],
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('websiteID'));
+    });
+
+    test('负载均衡缺少服务器时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.updateWebsiteLoadBalancer(
+        <String, dynamic>{
+          'websiteID': 1,
+          'name': 'lb',
+          'algorithm': 'default',
+          'servers': <dynamic>[],
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('servers'));
+    });
+
+    test('负载均衡算法非法时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.createWebsiteLoadBalancer(
+        <String, dynamic>{
+          'websiteID': 1,
+          'name': 'lb',
+          'algorithm': 'round_robin',
+          'servers': <dynamic>[
+            <String, dynamic>{'server': '10.0.0.1:80'},
+          ],
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('algorithm'));
+    });
+
+    test('负载均衡权重越界时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.createWebsiteLoadBalancer(
+        <String, dynamic>{
+          'websiteID': 1,
+          'name': 'lb',
+          'algorithm': 'default',
+          'servers': <dynamic>[
+            <String, dynamic>{'server': '10.0.0.1:80', 'weight': 101},
+          ],
+        },
+      );
+
+      expect(result['success'], isFalse);
+    });
+
+    test('负载均衡 IP 哈希不接受备用服务器', () async {
+      final result =
+          await NativeChannelWriteHandlers.updateWebsiteLoadBalancer(
+        <String, dynamic>{
+          'websiteID': 1,
+          'name': 'lb',
+          'algorithm': 'ip_hash',
+          'servers': <dynamic>[
+            <String, dynamic>{'server': '10.0.0.1:80', 'flag': 'backup'},
+          ],
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('ip_hash'));
+    });
+
+    test('负载均衡删除缺少名称时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.deleteWebsiteLoadBalancer(
+        <String, dynamic>{'websiteID': 1},
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('name'));
+    });
+
+    test('dispatch 路由负载均衡列表读取', () async {
+      final result = await NativeChannelManager.instance.handleMethodCall(
+        'getWebsiteLoadBalancers',
+        <String, dynamic>{},
+      );
+
+      expect(result, isA<List<dynamic>>());
+    });
+
     test('网站详情解析 UDP 转发标记', () {
       final info = WebsiteInfo.fromJson(<String, dynamic>{
         'id': 1,
