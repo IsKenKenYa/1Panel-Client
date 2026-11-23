@@ -44,8 +44,11 @@ struct RowActionButton: View {
     }
 }
 
-/// 列表右侧的操作按钮组，统一间距与禁用态。
-struct RowActions<Content: View>: View {
+/// 行尾省略号操作菜单。
+///
+/// 一个对象上并列多个图标按钮时，行内空间被挤满且图标语义容易混淆，
+/// 按 HIG 用菜单按钮收拢操作；右键菜单保留作为快捷入口。
+struct RowActionsMenu<Content: View>: View {
     private let content: Content
 
     init(@ViewBuilder content: () -> Content) {
@@ -53,7 +56,18 @@ struct RowActions<Content: View>: View {
     }
 
     var body: some View {
-        HStack(spacing: 4) { content }
+        Menu {
+            content
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .frame(width: 24, height: 22)
+                .contentShape(Rectangle())
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
     }
 }
 

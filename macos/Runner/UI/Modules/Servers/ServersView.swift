@@ -6,8 +6,7 @@ struct ServersView: View {
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
 
-    @State private var showAddSheet = false
-    @State private var editingServer: ServerModel?
+    @State private var editorTarget: ServerEditorTarget?
     @State private var serverToDelete: ServerModel?
     @State private var showDeleteConfirm = false
 
@@ -43,18 +42,15 @@ struct ServersView: View {
             }
             ToolbarItem(placement: .automatic) {
                 Button {
-                    editingServer = nil
-                    showAddSheet = true
+                    editorTarget = ServerEditorTarget(server: nil)
                 } label: {
                     Image(systemName: "plus")
                 }
                 .help(translations.get("addServer", fallback: "Add Server"))
             }
         }
-        .sheet(isPresented: $showAddSheet, onDismiss: {
-            editingServer = nil
-        }) {
-            AddServerSheet(viewModel: viewModel, editingServer: editingServer)
+        .sheet(item: $editorTarget) { target in
+            AddServerSheet(viewModel: viewModel, editingServer: target.server)
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Delete \"\(serverToDelete?.name ?? "")\"?"),
@@ -110,31 +106,28 @@ struct ServersView: View {
                     .truncationMode(.middle)
             }
             Spacer(minLength: 12)
-            HStack(spacing: 4) {
+            RowActionsMenu {
                 if !server.isCurrent {
-                    rowAction(
-                        title: translations.get("connect", fallback: "Connect"),
-                        systemImage: "link",
-                        destructive: false
-                    ) {
+                    Button {
                         Task { await viewModel.connectServer(id: server.originalId) }
+                    } label: {
+                        Label(translations.get("connect", fallback: "Connect"),
+                              systemImage: "link")
                     }
                 }
-                rowAction(
-                    title: translations.get("commonEdit", fallback: "Edit"),
-                    systemImage: "pencil",
-                    destructive: false
-                ) {
-                    editingServer = server
-                    showAddSheet = true
+                Button {
+                    editorTarget = ServerEditorTarget(server: server)
+                } label: {
+                    Label(translations.get("commonEdit", fallback: "Edit"),
+                          systemImage: "pencil")
                 }
-                rowAction(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+                Divider()
+                Button(role: .destructive) {
                     serverToDelete = server
                     showDeleteConfirm = true
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)
@@ -142,8 +135,7 @@ struct ServersView: View {
         .padding(.vertical, 4)
         .contentShape(Rectangle())
         .onTapGesture(count: 2) {
-            editingServer = server
-            showAddSheet = true
+            editorTarget = ServerEditorTarget(server: server)
         }
         .contextMenu {
             Button {
@@ -153,8 +145,7 @@ struct ServersView: View {
                       systemImage: "link")
             }
             Button {
-                editingServer = server
-                showAddSheet = true
+                editorTarget = ServerEditorTarget(server: server)
             } label: {
                 Label(translations.get("commonEdit", fallback: "Edit"),
                       systemImage: "pencil")
@@ -169,24 +160,16 @@ struct ServersView: View {
             }
         }
     }
+}
 
-    private func rowAction(
-        title: String,
-        systemImage: String,
-        destructive: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            Label(title, systemImage: systemImage)
-                .labelStyle(.iconOnly)
-                .font(.system(size: 12, weight: .medium))
-                .frame(width: 26, height: 22)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.borderless)
-        .foregroundStyle(destructive ? Color.red : Color.secondary)
-        .help(title)
-    }
+/// 服务器表单的打开目标。`server` 为空表示创建，非空表示编辑。
+///
+/// 用 `.sheet(item:)` 绑定这个目标，表单内容由目标里的服务器唯一确定；
+/// 先改选中项再切布尔值的写法会在动画或快速点击时读到空选中项，
+/// 编辑请求会退化成创建表单。
+struct ServerEditorTarget: Identifiable {
+    let id = UUID()
+    let server: ServerModel?
 }
 
 // ── Add Server Sheet ──────────────────────────────────────────────────────────

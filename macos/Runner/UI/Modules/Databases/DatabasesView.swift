@@ -96,18 +96,20 @@ struct DatabasesView: View {
             badge: db.status.isEmpty ? nil : (db.status, isRunning ? .green : .red),
             onOpen: { detailDatabase = db }
         ) {
-            RowActions {
-                RowActionButton(
-                    title: translations.get("containerDetailTitle", fallback: "Details"),
-                    systemImage: "info.circle"
-                ) { detailDatabase = db }
+            RowActionsMenu {
+                Button {
+                    detailDatabase = db
+                } label: {
+                    Label(translations.get("containerDetailTitle", fallback: "Details"),
+                          systemImage: "info.circle")
+                }
                 if db.unbindArguments != nil {
-                    RowActionButton(
-                        title: translations.get("databaseRemoteUnbindAction", fallback: "Unbind"),
-                        systemImage: "link.badge.minus",
-                        destructive: true
-                    ) {
+                    Divider()
+                    Button(role: .destructive) {
                         Task { await viewModel.unbind(db, confirmed: false) }
+                    } label: {
+                        Label(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"),
+                              systemImage: "link.badge.minus")
                     }
                 }
             }

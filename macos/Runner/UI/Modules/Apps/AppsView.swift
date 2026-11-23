@@ -88,22 +88,24 @@ struct AppsView: View {
             badge: (app.status.isEmpty ? "--" : app.status,
                     app.isRunning ? .green : .gray)
         ) {
-            RowActions {
-                RowActionButton(
-                    title: app.isRunning
-                        ? translations.get("commonStop", fallback: "Stop")
-                        : translations.get("commonStart", fallback: "Start"),
-                    systemImage: app.isRunning ? "stop.fill" : "play.fill"
-                ) {
+            RowActionsMenu {
+                Button {
                     Task { await viewModel.toggleAppStatus(app) }
+                } label: {
+                    Label(
+                        app.isRunning
+                            ? translations.get("commonStop", fallback: "Stop")
+                            : translations.get("commonStart", fallback: "Start"),
+                        systemImage: app.isRunning ? "stop.fill" : "play.fill"
+                    )
                 }
-                RowActionButton(
-                    title: translations.get("appActionUninstall", fallback: "Uninstall"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+                Divider()
+                Button(role: .destructive) {
                     appToUninstall = app
                     showUninstallConfirm = true
+                } label: {
+                    Label(translations.get("appActionUninstall", fallback: "Uninstall"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)

@@ -286,15 +286,13 @@ struct VirtualMachinesView: View {
                                     VMInstanceRow(vm: vm)
                                 }
                                 Spacer(minLength: 8)
-                                RowActions {
+                                RowActionsMenu {
                                     ForEach(VMPowerAction.available(vm.capabilities)) { action in
-                                        RowActionButton(
-                                            title: powerTitle(action),
-                                            systemImage: action.icon,
-                                            destructive: action.destructive
-                                        ) {
+                                        Button(role: action.destructive ? .destructive : nil) {
                                             pendingName = vm.name
                                             pendingAction = action
+                                        } label: {
+                                            Label(powerTitle(action), systemImage: action.icon)
                                         }
                                     }
                                 }

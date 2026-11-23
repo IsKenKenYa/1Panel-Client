@@ -154,26 +154,27 @@ struct FilesView: View {
                     .foregroundStyle(.secondary)
             }
             TableColumn("") { file in
-                RowActions {
-                    RowActionButton(
-                        title: translations.get("filesActionRename", fallback: "Rename"),
-                        systemImage: "pencil"
-                    ) {
+                RowActionsMenu {
+                    Button {
                         viewModel.operationError = nil
                         renameDraft = file.name
                         renamingFile = file
+                    } label: {
+                        Label(translations.get("filesActionRename", fallback: "Rename"),
+                              systemImage: "pencil")
                     }
-                    .disabled(viewModel.isBusy)
-                    RowActionButton(
-                        title: translations.get("commonDelete", fallback: "Delete"),
-                        systemImage: "trash",
-                        destructive: true
-                    ) { fileToDelete = file }
-                    .disabled(viewModel.isBusy)
+                    Divider()
+                    Button(role: .destructive) {
+                        fileToDelete = file
+                    } label: {
+                        Label(translations.get("commonDelete", fallback: "Delete"),
+                              systemImage: "trash")
+                    }
                 }
-                .frame(width: 64)
+                .disabled(viewModel.isBusy)
+                .frame(width: 40)
             }
-            .width(64)
+            .width(40)
         }
         .tableStyle(.inset)
         .disableAlternatingRowBackgrounds()

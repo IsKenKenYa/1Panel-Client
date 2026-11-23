@@ -196,43 +196,42 @@ struct ContainersView: View {
                                                    isRunning ? .green : .gray),
             onOpen: { detailContainer = container }
         ) {
-            RowActions {
-                RowActionButton(
-                    title: translations.get("containerDetailTitle",
-                                            fallback: "Container Details"),
-                    systemImage: "info.circle"
-                ) { detailContainer = container }
-                RowActionButton(
-                    title: isRunning
-                        ? translations.get("commonStop", fallback: "Stop")
-                        : translations.get("commonStart", fallback: "Start"),
-                    systemImage: isRunning ? "stop.fill" : "play.fill"
-                ) {
+            RowActionsMenu {
+                Button {
+                    detailContainer = container
+                } label: {
+                    Label(translations.get("containerDetailTitle",
+                                           fallback: "Container Details"),
+                          systemImage: "info.circle")
+                }
+                Button {
                     Task {
                         await viewModel.toggleContainerState(
                             id: container.originalId,
                             currentState: container.state
                         )
                     }
+                } label: {
+                    Label(isRunning
+                          ? translations.get("commonStop", fallback: "Stop")
+                          : translations.get("commonStart", fallback: "Start"),
+                          systemImage: isRunning ? "stop.fill" : "play.fill")
                 }
-                RowActionButton(
-                    title: translations.get("commonRestart", fallback: "Restart"),
-                    systemImage: "arrow.clockwise"
-                ) {
+                Button {
                     Task { await viewModel.restartContainer(id: container.originalId) }
+                } label: {
+                    Label(translations.get("commonRestart", fallback: "Restart"),
+                          systemImage: "arrow.clockwise")
                 }
-                RowActionButton(
-                    title: translations.get("containerActionLogs", fallback: "Logs"),
-                    systemImage: "doc.text"
-                ) { logsContainer = container }
+                Button {
+                    logsContainer = container
+                } label: {
+                    Label(translations.get("containerActionLogs", fallback: "Logs"),
+                          systemImage: "doc.text")
+                }
                 let isPaused = container.state.lowercased() == "paused"
                 if isRunning || isPaused {
-                    RowActionButton(
-                        title: isPaused
-                            ? translations.get("containerActionResume", fallback: "Resume")
-                            : translations.get("containerActionPause", fallback: "Pause"),
-                        systemImage: isPaused ? "play.circle" : "pause.circle"
-                    ) {
+                    Button {
                         Task {
                             if isPaused {
                                 await viewModel.unpauseContainer(id: container.originalId)
@@ -240,22 +239,29 @@ struct ContainersView: View {
                                 await viewModel.pauseContainer(id: container.originalId)
                             }
                         }
+                    } label: {
+                        Label(isPaused
+                              ? translations.get("containerActionResume", fallback: "Resume")
+                              : translations.get("containerActionPause", fallback: "Pause"),
+                              systemImage: isPaused ? "play.circle" : "pause.circle")
                     }
                 }
                 if isRunning {
-                    RowActionButton(
-                        title: translations.get("containerActionForceStop",
-                                                fallback: "Force stop"),
-                        systemImage: "xmark.octagon"
-                    ) {
+                    Button {
                         Task { await viewModel.killContainer(id: container.originalId) }
+                    } label: {
+                        Label(translations.get("containerActionForceStop",
+                                               fallback: "Force stop"),
+                              systemImage: "xmark.octagon")
                     }
                 }
-                RowActionButton(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) { containerToDelete = container }
+                Divider()
+                Button(role: .destructive) {
+                    containerToDelete = container
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
+                }
             }
             .disabled(viewModel.isBusy)
         }

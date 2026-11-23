@@ -118,18 +118,19 @@ struct BackupAccountsSectionView: View {
                 .filter { !$0.isEmpty }
                 .joined(separator: " · ")
         ) {
-            RowActions {
-                RowActionButton(
-                    title: t("backupAccountsCheckAction", "Check connection"),
-                    systemImage: "checkmark.seal"
-                ) {
+            RowActionsMenu {
+                Button {
                     check(account)
+                } label: {
+                    Label(t("backupAccountsCheckAction", "Check connection"),
+                          systemImage: "checkmark.seal")
                 }
-                RowActionButton(
-                    title: t("commonDelete", "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) { pendingDelete = account }
+                Divider()
+                Button(role: .destructive) {
+                    pendingDelete = account
+                } label: {
+                    Label(t("commonDelete", "Delete"), systemImage: "trash")
+                }
             }
         }
         .contextMenu {

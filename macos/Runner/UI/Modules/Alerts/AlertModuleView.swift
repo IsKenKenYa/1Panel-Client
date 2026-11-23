@@ -219,16 +219,19 @@ struct AlertModuleView: View {
                                 MacAlertRuleRow(rule: rule) { enable in
                                     rulePending = .toggle(rule, enable)
                                 }
-                                RowActions {
-                                    RowActionButton(
-                                        title: translations.get("commonEdit", fallback: "Edit"),
-                                        systemImage: "pencil"
-                                    ) { ruleEditor = AlertRuleEditor(rule: rule) }
-                                    RowActionButton(
-                                        title: translations.get("commonDelete", fallback: "Delete"),
-                                        systemImage: "trash",
-                                        destructive: true
-                                    ) { rulePending = .delete(rule) }
+                                RowActionsMenu {
+                                    Button {
+                                        ruleEditor = AlertRuleEditor(rule: rule)
+                                    } label: {
+                                        Label(translations.get("commonEdit", fallback: "Edit"),
+                                              systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        rulePending = .delete(rule)
+                                    } label: {
+                                        Label(translations.get("commonDelete", fallback: "Delete"),
+                                              systemImage: "trash")
+                                    }
                                 }
                                 .fixedSize()
                             }

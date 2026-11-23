@@ -95,31 +95,33 @@ struct WebsitesView: View {
                     isRunning ? .green : .red),
             onOpen: { detailWebsite = website }
         ) {
-            RowActions {
-                RowActionButton(
-                    title: translations.get("websitesDetailTitle", fallback: "Site details"),
-                    systemImage: "info.circle"
-                ) { detailWebsite = website }
-                RowActionButton(
-                    title: isRunning
-                        ? translations.get("commonStop", fallback: "Stop")
-                        : translations.get("commonStart", fallback: "Start"),
-                    systemImage: isRunning ? "stop.fill" : "play.fill"
-                ) {
+            RowActionsMenu {
+                Button {
+                    detailWebsite = website
+                } label: {
+                    Label(translations.get("websitesDetailTitle", fallback: "Site details"),
+                          systemImage: "info.circle")
+                }
+                Button {
                     Task {
                         await viewModel.toggleWebsiteStatus(
                             id: website.originalId,
                             currentStatus: website.status
                         )
                     }
+                } label: {
+                    Label(isRunning
+                          ? translations.get("commonStop", fallback: "Stop")
+                          : translations.get("commonStart", fallback: "Start"),
+                          systemImage: isRunning ? "stop.fill" : "play.fill")
                 }
-                RowActionButton(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+                Divider()
+                Button(role: .destructive) {
                     websiteToDelete = website
                     showDeleteConfirm = true
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)

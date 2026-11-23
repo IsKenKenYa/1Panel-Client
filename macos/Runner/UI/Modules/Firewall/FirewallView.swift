@@ -105,13 +105,14 @@ struct FirewallView: View {
             subtitle: source,
             badge: rule.strategy.isEmpty ? nil : (rule.strategy, isAllow ? .green : .red)
         ) {
-            RowActions {
-                if canDelete {
-                    RowActionButton(
-                        title: translations.get("commonDelete", fallback: "Delete"),
-                        systemImage: "trash",
-                        destructive: true
-                    ) { ruleToDelete = rule }
+            if canDelete {
+                RowActionsMenu {
+                    Button(role: .destructive) {
+                        ruleToDelete = rule
+                    } label: {
+                        Label(translations.get("commonDelete", fallback: "Delete"),
+                              systemImage: "trash")
+                    }
                 }
             }
         }

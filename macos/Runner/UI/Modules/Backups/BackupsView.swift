@@ -101,14 +101,13 @@ struct BackupsView: View {
                 .joined(separator: " · "),
             badge: backup.status.isEmpty ? nil : (backup.status, ok ? .green : .orange)
         ) {
-            RowActions {
-                RowActionButton(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+            RowActionsMenu {
+                Button(role: .destructive) {
                     backupToDelete = backup
                     showDeleteConfirm = true
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)

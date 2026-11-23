@@ -75,27 +75,29 @@ struct CronJobsView: View {
             subtitle: subtitle,
             badge: job.status.isEmpty ? nil : (job.status, isActive ? .green : .gray)
         ) {
-            RowActions {
-                RowActionButton(
-                    title: isActive
-                        ? translations.get("commonStop", fallback: "Stop")
-                        : translations.get("commonStart", fallback: "Start"),
-                    systemImage: isActive ? "stop.fill" : "play.fill"
-                ) {
+            RowActionsMenu {
+                Button {
                     Task {
                         await viewModel.toggleCronJobStatus(
                             id: job.originalId,
                             currentStatus: job.status
                         )
                     }
+                } label: {
+                    Label(
+                        isActive
+                            ? translations.get("commonStop", fallback: "Stop")
+                            : translations.get("commonStart", fallback: "Start"),
+                        systemImage: isActive ? "stop.fill" : "play.fill"
+                    )
                 }
-                RowActionButton(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+                Divider()
+                Button(role: .destructive) {
                     jobToDelete = job
                     showDeleteConfirm = true
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)

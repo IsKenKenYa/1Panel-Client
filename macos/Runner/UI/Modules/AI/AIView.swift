@@ -72,14 +72,13 @@ struct AIView: View {
                 .filter { !$0.isEmpty }
                 .joined(separator: " · ")
         ) {
-            RowActions {
-                RowActionButton(
-                    title: translations.get("commonDelete", fallback: "Delete"),
-                    systemImage: "trash",
-                    destructive: true
-                ) {
+            RowActionsMenu {
+                Button(role: .destructive) {
                     modelToDelete = model
                     showDeleteConfirm = true
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
                 }
             }
             .disabled(viewModel.isProcessing)
