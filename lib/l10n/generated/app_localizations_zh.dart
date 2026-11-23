@@ -4844,6 +4844,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerLogsFollowPaused => '已停止跟随，显示已加载的日志';
 
   @override
+  String get containerLogsFollow => '跟随日志';
+
+  @override
+  String get containerLogsFollowHint => '持续接收容器新日志';
+
+  @override
+  String get containerLogsConnecting => '正在连接日志流';
+
+  @override
+  String get containerLogsStreamEnded => '日志流已结束';
+
+  @override
   String get containerLogsStopFollow => '停止跟随';
 
   @override

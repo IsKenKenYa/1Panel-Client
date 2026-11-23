@@ -9404,6 +9404,30 @@ abstract class AppLocalizations {
   /// **'Follow stopped, showing loaded logs'**
   String get containerLogsFollowPaused;
 
+  /// No description provided for @containerLogsFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow logs'**
+  String get containerLogsFollow;
+
+  /// No description provided for @containerLogsFollowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep receiving new container log lines'**
+  String get containerLogsFollowHint;
+
+  /// No description provided for @containerLogsConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to log stream'**
+  String get containerLogsConnecting;
+
+  /// No description provided for @containerLogsStreamEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Log stream ended'**
+  String get containerLogsStreamEnded;
+
   /// No description provided for @containerLogsStopFollow.
   ///
   /// In en, this message translates to:

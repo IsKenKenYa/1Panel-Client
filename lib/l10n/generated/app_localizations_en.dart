@@ -5011,6 +5011,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerLogsFollowPaused => 'Follow stopped, showing loaded logs';
 
   @override
+  String get containerLogsFollow => 'Follow logs';
+
+  @override
+  String get containerLogsFollowHint =>
+      'Keep receiving new container log lines';
+
+  @override
+  String get containerLogsConnecting => 'Connecting to log stream';
+
+  @override
+  String get containerLogsStreamEnded => 'Log stream ended';
+
+  @override
   String get containerLogsStopFollow => 'Stop following';
 
   @override
