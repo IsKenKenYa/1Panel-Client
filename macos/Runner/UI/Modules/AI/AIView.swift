@@ -19,34 +19,12 @@ struct AIView: View {
                     message: translations.get("aiModelsEmptyTitle", fallback: "No AI models found")
                 )
             } else {
-                Table(viewModel.models) {
-                    TableColumn(translations.get("aiModelName", fallback: "Model")) { model in
-                        HStack {
-                            Image(systemName: "cpu.fill")
-                                .foregroundColor(.purple)
-                            Text(model.name)
-                                .fontWeight(.medium)
-                        }
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                modelToDelete = model
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("aiModelSize", fallback: "Size")) { model in
-                        Text(model.size.isEmpty ? "--" : model.size)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("aiModelModified", fallback: "Modified")) { model in
-                        Text(model.modified.isEmpty ? "--" : model.modified)
-                            .foregroundColor(.secondary)
+                List {
+                    ForEach(viewModel.models) { model in
+                        row(model)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("serverModuleAi", fallback: "AI"))
@@ -83,5 +61,37 @@ struct AIView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchModels() }
+    }
+
+    private func row(_ model: AIModel) -> some View {
+        ModuleRow(
+            icon: "cpu.fill",
+            iconColor: .purple,
+            title: model.name,
+            subtitle: [model.size, model.modified]
+                .filter { !$0.isEmpty }
+                .joined(separator: " · ")
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    modelToDelete = model
+                    showDeleteConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button(role: .destructive) {
+                modelToDelete = model
+                showDeleteConfirm = true
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
+        }
     }
 }

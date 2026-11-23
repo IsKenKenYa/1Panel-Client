@@ -19,49 +19,12 @@ struct BackupsView: View {
                     message: translations.get("backupRecordsEmptyTitle", fallback: "No backups found")
                 )
             } else {
-                Table(viewModel.backups) {
-                    TableColumn(translations.get("backupRecordsNameLabel", fallback: "Name")) { backup in
-                        HStack {
-                            Image(systemName: "archivebox")
-                                .foregroundColor(.blue)
-                            Text(backup.name)
-                        }
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                backupToDelete = backup
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("backupRecordsTypeLabel", fallback: "Type")) { backup in
-                        Text(backup.type.isEmpty ? "--" : backup.type)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { backup in
-                        if !backup.status.isEmpty {
-                            let ok = backup.status.lowercased() == "success" || backup.status.lowercased() == "done"
-                            Text(backup.status)
-                                .font(.caption)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 3)
-                                .background(ok ? Color.green.opacity(0.12) : Color.orange.opacity(0.12))
-                                .foregroundColor(ok ? .green : .orange)
-                                .cornerRadius(4)
-                        }
-                    }
-                    TableColumn(translations.get("backupRecordsSizeLabel", fallback: "Size")) { backup in
-                        Text(backup.size.isEmpty ? "--" : backup.size)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("backupRecordsDateLabel", fallback: "Date")) { backup in
-                        Text(backup.date.isEmpty ? "--" : backup.date)
-                            .foregroundColor(.secondary)
+                List {
+                    ForEach(viewModel.backups) { backup in
+                        row(backup)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("operationsBackupsTitle", fallback: "Backups"))
@@ -98,5 +61,39 @@ struct BackupsView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchBackups() }
+    }
+
+    private func row(_ backup: BackupModel) -> some View {
+        let ok = ["success", "done"].contains(backup.status.lowercased())
+        return ModuleRow(
+            icon: "archivebox",
+            iconColor: .blue,
+            title: backup.name,
+            subtitle: [backup.type, backup.size, backup.date]
+                .filter { !$0.isEmpty }
+                .joined(separator: " · "),
+            badge: backup.status.isEmpty ? nil : (backup.status, ok ? .green : .orange)
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    backupToDelete = backup
+                    showDeleteConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button(role: .destructive) {
+                backupToDelete = backup
+                showDeleteConfirm = true
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
+        }
     }
 }

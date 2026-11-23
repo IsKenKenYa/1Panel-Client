@@ -19,62 +19,12 @@ struct CronJobsView: View {
                     message: translations.get("cronjobsEmptyTitle", fallback: "No cron jobs found")
                 )
             } else {
-                Table(viewModel.cronJobs) {
-                    TableColumn(translations.get("cronjobNameLabel", fallback: "Name")) { job in
-                        HStack {
-                            Image(systemName: "timer")
-                                .foregroundColor(.orange)
-                            Text(job.name)
-                        }
-                        .contextMenu {
-                            let isActive = job.status.lowercased() == "active" || job.status.lowercased() == "running"
-                            Button {
-                                Task { await viewModel.toggleCronJobStatus(id: job.originalId, currentStatus: job.status) }
-                            } label: {
-                                Label(
-                                    isActive ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
-                                    systemImage: isActive ? "stop.fill" : "play.fill"
-                                )
-                            }
-                            Divider()
-                            Button(role: .destructive) {
-                                jobToDelete = job
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("cronjobScheduleLabel", fallback: "Schedule")) { job in
-                        Text(job.schedule)
-                            .foregroundColor(.secondary)
-                            .font(.system(.body, design: .monospaced))
-                    }
-                    TableColumn(translations.get("cronjobLastResultLabel", fallback: "Last Result")) { job in
-                        if !job.lastRecordStatus.isEmpty {
-                            let ok = job.lastRecordStatus.lowercased() == "success"
-                            Text(job.lastRecordStatus)
-                                .font(.caption)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 3)
-                                .background(ok ? Color.green.opacity(0.12) : Color.red.opacity(0.12))
-                                .foregroundColor(ok ? .green : .red)
-                                .cornerRadius(4)
-                        }
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { job in
-                        let isActive = job.status.lowercased() == "active" || job.status.lowercased() == "running"
-                        Text(job.status)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(isActive ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
-                            .foregroundColor(isActive ? .green : .gray)
-                            .cornerRadius(4)
+                List {
+                    ForEach(viewModel.cronJobs) { job in
+                        row(job)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("operationsCronjobsTitle", fallback: "Cron Jobs"))
@@ -111,5 +61,69 @@ struct CronJobsView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchCronJobs() }
+    }
+
+    private func row(_ job: CronJobModel) -> some View {
+        let isActive = ["active", "running"].contains(job.status.lowercased())
+        let subtitle = job.lastRecordStatus.isEmpty
+            ? job.schedule
+            : "\(job.schedule) · \(job.lastRecordStatus)"
+        return ModuleRow(
+            icon: "timer",
+            iconColor: .orange,
+            title: job.name,
+            subtitle: subtitle,
+            badge: job.status.isEmpty ? nil : (job.status, isActive ? .green : .gray)
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: isActive
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isActive ? "stop.fill" : "play.fill"
+                ) {
+                    Task {
+                        await viewModel.toggleCronJobStatus(
+                            id: job.originalId,
+                            currentStatus: job.status
+                        )
+                    }
+                }
+                RowActionButton(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    jobToDelete = job
+                    showDeleteConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button {
+                Task {
+                    await viewModel.toggleCronJobStatus(
+                        id: job.originalId,
+                        currentStatus: job.status
+                    )
+                }
+            } label: {
+                Label(
+                    isActive
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isActive ? "stop.fill" : "play.fill"
+                )
+            }
+            Divider()
+            Button(role: .destructive) {
+                jobToDelete = job
+                showDeleteConfirm = true
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
+        }
     }
 }

@@ -20,49 +20,12 @@ struct AppsView: View {
                     message: translations.get("appsListEmptyTitle", fallback: "No apps found")
                 )
             } else {
-                Table(viewModel.apps) {
-                    TableColumn(translations.get("commonName", fallback: "Name")) { app in
-                        HStack {
-                            Image(systemName: "app.badge")
-                                .foregroundColor(.blue)
-                            Text(app.name)
-                        }
-                        .contextMenu {
-                            Button {
-                                Task { await viewModel.toggleAppStatus(app) }
-                            } label: {
-                                Label(
-                                    app.isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
-                                    systemImage: app.isRunning ? "stop.fill" : "play.fill"
-                                )
-                            }
-                            .disabled(viewModel.isProcessing)
-                            Divider()
-                            Button(role: .destructive) {
-                                appToUninstall = app
-                                showUninstallConfirm = true
-                            } label: {
-                                Label(translations.get("appActionUninstall", fallback: "Uninstall"), systemImage: "trash")
-                            }
-                            .disabled(viewModel.isProcessing)
-                        }
-                    }
-                    TableColumn(translations.get("appInfoVersion", fallback: "Version")) { app in
-                        Text(app.version.isEmpty ? "--" : app.version)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { app in
-                        Text(app.status)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(app.isRunning ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
-                            .foregroundColor(app.isRunning ? .green : .gray)
-                            .cornerRadius(4)
+                List {
+                    ForEach(viewModel.apps) { app in
+                        row(app)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))
@@ -114,5 +77,58 @@ struct AppsView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .task { await viewModel.fetchApps() }
+    }
+
+    private func row(_ app: AppModel) -> some View {
+        ModuleRow(
+            icon: "app.badge",
+            iconColor: .blue,
+            title: app.name,
+            subtitle: app.version.isEmpty ? "--" : app.version,
+            badge: (app.status.isEmpty ? "--" : app.status,
+                    app.isRunning ? .green : .gray)
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: app.isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: app.isRunning ? "stop.fill" : "play.fill"
+                ) {
+                    Task { await viewModel.toggleAppStatus(app) }
+                }
+                RowActionButton(
+                    title: translations.get("appActionUninstall", fallback: "Uninstall"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    appToUninstall = app
+                    showUninstallConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button {
+                Task { await viewModel.toggleAppStatus(app) }
+            } label: {
+                Label(
+                    app.isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: app.isRunning ? "stop.fill" : "play.fill"
+                )
+            }
+            .disabled(viewModel.isProcessing)
+            Divider()
+            Button(role: .destructive) {
+                appToUninstall = app
+                showUninstallConfirm = true
+            } label: {
+                Label(translations.get("appActionUninstall", fallback: "Uninstall"),
+                      systemImage: "trash")
+            }
+            .disabled(viewModel.isProcessing)
+        }
     }
 }
