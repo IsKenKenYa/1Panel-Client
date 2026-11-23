@@ -705,6 +705,45 @@ class DockerPolicyImportTests: XCTestCase {
         XCTAssertEqual(rows.last?.family, "ipv6")
     }
 
+    func testPreviewReportsInvalidReasonAndDuplicateCount() throws {
+        let data = try XCTUnwrap("""
+        [
+          {"hostIP":"0.0.0.0","hostPort":70000,"protocol":"tcp","mode":"deny_all"},
+          {"family":"ipv4","hostIP":"127.0.0.1","hostPort":9090,"protocol":"udp",
+           "mode":"deny_all","sources":[]},
+          {"family":"ipv4","hostIP":"127.0.0.1","hostPort":9090,"protocol":"udp",
+           "mode":"allow_sources","sources":["10.0.0.0/8"]}
+        ]
+        """.data(using: .utf8))
+
+        let result = try XCTUnwrap(DockerPolicyBatchFormView.parseImportResult(data))
+
+        XCTAssertEqual(result.totalCount, 3)
+        XCTAssertEqual(result.rows.count, 1)
+        XCTAssertEqual(result.duplicateCount, 1)
+        XCTAssertEqual(result.issues.count, 1)
+        XCTAssertEqual(result.issues.first?.id, 0)
+        if case .invalidPort = result.issues.first?.reason {
+        } else {
+            XCTFail("Expected invalid port reason")
+        }
+    }
+
+    func testImportLimitsUseBatchAndFileSizeCaps() {
+        XCTAssertFalse(DockerPolicyBatchFormView.exceedsImportLimits(
+            fileSize: DockerPolicyBatchFormView.maxImportFileSize,
+            policyCount: DockerPolicyBatchFormView.maxBatchLimit
+        ))
+        XCTAssertTrue(DockerPolicyBatchFormView.exceedsImportLimits(
+            fileSize: DockerPolicyBatchFormView.maxImportFileSize + 1,
+            policyCount: 0
+        ))
+        XCTAssertTrue(DockerPolicyBatchFormView.exceedsImportLimits(
+            fileSize: 1024,
+            policyCount: DockerPolicyBatchFormView.maxBatchLimit + 1
+        ))
+    }
+
     func testPreviewSkipsInvalidPoliciesAndAcceptsPoliciesObject() throws {
         let data = try XCTUnwrap("""
         {"policies":[

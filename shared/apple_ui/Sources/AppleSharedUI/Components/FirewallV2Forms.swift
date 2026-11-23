@@ -285,6 +285,31 @@ public struct DockerPolicyFormView: View {
 }
 
 /// Docker 端口策略导入行：按端点标识去重后的预览条目。
+public enum DockerPolicyImportIssueReason {
+    case invalidFamily
+    case missingHost
+    case invalidPort
+    case invalidProtocol
+    case invalidMode
+}
+
+public struct DockerPolicyImportIssue: Identifiable {
+    public let id: Int
+    public let reason: DockerPolicyImportIssueReason
+
+    public init(index: Int, reason: DockerPolicyImportIssueReason) {
+        self.id = index
+        self.reason = reason
+    }
+}
+
+public struct DockerPolicyImportResult {
+    public let rows: [DockerPolicyImportRow]
+    public let issues: [DockerPolicyImportIssue]
+    public let duplicateCount: Int
+    public let totalCount: Int
+}
+
 public struct DockerPolicyImportRow: Identifiable {
     public let id: String
     public let family: String
@@ -309,27 +334,49 @@ public struct DockerPolicyImportRow: Identifiable {
         ]
     }
 
-    init?(payload: [String: Any]) {
+    public static func validationIssue(
+        for payload: [String: Any]
+    ) -> DockerPolicyImportIssueReason? {
         let family = firewallText(payload["family"])
         let hostIP = firewallText(payload["hostIP"])
         let protocolName = firewallText(payload["protocol"])
         let mode = firewallText(payload["mode"])
         let hostPort = Int(firewallText(payload["hostPort"])) ?? 0
-        let validModes = [
-            "deny_sources", "allow_sources", "deny_all",
-            "accept_sources", "accept_all",
-        ]
-        guard !hostIP.isEmpty, (1...65535).contains(hostPort),
-              ["tcp", "udp"].contains(protocolName),
-              validModes.contains(mode) else {
+        if !family.isEmpty && !["ipv4", "ipv6"].contains(family) {
+            return .invalidFamily
+        }
+        if hostIP.isEmpty {
+            return .missingHost
+        }
+        if !(1...65535).contains(hostPort) {
+            return .invalidPort
+        }
+        if !["tcp", "udp"].contains(protocolName) {
+            return .invalidProtocol
+        }
+        if !validModes.contains(mode) {
+            return .invalidMode
+        }
+        return nil
+    }
+
+    private static let validModes = [
+        "deny_sources", "allow_sources", "deny_all",
+        "accept_sources", "accept_all",
+    ]
+
+    init?(payload: [String: Any]) {
+        guard Self.validationIssue(for: payload) == nil else {
             return nil
         }
+        let family = firewallText(payload["family"])
+        let hostIP = firewallText(payload["hostIP"])
+        let protocolName = firewallText(payload["protocol"])
+        let mode = firewallText(payload["mode"])
+        let hostPort = Int(firewallText(payload["hostPort"])) ?? 0
         let normalizedFamily = family.isEmpty
             ? (hostIP.contains(":") ? "ipv6" : "ipv4")
             : family
-        guard ["ipv4", "ipv6"].contains(normalizedFamily) else {
-            return nil
-        }
         let sources = (payload["sources"] as? [Any] ?? []).map {
             firewallText($0)
         }.filter { !$0.isEmpty }
@@ -356,6 +403,9 @@ public struct DockerPolicyBatchFormView: View {
     @State private var importRows: [DockerPolicyImportRow] = []
     @State private var importSelection: Set<String> = []
     @State private var importFileName = ""
+    @State private var importIssues: [DockerPolicyImportIssue] = []
+    @State private var importDuplicateCount = 0
+    @State private var importTotalCount = 0
     @State private var showFileImporter = false
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -428,6 +478,27 @@ public struct DockerPolicyBatchFormView: View {
                         Text("\(t("firewallV2DockerPreview", "Preview")): \(importRows.count)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                        if importTotalCount > 0 {
+                            Text("\(t("firewallV2DockerImportTotal", "Policies in file")): \(importTotalCount)")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        if importDuplicateCount > 0 {
+                            Text("\(t("firewallV2DockerImportDuplicates", "Duplicate endpoints removed")): \(importDuplicateCount)")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        if !importIssues.isEmpty {
+                            DisclosureGroup(
+                                "\(t("firewallV2DockerImportSkipped", "Skipped entries")): \(importIssues.count)"
+                            ) {
+                                ForEach(importIssues) { issue in
+                                    Text("\(issue.id + 1). \(issueTitle(issue.reason))")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
                         ForEach(importRows) { row in
                             Button {
                                 toggleImport(row.id)
@@ -548,16 +619,31 @@ public struct DockerPolicyBatchFormView: View {
         }
         do {
             let data = try Data(contentsOf: url)
-            guard let rows = Self.parseImportRows(data) else {
+            guard !Self.exceedsImportLimits(fileSize: data.count, policyCount: 0) else {
+                errorMessage = t("firewallV2DockerImportLimit",
+                                 "Up to 500 policies and 256 KB per file.")
+                return
+            }
+            guard let result = Self.parseImportResult(data) else {
                 errorMessage = t("firewallV2DockerImportInvalid", "Invalid JSON.")
                 return
             }
-            guard !rows.isEmpty else {
-                errorMessage = t("firewallV2NoSelection", "Select at least one policy.")
+            guard !Self.exceedsImportLimits(fileSize: data.count,
+                                            policyCount: result.totalCount) else {
+                errorMessage = t("firewallV2DockerImportLimit",
+                                 "Up to 500 policies and 256 KB per file.")
                 return
             }
-            importRows = rows
-            importSelection = Set(rows.map(\.id))
+            guard !result.rows.isEmpty else {
+                errorMessage = t("firewallV2DockerImportNoneValid",
+                                 "No valid policies in this file.")
+                return
+            }
+            importRows = result.rows
+            importSelection = Set(result.rows.map(\.id))
+            importIssues = result.issues
+            importDuplicateCount = result.duplicateCount
+            importTotalCount = result.totalCount
             importFileName = url.lastPathComponent
             errorMessage = nil
         } catch {
@@ -583,7 +669,17 @@ public struct DockerPolicyBatchFormView: View {
         isSaving = false
     }
 
-    public static func parseImportRows(_ data: Data) -> [DockerPolicyImportRow]? {
+    public static let maxImportFileSize = 256 * 1024
+    public static let maxBatchLimit = 500
+
+    public static func exceedsImportLimits(
+        fileSize: Int,
+        policyCount: Int
+    ) -> Bool {
+        fileSize > maxImportFileSize || policyCount > maxBatchLimit
+    }
+
+    public static func parseImportResult(_ data: Data) -> DockerPolicyImportResult? {
         guard let object = try? JSONSerialization.jsonObject(with: data) else {
             return nil
         }
@@ -597,12 +693,51 @@ public struct DockerPolicyBatchFormView: View {
             return nil
         }
         var seen = Set<String>()
-        return policies.compactMap { policy in
-            guard let row = DockerPolicyImportRow(payload: policy),
-                  seen.insert(row.id).inserted else {
-                return nil
+        var rows: [DockerPolicyImportRow] = []
+        var issues: [DockerPolicyImportIssue] = []
+        var duplicateCount = 0
+        for (index, policy) in policies.enumerated() {
+            if let reason = DockerPolicyImportRow.validationIssue(for: policy) {
+                issues.append(DockerPolicyImportIssue(index: index, reason: reason))
+                continue
             }
-            return row
+            guard let row = DockerPolicyImportRow(payload: policy) else {
+                issues.append(DockerPolicyImportIssue(index: index, reason: .invalidMode))
+                continue
+            }
+            if seen.insert(row.id).inserted {
+                rows.append(row)
+            } else {
+                duplicateCount += 1
+            }
+        }
+        return DockerPolicyImportResult(
+            rows: rows,
+            issues: issues,
+            duplicateCount: duplicateCount,
+            totalCount: policies.count
+        )
+    }
+
+    public static func parseImportRows(_ data: Data) -> [DockerPolicyImportRow]? {
+        parseImportResult(data)?.rows
+    }
+
+    private func issueTitle(_ reason: DockerPolicyImportIssueReason) -> String {
+        switch reason {
+        case .invalidFamily:
+            return t("firewallV2DockerIssueFamily",
+                     "Address family must be ipv4 or ipv6")
+        case .missingHost:
+            return t("firewallV2DockerIssueHost", "Host address is required")
+        case .invalidPort:
+            return t("firewallV2DockerIssuePort",
+                     "Host port must be between 1 and 65535")
+        case .invalidProtocol:
+            return t("firewallV2DockerIssueProtocol",
+                     "Protocol must be tcp or udp")
+        case .invalidMode:
+            return t("firewallV2DockerIssueMode", "Policy mode is not supported")
         }
     }
 

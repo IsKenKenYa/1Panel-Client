@@ -24511,6 +24511,66 @@ abstract class AppLocalizations {
   /// **'Invalid JSON.'**
   String get firewallV2DockerImportInvalid;
 
+  /// No description provided for @firewallV2DockerImportTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Policies in file'**
+  String get firewallV2DockerImportTotal;
+
+  /// No description provided for @firewallV2DockerImportDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate endpoints removed'**
+  String get firewallV2DockerImportDuplicates;
+
+  /// No description provided for @firewallV2DockerImportSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped entries'**
+  String get firewallV2DockerImportSkipped;
+
+  /// No description provided for @firewallV2DockerImportLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 500 policies and 256 KB per file.'**
+  String get firewallV2DockerImportLimit;
+
+  /// No description provided for @firewallV2DockerImportNoneValid.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid policies in this file.'**
+  String get firewallV2DockerImportNoneValid;
+
+  /// No description provided for @firewallV2DockerIssueFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Address family must be ipv4 or ipv6'**
+  String get firewallV2DockerIssueFamily;
+
+  /// No description provided for @firewallV2DockerIssueHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Host address is required'**
+  String get firewallV2DockerIssueHost;
+
+  /// No description provided for @firewallV2DockerIssuePort.
+  ///
+  /// In en, this message translates to:
+  /// **'Host port must be between 1 and 65535'**
+  String get firewallV2DockerIssuePort;
+
+  /// No description provided for @firewallV2DockerIssueProtocol.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol must be tcp or udp'**
+  String get firewallV2DockerIssueProtocol;
+
+  /// No description provided for @firewallV2DockerIssueMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy mode is not supported'**
+  String get firewallV2DockerIssueMode;
+
   /// No description provided for @firewallV2NoSelection.
   ///
   /// In en, this message translates to:

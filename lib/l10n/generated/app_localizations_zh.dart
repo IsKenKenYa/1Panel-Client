@@ -12616,6 +12616,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get firewallV2DockerImportInvalid => 'JSON 无效。';
 
   @override
+  String get firewallV2DockerImportTotal => '文件内策略数';
+
+  @override
+  String get firewallV2DockerImportDuplicates => '已移除的重复端点';
+
+  @override
+  String get firewallV2DockerImportSkipped => '已跳过的条目';
+
+  @override
+  String get firewallV2DockerImportLimit => '每个文件最多 500 条策略、256 KB。';
+
+  @override
+  String get firewallV2DockerImportNoneValid => '文件中没有有效策略。';
+
+  @override
+  String get firewallV2DockerIssueFamily => '地址类型必须为 ipv4 或 ipv6';
+
+  @override
+  String get firewallV2DockerIssueHost => '缺少主机地址';
+
+  @override
+  String get firewallV2DockerIssuePort => '主机端口必须在 1 到 65535 之间';
+
+  @override
+  String get firewallV2DockerIssueProtocol => '协议必须为 tcp 或 udp';
+
+  @override
+  String get firewallV2DockerIssueMode => '策略模式不受支持';
+
+  @override
   String get firewallV2NoSelection => '请至少选择一条策略。';
 
   @override

@@ -13004,6 +13004,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firewallV2DockerImportInvalid => 'Invalid JSON.';
 
   @override
+  String get firewallV2DockerImportTotal => 'Policies in file';
+
+  @override
+  String get firewallV2DockerImportDuplicates => 'Duplicate endpoints removed';
+
+  @override
+  String get firewallV2DockerImportSkipped => 'Skipped entries';
+
+  @override
+  String get firewallV2DockerImportLimit =>
+      'Up to 500 policies and 256 KB per file.';
+
+  @override
+  String get firewallV2DockerImportNoneValid =>
+      'No valid policies in this file.';
+
+  @override
+  String get firewallV2DockerIssueFamily =>
+      'Address family must be ipv4 or ipv6';
+
+  @override
+  String get firewallV2DockerIssueHost => 'Host address is required';
+
+  @override
+  String get firewallV2DockerIssuePort =>
+      'Host port must be between 1 and 65535';
+
+  @override
+  String get firewallV2DockerIssueProtocol => 'Protocol must be tcp or udp';
+
+  @override
+  String get firewallV2DockerIssueMode => 'Policy mode is not supported';
+
+  @override
   String get firewallV2NoSelection => 'Select at least one policy.';
 
   @override
