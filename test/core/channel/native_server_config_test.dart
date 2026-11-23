@@ -29,6 +29,8 @@ void main() {
       'name': 'Local',
       'url': 'https://localhost',
       'isCurrent': true,
+      'tokenValidity': 0,
+      'allowInsecureTls': false,
     });
   });
 
@@ -85,5 +87,63 @@ void main() {
     );
     expect(updated.apiKey, 'new');
     expect(updated.additionalCredentials, {'token': 'new'});
+  });
+
+  test('表单可写入接口密钥有效期与忽略证书校验', () {
+    final created = readNativeServerConfig(
+      {
+        'panelType': '1panel',
+        'name': 'Panel',
+        'url': 'https://panel.example.com',
+        'apiKey': 'key',
+        'tokenValidity': 120,
+        'allowInsecureTls': true,
+      },
+      id: 'panel',
+    );
+    expect(created.tokenValidity, 120);
+    expect(created.allowInsecureTls, isTrue);
+
+    final kept = readNativeServerConfig(
+      {
+        'revision': config.revision,
+        'name': config.name,
+        'url': config.url,
+        'apiKey': '',
+      },
+      id: config.id,
+      existing: config,
+    );
+    expect(kept.tokenValidity, config.tokenValidity);
+    expect(kept.allowInsecureTls, config.allowInsecureTls);
+  });
+
+  test('有效期超出范围或类型错误时拒绝保存', () {
+    expect(
+      () => readNativeServerConfig(
+        {
+          'panelType': '1panel',
+          'name': 'Panel',
+          'url': 'https://panel.example.com',
+          'apiKey': 'key',
+          'tokenValidity': 10000,
+        },
+        id: 'panel',
+      ),
+      throwsArgumentError,
+    );
+    expect(
+      () => readNativeServerConfig(
+        {
+          'panelType': '1panel',
+          'name': 'Panel',
+          'url': 'https://panel.example.com',
+          'apiKey': 'key',
+          'allowInsecureTls': 'yes',
+        },
+        id: 'panel',
+      ),
+      throwsArgumentError,
+    );
   });
 }

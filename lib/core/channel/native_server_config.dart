@@ -12,6 +12,8 @@ Map<String, Object?> describeNativeServer(
       'url': config.url,
       'panelType': config.panelType,
       'isCurrent': isCurrent,
+      'tokenValidity': config.tokenValidity,
+      'allowInsecureTls': config.allowInsecureTls,
     };
 
 ApiConfig readNativeServerConfig(
@@ -44,6 +46,14 @@ ApiConfig readNativeServerConfig(
       (existing?.additionalCredentials.isNotEmpty ?? false)) {
     throw ArgumentError('Provide credentials for the new address');
   }
+  final tokenValidity = int.tryParse('${fields['tokenValidity'] ?? ''}');
+  if (tokenValidity != null && (tokenValidity < 0 || tokenValidity > 9999)) {
+    throw ArgumentError.value(tokenValidity, 'tokenValidity');
+  }
+  final insecure = fields['allowInsecureTls'];
+  if (insecure != null && insecure is! bool) {
+    throw ArgumentError.value(insecure, 'allowInsecureTls');
+  }
   return ApiConfig(
     id: id,
     panelType: type,
@@ -53,8 +63,9 @@ ApiConfig readNativeServerConfig(
     additionalCredentials: fieldsValue == null
         ? existing?.additionalCredentials ?? const {}
         : Map<String, String>.from(fieldsValue),
-    tokenValidity: existing?.tokenValidity ?? 0,
-    allowInsecureTls: existing?.allowInsecureTls ?? false,
+    tokenValidity: tokenValidity ?? existing?.tokenValidity ?? 0,
+    allowInsecureTls:
+        insecure as bool? ?? existing?.allowInsecureTls ?? false,
     isDefault: existing?.isDefault ?? false,
     lastUsed: existing?.lastUsed,
   );
