@@ -1245,16 +1245,16 @@ class AIV2Api {
   }
 
   /// Search GPU monitor data (chart time-series).
+  ///
+  /// 响应外层是 `{code, message, data}`，采样数与序列都在 `data` 内。
   Future<Response<Map<String, dynamic>>> searchGpu(
       Map<String, dynamic> request) async {
-    final response = await _client.post<Map<String, dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/ai/gpu/search'),
       data: request,
     );
     return Response<Map<String, dynamic>>(
-      data: response.data is Map
-          ? Map<String, dynamic>.from(response.data as Map)
-          : const <String, dynamic>{},
+      data: _unwrapDataMap(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
