@@ -720,6 +720,36 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 修改负载均衡源文件。参数：
+  /// `{websiteID: int, name: String, content: String}`。POST /websites/lbs/file。
+  /// 服务端要求 name 为不含路径分段的文件名。
+  static Future<Map<String, dynamic>> updateWebsiteLoadBalancerFile(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      final content = arguments['content'] as String? ?? '';
+      if (websiteID == null || name.isEmpty || content.trim().isEmpty) {
+        return {
+          'success': false,
+          'error': 'websiteID, name and content are required',
+        };
+      }
+      if (name.contains('/') || name.contains('..')) {
+        return {'success': false, 'error': 'name must be a plain file name'};
+      }
+      await (await _websiteApi()).updateWebsiteLoadBalancerFile({
+        'websiteID': websiteID,
+        'name': name,
+        'content': content,
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteLoadBalancerFile failed: $e');
+      return _err(e);
+    }
+  }
+
   static Future<Map<String, dynamic>> _submitWebsiteLoadBalancer(
     dynamic arguments, {
     required bool update,

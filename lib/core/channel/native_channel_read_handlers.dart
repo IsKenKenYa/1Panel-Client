@@ -1489,6 +1489,7 @@ class NativeChannelReadHandlers {
                 'name': item['name']?.toString() ?? '',
                 'algorithm': item['algorithm']?.toString() ?? '',
                 'servers': item['servers'] is List ? item['servers'] : const [],
+                'content': item['content']?.toString() ?? '',
               })
           .toList();
     } catch (e) {

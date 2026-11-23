@@ -354,6 +354,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateWebsiteLoadBalancer(arguments);
       case 'deleteWebsiteLoadBalancer':
         return NativeChannelWriteHandlers.deleteWebsiteLoadBalancer(arguments);
+      case 'updateWebsiteLoadBalancerFile':
+        return NativeChannelWriteHandlers.updateWebsiteLoadBalancerFile(arguments);
       case 'addWebsiteDomains':
         return NativeChannelWriteHandlers.addWebsiteDomains(arguments);
       case 'deleteWebsiteDomain':

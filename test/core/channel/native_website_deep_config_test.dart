@@ -83,6 +83,30 @@ void main() {
       expect(result['success'], isFalse);
     });
 
+    test('负载均衡源文件缺少内容时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.updateWebsiteLoadBalancerFile(
+        <String, dynamic>{'websiteID': 1, 'name': 'b64lb'},
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('content'));
+    });
+
+    test('负载均衡源文件名称包含路径时返回失败结构', () async {
+      final result =
+          await NativeChannelWriteHandlers.updateWebsiteLoadBalancerFile(
+        <String, dynamic>{
+          'websiteID': 1,
+          'name': '../evil',
+          'content': 'upstream x { server 127.0.0.1:8080; }',
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('plain file name'));
+    });
+
     test('dispatch 路由转发配置写入', () async {
       final result = await NativeChannelManager.instance.handleMethodCall(
         'updateWebsiteStream',
