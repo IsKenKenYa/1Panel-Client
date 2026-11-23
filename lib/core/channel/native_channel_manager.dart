@@ -502,6 +502,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.restoreBackup(arguments);
       case 'deleteBackup':
         return NativeChannelWriteHandlers.deleteBackup(arguments);
+      case 'downloadBackupRecord':
+        return NativeChannelWriteHandlers.downloadBackupRecord(arguments);
 
       // ── Write: AI ───────────────────────────────────────────────────────
       case 'createAIModel':

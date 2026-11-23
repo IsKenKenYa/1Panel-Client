@@ -2427,6 +2427,43 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 下载备份记录到设备。参数：
+  /// `{downloadAccountID?: int, fileDir: String, fileName: String}`
+  static Future<Map<String, dynamic>> downloadBackupRecord(
+      dynamic arguments) async {
+    try {
+      final fileName = (arguments['fileName'] as String? ?? '').trim();
+      if (fileName.isEmpty) {
+        return {'success': false, 'error': 'fileName is required'};
+      }
+      final record = BackupRecord(
+        downloadAccountID: _toInt(arguments['downloadAccountID']),
+        fileDir: arguments['fileDir'] as String? ?? '',
+        fileName: fileName,
+        status: '',
+      );
+      final result = await BackupRecordService().downloadRecord(record);
+      if (result.wasCancelled) {
+        return {'success': false, 'cancelled': true};
+      }
+      if (!result.success) {
+        return {
+          'success': false,
+          'error': result.errorMessage ?? 'download failed',
+        };
+      }
+      return {
+        'success': true,
+        'filePath': result.filePath ?? '',
+        'fileName': result.displayName ?? fileName,
+        'privateFallbackUsed': result.privateFallbackUsed,
+      };
+    } catch (e) {
+      appLogger.e('downloadBackupRecord failed: $e');
+      return _err(e);
+    }
+  }
+
   // ── AI 模型 ──────────────────────────────────────────────────────────────
 
   /// 删除 Ollama 模型。参数：`{id: int}`

@@ -12,6 +12,7 @@ struct BackupDetailView: View {
     @State private var showDeleteConfirm = false
     @State private var showRestoreConfirm = false
     @State private var actionMessage: String?
+    @State private var isDownloading = false
 
     var body: some View {
         NavigationStack {
@@ -66,6 +67,20 @@ struct BackupDetailView: View {
                 }
 
                 Section(translations.get("websitesDetailActionsTitle", fallback: "Actions")) {
+                    Button {
+                        Task { await download() }
+                    } label: {
+                        HStack {
+                            Label(translations.get("backupRecordsDownloadAction",
+                                                   fallback: "Download"),
+                                  systemImage: "arrow.down.circle")
+                            if isDownloading {
+                                Spacer()
+                                ProgressView().controlSize(.small)
+                            }
+                        }
+                    }
+                    .disabled(isDownloading || backup.fileName.isEmpty)
                     Button {
                         showRestoreConfirm = true
                     } label: {
@@ -129,6 +144,35 @@ struct BackupDetailView: View {
             return backup.size.isEmpty ? "--" : backup.size
         }
         return ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
+    }
+
+    private func download() async {
+        guard !backup.fileName.isEmpty else { return }
+        isDownloading = true
+        actionMessage = nil
+        do {
+            let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+                "downloadBackupRecord",
+                arguments: [
+                    "downloadAccountID": backup.downloadAccountID,
+                    "fileDir": backup.fileDir,
+                    "fileName": backup.fileName,
+                ]
+            )
+            let payload = raw as? [String: Any] ?? [:]
+            if payload["success"] as? Bool == true {
+                actionMessage = translations.get("filesDownloadSuccess",
+                                                 fallback: "Download successful")
+            } else if payload["cancelled"] as? Bool == true {
+                actionMessage = nil
+            } else {
+                actionMessage = payload["error"] as? String
+                    ?? translations.get("filesDownloadFailed", fallback: "Download failed")
+            }
+        } catch {
+            actionMessage = error.localizedDescription
+        }
+        isDownloading = false
     }
 
     private func restore() {

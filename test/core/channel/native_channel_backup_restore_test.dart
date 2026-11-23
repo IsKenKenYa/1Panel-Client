@@ -40,4 +40,24 @@ void main() {
       expect(result.containsKey('success'), isTrue);
     });
   });
+
+  group('downloadBackupRecord (native channel write handler)', () {
+    test('缺 fileName 返回失败结构（不发网络请求）', () async {
+      final result = await NativeChannelWriteHandlers.downloadBackupRecord(
+        {'downloadAccountID': 0, 'fileDir': '/opt/1panel/backup'},
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('fileName'));
+    });
+
+    test('dispatch 路由 downloadBackupRecord 到写 handler', () async {
+      final result = await NativeChannelManager.instance.handleMethodCall(
+        'downloadBackupRecord',
+        <String, dynamic>{},
+      );
+
+      expect(result['success'], isFalse);
+    });
+  });
 }
