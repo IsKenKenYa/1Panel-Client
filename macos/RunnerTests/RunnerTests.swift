@@ -537,3 +537,30 @@ class MacWebsiteLoadBalancerTests: XCTestCase {
   }
 }
 
+@MainActor
+class MacAppLockAliasTests: XCTestCase {
+  func testSidebarIdsResolveToDartModuleIds() {
+    let vm = MacOSAppLockController.protectedAliases(for: "virtualMachines")
+    XCTAssertTrue(vm.contains("vm"))
+    XCTAssertTrue(vm.contains("virtualMachines"))
+
+    let security = MacOSAppLockController.protectedAliases(for: "security")
+    XCTAssertTrue(security.contains("verification"))
+
+    let files = MacOSAppLockController.protectedAliases(for: "files")
+    XCTAssertEqual(files, ["files"])
+  }
+
+  func testRequiresUnlockMatchesProtectedModuleThroughAlias() {
+    let suiteName = "onepanel.app-lock.alias.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suiteName)!
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    defaults.set(true, forKey: MacOSAppLockController.enabledPreferenceKey)
+    defaults.set(true, forKey: "flutter.app_lock_on_protected_module")
+    defaults.set(["vm"], forKey: "flutter.app_lock_protected_modules")
+
+    let controller = MacOSAppLockController(defaults: defaults)
+    XCTAssertTrue(controller.requiresUnlock(for: "virtualMachines"))
+    XCTAssertFalse(controller.requiresUnlock(for: "files"))
+  }
+}

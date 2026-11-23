@@ -35,8 +35,32 @@ final class MacOSAppLockController: ObservableObject {
             : savedIds
     }
 
+    /// 侧栏 id 与 Dart 侧保存的模块标识并不总是同名。
+    ///
+    /// Dart 存的是 `vm`、`verification`，侧栏用的是 `virtualMachines`、
+    /// `security`，按原名比较会让这两个模块跳过门禁。
+    static let moduleIdAliases: [String: String] = [
+        "virtualMachines": "vm",
+        "vm": "virtualMachines",
+        "security": "verification",
+        "verification": "security",
+    ]
+
+    /// 侧栏 id 对应的受保护标识集合，含原名与别名。
+    static func protectedAliases(for moduleId: String) -> Set<String> {
+        var ids: Set<String> = [moduleId]
+        if let alias = moduleIdAliases[moduleId] {
+            ids.insert(alias)
+        }
+        return ids
+    }
+
     func requiresUnlock(for moduleId: String) -> Bool {
-        isEnabled && locksProtectedModules && !sessionUnlocked && protectedModuleIds.contains(moduleId)
+        guard isEnabled, locksProtectedModules, !sessionUnlocked else {
+            return false
+        }
+        let ids = Self.protectedAliases(for: moduleId)
+        return ids.contains { protectedModuleIds.contains($0) }
     }
 
     func setEnabled(_ enabled: Bool) {

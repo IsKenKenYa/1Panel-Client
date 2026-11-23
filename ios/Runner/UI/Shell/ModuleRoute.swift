@@ -75,9 +75,14 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// 走查钩子接受的别名：Dart 侧模块标识与枚举名并不完全一致。
+    static let environmentAliases: [String: ModuleRoute] = [
+        "vm": .virtualMachines,
+    ]
+
     static func fromEnvironment(_ value: String?) -> ModuleRoute? {
         guard let value else { return nil }
-        return ModuleRoute(rawValue: value)
+        return ModuleRoute(rawValue: value) ?? environmentAliases[value]
     }
 
     func title(_ translations: TranslationsManager) -> String {
