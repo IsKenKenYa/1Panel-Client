@@ -24403,6 +24403,180 @@ abstract class AppLocalizations {
   /// **'Enter at least one forwarding port.'**
   String get websitesStreamPortsRequired;
 
+  /// No description provided for @websitesLoadBalanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Balance'**
+  String get websitesLoadBalanceTitle;
+
+  /// No description provided for @websitesLoadBalanceEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No load balancers'**
+  String get websitesLoadBalanceEmpty;
+
+  /// No description provided for @websitesLoadBalanceCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Load Balancer'**
+  String get websitesLoadBalanceCreateTitle;
+
+  /// No description provided for @websitesLoadBalanceEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Load Balancer'**
+  String get websitesLoadBalanceEditTitle;
+
+  /// No description provided for @websitesLoadBalanceAlgorithmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Algorithm'**
+  String get websitesLoadBalanceAlgorithmLabel;
+
+  /// No description provided for @websitesLoadBalanceAlgorithmDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get websitesLoadBalanceAlgorithmDefault;
+
+  /// No description provided for @websitesLoadBalanceAlgorithmIpHash.
+  ///
+  /// In en, this message translates to:
+  /// **'IP hash'**
+  String get websitesLoadBalanceAlgorithmIpHash;
+
+  /// No description provided for @websitesLoadBalanceAlgorithmLeastConn.
+  ///
+  /// In en, this message translates to:
+  /// **'Least connections'**
+  String get websitesLoadBalanceAlgorithmLeastConn;
+
+  /// No description provided for @websitesLoadBalanceServerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get websitesLoadBalanceServerLabel;
+
+  /// No description provided for @websitesLoadBalanceWeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get websitesLoadBalanceWeightLabel;
+
+  /// No description provided for @websitesLoadBalanceFlagLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status strategy'**
+  String get websitesLoadBalanceFlagLabel;
+
+  /// No description provided for @websitesLoadBalanceFlagNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get websitesLoadBalanceFlagNone;
+
+  /// No description provided for @websitesLoadBalanceFlagDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Down'**
+  String get websitesLoadBalanceFlagDown;
+
+  /// No description provided for @websitesLoadBalanceFlagBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get websitesLoadBalanceFlagBackup;
+
+  /// No description provided for @websitesLoadBalanceMaxFailsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max fails'**
+  String get websitesLoadBalanceMaxFailsLabel;
+
+  /// No description provided for @websitesLoadBalanceFailTimeoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail timeout'**
+  String get websitesLoadBalanceFailTimeoutLabel;
+
+  /// No description provided for @websitesLoadBalanceMaxConnsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max connections'**
+  String get websitesLoadBalanceMaxConnsLabel;
+
+  /// No description provided for @websitesLoadBalanceAddServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add server'**
+  String get websitesLoadBalanceAddServer;
+
+  /// No description provided for @websitesLoadBalanceRemoveServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove server'**
+  String get websitesLoadBalanceRemoveServer;
+
+  /// No description provided for @websitesLoadBalanceNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get websitesLoadBalanceNameRequired;
+
+  /// No description provided for @websitesLoadBalanceAlgorithmRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an algorithm.'**
+  String get websitesLoadBalanceAlgorithmRequired;
+
+  /// No description provided for @websitesLoadBalanceServersRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one server.'**
+  String get websitesLoadBalanceServersRequired;
+
+  /// No description provided for @websitesLoadBalanceServerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a server address.'**
+  String get websitesLoadBalanceServerRequired;
+
+  /// No description provided for @websitesLoadBalanceDuplicateServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server addresses must be unique.'**
+  String get websitesLoadBalanceDuplicateServer;
+
+  /// No description provided for @websitesLoadBalanceWeightRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight must be between 0 and 100.'**
+  String get websitesLoadBalanceWeightRange;
+
+  /// No description provided for @websitesLoadBalanceMaxFailsRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Max fails must be between 0 and 1000.'**
+  String get websitesLoadBalanceMaxFailsRange;
+
+  /// No description provided for @websitesLoadBalanceMaxConnsRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Max connections must be between 0 and 10000.'**
+  String get websitesLoadBalanceMaxConnsRange;
+
+  /// No description provided for @websitesLoadBalanceFailTimeoutRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail timeout must be between 0 and 300.'**
+  String get websitesLoadBalanceFailTimeoutRange;
+
+  /// No description provided for @websitesLoadBalanceIpHashBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'IP hash does not support backup servers.'**
+  String get websitesLoadBalanceIpHashBackup;
+
   /// No description provided for @backupRecordsDetailTitle.
   ///
   /// In en, this message translates to:

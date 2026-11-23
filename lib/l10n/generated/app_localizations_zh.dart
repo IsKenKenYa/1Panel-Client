@@ -12562,6 +12562,93 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesStreamPortsRequired => '请至少填写一个转发端口。';
 
   @override
+  String get websitesLoadBalanceTitle => '负载均衡';
+
+  @override
+  String get websitesLoadBalanceEmpty => '暂无负载均衡';
+
+  @override
+  String get websitesLoadBalanceCreateTitle => '新建负载均衡';
+
+  @override
+  String get websitesLoadBalanceEditTitle => '编辑负载均衡';
+
+  @override
+  String get websitesLoadBalanceAlgorithmLabel => '调度算法';
+
+  @override
+  String get websitesLoadBalanceAlgorithmDefault => '默认';
+
+  @override
+  String get websitesLoadBalanceAlgorithmIpHash => 'IP 哈希';
+
+  @override
+  String get websitesLoadBalanceAlgorithmLeastConn => '最少连接';
+
+  @override
+  String get websitesLoadBalanceServerLabel => '服务器地址';
+
+  @override
+  String get websitesLoadBalanceWeightLabel => '权重';
+
+  @override
+  String get websitesLoadBalanceFlagLabel => '状态策略';
+
+  @override
+  String get websitesLoadBalanceFlagNone => '正常';
+
+  @override
+  String get websitesLoadBalanceFlagDown => '下线';
+
+  @override
+  String get websitesLoadBalanceFlagBackup => '备用';
+
+  @override
+  String get websitesLoadBalanceMaxFailsLabel => '最大失败次数';
+
+  @override
+  String get websitesLoadBalanceFailTimeoutLabel => '失败超时';
+
+  @override
+  String get websitesLoadBalanceMaxConnsLabel => '最大连接数';
+
+  @override
+  String get websitesLoadBalanceAddServer => '添加服务器';
+
+  @override
+  String get websitesLoadBalanceRemoveServer => '移除服务器';
+
+  @override
+  String get websitesLoadBalanceNameRequired => '请填写名称。';
+
+  @override
+  String get websitesLoadBalanceAlgorithmRequired => '请选择调度算法。';
+
+  @override
+  String get websitesLoadBalanceServersRequired => '请至少添加一个服务器。';
+
+  @override
+  String get websitesLoadBalanceServerRequired => '请填写服务器地址。';
+
+  @override
+  String get websitesLoadBalanceDuplicateServer => '服务器地址不能重复。';
+
+  @override
+  String get websitesLoadBalanceWeightRange => '权重必须在 0 到 100 之间。';
+
+  @override
+  String get websitesLoadBalanceMaxFailsRange => '最大失败次数必须在 0 到 1000 之间。';
+
+  @override
+  String get websitesLoadBalanceMaxConnsRange => '最大连接数必须在 0 到 10000 之间。';
+
+  @override
+  String get websitesLoadBalanceFailTimeoutRange => '失败超时必须在 0 到 300 之间。';
+
+  @override
+  String get websitesLoadBalanceIpHashBackup => 'IP 哈希不支持备用服务器。';
+
+  @override
   String get backupRecordsDetailTitle => '备份详情';
 
   @override

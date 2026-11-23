@@ -12950,6 +12950,99 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter at least one forwarding port.';
 
   @override
+  String get websitesLoadBalanceTitle => 'Load Balance';
+
+  @override
+  String get websitesLoadBalanceEmpty => 'No load balancers';
+
+  @override
+  String get websitesLoadBalanceCreateTitle => 'New Load Balancer';
+
+  @override
+  String get websitesLoadBalanceEditTitle => 'Edit Load Balancer';
+
+  @override
+  String get websitesLoadBalanceAlgorithmLabel => 'Algorithm';
+
+  @override
+  String get websitesLoadBalanceAlgorithmDefault => 'Default';
+
+  @override
+  String get websitesLoadBalanceAlgorithmIpHash => 'IP hash';
+
+  @override
+  String get websitesLoadBalanceAlgorithmLeastConn => 'Least connections';
+
+  @override
+  String get websitesLoadBalanceServerLabel => 'Server address';
+
+  @override
+  String get websitesLoadBalanceWeightLabel => 'Weight';
+
+  @override
+  String get websitesLoadBalanceFlagLabel => 'Status strategy';
+
+  @override
+  String get websitesLoadBalanceFlagNone => 'Normal';
+
+  @override
+  String get websitesLoadBalanceFlagDown => 'Down';
+
+  @override
+  String get websitesLoadBalanceFlagBackup => 'Backup';
+
+  @override
+  String get websitesLoadBalanceMaxFailsLabel => 'Max fails';
+
+  @override
+  String get websitesLoadBalanceFailTimeoutLabel => 'Fail timeout';
+
+  @override
+  String get websitesLoadBalanceMaxConnsLabel => 'Max connections';
+
+  @override
+  String get websitesLoadBalanceAddServer => 'Add server';
+
+  @override
+  String get websitesLoadBalanceRemoveServer => 'Remove server';
+
+  @override
+  String get websitesLoadBalanceNameRequired => 'Enter a name.';
+
+  @override
+  String get websitesLoadBalanceAlgorithmRequired => 'Select an algorithm.';
+
+  @override
+  String get websitesLoadBalanceServersRequired => 'Add at least one server.';
+
+  @override
+  String get websitesLoadBalanceServerRequired => 'Enter a server address.';
+
+  @override
+  String get websitesLoadBalanceDuplicateServer =>
+      'Server addresses must be unique.';
+
+  @override
+  String get websitesLoadBalanceWeightRange =>
+      'Weight must be between 0 and 100.';
+
+  @override
+  String get websitesLoadBalanceMaxFailsRange =>
+      'Max fails must be between 0 and 1000.';
+
+  @override
+  String get websitesLoadBalanceMaxConnsRange =>
+      'Max connections must be between 0 and 10000.';
+
+  @override
+  String get websitesLoadBalanceFailTimeoutRange =>
+      'Fail timeout must be between 0 and 300.';
+
+  @override
+  String get websitesLoadBalanceIpHashBackup =>
+      'IP hash does not support backup servers.';
+
+  @override
   String get backupRecordsDetailTitle => 'Backup Details';
 
   @override
