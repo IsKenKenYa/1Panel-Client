@@ -12,8 +12,8 @@ struct ServersView: View {
     @State private var showDeleteConfirm = false
 
     var body: some View {
-        ZStack {
-            if viewModel.isLoading {
+        Group {
+            if viewModel.isLoading && viewModel.servers.isEmpty {
                 LoadingView()
             } else if viewModel.servers.isEmpty {
                 EmptyStateView(
@@ -21,57 +21,12 @@ struct ServersView: View {
                     message: translations.get("serverListEmptyTitle", fallback: "No servers found")
                 )
             } else {
-                Table(viewModel.servers) {
-                    TableColumn(translations.get("commonName", fallback: "Name")) { server in
-                        HStack(spacing: 6) {
-                            if server.isCurrent {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                    .font(.caption)
-                            }
-                            Text(server.name)
-                                .fontWeight(server.isCurrent ? .semibold : .regular)
-                        }
-                        .contextMenu {
-                            Button {
-                                Task { await viewModel.connectServer(id: server.originalId) }
-                            } label: {
-                                Label(translations.get("connect", fallback: "Connect"), systemImage: "link")
-                            }
-                            Button {
-                                editingServer = server
-                                showAddSheet = true
-                            } label: {
-                                Label(translations.get("commonEdit", fallback: "Edit"), systemImage: "pencil")
-                            }
-                            Divider()
-                            Button(role: .destructive) {
-                                serverToDelete = server
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("serverFormUrl", fallback: "URL")) { server in
-                        Text(server.url)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { server in
-                        if server.isCurrent {
-                            Text(translations.get("serverOnline", fallback: "Connected"))
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 3)
-                                .background(Color.green.opacity(0.15))
-                                .foregroundColor(.green)
-                                .cornerRadius(4)
-                        }
+                List {
+                    ForEach(viewModel.servers) { server in
+                        row(server)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("navServer", fallback: "Servers"))
@@ -87,7 +42,10 @@ struct ServersView: View {
                 }
             }
             ToolbarItem(placement: .automatic) {
-                Button { showAddSheet = true } label: {
+                Button {
+                    editingServer = nil
+                    showAddSheet = true
+                } label: {
                     Image(systemName: "plus")
                 }
                 .help(translations.get("addServer", fallback: "Add Server"))
@@ -123,6 +81,111 @@ struct ServersView: View {
         .onAppear {
             viewModel.fetchServers()
         }
+    }
+
+    /// 每行只承载名称、地址与状态，按 HIG 用列表行表达运维对象；
+    /// 操作直接做成行内可见按钮，右键菜单保留作补充。
+    private func row(_ server: ServerModel) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: server.isCurrent ? "checkmark.circle.fill" : "server.rack")
+                .foregroundStyle(server.isCurrent ? Color.green : Color.secondary)
+                .frame(width: 18)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 8) {
+                    Text(server.name)
+                        .font(.subheadline.weight(server.isCurrent ? .semibold : .regular))
+                    if server.isCurrent {
+                        Text(translations.get("serverOnline", fallback: "Connected"))
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.14), in: Capsule())
+                            .foregroundStyle(.green)
+                    }
+                }
+                Text(server.url)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+            Spacer(minLength: 12)
+            HStack(spacing: 4) {
+                if !server.isCurrent {
+                    rowAction(
+                        title: translations.get("connect", fallback: "Connect"),
+                        systemImage: "link",
+                        destructive: false
+                    ) {
+                        Task { await viewModel.connectServer(id: server.originalId) }
+                    }
+                }
+                rowAction(
+                    title: translations.get("commonEdit", fallback: "Edit"),
+                    systemImage: "pencil",
+                    destructive: false
+                ) {
+                    editingServer = server
+                    showAddSheet = true
+                }
+                rowAction(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    serverToDelete = server
+                    showDeleteConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .onTapGesture(count: 2) {
+            editingServer = server
+            showAddSheet = true
+        }
+        .contextMenu {
+            Button {
+                Task { await viewModel.connectServer(id: server.originalId) }
+            } label: {
+                Label(translations.get("connect", fallback: "Connect"),
+                      systemImage: "link")
+            }
+            Button {
+                editingServer = server
+                showAddSheet = true
+            } label: {
+                Label(translations.get("commonEdit", fallback: "Edit"),
+                      systemImage: "pencil")
+            }
+            Divider()
+            Button(role: .destructive) {
+                serverToDelete = server
+                showDeleteConfirm = true
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
+        }
+    }
+
+    private func rowAction(
+        title: String,
+        systemImage: String,
+        destructive: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .labelStyle(.iconOnly)
+                .font(.system(size: 12, weight: .medium))
+                .frame(width: 26, height: 22)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.borderless)
+        .foregroundStyle(destructive ? Color.red : Color.secondary)
+        .help(title)
     }
 }
 

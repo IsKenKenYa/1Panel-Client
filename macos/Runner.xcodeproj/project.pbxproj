@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		9E1F2A3B4C5D6E7F80910A21 /* ModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1F2A3B4C5D6E7F80910A22 /* ModuleRow.swift */; };
 		005328ABD7AA27E35B54EB1E /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D695296FE7F4CF8AAD51CC39 /* FilesView.swift */; };
 		0FA1CBDC5DBB26BAB27A6DE8 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F32D7C8CF28CE96026BC83A /* MonitoringViewModel.swift */; };
 		111510452946E14C5FEEF321 /* BackupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6FDF289CEC86A11BB13AFD /* BackupsViewModel.swift */; };
@@ -134,6 +135,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E1F2A3B4C5D6E7F80910A22 /* ModuleRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ModuleRow.swift; sourceTree = "<group>"; };
 		030E5442101A5308C9BEEE86 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		03EA651BE7A119BC2C44C711 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		09F043111F83E145A5A7DA53 /* ServersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
@@ -538,6 +540,7 @@ children = (
 			children = (
 				F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */,
 				1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */,
+				9E1F2A3B4C5D6E7F80910A22 /* ModuleRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -873,6 +876,7 @@ children = (
 				78C38F1754782C125F082254 /* SettingsView.swift in Sources */,
 				80EB86CFD7699A888885EB04 /* VisualEffectView.swift in Sources */,
 				1A2B3C4D5E6F7081A2B3C4D63 /* NativeFormSubmission.swift in Sources */,
+				9E1F2A3B4C5D6E7F80910A21 /* ModuleRow.swift in Sources */,
 				1A2B3C4D5E6F7081A2B3C4D65 /* DataChannelAdapter.swift in Sources */,
 				51A8DEBE4E6F6011AA18F13B /* DashboardViewModel.swift in Sources */,
 				D96E61CA3F80F0DCC40FEDC7 /* DashboardView.swift in Sources */,

@@ -1,6 +1,7 @@
-import SwiftUI
 import AppleSharedUI
+import SwiftUI
 
+/// macOS 网站列表：列表行承载域名、备注与状态，行内直接暴露详情、启停与删除。
 struct WebsitesView: View {
     @StateObject private var viewModel = WebsitesViewModel()
     @EnvironmentObject var theme: ThemeManager
@@ -12,7 +13,7 @@ struct WebsitesView: View {
 
     var body: some View {
         Group {
-            if viewModel.isLoading {
+            if viewModel.isLoading && viewModel.websites.isEmpty {
                 LoadingView()
             } else if viewModel.websites.isEmpty {
                 EmptyStateView(
@@ -20,90 +21,58 @@ struct WebsitesView: View {
                     message: translations.get("websitesListEmptyTitle", fallback: "No websites found")
                 )
             } else {
-                Table(viewModel.websites) {
-                    TableColumn(translations.get("websitesPrimaryDomainLabel", fallback: "Primary Domain")) { website in
-                        HStack {
-                            Image(systemName: "globe")
-                                .foregroundColor(.blue)
-                            Text(website.primaryDomain)
-                                .onTapGesture(count: 2) {
-                                    detailWebsite = website
-                                }
-                        }
-                        .contextMenu {
-                            Button {
-                                detailWebsite = website
-                            } label: {
-                                Label(translations.get("websitesDetailTitle", fallback: "Site details"),
-                                      systemImage: "info.circle")
-                            }
-                            let isRunning = website.status.lowercased() == "running"
-                            Button {
-                                Task { await viewModel.toggleWebsiteStatus(id: website.originalId, currentStatus: website.status) }
-                            } label: {
-                                Label(
-                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
-                                    systemImage: isRunning ? "stop.fill" : "play.fill"
-                                )
-                            }
-                            Divider()
-                            Button(role: .destructive) {
-                                websiteToDelete = website
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("websitesRemarkLabel", fallback: "Remark")) { website in
-                        Text(website.remark.isEmpty ? "-" : website.remark)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { website in
-                        let isRunning = website.status.lowercased() == "running"
-                        Text(website.status)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(isRunning ? Color.green.opacity(0.12) : Color.red.opacity(0.12))
-                            .foregroundColor(isRunning ? .green : .red)
-                            .cornerRadius(4)
+                List {
+                    ForEach(viewModel.websites) { website in
+                        row(website)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("serverModuleWebsites", fallback: "Websites"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
-                    ProgressView().scaleEffect(0.6)
+                    ProgressView().controlSize(.small)
                 } else {
-                    Button { viewModel.fetchWebsites() } label: {
-                        Image(systemName: "arrow.clockwise")
+                    Button {
+                        viewModel.fetchWebsites()
+                    } label: {
+                        Label(translations.get("commonRefresh", fallback: "Refresh"),
+                              systemImage: "arrow.clockwise")
                     }
                     .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirmTitle", fallback: "Delete \"\(websiteToDelete?.primaryDomain ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
             Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
-                if let w = websiteToDelete { Task { await viewModel.deleteWebsite(id: w.originalId) } }
+                guard let website = websiteToDelete else { return }
+                websiteToDelete = nil
+                Task { await viewModel.deleteWebsite(id: website.originalId) }
             }
-            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
+                websiteToDelete = nil
+            }
         } message: {
-            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
+            Text(websiteToDelete.map { "\($0.primaryDomain)\n" } ?? ""
+                 + translations.get("deleteCannotUndoMessage",
+                                    fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
-            get: { viewModel.errorMessage != nil },
-            set: { if !$0 { viewModel.errorMessage = nil } }
-        )) {
-            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+        .alert(
+            translations.get("commonError", fallback: "Error"),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) {
+                viewModel.errorMessage = nil
+            }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
@@ -112,6 +81,79 @@ struct WebsitesView: View {
             WebsiteDetailView(website: website)
                 .frame(minWidth: 880, minHeight: 640)
                 .id(website.id)
+        }
+    }
+
+    private func row(_ website: WebsiteModel) -> some View {
+        let isRunning = website.status.lowercased() == "running"
+        return ModuleRow(
+            icon: "globe",
+            iconColor: .blue,
+            title: website.primaryDomain,
+            subtitle: website.remark,
+            badge: (website.status.isEmpty ? "--" : website.status,
+                    isRunning ? .green : .red),
+            onOpen: { detailWebsite = website }
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: translations.get("websitesDetailTitle", fallback: "Site details"),
+                    systemImage: "info.circle"
+                ) { detailWebsite = website }
+                RowActionButton(
+                    title: isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                ) {
+                    Task {
+                        await viewModel.toggleWebsiteStatus(
+                            id: website.originalId,
+                            currentStatus: website.status
+                        )
+                    }
+                }
+                RowActionButton(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) {
+                    websiteToDelete = website
+                    showDeleteConfirm = true
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button {
+                detailWebsite = website
+            } label: {
+                Label(translations.get("websitesDetailTitle", fallback: "Site details"),
+                      systemImage: "info.circle")
+            }
+            Button {
+                Task {
+                    await viewModel.toggleWebsiteStatus(
+                        id: website.originalId,
+                        currentStatus: website.status
+                    )
+                }
+            } label: {
+                Label(
+                    isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                )
+            }
+            Divider()
+            Button(role: .destructive) {
+                websiteToDelete = website
+                showDeleteConfirm = true
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
         }
     }
 }
