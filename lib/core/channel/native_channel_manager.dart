@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 import 'native_channel_database_deep_handlers.dart';
@@ -25,14 +27,17 @@ class NativeChannelManager implements NativeChannelPort {
   static const MethodChannel _methodChannel =
       MethodChannel('com.onepanel.client/method');
 
+
   /// Static entry point called from `main.dart`.
   static void init() {
     _methodChannel.setMethodCallHandler(_handleMethodCall);
+    NativeChannelReadHandlers.bindContainerLogChannel(_methodChannel);
   }
 
   @override
   void initInstance() {
     _methodChannel.setMethodCallHandler(_handleMethodCall);
+    NativeChannelReadHandlers.bindContainerLogChannel(_methodChannel);
   }
 
   @override
@@ -77,6 +82,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getContainers(arguments);
       case 'getContainerLogs':
         return NativeChannelReadHandlers.getContainerLogs(arguments);
+      case 'startContainerLogStream':
+        return NativeChannelReadHandlers.startContainerLogStream(arguments);
+      case 'stopContainerLogStream':
+        return NativeChannelReadHandlers.stopContainerLogStream();
       case 'getContainerInspect':
         return NativeChannelReadHandlers.getContainerInspect(arguments);
       case 'getContainerImages':
@@ -163,6 +172,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getCronJobRecords(arguments);
       case 'getBackups':
         return NativeChannelReadHandlers.getBackups(arguments);
+      case 'getBackupAccounts':
+        return NativeChannelReadHandlers.getBackupAccounts(arguments);
+      case 'getBackupAccountOptions':
+        return NativeChannelReadHandlers.getBackupAccountOptions(arguments);
       case 'getAIModels':
         return NativeChannelReadHandlers.getAIModels(arguments);
 
@@ -374,6 +387,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.toggleContainerState(arguments);
       case 'restartContainer':
         return NativeChannelWriteHandlers.restartContainer(arguments);
+      case 'killContainer':
+        return NativeChannelWriteHandlers.killContainer(arguments);
+      case 'pauseContainer':
+        return NativeChannelWriteHandlers.pauseContainer(arguments);
+      case 'unpauseContainer':
+        return NativeChannelWriteHandlers.unpauseContainer(arguments);
       case 'startContainer':
         return NativeChannelWriteHandlers.startContainer(arguments);
       case 'stopContainer':
@@ -384,6 +403,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.stopListeningProcess(arguments);
       case 'createContainer':
         return NativeChannelWriteHandlers.createContainer(arguments);
+      case 'uploadFilesToContainer':
+        return NativeChannelWriteHandlers.uploadFilesToContainer(arguments);
+      case 'deleteContainerFiles':
+        return NativeChannelWriteHandlers.deleteContainerFiles(arguments);
       case 'deleteContainerImage':
         return NativeChannelWriteHandlers.deleteContainerImage(arguments);
       case 'deleteContainerNetwork':
@@ -516,6 +539,14 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.deleteBackup(arguments);
       case 'downloadBackupRecord':
         return NativeChannelWriteHandlers.downloadBackupRecord(arguments);
+      case 'createBackupAccount':
+        return NativeChannelWriteHandlers.createBackupAccount(arguments);
+      case 'updateBackupAccount':
+        return NativeChannelWriteHandlers.updateBackupAccount(arguments);
+      case 'deleteBackupAccount':
+        return NativeChannelWriteHandlers.deleteBackupAccount(arguments);
+      case 'checkBackupAccount':
+        return NativeChannelWriteHandlers.checkBackupAccount(arguments);
 
       // ── Write: AI ───────────────────────────────────────────────────────
       case 'createAIModel':

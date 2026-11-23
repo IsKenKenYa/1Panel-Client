@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -59,6 +60,8 @@ import '../../data/models/cronjob_list_models.dart';
 import '../../data/models/cronjob_record_models.dart';
 import '../../data/models/database_models.dart';
 import '../../data/repositories/database_repository.dart';
+import '../../data/repositories/backup_repository.dart';
+import '../../data/models/backup_request_models.dart';
 import '../../data/repositories/website_repository.dart';
 import '../services/app_preferences_service.dart';
 import '../services/logger/logger_service.dart';
@@ -412,6 +415,64 @@ class NativeChannelReadHandlers {
     return ContainerService().getContainerLogs(name, tail: tail);
   }
 
+  static StreamSubscription<String>? _containerLogSubscription;
+
+  /// 开始跟随容器日志。
+  ///
+  /// 服务端以 base64 SSE 帧持续推送；每个文本块通过方法通道回调
+  /// `containerLogChunk` 交给原生侧，结束时回调 `containerLogDone`。
+  /// 参数：`{container: String, tail?: String, since?: String, follow?: bool}`。
+  static Future<dynamic> startContainerLogStream(dynamic arguments) async {
+    await stopContainerLogStream();
+    final container = (arguments?['container'] as String? ?? '').trim();
+    if (container.isEmpty) {
+      throw ArgumentError('container is required');
+    }
+    final follow = arguments?['follow'] as bool? ?? true;
+    _containerLogSubscription = ContainerService()
+        .streamContainerLogs(
+          container,
+          tail: arguments?['tail'] as String?,
+          since: arguments?['since'] as String?,
+          follow: follow,
+        )
+        .listen(
+          (chunk) {
+            _logChannel?.invokeMethod<void>('containerLogChunk', {
+              'container': container,
+              'chunk': chunk,
+            });
+          },
+          onError: (Object error) {
+            _logChannel?.invokeMethod<void>('containerLogError', {
+              'container': container,
+              'error': '$error',
+            });
+          },
+          onDone: () {
+            _logChannel?.invokeMethod<void>('containerLogDone', {
+              'container': container,
+            });
+          },
+        );
+    return <String, dynamic>{'success': true};
+  }
+
+  /// 停止跟随容器日志。
+  static Future<dynamic> stopContainerLogStream() async {
+    final subscription = _containerLogSubscription;
+    _containerLogSubscription = null;
+    await subscription?.cancel();
+    return <String, dynamic>{'success': true};
+  }
+
+  /// 由通道管理器注入同一个方法通道，供日志块回调使用。
+  static void bindContainerLogChannel(MethodChannel channel) {
+    _logChannel = channel;
+  }
+
+  static MethodChannel? _logChannel;
+
   /// 容器镜像列表（`/containers/image/all`）。字段与上游真实返回一致。
   static Future<dynamic> getContainerImages(dynamic arguments) async {
     final client = await ApiClientManager.instance.getCurrentClient();
@@ -571,6 +632,50 @@ class NativeChannelReadHandlers {
     } catch (e) {
       appLogger.e('Failed to get container file content for native: $e');
       return <String, dynamic>{};
+    }
+  }
+
+  /// 备份账户列表。参数：`{page?: int, pageSize?: int, keyword?: String}`。
+  static Future<dynamic> getBackupAccounts(dynamic arguments) async {
+    try {
+      final repository = BackupRepository();
+      final page = await repository.searchAccounts(
+        BackupAccountSearchRequest(
+          page: int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+          pageSize: int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50,
+          keyword: arguments?['keyword'] as String?,
+        ),
+      );
+      return {
+        'items': page.items.map((account) => account.toJson()).toList(),
+        'total': page.total,
+      };
+    } catch (e) {
+      appLogger.e('Failed to get backup accounts for native: $e');
+      return <String, dynamic>{'items': <dynamic>[], 'total': 0};
+    }
+  }
+
+  /// 备份账户可选类型与本地目录。参数：无。
+  static Future<dynamic> getBackupAccountOptions(dynamic arguments) async {
+    try {
+      final repository = BackupRepository();
+      final options = await repository.getOptions();
+      final localDir = await repository.getLocalDir();
+      return {
+        'options': options
+            .map((option) => {
+                  'id': option.id,
+                  'name': option.name,
+                  'type': option.type,
+                  'isPublic': option.isPublic,
+                })
+            .toList(),
+        'localDir': localDir,
+      };
+    } catch (e) {
+      appLogger.e('Failed to get backup account options for native: $e');
+      return <String, dynamic>{'types': <dynamic>[]};
     }
   }
 

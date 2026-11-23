@@ -62,6 +62,71 @@ public final class ContainerListLoader: ObservableObject {
         )
     }
 
+    /// 强制停止容器（`killContainer` 通道）。
+    public func killContainer(id: String, failureFallback: String = "Operation failed") async {
+        await performWrite(
+            "killContainer",
+            arguments: ["id": id],
+            failureFallback: failureFallback
+        )
+    }
+
+    /// 暂停容器（`pauseContainer` 通道）。
+    public func pauseContainer(id: String, failureFallback: String = "Operation failed") async {
+        await performWrite(
+            "pauseContainer",
+            arguments: ["id": id],
+            failureFallback: failureFallback
+        )
+    }
+
+    /// 恢复已暂停容器（`unpauseContainer` 通道）。
+    public func unpauseContainer(id: String, failureFallback: String = "Operation failed") async {
+        await performWrite(
+            "unpauseContainer",
+            arguments: ["id": id],
+            failureFallback: failureFallback
+        )
+    }
+
+    /// 从设备选择文件上传到容器目录（`uploadFilesToContainer` 通道）。
+    /// 用户取消选择时返回 `cancelled`，不算失败。
+    public func uploadFiles(
+        containerId: String,
+        path: String,
+        failureFallback: String = "Operation failed"
+    ) async -> Bool {
+        guard !isBusy else { return false }
+        errorMessage = nil
+        isProcessing = true
+        defer { isProcessing = false }
+        do {
+            let result = try await channel.invoke(
+                "uploadFilesToContainer",
+                arguments: ["containerId": containerId, "path": path]
+            ) as? [String: Any]
+            if result?["success"] as? Bool == true { return true }
+            if result?["cancelled"] as? Bool == true { return false }
+            errorMessage = result?["error"] as? String ?? failureFallback
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        return false
+    }
+
+    /// 删除容器内文件（`deleteContainerFiles` 通道）。
+    public func deleteFiles(
+        containerId: String,
+        paths: [String],
+        failureFallback: String = "Operation failed"
+    ) async {
+        await performWrite(
+            "deleteContainerFiles",
+            arguments: ["containerId": containerId, "paths": paths],
+            failureFallback: failureFallback
+        )
+    }
+
     /// 容器日志（`getContainerLogs` 通道）。
     public func loadLogs(name: String, tail: String = "500") async throws -> String {
         let result = try await channel.invoke(

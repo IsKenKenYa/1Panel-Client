@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart' show MultipartFile;
 import 'package:mime/mime.dart';
 import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
-import 'dart:convert';
 
 import '../../features/alert/alert_service.dart';
 import '../../features/alert/alert_types.dart';
@@ -23,6 +26,7 @@ import '../../features/commands/services/command_service.dart';
 import '../../features/script_library/services/script_library_service.dart';
 import '../../features/group/services/group_service.dart';
 import '../../features/backups/services/backup_record_service.dart';
+import '../../data/repositories/backup_repository.dart';
 import '../../features/containers/container_service.dart';
 import '../../features/databases/databases_service.dart';
 import '../../data/models/cronjob_list_models.dart';
@@ -966,6 +970,51 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 强制停止容器。参数：`{id: String}`
+  static Future<Map<String, dynamic>> killContainer(dynamic arguments) async {
+    try {
+      final id = (arguments['id'] as String? ?? '').trim();
+      if (id.isEmpty) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await ContainerService().killContainer(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('killContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 暂停容器。参数：`{id: String}`
+  static Future<Map<String, dynamic>> pauseContainer(dynamic arguments) async {
+    try {
+      final id = (arguments['id'] as String? ?? '').trim();
+      if (id.isEmpty) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await ContainerService().pauseContainer(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('pauseContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 恢复已暂停容器。参数：`{id: String}`
+  static Future<Map<String, dynamic>> unpauseContainer(dynamic arguments) async {
+    try {
+      final id = (arguments['id'] as String? ?? '').trim();
+      if (id.isEmpty) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await ContainerService().unpauseContainer(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('unpauseContainer failed: $e');
+      return _err(e);
+    }
+  }
+
   /// 启动容器。参数：`{id: String}`
   static Future<Map<String, dynamic>> startContainer(dynamic arguments) async {
     try {
@@ -1630,6 +1679,69 @@ class NativeChannelWriteHandlers {
       return {'success': true, 'count': paths.length};
     } catch (e) {
       appLogger.e('uploadFilesFromDevice failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 从设备选择文件并上传到容器内目录。参数：
+  /// `{containerId: String, path: String 容器内目录必填}`。
+  /// 用户取消选择时返回 `cancelled`。
+  static Future<Map<String, dynamic>> uploadFilesToContainer(
+      dynamic arguments) async {
+    try {
+      final containerId = (arguments['containerId'] as String? ?? '').trim();
+      final path = (arguments['path'] as String? ?? '').trim();
+      if (containerId.isEmpty || path.isEmpty) {
+        return {
+          'success': false,
+          'error': 'containerId and path are required',
+        };
+      }
+      final localPaths = await PlatformFileService().pickFiles();
+      if (localPaths.isEmpty) {
+        return {'success': false, 'cancelled': true};
+      }
+      final service = ContainerService();
+      for (final localPath in localPaths) {
+        final file = File(localPath);
+        if (!await file.exists()) {
+          return {'success': false, 'error': 'Local file not found: $localPath'};
+        }
+        await service.uploadContainerFile(
+          containerId: containerId,
+          path: path,
+          file: await MultipartFile.fromFile(
+            localPath,
+            filename: localPath.split('/').last,
+          ),
+        );
+      }
+      return {'success': true, 'count': localPaths.length};
+    } catch (e) {
+      appLogger.e('uploadFilesToContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除容器内文件。参数：`{containerId: String, paths: [String] 必填}`
+  static Future<Map<String, dynamic>> deleteContainerFiles(
+      dynamic arguments) async {
+    try {
+      final containerId = (arguments['containerId'] as String? ?? '').trim();
+      final rawPaths = arguments['paths'];
+      final paths = rawPaths is List
+          ? rawPaths.map((entry) => '$entry'.trim()).where((p) => p.isNotEmpty).toList()
+          : const <String>[];
+      if (containerId.isEmpty || paths.isEmpty) {
+        return {'success': false, 'error': 'containerId and paths are required'};
+      }
+      await ContainerService().deleteContainerFiles(
+        containerId: containerId,
+        paths: paths,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerFiles failed: $e');
       return _err(e);
     }
   }
@@ -2628,6 +2740,109 @@ class NativeChannelWriteHandlers {
       appLogger.e('deleteBackup failed: $e');
       return _err(e);
     }
+  }
+
+  /// 新建备份账户。参数：
+  /// `{name: String, type: String, isPublic?: bool, accessKey?: String,
+  ///   credential?: String, bucket?: String, backupPath?: String,
+  ///   rememberAuth?: bool, vars?: String}`
+  static Future<Map<String, dynamic>> createBackupAccount(
+      dynamic arguments) async {
+    try {
+      final request = _backupAccountRequest(arguments);
+      if (request == null) {
+        return {'success': false, 'error': 'name and type are required'};
+      }
+      await BackupRepository().createAccount(request);
+      return _ok();
+    } catch (e) {
+      appLogger.e('createBackupAccount failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 修改备份账户。参数：`{id: int 必填} + 同 createBackupAccount`
+  static Future<Map<String, dynamic>> updateBackupAccount(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      final request = _backupAccountRequest(arguments, id: id);
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      if (request == null) {
+        return {'success': false, 'error': 'name and type are required'};
+      }
+      await BackupRepository().updateAccount(request);
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateBackupAccount failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除备份账户。参数：`{id: int 必填}`
+  static Future<Map<String, dynamic>> deleteBackupAccount(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final accounts = await BackupRepository().searchAccounts(
+        const BackupAccountSearchRequest(pageSize: 1000),
+      );
+      final target =
+          accounts.items.where((account) => account.id == id).firstOrNull;
+      if (target == null) {
+        return {'success': false, 'error': 'backup account not found'};
+      }
+      await BackupRepository().deleteAccount(target);
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteBackupAccount failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 检测备份账户连通性。参数同 createBackupAccount。
+  static Future<Map<String, dynamic>> checkBackupAccount(
+      dynamic arguments) async {
+    try {
+      final request = _backupAccountRequest(arguments);
+      if (request == null) {
+        return {'success': false, 'error': 'name and type are required'};
+      }
+      final result = await BackupRepository().checkConnection(request);
+      return {
+        'success': result.isOk,
+        'message': result.msg ?? '',
+      };
+    } catch (e) {
+      appLogger.e('checkBackupAccount failed: $e');
+      return _err(e);
+    }
+  }
+
+  static BackupOperate? _backupAccountRequest(
+    dynamic arguments, {
+    int? id,
+  }) {
+    final name = (arguments['name'] as String? ?? '').trim();
+    final type = (arguments['type'] as String? ?? '').trim();
+    if (name.isEmpty || type.isEmpty) return null;
+    return BackupOperate(
+      id: id,
+      name: name,
+      type: type,
+      isPublic: arguments['isPublic'] as bool? ?? false,
+      accessKey: arguments['accessKey'] as String?,
+      credential: arguments['credential'] as String?,
+      bucket: arguments['bucket'] as String?,
+      backupPath: arguments['backupPath'] as String?,
+      rememberAuth: arguments['rememberAuth'] as bool?,
+      vars: arguments['vars'] as String?,
+    );
   }
 
   /// 下载备份记录到设备。参数：
