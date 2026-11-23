@@ -201,6 +201,8 @@ struct AddServerSheet: View {
     @State private var name: String
     @State private var url: String
     @State private var token = ""
+    @State private var tokenValidity: String
+    @State private var allowInsecureTls: Bool
     @State private var submission = NativeFormSubmission.idle
 
     init(viewModel: ServersViewModel, editingServer: ServerModel?) {
@@ -209,6 +211,12 @@ struct AddServerSheet: View {
         // 仅在打开表单时预填，后续输入由表单管理。
         _name = State(initialValue: editingServer?.name ?? "")
         _url = State(initialValue: editingServer?.url ?? "")
+        _tokenValidity = State(
+            initialValue: String(editingServer?.tokenValidity ?? 0)
+        )
+        _allowInsecureTls = State(
+            initialValue: editingServer?.allowInsecureTls ?? false
+        )
     }
 
     private var isEditing: Bool { editingServer != nil }
@@ -230,10 +238,42 @@ struct AddServerSheet: View {
                 .fontWeight(.semibold)
 
             Form {
-                TextField(translations.get("serverFormName", fallback: "Name"), text: $name)
-                TextField(translations.get("serverFormUrl", fallback: "URL (https://host:port)"), text: $url)
+                Section {
+                    TextField(translations.get("serverFormName", fallback: "Name"),
+                              text: $name)
+                    TextField(
+                        translations.get("serverFormUrl",
+                                         fallback: "URL (https://host:port)"),
+                        text: $url
+                    )
                     .autocorrectionDisabled()
-                SecureField(translations.get("serverFormApiKey", fallback: "API Token"), text: $token)
+                    SecureField(translations.get("serverFormApiKey", fallback: "API key"),
+                                text: $token)
+                } footer: {
+                    if isEditing, editingServer?.url == trimmedURL {
+                        Text(translations.get("serverFormApiKeyKeepHint",
+                                              fallback: "Leave empty to keep the saved key."))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Section {
+                    TextField(
+                        translations.get("serverTokenValidity",
+                                         fallback: "Token validity (minutes)"),
+                        text: $tokenValidity
+                    )
+                    Toggle(
+                        translations.get("serverFormAllowInsecureTls",
+                                         fallback: "Ignore TLS certificate validation"),
+                        isOn: $allowInsecureTls
+                    )
+                } footer: {
+                    Text(translations.get("serverTokenValidityHint",
+                                          fallback: "Set to 0 to skip timestamp validation"))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .formStyle(.grouped)
             .disabled(submission.isSubmitting)
@@ -266,12 +306,27 @@ struct AddServerSheet: View {
         let name = trimmedName
         let url = trimmedURL
         let token = trimmedToken
+        let validity = Int(tokenValidity.trimmingCharacters(in: .whitespaces)) ?? 0
+        let insecureTls = allowInsecureTls
         Task {
             let outcome: NativeMutationOutcome
             if let editingServer {
-                outcome = await viewModel.updateServer(server: editingServer, name: name, url: url, token: token)
+                outcome = await viewModel.updateServer(
+                    server: editingServer,
+                    name: name,
+                    url: url,
+                    token: token,
+                    tokenValidity: validity,
+                    allowInsecureTls: insecureTls
+                )
             } else {
-                outcome = await viewModel.addServer(name: name, url: url, token: token)
+                outcome = await viewModel.addServer(
+                    name: name,
+                    url: url,
+                    token: token,
+                    tokenValidity: validity,
+                    allowInsecureTls: insecureTls
+                )
             }
             if submission.finish(outcome) {
                 dismiss()
