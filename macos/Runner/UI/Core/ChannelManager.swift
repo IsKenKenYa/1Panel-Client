@@ -27,8 +27,75 @@ class ChannelManager {
     
     private var dataChannel: FlutterMethodChannel?
     private var shellChannel: FlutterMethodChannel?
+
+    /// 容器日志跟随回调：Dart 侧订阅 SSE 后逐块回调。
+    private var logChunkHandler: ((String) -> Void)?
+    private var logDoneHandler: (() -> Void)?
+    private var logErrorHandler: ((String) -> Void)?
     
     private init() {}
+
+    /// 订阅容器日志流。
+    ///
+    /// Dart 侧 `startContainerLogStream` 建立 SSE 订阅，随后通过方法通道
+    /// 回调 `containerLogChunk`、`containerLogDone`、`containerLogError`。
+    @MainActor
+    func startContainerLogStream(
+        container: String,
+        tail: String?,
+        onChunk: @escaping (String) -> Void,
+        onDone: @escaping () -> Void,
+        onError: @escaping (String) -> Void
+    ) async throws {
+        logChunkHandler = onChunk
+        logDoneHandler = onDone
+        logErrorHandler = onError
+        var arguments: [String: Any] = ["container": container, "follow": true]
+        if let tail, !tail.isEmpty { arguments["tail"] = tail }
+        let raw = try await invokeDataMethodAsync(
+            "startContainerLogStream",
+            arguments: arguments
+        )
+        let payload = raw as? [String: Any] ?? [:]
+        if payload["success"] as? Bool != true {
+            throw NSError(
+                domain: "onepanel.containerLogs",
+                code: 1,
+                userInfo: [
+                    NSLocalizedDescriptionKey: payload["error"] as? String
+                        ?? "Failed to start log stream",
+                ]
+            )
+        }
+    }
+
+    /// 停止容器日志跟随。
+    @MainActor
+    func stopContainerLogStream() async {
+        logChunkHandler = nil
+        logDoneHandler = nil
+        logErrorHandler = nil
+        _ = try? await invokeDataMethodAsync("stopContainerLogStream", arguments: nil)
+    }
+
+    private func handleLogCallback(
+        _ call: FlutterMethodCall,
+        result: @escaping FlutterResult
+    ) {
+        let arguments = call.arguments as? [String: Any] ?? [:]
+        switch call.method {
+        case "containerLogChunk":
+            logChunkHandler?(arguments["chunk"] as? String ?? "")
+        case "containerLogDone":
+            logDoneHandler?()
+        case "containerLogError":
+            logErrorHandler?(arguments["error"] as? String ?? "Log stream failed")
+        default:
+            result(FlutterMethodNotImplemented)
+            return
+        }
+        result(nil)
+    }
     
     func setup(binaryMessenger: FlutterBinaryMessenger) {
         dataChannel = FlutterMethodChannel(
@@ -37,6 +104,14 @@ class ChannelManager {
         )
         // 原生壳可在 Dart 通道就绪前请求导航文案和首屏仪表盘。
         dataChannel?.resizeBuffer(8)
+        // Dart 侧跟随日志时通过同一通道回调日志块。
+        dataChannel?.setMethodCallHandler { [weak self] call, result in
+            guard let self else {
+                result(FlutterMethodNotImplemented)
+                return
+            }
+            self.handleLogCallback(call, result: result)
+        }
         shellChannel = FlutterMethodChannel(
             name: "onepanel/macos_shell",
             binaryMessenger: binaryMessenger
