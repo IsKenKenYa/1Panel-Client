@@ -24,46 +24,12 @@ struct FirewallView: View {
                     message: translations.get("firewallRulesEmptyTitle", fallback: "No firewall rules")
                 )
             } else {
-                Table(viewModel.rules) {
-                    TableColumn(translations.get("firewallPortLabel", fallback: "Port")) { rule in
-                        HStack {
-                            Image(systemName: "network.badge.shield.half.filled")
-                                .foregroundColor(.blue)
-                                .font(.caption)
-                            Text(rule.port.isEmpty ? "--" : rule.port)
-                        }
-                        .contextMenu {
-                            if rule.deletionArguments != nil && !viewModel.isLoading && !viewModel.isProcessing {
-                                Button(role: .destructive) {
-                                    ruleToDelete = rule
-                                } label: {
-                                    Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                                }
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("firewallProtocolLabel", fallback: "Protocol")) { rule in
-                        Text(rule.protocolType.isEmpty ? "--" : rule.protocolType.uppercased())
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("firewallAddressLabel", fallback: "Address")) { rule in
-                        Text(rule.address.isEmpty ? "--" : rule.address)
-                            .font(.caption.monospaced())
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("firewallStrategyLabel", fallback: "Action")) { rule in
-                        let isAllow = rule.strategy.lowercased() == "allow" || rule.strategy.lowercased() == "accept"
-                        Text(rule.strategy.isEmpty ? "--" : rule.strategy)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(isAllow ? Color.green.opacity(0.12) : Color.red.opacity(0.12))
-                            .foregroundColor(isAllow ? .green : .red)
-                            .cornerRadius(4)
+                List {
+                    ForEach(viewModel.rules) { rule in
+                        ruleRow(rule)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("serverModuleFirewall", fallback: "Firewall"))
@@ -121,6 +87,44 @@ struct FirewallView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear { viewModel.fetchRules() }
+    }
+    private func ruleRow(_ rule: FirewallRuleModel) -> some View {
+        let isAllow = ["allow", "accept"].contains(rule.strategy.lowercased())
+        let endpoint = [rule.port, rule.protocolType.uppercased()]
+            .filter { !$0.isEmpty }
+            .joined(separator: "/")
+        let source = rule.address.isEmpty
+            ? translations.get("firewallSourceAnywhere", fallback: "Anywhere")
+            : rule.address
+        let canDelete = rule.deletionArguments != nil
+            && !viewModel.isLoading && !viewModel.isProcessing
+        return ModuleRow(
+            icon: "network.badge.shield.half.filled",
+            iconColor: .blue,
+            title: endpoint.isEmpty ? "--" : endpoint,
+            subtitle: source,
+            badge: rule.strategy.isEmpty ? nil : (rule.strategy, isAllow ? .green : .red)
+        ) {
+            RowActions {
+                if canDelete {
+                    RowActionButton(
+                        title: translations.get("commonDelete", fallback: "Delete"),
+                        systemImage: "trash",
+                        destructive: true
+                    ) { ruleToDelete = rule }
+                }
+            }
+        }
+        .contextMenu {
+            if canDelete {
+                Button(role: .destructive) {
+                    ruleToDelete = rule
+                } label: {
+                    Label(translations.get("commonDelete", fallback: "Delete"),
+                          systemImage: "trash")
+                }
+            }
+        }
     }
 }
 

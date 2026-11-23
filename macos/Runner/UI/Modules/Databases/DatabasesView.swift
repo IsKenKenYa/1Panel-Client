@@ -23,54 +23,13 @@ struct DatabasesView: View {
                     message: translations.get("databasesEmptyTitle", fallback: "No databases found")
                 )
             } else {
-                Table(viewModel.databases, selection: $selection) {
-                    TableColumn(translations.get("databaseNameLabel", fallback: "Name")) { db in
-                        HStack {
-                            Image(systemName: "externaldrive.connected.to.line.below")
-                                .foregroundColor(.blue)
-                            Text(db.name)
-                            .onTapGesture(count: 2) {
-                                detailDatabase = db
-                            }
-                        }
-                        .contextMenu {
-                            Button {
-                                detailDatabase = db
-                            } label: {
-                                Label(translations.get("containerDetailTitle", fallback: "Details"),
-                                      systemImage: "info.circle")
-                            }
-                            if db.unbindArguments != nil {
-                                Button(role: .destructive) {
-                                    Task { await viewModel.unbind(db, confirmed: false) }
-                                } label: {
-                                    Label(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"), systemImage: "link.badge.minus")
-                                }
-                                .disabled(viewModel.isProcessing)
-                            }
-                        }
-                    }
-                    TableColumn(translations.get("databaseEngineLabel", fallback: "Type")) { db in
-                        Text(db.type.isEmpty ? "--" : db.type)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("databaseVersionLabel", fallback: "Version")) { db in
-                        Text(db.version.isEmpty ? "--" : db.version)
-                            .foregroundColor(.secondary)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { db in
-                        let isRunning = db.status.lowercased() == "running"
-                        Text(db.status.isEmpty ? "--" : db.status)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(isRunning ? Color.green.opacity(0.12) : Color.red.opacity(0.12))
-                            .foregroundColor(isRunning ? .green : .red)
-                            .cornerRadius(4)
+                List(selection: $selection) {
+                    ForEach(viewModel.databases) { db in
+                        row(db)
+                            .tag(db.id)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
         }
         .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))
@@ -121,6 +80,55 @@ struct DatabasesView: View {
             DatabaseDetailView(database: database)
                 .frame(minWidth: 720, minHeight: 580)
                 .id(database.id)
+        }
+    }
+
+    private func row(_ db: DatabaseModel) -> some View {
+        let isRunning = db.status.lowercased() == "running"
+        let subtitle = [db.type, db.version, db.description]
+            .filter { !$0.isEmpty }
+            .joined(separator: " · ")
+        return ModuleRow(
+            icon: "externaldrive.connected.to.line.below",
+            iconColor: .blue,
+            title: db.name,
+            subtitle: subtitle,
+            badge: db.status.isEmpty ? nil : (db.status, isRunning ? .green : .red),
+            onOpen: { detailDatabase = db }
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: translations.get("containerDetailTitle", fallback: "Details"),
+                    systemImage: "info.circle"
+                ) { detailDatabase = db }
+                if db.unbindArguments != nil {
+                    RowActionButton(
+                        title: translations.get("databaseRemoteUnbindAction", fallback: "Unbind"),
+                        systemImage: "link.badge.minus",
+                        destructive: true
+                    ) {
+                        Task { await viewModel.unbind(db, confirmed: false) }
+                    }
+                }
+            }
+            .disabled(viewModel.isProcessing)
+        }
+        .contextMenu {
+            Button {
+                detailDatabase = db
+            } label: {
+                Label(translations.get("containerDetailTitle", fallback: "Details"),
+                      systemImage: "info.circle")
+            }
+            if db.unbindArguments != nil {
+                Button(role: .destructive) {
+                    Task { await viewModel.unbind(db, confirmed: false) }
+                } label: {
+                    Label(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"),
+                          systemImage: "link.badge.minus")
+                }
+                .disabled(viewModel.isProcessing)
+            }
         }
     }
 }

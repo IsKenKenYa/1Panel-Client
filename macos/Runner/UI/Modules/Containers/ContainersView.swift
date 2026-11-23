@@ -174,78 +174,110 @@ struct ContainersView: View {
                     message: translations.get("containerEmptyTitle", fallback: "No containers found")
                 )
             } else {
-                Table(viewModel.containers) {
-                    TableColumn(translations.get("containerInfoName", fallback: "Name")) { container in
-                        HStack {
-                            Image(systemName: "square.stack.3d.up")
-                                .foregroundColor(.blue)
-                            Text(container.name)
-                                .onTapGesture(count: 2) {
-                                    detailContainer = container
-                                }
-                        }
-                        .contextMenu {
-                            let isRunning = container.state.lowercased() == "running"
-                            Button {
-                                detailContainer = container
-                            } label: {
-                                Label(translations.get("containerDetailTitle", fallback: "Container Details"),
-                                      systemImage: "info.circle")
-                            }
-                            Button {
-                                Task { await viewModel.toggleContainerState(id: container.originalId, currentState: container.state) }
-                            } label: {
-                                Label(
-                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
-                                    systemImage: isRunning ? "stop.fill" : "play.fill"
-                                )
-                            }
-                            .disabled(viewModel.isBusy)
-                            Button {
-                                Task { await viewModel.restartContainer(id: container.originalId) }
-                            } label: {
-                                Label(translations.get("commonRestart", fallback: "Restart"), systemImage: "arrow.clockwise")
-                            }
-                            .disabled(viewModel.isBusy)
-                            Button {
-                                logsContainer = container
-                            } label: {
-                                Label(translations.get("containerActionLogs", fallback: "Logs"), systemImage: "doc.text")
-                            }
-                            Divider()
-                            Button(role: .destructive) {
-                                containerToDelete = container
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
-                            }
-                            .disabled(viewModel.isBusy)
-                        }
-                    }
-                    TableColumn(translations.get("containerInfoImage", fallback: "Image")) { container in
-                        Text(container.image)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
-                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { container in
-                        Text(container.status.isEmpty ? container.state : container.status)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
-                    TableColumn(translations.get("containerStateLabel", fallback: "State")) { container in
-                        let isRunning = container.state.lowercased() == "running"
-                        Text(container.state)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(isRunning ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
-                            .foregroundColor(isRunning ? .green : .gray)
-                            .cornerRadius(4)
+                List {
+                    ForEach(viewModel.containers) { container in
+                        containerRow(container)
                     }
                 }
-                .tableStyle(.inset)
-                .disableAlternatingRowBackgrounds()
+                .listStyle(.inset)
             }
+        }
+    }
+
+    private func containerRow(_ container: ContainerModel) -> some View {
+        let isRunning = container.state.lowercased() == "running"
+        let subtitle = container.status.isEmpty ? container.image : container.status
+        return ModuleRow(
+            icon: "square.stack.3d.up",
+            iconColor: .blue,
+            title: container.name,
+            subtitle: subtitle,
+            badge: container.state.isEmpty ? nil : (container.state,
+                                                   isRunning ? .green : .gray),
+            onOpen: { detailContainer = container }
+        ) {
+            RowActions {
+                RowActionButton(
+                    title: translations.get("containerDetailTitle",
+                                            fallback: "Container Details"),
+                    systemImage: "info.circle"
+                ) { detailContainer = container }
+                RowActionButton(
+                    title: isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                ) {
+                    Task {
+                        await viewModel.toggleContainerState(
+                            id: container.originalId,
+                            currentState: container.state
+                        )
+                    }
+                }
+                RowActionButton(
+                    title: translations.get("commonRestart", fallback: "Restart"),
+                    systemImage: "arrow.clockwise"
+                ) {
+                    Task { await viewModel.restartContainer(id: container.originalId) }
+                }
+                RowActionButton(
+                    title: translations.get("containerActionLogs", fallback: "Logs"),
+                    systemImage: "doc.text"
+                ) { logsContainer = container }
+                RowActionButton(
+                    title: translations.get("commonDelete", fallback: "Delete"),
+                    systemImage: "trash",
+                    destructive: true
+                ) { containerToDelete = container }
+            }
+            .disabled(viewModel.isBusy)
+        }
+        .contextMenu {
+            Button {
+                detailContainer = container
+            } label: {
+                Label(translations.get("containerDetailTitle",
+                                       fallback: "Container Details"),
+                      systemImage: "info.circle")
+            }
+            Button {
+                Task {
+                    await viewModel.toggleContainerState(
+                        id: container.originalId,
+                        currentState: container.state
+                    )
+                }
+            } label: {
+                Label(
+                    isRunning
+                        ? translations.get("commonStop", fallback: "Stop")
+                        : translations.get("commonStart", fallback: "Start"),
+                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                )
+            }
+            .disabled(viewModel.isBusy)
+            Button {
+                Task { await viewModel.restartContainer(id: container.originalId) }
+            } label: {
+                Label(translations.get("commonRestart", fallback: "Restart"),
+                      systemImage: "arrow.clockwise")
+            }
+            .disabled(viewModel.isBusy)
+            Button {
+                logsContainer = container
+            } label: {
+                Label(translations.get("containerActionLogs", fallback: "Logs"),
+                      systemImage: "doc.text")
+            }
+            Divider()
+            Button(role: .destructive) {
+                containerToDelete = container
+            } label: {
+                Label(translations.get("commonDelete", fallback: "Delete"),
+                      systemImage: "trash")
+            }
+            .disabled(viewModel.isBusy)
         }
     }
 

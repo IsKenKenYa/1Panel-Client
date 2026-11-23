@@ -153,6 +153,27 @@ struct FilesView: View {
                 Text(file.isDir ? translations.get("filesTypeFolder", fallback: "Folder") : translations.get("filesTypeFile", fallback: "File"))
                     .foregroundStyle(.secondary)
             }
+            TableColumn("") { file in
+                RowActions {
+                    RowActionButton(
+                        title: translations.get("filesActionRename", fallback: "Rename"),
+                        systemImage: "pencil"
+                    ) {
+                        viewModel.operationError = nil
+                        renameDraft = file.name
+                        renamingFile = file
+                    }
+                    .disabled(viewModel.isBusy)
+                    RowActionButton(
+                        title: translations.get("commonDelete", fallback: "Delete"),
+                        systemImage: "trash",
+                        destructive: true
+                    ) { fileToDelete = file }
+                    .disabled(viewModel.isBusy)
+                }
+                .frame(width: 64)
+            }
+            .width(64)
         }
         .tableStyle(.inset)
         .disableAlternatingRowBackgrounds()
