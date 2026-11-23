@@ -15,7 +15,6 @@ class MainFlutterWindow: NSWindow {
     
     RegisterGeneratedPlugins(registry: flutterViewController)
     setupAppearanceChannel(with: flutterViewController)
-    MacKeychainVault.setup(binaryMessenger: flutterViewController.engine.binaryMessenger)
 
     if mode.usesNativeShell {
       configureWindowForNativeShell()

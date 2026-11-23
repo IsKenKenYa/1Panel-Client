@@ -537,28 +537,3 @@ class MacWebsiteLoadBalancerTests: XCTestCase {
   }
 }
 
-class MacKeychainVaultTests: XCTestCase {
-  private let key = "runner-test-credential"
-
-  override func tearDown() {
-    try? MacKeychainVault.delete(key)
-    super.tearDown()
-  }
-
-  func testWriteReadUpdateAndDeleteRoundTrip() throws {
-    try MacKeychainVault.write(key, value: "first")
-    XCTAssertEqual(MacKeychainVault.read(key), "first")
-
-    try MacKeychainVault.write(key, value: "second")
-    XCTAssertEqual(MacKeychainVault.read(key), "second")
-
-    try MacKeychainVault.delete(key)
-    XCTAssertNil(MacKeychainVault.read(key))
-  }
-
-  func testDeleteMissingKeyIsIdempotent() throws {
-    XCTAssertNil(MacKeychainVault.read(key))
-    try MacKeychainVault.delete(key)
-    try MacKeychainVault.delete(key)
-  }
-}
