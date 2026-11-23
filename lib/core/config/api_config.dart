@@ -49,7 +49,7 @@ class ApiConfig {
       mapEquals(additionalCredentials, other.additionalCredentials);
 
   void requireOnePanel() {
-    if (panelType != onePanelType) throw UnsupportedError('此操作需要 1Panel 连接');
+    if (panelType != onePanelType) throw UnsupportedError('This operation requires a 1Panel connection');
   }
 
   /// 可存入普通设置或发送给界面的服务器信息。
@@ -105,20 +105,24 @@ class ConfigStorageException implements Exception {
   @override
   String toString() {
     final status = switch (changeCommitted) {
-      true => '目录已变更，请重新打开服务器配置',
-      false => '目录保留原配置，可重新尝试',
-      null => '暂时无法确认已保存的目录，请重新读取配置',
+      true => 'directory updated; reopen the server list',
+      false => 'previous directory kept; you can retry',
+      null => 'saved directory could not be confirmed; reload the list',
     };
     final errors = [cause, ...recoveryErrors].map((e) => e.runtimeType).join(', ');
-    return '服务器存储操作出错（$errors）。$status';
+    return 'Server storage error ($errors). $status';
   }
 }
 
 typedef ServerDirectory = ({List<ApiConfig> servers, String? selectedId});
 
 abstract final class ApiConfigManager {
-  static const _serversKey = 'kenpanel_servers';
-  // 旧版本的服务器列表、当前选中与凭据键；仅用于升级迁移。
+  /// 存储键按「连接」语义命名，不绑定具体面板品牌；新增面板类型时继续复用。
+  static const _serversKey = 'panel_server_directory';
+  static const _credentialKeyPrefix = 'panel_credentials_';
+  // 更早的品牌命名键与旧数组格式键；仅用于升级迁移。
+  static const _brandConfigsKey = 'kenpanel_servers';
+  static const _brandCredentialPrefix = 'kenpanel_credentials_';
   static const _legacyConfigsKey = 'api_configs';
   static const _legacySelectedIdKey = 'current_api_config_id';
   static const _legacyCredentialPrefix = 'api_config_api_key_';
@@ -138,15 +142,24 @@ abstract final class ApiConfigManager {
     return prefs;
   }
 
-  // 每次保存使用独立的凭据条目，且绑定服务器与面板地址。
-  static String _secretKey(ApiConfig config) {
-    final identity = jsonEncode([config.id, config.panelType, config.url, config.credentialId]);
-    return 'kenpanel_credentials_${sha256.convert(utf8.encode(identity))}';
+  // 每次保存使用独立的凭据条目，且绑定服务器、面板类型与面板地址。
+  static String _secretKey(ApiConfig config) =>
+      '$_credentialKeyPrefix${_secretHash(config)}';
+
+  /// 品牌命名时期的凭据键，仅用于首次读取时的迁移。
+  static String _brandSecretKey(ApiConfig config) =>
+      '$_brandCredentialPrefix${_secretHash(config)}';
+
+  static String _secretHash(ApiConfig config) {
+    final identity = jsonEncode(
+      [config.id, config.panelType, config.url, config.credentialId],
+    );
+    return sha256.convert(utf8.encode(identity)).toString();
   }
 
-  /// 读取服务器目录。旧格式（数组）在首次读取时按原样使用。
+  /// 读取服务器目录。优先新键，其次品牌命名键，最后旧数组格式。
   static ServerDirectory _read(SharedPreferences prefs) {
-    final raw = prefs.getString(_serversKey);
+    final raw = prefs.getString(_serversKey) ?? prefs.getString(_brandConfigsKey);
     if (raw == null) return _readLegacy(prefs);
     final data = jsonDecode(raw) as Map<String, dynamic>;
     return (
@@ -178,8 +191,9 @@ abstract final class ApiConfigManager {
       _lock.synchronized(() async {
         final prefs = await _preferences();
         final directory = _read(prefs);
-        // _read 命中旧格式时补写新键并移除旧键；写入失败不阻断读取。
-        if (prefs.getString(_serversKey) != null ||
+        // 命中旧键时补写新键并移除旧键；写入失败不阻断读取，下次再迁移。
+        if (prefs.getString(_serversKey) != null) return directory;
+        if (prefs.getString(_brandConfigsKey) == null &&
             prefs.getString(_legacyConfigsKey) == null) {
           return directory;
         }
@@ -188,6 +202,7 @@ abstract final class ApiConfigManager {
           'selectedId': directory.selectedId,
         });
         if (await prefs.setString(_serversKey, value)) {
+          await prefs.remove(_brandConfigsKey);
           await prefs.remove(_legacyConfigsKey);
           await prefs.remove(_legacySelectedIdKey);
         }
@@ -210,34 +225,57 @@ abstract final class ApiConfigManager {
         );
       }
     }
-    // 新键缺失或内容无法识别时，尝试从旧明文键迁移。
+    // 新键缺失或无法识别时，依次尝试品牌命名键与明文旧键。
     final migrated = await _tryMigrateLegacy(config, vault);
     if (migrated != null) return migrated;
-    if (raw == null) throw StateError('无法读取已保存的面板凭据');
-    throw const FormatException('已保存的面板凭据格式无效');
+    if (raw == null) throw StateError('Saved panel credential is missing');
+    throw const FormatException('Saved panel credential is not readable');
   }
 
-  /// 旧版本把明文 API Key 存在 `api_config_api_key_<serverId>`。
-  /// 升级后首次读取时搬到新键，写入成功后才清理旧键；旧键不存在返回 null。
+  /// 迁移品牌命名凭据键与明文旧键；成功搬移后才清理来源键。
   static Future<ApiConfig?> _tryMigrateLegacy(
     ApiConfig config,
     PlatformSecureStorage vault,
   ) async {
+    final brandKey = _brandSecretKey(config);
+    final brandValue = await vault.read(key: brandKey);
+    if (brandValue != null) {
+      final secrets = decodeStoredCredential(brandValue);
+      if (secrets != null) {
+        await _writeCredential(config, secrets.apiKey, secrets.fields, vault);
+        await vault.delete(key: brandKey);
+        return ApiConfig.fromJson(
+          config.toJson(),
+          apiKey: secrets.apiKey,
+          additionalCredentials: secrets.fields,
+        );
+      }
+    }
     final legacyKey = '$_legacyCredentialPrefix${config.id}';
     final legacy = await vault.read(key: legacyKey);
     if (legacy == null || legacy.isEmpty) return null;
     final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
     // 与正常保存使用同一结构，避免后续读取走不同的解析分支。
-    await vault.write(
-      key: _secretKey(migrated),
-      value: jsonEncode({
-        'apiKey': legacy,
-        'fields': migrated.additionalCredentials,
-      }),
+    await _writeCredential(
+      migrated,
+      legacy,
+      migrated.additionalCredentials,
+      vault,
     );
     await vault.delete(key: legacyKey);
     return migrated;
   }
+
+  static Future<void> _writeCredential(
+    ApiConfig config,
+    String apiKey,
+    Map<String, String> fields,
+    PlatformSecureStorage vault,
+  ) =>
+      vault.write(
+        key: _secretKey(config),
+        value: jsonEncode({'apiKey': apiKey, 'fields': fields}),
+      );
 
   static Future<ApiConfig> getConfig(String id) => _lock.synchronized(() async {
         final entries = _read(await _preferences()).servers;
@@ -252,7 +290,7 @@ abstract final class ApiConfigManager {
     final value = jsonEncode({'servers': directory.servers, 'selectedId': directory.selectedId});
     try {
       if (!await prefs.setString(_serversKey, value)) {
-        throw StateError('无法保存服务器列表');
+        throw StateError('Unable to save the server directory');
       }
       return null;
     } catch (error) {
@@ -346,7 +384,7 @@ abstract final class ApiConfigManager {
 
   static Future<void> updateConfig(ApiConfig config, {required ApiConfig expected}) {
     if (config.id != expected.id || config.panelType != expected.panelType) {
-      throw ArgumentError('编辑时必须保留服务器标识和面板类型');
+      throw ArgumentError('Editing must keep the server id and panel type');
     }
     return _saveConfig(config, expected: expected);
   }
@@ -358,11 +396,11 @@ abstract final class ApiConfigManager {
         final entries = {for (final c in state.servers) c.id: c};
         final previous = entries[config.id];
         if (expected != null) {
-          if (previous == null) throw StateError('该服务器已删除');
+          if (previous == null) throw StateError('This server has been deleted');
           if (expected.revision.isEmpty ||
               previous.revision != expected.revision ||
               !(await _withCredentials(previous)).sameConnectionAs(expected)) {
-            throw StateError('服务器配置已更改，请重新打开编辑页面');
+            throw StateError('Server configuration changed; reopen the editor');
           }
         }
         if (config.isDefault) {
@@ -425,7 +463,7 @@ abstract final class ApiConfigManager {
         final prefs = await _preferences();
         final state = _read(prefs);
         if (!state.servers.any((c) => c.id == id)) {
-          throw StateError('找不到指定的服务器');
+          throw StateError('Server not found');
         }
         if (state.selectedId == id) return state;
         final directory = (servers: state.servers, selectedId: id);

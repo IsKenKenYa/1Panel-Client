@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   const legacyListKey = 'api_configs';
   const legacySelectedKey = 'current_api_config_id';
-  const serversKey = 'kenpanel_servers';
+  const serversKey = 'panel_server_directory';
+  const brandServersKey = 'kenpanel_servers';
 
   Map<String, Object?> legacyEntry(String id, String name) => {
         'id': id,
@@ -93,6 +94,23 @@ void main() {
 
       expect(directory.servers.single.id, 'new');
       expect(directory.selectedId, 'new');
+    });
+
+    test('品牌命名键被读入并迁移到新键，随后移除旧键', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        brandServersKey: jsonEncode({
+          'servers': [legacyEntry('brand', 'Brand Era')],
+          'selectedId': 'brand',
+        }),
+      });
+
+      final directory = await ApiConfigManager.getServerDirectory();
+
+      expect(directory.servers.single.id, 'brand');
+      expect(directory.selectedId, 'brand');
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString(serversKey), isNotNull);
+      expect(prefs.getString(brandServersKey), isNull);
     });
   });
 
