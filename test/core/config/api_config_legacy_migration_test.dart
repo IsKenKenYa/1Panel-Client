@@ -96,6 +96,36 @@ void main() {
       expect(directory.selectedId, 'new');
     });
 
+    test('存档内容损坏时读取空目录，不抛出', () async {
+      for (final broken in ['not-json', '[]', '{"servers": "x"}', '12345']) {
+        SharedPreferences.setMockInitialValues(<String, Object>{
+          serversKey: broken,
+        });
+
+        final directory = await ApiConfigManager.getServerDirectory();
+
+        expect(directory.servers, isEmpty);
+        expect(directory.selectedId, isNull);
+      }
+    });
+
+    test('单条服务器记录损坏时跳过该条，保留其余', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        serversKey: jsonEncode({
+          'servers': [
+            {'id': 'broken'},
+            legacyEntry('good', 'Good'),
+          ],
+          'selectedId': 'good',
+        }),
+      });
+
+      final directory = await ApiConfigManager.getServerDirectory();
+
+      expect(directory.servers.map((s) => s.id), ['good']);
+      expect(directory.selectedId, 'good');
+    });
+
     test('品牌命名键被读入并迁移到新键，随后移除旧键', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         brandServersKey: jsonEncode({

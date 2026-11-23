@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/storage/platform_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:synchronized/synchronized.dart';
@@ -176,17 +177,36 @@ abstract final class ApiConfigManager {
   }
 
   /// 读取服务器目录。优先新键，其次品牌命名键，最后旧数组格式。
+  ///
+  /// 存档内容损坏时返回空目录而不是抛出：启动阶段就会读取这里，
+  /// 抛出会让应用直接崩溃，用户连修正数据的界面都进不去。
   static ServerDirectory _read(SharedPreferences prefs) {
     final raw = prefs.getString(_serversKey) ?? prefs.getString(_brandConfigsKey);
     if (raw == null) return _readLegacy(prefs);
-    final data = jsonDecode(raw) as Map<String, dynamic>;
-    return (
-      servers: [
-        for (final item in data['servers'] as List)
-          ApiConfig.fromJson(item as Map<String, dynamic>),
-      ],
-      selectedId: data['selectedId'] as String?,
-    );
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return (servers: <ApiConfig>[], selectedId: null);
+      final data = Map<String, dynamic>.from(decoded);
+      final items = data['servers'];
+      if (items is! List) return (servers: <ApiConfig>[], selectedId: null);
+      final servers = <ApiConfig>[];
+      for (final item in items) {
+        if (item is! Map) continue;
+        try {
+          servers.add(ApiConfig.fromJson(Map<String, dynamic>.from(item)));
+        } catch (_) {
+          // 单条损坏不影响其余条目。
+        }
+      }
+      final selectedId = data['selectedId'];
+      return (
+        servers: servers,
+        selectedId: selectedId is String ? selectedId : null,
+      );
+    } catch (_) {
+      appLogger.e('Stored server directory is unreadable; starting empty');
+      return (servers: <ApiConfig>[], selectedId: null);
+    }
   }
 
   /// 旧版本把服务器列表存成数组并使用独立的凭据键。

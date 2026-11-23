@@ -248,13 +248,36 @@ class _AppBootstrapState extends State<AppBootstrap>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      await context.read<AppLockController>().load();
+      // 首屏已经渲染；后续初始化失败只记录，不再让应用整体崩溃。
+      Future<void> guarded(String name, Future<void> Function() step) async {
+        try {
+          await step();
+        } catch (error, stackTrace) {
+          appLogger.eWithPackage(
+            'app.bootstrap',
+            'Init step failed: $name',
+            error: error,
+            stackTrace: stackTrace,
+          );
+        }
+      }
+
+      await guarded('appLock', () => context.read<AppLockController>().load());
       if (!mounted) return;
-      await context.read<CurrentServerController>().ensureLoaded();
+      await guarded(
+        'currentServer',
+        () => context.read<CurrentServerController>().ensureLoaded(),
+      );
       if (!mounted) return;
-      await context.read<PinnedModulesController>().load();
+      await guarded(
+        'pinnedModules',
+        () => context.read<PinnedModulesController>().load(),
+      );
       if (!mounted) return;
-      context.read<TransferManager>().init();
+      await guarded(
+        'transferManager',
+        () async => context.read<TransferManager>().init(),
+      );
     });
   }
 

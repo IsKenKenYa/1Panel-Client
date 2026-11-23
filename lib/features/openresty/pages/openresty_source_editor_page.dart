@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -51,7 +52,9 @@ class _OpenRestySourceEditorPageState extends State<OpenRestySourceEditorPage> {
       SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
     } catch (e) {
       if (!mounted) return;
-      SnackBarUtils.showSuccess(context, e.toString(),
+      SnackBarUtils.showError(
+        context,
+        ErrorMessageUtils.userFacingMessage(e),
       );
     }
   }
