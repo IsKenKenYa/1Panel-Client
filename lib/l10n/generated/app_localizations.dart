@@ -24577,6 +24577,30 @@ abstract class AppLocalizations {
   /// **'IP hash does not support backup servers.'**
   String get websitesLoadBalanceIpHashBackup;
 
+  /// No description provided for @websiteSourceFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source file'**
+  String get websiteSourceFileLabel;
+
+  /// No description provided for @websitesLoadBalanceFileEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The source file is empty or could not be read.'**
+  String get websitesLoadBalanceFileEmpty;
+
+  /// No description provided for @websitesUpstreamServersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No upstream servers.'**
+  String get websitesUpstreamServersEmpty;
+
+  /// No description provided for @websitesUpstreamServersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses use host:port; weight and limits follow nginx upstream rules.'**
+  String get websitesUpstreamServersHint;
+
   /// No description provided for @backupRecordsDetailTitle.
   ///
   /// In en, this message translates to:

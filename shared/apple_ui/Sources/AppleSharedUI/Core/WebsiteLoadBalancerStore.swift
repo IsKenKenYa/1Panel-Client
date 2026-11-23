@@ -61,6 +61,23 @@ public final class WebsiteLoadBalancerStore: ObservableObject {
         await load()
     }
 
+    /// 保存上游源文件；服务端只在名称是纯文件名时接受写入。
+    public func updateFile(name: String, content: String) async throws {
+        guard !name.contains("/"), !name.contains("..") else {
+            throw WebsiteLoadBalancerError("name must be a plain file name")
+        }
+        let raw = try await channel.invoke(
+            "updateWebsiteLoadBalancerFile",
+            arguments: [
+                "websiteID": websiteID,
+                "name": name,
+                "content": content,
+            ]
+        )
+        try Self.throwIfFailure(raw)
+        await load()
+    }
+
     private func submit(
         _ method: String,
         balancer: WebsiteLoadBalancer

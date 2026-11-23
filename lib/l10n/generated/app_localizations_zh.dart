@@ -12649,6 +12649,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesLoadBalanceIpHashBackup => 'IP 哈希不支持备用服务器。';
 
   @override
+  String get websiteSourceFileLabel => '源文件';
+
+  @override
+  String get websitesLoadBalanceFileEmpty => '源文件为空或无法读取。';
+
+  @override
+  String get websitesUpstreamServersEmpty => '暂无上游服务器。';
+
+  @override
+  String get websitesUpstreamServersHint =>
+      '地址使用 主机:端口；权重与限制遵循 nginx upstream 规则。';
+
+  @override
   String get backupRecordsDetailTitle => '备份详情';
 
   @override

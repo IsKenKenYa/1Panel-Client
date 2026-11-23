@@ -13043,6 +13043,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'IP hash does not support backup servers.';
 
   @override
+  String get websiteSourceFileLabel => 'Source file';
+
+  @override
+  String get websitesLoadBalanceFileEmpty =>
+      'The source file is empty or could not be read.';
+
+  @override
+  String get websitesUpstreamServersEmpty => 'No upstream servers.';
+
+  @override
+  String get websitesUpstreamServersHint =>
+      'Addresses use host:port; weight and limits follow nginx upstream rules.';
+
+  @override
   String get backupRecordsDetailTitle => 'Backup Details';
 
   @override

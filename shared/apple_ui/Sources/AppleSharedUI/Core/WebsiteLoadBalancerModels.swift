@@ -21,13 +21,13 @@ public enum WebsiteLoadBalancerFlag: String, CaseIterable, Identifiable {
 /// 负载均衡中的单个上游服务器与权重参数。
 public struct WebsiteLoadBalancerServer: Identifiable, Equatable {
     public let id: UUID
-    public let server: String
-    public let weight: Int?
-    public let flag: String
-    public let maxFails: Int?
-    public let maxConns: Int?
-    public let failTimeout: Int?
-    public let failTimeoutUnit: String
+    public var server: String
+    public var weight: Int?
+    public var flag: String
+    public var maxFails: Int?
+    public var maxConns: Int?
+    public var failTimeout: Int?
+    public var failTimeoutUnit: String
 
     public init(
         server: String,
@@ -39,6 +39,27 @@ public struct WebsiteLoadBalancerServer: Identifiable, Equatable {
         failTimeoutUnit: String = "s"
     ) {
         self.id = UUID()
+        self.server = server
+        self.weight = weight
+        self.flag = flag
+        self.maxFails = maxFails
+        self.maxConns = maxConns
+        self.failTimeout = failTimeout
+        self.failTimeoutUnit = failTimeoutUnit
+    }
+
+    /// 保留标识的初始化，供表单就地修改字段使用。
+    public init(
+        id: UUID,
+        server: String,
+        weight: Int?,
+        flag: String,
+        maxFails: Int?,
+        maxConns: Int?,
+        failTimeout: Int?,
+        failTimeoutUnit: String
+    ) {
+        self.id = id
         self.server = server
         self.weight = weight
         self.flag = flag
@@ -105,17 +126,20 @@ public struct WebsiteLoadBalancer: Identifiable, Equatable {
     public var name: String
     public var algorithm: String
     public var servers: [WebsiteLoadBalancerServer]
+    public var content: String
 
     public var id: String { name }
 
     public init(
         name: String,
         algorithm: String,
-        servers: [WebsiteLoadBalancerServer]
+        servers: [WebsiteLoadBalancerServer],
+        content: String = ""
     ) {
         self.name = name
         self.algorithm = algorithm
         self.servers = servers
+        self.content = content
     }
 
     public init?(payload: [String: Any]) {
@@ -126,6 +150,7 @@ public struct WebsiteLoadBalancer: Identifiable, Equatable {
         self.algorithm = payload["algorithm"] as? String ?? "default"
         self.servers = (payload["servers"] as? [[String: Any]] ?? [])
             .compactMap(WebsiteLoadBalancerServer.init(payload:))
+        self.content = payload["content"] as? String ?? ""
     }
 
     public var payload: [String: Any] {

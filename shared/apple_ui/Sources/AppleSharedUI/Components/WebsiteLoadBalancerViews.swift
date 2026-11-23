@@ -6,6 +6,7 @@ public struct WebsiteLoadBalancerListView: View {
     @Environment(\.translationsProvider) private var translations
 
     @State private var editorTarget: EditorTarget?
+    @State private var fileTarget: FileTarget?
     @State private var pendingDelete: WebsiteLoadBalancer?
     @State private var actionError: String?
     @State private var statusMessage: String?
@@ -66,6 +67,12 @@ public struct WebsiteLoadBalancerListView: View {
             WebsiteLoadBalancerFormView(
                 store: store,
                 editing: target.balancer
+            )
+        }
+        .sheet(item: $fileTarget) { target in
+            WebsiteLoadBalancerFileView(
+                store: store,
+                balancer: target.balancer
             )
         }
         .confirmationDialog(
@@ -160,6 +167,12 @@ public struct WebsiteLoadBalancerListView: View {
             } label: {
                 Label(t("commonEdit", "Edit"), systemImage: "pencil")
             }
+            Button {
+                fileTarget = FileTarget(balancer: balancer)
+            } label: {
+                Label(t("websiteSourceFileLabel", "Source file"),
+                      systemImage: "doc.text")
+            }
             Button(role: .destructive) {
                 pendingDelete = balancer
             } label: {
@@ -167,6 +180,15 @@ public struct WebsiteLoadBalancerListView: View {
             }
         }
         #if os(iOS)
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            Button {
+                fileTarget = FileTarget(balancer: balancer)
+            } label: {
+                Label(t("websiteSourceFileLabel", "Source file"),
+                      systemImage: "doc.text")
+            }
+            .tint(.blue)
+        }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
                 pendingDelete = balancer
@@ -213,6 +235,95 @@ private struct EditorTarget: Identifiable {
     let balancer: WebsiteLoadBalancer?
 }
 
+private struct FileTarget: Identifiable {
+    let id = UUID()
+    let balancer: WebsiteLoadBalancer
+}
+
+/// 负载均衡源文件编辑：展示 server 端读取到的 nginx upstream 配置并可保存。
+public struct WebsiteLoadBalancerFileView: View {
+    @ObservedObject private var store: WebsiteLoadBalancerStore
+    private let balancer: WebsiteLoadBalancer
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.translationsProvider) private var translations
+
+    @State private var content = ""
+    @State private var originalContent = ""
+    @State private var isLoading = true
+    @State private var isSaving = false
+    @State private var errorMessage: String?
+
+    public init(
+        store: WebsiteLoadBalancerStore,
+        balancer: WebsiteLoadBalancer
+    ) {
+        self.store = store
+        self.balancer = balancer
+    }
+
+    public var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 0) {
+                if isLoading {
+                    LoadingView()
+                } else {
+                    TextEditor(text: $content)
+                        .font(.system(.body, design: .monospaced))
+                        .padding(8)
+                }
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                }
+            }
+            .navigationTitle(balancer.name)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(t("commonCancel", "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(t("commonSave", "Save")) {
+                        Task { await save() }
+                    }
+                    .disabled(isLoading || isSaving || content == originalContent)
+                }
+            }
+            #if os(macOS)
+            .frame(width: 720, height: 560)
+            #endif
+            .onAppear {
+                content = balancer.content
+                originalContent = balancer.content
+                isLoading = false
+                if balancer.content.isEmpty {
+                    errorMessage = t("websitesLoadBalanceFileEmpty",
+                                     "The source file is empty or could not be read.")
+                }
+            }
+        }
+    }
+
+    private func save() async {
+        isSaving = true
+        do {
+            try await store.updateFile(name: balancer.name, content: content)
+            originalContent = content
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isSaving = false
+    }
+
+    private func t(_ key: String, _ fallback: String) -> String {
+        translations?.get(key, fallback: fallback) ?? fallback
+    }
+}
+
 /// 负载均衡编辑表单：名称、算法与上游服务器参数。
 public struct WebsiteLoadBalancerFormView: View {
     @ObservedObject private var store: WebsiteLoadBalancerStore
@@ -248,16 +359,18 @@ public struct WebsiteLoadBalancerFormView: View {
                         }
                     }
                 }
-                ForEach(servers.indices, id: \.self) { index in
+                ForEach($servers) { $draft in
                     Section {
-                        serverFields(index)
+                        serverFields($draft)
                     } header: {
                         HStack {
-                            Text(serverTitle(index))
+                            Text(draft.server.trimmingCharacters(in: .whitespaces).isEmpty
+                                 ? "\(t("websitesLoadBalanceServerLabel", "Server address")) \(serverIndex(draft) + 1)"
+                                 : draft.server)
                             Spacer()
                             if servers.count > 1 {
                                 Button(role: .destructive) {
-                                    servers.remove(at: index)
+                                    removeServer(draft.id)
                                 } label: {
                                     Label(t("websitesLoadBalanceRemoveServer",
                                             "Remove server"),
@@ -310,14 +423,14 @@ public struct WebsiteLoadBalancerFormView: View {
     }
 
     @ViewBuilder
-    private func serverFields(_ index: Int) -> some View {
+    private func serverFields(_ draft: Binding<ServerDraft>) -> some View {
         TextField(t("websitesLoadBalanceServerLabel", "Server address"),
-                  text: $servers[index].server)
+                  text: draft.server)
         HStack {
             TextField(t("websitesLoadBalanceWeightLabel", "Weight"),
-                      text: $servers[index].weight)
+                      text: draft.weight)
             Picker(t("websitesLoadBalanceFlagLabel", "Status strategy"),
-                   selection: $servers[index].flag) {
+                   selection: draft.flag) {
                 ForEach(WebsiteLoadBalancerFlag.allCases) { flag in
                     Text(flag.title(translations)).tag(flag.rawValue)
                 }
@@ -325,11 +438,11 @@ public struct WebsiteLoadBalancerFormView: View {
             .labelsHidden()
         }
         TextField(t("websitesLoadBalanceMaxFailsLabel", "Max fails"),
-                  text: $servers[index].maxFails)
+                  text: draft.maxFails)
         HStack {
             TextField(t("websitesLoadBalanceFailTimeoutLabel", "Fail timeout"),
-                      text: $servers[index].failTimeout)
-            Picker("", selection: $servers[index].failTimeoutUnit) {
+                      text: draft.failTimeout)
+            Picker("", selection: draft.failTimeoutUnit) {
                 ForEach(Self.timeUnits, id: \.self) { unit in
                     Text(unit).tag(unit)
                 }
@@ -338,15 +451,17 @@ public struct WebsiteLoadBalancerFormView: View {
             .frame(width: 70)
         }
         TextField(t("websitesLoadBalanceMaxConnsLabel", "Max connections"),
-                  text: $servers[index].maxConns)
+                  text: draft.maxConns)
     }
 
     private static let timeUnits = ["s", "m", "h", "d", "w", "M", "y"]
 
-    private func serverTitle(_ index: Int) -> String {
-        let address = servers[index].server.trimmingCharacters(in: .whitespaces)
-        let fallback = "\(t("websitesLoadBalanceServerLabel", "Server address")) \(index + 1)"
-        return address.isEmpty ? fallback : address
+    private func serverIndex(_ draft: ServerDraft) -> Int {
+        servers.firstIndex(where: { $0.id == draft.id }) ?? 0
+    }
+
+    private func removeServer(_ id: UUID) {
+        servers.removeAll { $0.id == id }
     }
 
     private func populate() {
@@ -506,8 +621,8 @@ private struct ServerDraft: Identifiable {
     }
 }
 
-private extension WebsiteLoadBalancerAlgorithm {
-    func title(_ translations: (any TranslationsProviding)?) -> String {
+extension WebsiteLoadBalancerAlgorithm {
+    public func title(_ translations: (any TranslationsProviding)?) -> String {
         let fallback: String
         switch self {
         case .standard: fallback = "Default"
@@ -524,8 +639,8 @@ private extension WebsiteLoadBalancerAlgorithm {
     }
 }
 
-private extension WebsiteLoadBalancerFlag {
-    func title(_ translations: (any TranslationsProviding)?) -> String {
+extension WebsiteLoadBalancerFlag {
+    public func title(_ translations: (any TranslationsProviding)?) -> String {
         let fallback: String
         switch self {
         case .none: fallback = "Normal"
