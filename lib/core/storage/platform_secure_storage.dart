@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'browser_vault.dart';
+import 'local_credential_vault.dart';
 
-enum _Backend { browser, native, ohos, macKeychain }
+enum _Backend { browser, native, ohos, macFile }
 
 class PlatformSecureStorage {
   const PlatformSecureStorage._(this._backend);
@@ -18,10 +20,14 @@ class PlatformSecureStorage {
     ),
     lOptions: LinuxOptions(),
   );
-
-  /// macOS 走 Runner 内的 SecItem 通道，理由见 `MacKeychainVault`。
-  static const _macKeychain = MethodChannel('onepanel/secure_storage');
   static const _ohos = MethodChannel('onepanel/secure_storage');
+
+  /// macOS 用应用目录下的凭据文件：钥匙串读取会要求系统密码，
+  /// 数据保护钥匙串还要求与签名匹配的访问组，本机自用得不偿失。
+  static LocalCredentialVault? _macVault;
+
+  static LocalCredentialVault get _macCredentials =>
+      _macVault ??= LocalCredentialVault(getApplicationSupportDirectory);
 
   static Future<PlatformSecureStorage> create() async {
     final platform = PlatformCapabilities.current();
@@ -34,7 +40,7 @@ class PlatformSecureStorage {
     }
     if (platform.isOhos) return const PlatformSecureStorage._(_Backend.ohos);
     if (platform.targetPlatform == TargetPlatform.macOS) {
-      return const PlatformSecureStorage._(_Backend.macKeychain);
+      return const PlatformSecureStorage._(_Backend.macFile);
     }
     return const PlatformSecureStorage._(_Backend.native);
   }
@@ -42,7 +48,7 @@ class PlatformSecureStorage {
   Future<String?> read({required String key}) => switch (_backend) {
         _Backend.browser => BrowserVault.instance.read(key),
         _Backend.native => _native.read(key: key),
-        _Backend.macKeychain => _macKeychain.invokeMethod<String>('read', {'key': key}),
+        _Backend.macFile => _macCredentials.read(key),
         _Backend.ohos => _ohos.invokeMethod<String>('read', {'key': key}),
       };
 
@@ -51,10 +57,7 @@ class PlatformSecureStorage {
     return switch (_backend) {
       _Backend.browser => BrowserVault.instance.write(key, value),
       _Backend.native => _native.write(key: key, value: value),
-      _Backend.macKeychain => _mutateChannel(
-          _macKeychain, 'write', {'key': key, 'value': value},
-          backend: 'macOS',
-        ),
+      _Backend.macFile => _macCredentials.write(key, value),
       _Backend.ohos => _mutateOhos('write', {'key': key, 'value': value}),
     };
   }
@@ -62,33 +65,16 @@ class PlatformSecureStorage {
   Future<void> delete({required String key}) => switch (_backend) {
         _Backend.browser => BrowserVault.instance.delete(key),
         _Backend.native => _native.delete(key: key),
-        _Backend.macKeychain => _mutateChannel(
-          _macKeychain, 'delete', {'key': key},
-          backend: 'macOS',
-        ),
+        _Backend.macFile => _macCredentials.delete(key),
         _Backend.ohos => _mutateOhos('delete', {'key': key}),
       };
 
   Future<void> deleteAll() => switch (_backend) {
         _Backend.browser => BrowserVault.instance.deleteAll(),
         _Backend.native => _native.deleteAll(),
-        _Backend.macKeychain => _mutateChannel(
-          _macKeychain, 'deleteAll', null,
-          backend: 'macOS',
-        ),
+        _Backend.macFile => _macCredentials.deleteAll(),
         _Backend.ohos => _mutateOhos('deleteAll'),
       };
-
-  static Future<void> _mutateChannel(
-    MethodChannel channel,
-    String method,
-    Map<String, String>? arguments, {
-    required String backend,
-  }) async {
-    if (await channel.invokeMethod<bool>(method, arguments) != true) {
-      throw StateError('$backend secure storage did not confirm $method');
-    }
-  }
 
   static Future<void> _mutateOhos(
     String method, [
