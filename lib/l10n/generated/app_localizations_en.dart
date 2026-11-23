@@ -12886,6 +12886,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesCacheNumberHint => 'Enter a number between 0 and 9999.';
 
   @override
+  String get websitesCacheClearAction => 'Clear proxy cache';
+
+  @override
+  String get websitesCacheClearConfirm => 'Clear proxy cache?';
+
+  @override
+  String get websitesCacheClearMessage =>
+      'Cached responses for this website will be removed from the panel server.';
+
+  @override
+  String get websitesCacheClearSuccess => 'Proxy cache cleared';
+
+  @override
   String get websitesRealIpTitle => 'Real IP';
 
   @override

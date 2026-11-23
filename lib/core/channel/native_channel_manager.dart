@@ -340,6 +340,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateWebsitePathAuth(arguments);
       case 'updateWebsiteProxyCache':
         return NativeChannelWriteHandlers.updateWebsiteProxyCache(arguments);
+      case 'clearWebsiteProxyCache':
+        return NativeChannelWriteHandlers.clearWebsiteProxyCache(arguments);
       case 'updateWebsiteRealIP':
         return NativeChannelWriteHandlers.updateWebsiteRealIP(arguments);
       case 'updateWebsiteStream':

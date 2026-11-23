@@ -65,6 +65,24 @@ void main() {
       expect(result['error'], contains('streamPorts'));
     });
 
+    test('清理代理缓存缺少网站标识时返回失败结构', () async {
+      final result = await NativeChannelWriteHandlers.clearWebsiteProxyCache(
+        <String, dynamic>{},
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('id'));
+    });
+
+    test('dispatch 路由清理代理缓存', () async {
+      final result = await NativeChannelManager.instance.handleMethodCall(
+        'clearWebsiteProxyCache',
+        <String, dynamic>{},
+      );
+
+      expect(result['success'], isFalse);
+    });
+
     test('dispatch 路由转发配置写入', () async {
       final result = await NativeChannelManager.instance.handleMethodCall(
         'updateWebsiteStream',

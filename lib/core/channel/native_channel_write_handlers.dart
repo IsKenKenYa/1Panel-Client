@@ -600,6 +600,23 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 清理网站代理缓存。参数：`{id: int 必填}`。POST /websites/proxy/clear。
+  static Future<Map<String, dynamic>> clearWebsiteProxyCache(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['id'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await (await _websiteApi())
+          .clearWebsiteProxyCache({'websiteID': websiteID});
+      return _ok();
+    } catch (e) {
+      appLogger.e('clearWebsiteProxyCache failed: $e');
+      return _err(e);
+    }
+  }
+
   /// 网站真实 IP 配置。参数：
   /// `{websiteID: int, open: bool, ipFrom: String, ipHeader: String,
   ///   ipOther: String}`。POST /websites/realip/config。

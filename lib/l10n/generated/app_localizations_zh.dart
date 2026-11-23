@@ -12502,6 +12502,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesCacheNumberHint => '请输入 0 到 9999 之间的数字。';
 
   @override
+  String get websitesCacheClearAction => '清理代理缓存';
+
+  @override
+  String get websitesCacheClearConfirm => '清理代理缓存？';
+
+  @override
+  String get websitesCacheClearMessage => '该网站的缓存响应将从面板服务器移除。';
+
+  @override
+  String get websitesCacheClearSuccess => '代理缓存已清理';
+
+  @override
   String get websitesRealIpTitle => '真实 IP';
 
   @override

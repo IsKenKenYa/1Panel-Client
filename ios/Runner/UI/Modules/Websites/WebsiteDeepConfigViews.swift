@@ -15,6 +15,8 @@ struct WebsiteProxyCacheView: View {
     @State private var cacheExpireUnit = "h"
     @State private var isLoading = true
     @State private var isSaving = false
+    @State private var isClearing = false
+    @State private var showClearConfirm = false
     @State private var errorMessage: String?
     @State private var statusMessage: String?
 
@@ -66,6 +68,17 @@ struct WebsiteProxyCacheView: View {
             }
             Section {
                 saveButton
+                Button {
+                    showClearConfirm = true
+                } label: {
+                    if isClearing {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Text(translations.get("websitesCacheClearAction",
+                                              fallback: "Clear proxy cache"))
+                    }
+                }
+                .disabled(isLoading || isSaving || isClearing || !open)
             }
             if let statusMessage {
                 Section {
@@ -76,6 +89,23 @@ struct WebsiteProxyCacheView: View {
         }
         .navigationTitle(translations.get("websitesCacheTitle", fallback: "Proxy Cache"))
         .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog(
+            translations.get("websitesCacheClearConfirm",
+                             fallback: "Clear proxy cache?"),
+            isPresented: $showClearConfirm,
+            titleVisibility: .visible
+        ) {
+            Button(translations.get("websitesCacheClearAction",
+                                    fallback: "Clear proxy cache"),
+                   role: .destructive) {
+                Task { await clearCache() }
+            }
+            Button(translations.get("commonCancel", fallback: "Cancel"),
+                   role: .cancel) {}
+        } message: {
+            Text(translations.get("websitesCacheClearMessage",
+                                  fallback: "Cached responses for this website will be removed from the panel server."))
+        }
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(
@@ -126,6 +156,27 @@ struct WebsiteProxyCacheView: View {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func clearCache() async {
+        isClearing = true
+        do {
+            let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+                "clearWebsiteProxyCache",
+                arguments: ["id": websiteId]
+            )
+            let payload = raw as? [String: Any] ?? [:]
+            if payload["success"] as? Bool == true {
+                statusMessage = translations.get("websitesCacheClearSuccess",
+                                                 fallback: "Proxy cache cleared")
+            } else {
+                errorMessage = payload["error"] as? String
+                    ?? translations.get("commonOperationFailed", fallback: "Operation failed")
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isClearing = false
     }
 
     private func save() async {

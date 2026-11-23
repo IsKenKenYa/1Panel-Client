@@ -24283,6 +24283,30 @@ abstract class AppLocalizations {
   /// **'Enter a number between 0 and 9999.'**
   String get websitesCacheNumberHint;
 
+  /// No description provided for @websitesCacheClearAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear proxy cache'**
+  String get websitesCacheClearAction;
+
+  /// No description provided for @websitesCacheClearConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear proxy cache?'**
+  String get websitesCacheClearConfirm;
+
+  /// No description provided for @websitesCacheClearMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached responses for this website will be removed from the panel server.'**
+  String get websitesCacheClearMessage;
+
+  /// No description provided for @websitesCacheClearSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy cache cleared'**
+  String get websitesCacheClearSuccess;
+
   /// No description provided for @websitesRealIpTitle.
   ///
   /// In en, this message translates to:
