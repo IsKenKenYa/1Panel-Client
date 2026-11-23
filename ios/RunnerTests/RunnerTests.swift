@@ -903,3 +903,202 @@ class WebsiteLoadBalancerTests: XCTestCase {
         XCTAssertEqual(edited.payload["weight"] as? Int, 4)
     }
 }
+
+@MainActor
+final class ContainerLogStreamStoreTests: XCTestCase {
+    private func waitUntil(
+        _ description: String,
+        _ predicate: @escaping () -> Bool
+    ) async {
+        for _ in 0..<100 {
+            if predicate() { return }
+            await Task.yield()
+        }
+        XCTFail(description)
+    }
+
+    func testFollowAppendsChunksAndEndsNormally() async {
+        var chunkHandler: ((String) -> Void)?
+        var doneHandler: (() -> Void)?
+        let store = ContainerLogStreamStore(
+            start: { _, _, onChunk, onDone, _ in
+                chunkHandler = onChunk
+                doneHandler = onDone
+            },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        XCTAssertEqual(store.phase, .following)
+        XCTAssertTrue(store.isActive)
+
+        chunkHandler?("line-1\n")
+        await waitUntil("chunk appended") { store.text == "line-1\n" }
+        XCTAssertEqual(store.revision, 1)
+
+        doneHandler?()
+        await waitUntil("stream ended") { store.phase == .ended }
+        XCTAssertFalse(store.isActive)
+        XCTAssertTrue(store.hasEnded)
+        XCTAssertNil(store.errorMessage)
+    }
+
+    func testQuickRestartDropsCallbacksFromPreviousFollow() async {
+        var handlers: [(chunk: (String) -> Void, done: () -> Void, error: (String) -> Void)] = []
+        let store = ContainerLogStreamStore(
+            start: { _, _, onChunk, onDone, onError in
+                handlers.append((onChunk, onDone, onError))
+            },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        await store.stopFollowing()
+        await store.follow(container: "web-1")
+        XCTAssertEqual(handlers.count, 2)
+
+        handlers[0].chunk("stale\n")
+        handlers[0].done()
+        handlers[0].error("stale failure")
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertEqual(store.text, "")
+        XCTAssertEqual(store.phase, .following)
+        XCTAssertNil(store.errorMessage)
+
+        handlers[1].chunk("fresh\n")
+        await waitUntil("fresh chunk appended") { store.text == "fresh\n" }
+    }
+
+    func testStoppingWhileStartingKeepsSubscriptionIdle() async {
+        var startContinuation: CheckedContinuation<Void, Error>?
+        var staleChunk: ((String) -> Void)?
+        let store = ContainerLogStreamStore(
+            start: { _, _, onChunk, _, _ in
+                staleChunk = onChunk
+                try await withCheckedThrowingContinuation {
+                    (continuation: CheckedContinuation<Void, Error>) in
+                    startContinuation = continuation
+                }
+            },
+            stop: {}
+        )
+
+        let followTask = Task { await store.follow(container: "web-1") }
+        for _ in 0..<100 where startContinuation == nil {
+            await Task.yield()
+        }
+        guard let continuation = startContinuation else {
+            followTask.cancel()
+            return XCTFail("start was not invoked")
+        }
+
+        await store.stopFollowing()
+        continuation.resume()
+        await followTask.value
+        XCTAssertEqual(store.phase, .idle)
+        XCTAssertFalse(store.isActive)
+
+        staleChunk?("late\n")
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertEqual(store.text, "")
+    }
+
+    func testFollowWaitsForPendingStopBeforeStarting() async {
+        var startCount = 0
+        var stopContinuation: CheckedContinuation<Void, Never>?
+        let store = ContainerLogStreamStore(
+            start: { _, _, _, _, _ in startCount += 1 },
+            stop: {
+                await withCheckedContinuation {
+                    (continuation: CheckedContinuation<Void, Never>) in
+                    stopContinuation = continuation
+                }
+            }
+        )
+
+        await store.follow(container: "web-1")
+        let stopTask = Task { await store.stopFollowing() }
+        while stopContinuation == nil {
+            await Task.yield()
+        }
+        let followTask = Task { await store.follow(container: "web-1") }
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertEqual(startCount, 1)
+
+        stopContinuation?.resume()
+        await stopTask.value
+        await followTask.value
+        XCTAssertEqual(startCount, 2)
+        XCTAssertEqual(store.phase, .following)
+    }
+
+    func testErrorKeepsPartialTextAndEndsFollow() async {
+        var chunkHandler: ((String) -> Void)?
+        var errorHandler: ((String) -> Void)?
+        let store = ContainerLogStreamStore(
+            start: { _, _, onChunk, _, onError in
+                chunkHandler = onChunk
+                errorHandler = onError
+            },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        chunkHandler?("partial\n")
+        await waitUntil("partial chunk appended") { store.text == "partial\n" }
+
+        errorHandler?("docker logs: no such container")
+        await waitUntil("stream failed") { store.phase == .failed }
+        XCTAssertEqual(store.text, "partial\n")
+        XCTAssertEqual(store.errorMessage, "docker logs: no such container")
+        XCTAssertFalse(store.isActive)
+
+        chunkHandler?("after error\n")
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertEqual(store.text, "partial\n")
+    }
+
+    func testRepeatedFollowKeepsSingleActiveSubscription() async {
+        var startCount = 0
+        let store = ContainerLogStreamStore(
+            start: { _, _, _, _, _ in startCount += 1 },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        await store.follow(container: "web-1")
+
+        XCTAssertEqual(startCount, 1)
+        XCTAssertEqual(store.phase, .following)
+    }
+
+    func testStopFollowingIsNotReportedAsFailure() async {
+        let store = ContainerLogStreamStore(
+            start: { _, _, _, _, _ in },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        await store.stopFollowing()
+
+        XCTAssertEqual(store.phase, .idle)
+        XCTAssertFalse(store.isActive)
+        XCTAssertNil(store.errorMessage)
+    }
+
+    func testCloseRejectsLaterFollow() async {
+        var startCount = 0
+        let store = ContainerLogStreamStore(
+            start: { _, _, _, _, _ in startCount += 1 },
+            stop: {}
+        )
+
+        await store.follow(container: "web-1")
+        await store.close()
+        await store.follow(container: "web-1")
+
+        XCTAssertEqual(startCount, 1)
+        XCTAssertEqual(store.phase, .idle)
+        XCTAssertFalse(store.isActive)
+    }
+}

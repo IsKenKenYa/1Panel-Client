@@ -11,6 +11,10 @@ class ChannelManager {
     private var logChunkHandler: ((String) -> Void)?
     private var logDoneHandler: (() -> Void)?
     private var logErrorHandler: ((String) -> Void)?
+    /// Dart 侧分配的会话编号，回调编号不一致时丢弃。
+    private var logSession: Int?
+    /// 本端发起次数的编号，用于识别被后续开始或停止覆盖的请求。
+    private var logRequest = 0
 
     private init() {}
 
@@ -23,35 +27,51 @@ class ChannelManager {
         onDone: @escaping () -> Void,
         onError: @escaping (String) -> Void
     ) async throws {
+        logRequest += 1
+        let request = logRequest
         logChunkHandler = onChunk
         logDoneHandler = onDone
         logErrorHandler = onError
         var arguments: [String: Any] = ["container": container, "follow": true]
         if let tail, !tail.isEmpty { arguments["tail"] = tail }
-        let raw = try await invokeDataMethodAsync(
-            "startContainerLogStream",
-            arguments: arguments
-        )
-        let payload = raw as? [String: Any] ?? [:]
-        if payload["success"] as? Bool != true {
-            throw NSError(
-                domain: "onepanel.containerLogs",
-                code: 1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: payload["error"] as? String
-                        ?? "Failed to start log stream",
-                ]
+        do {
+            let raw = try await invokeDataMethodAsync(
+                "startContainerLogStream",
+                arguments: arguments
             )
+            guard request == logRequest else { return }
+            let payload = raw as? [String: Any] ?? [:]
+            guard payload["success"] as? Bool == true else {
+                clearLogHandlers()
+                throw NSError(
+                    domain: "onepanel.containerLogs",
+                    code: 1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: payload["error"] as? String
+                            ?? "Failed to start log stream",
+                    ]
+                )
+            }
+            logSession = payload["session"] as? Int
+        } catch {
+            if request == logRequest { clearLogHandlers() }
+            throw error
         }
     }
 
     /// 停止容器日志跟随。
     @MainActor
     func stopContainerLogStream() async {
+        logRequest += 1
+        clearLogHandlers()
+        _ = try? await invokeDataMethodAsync("stopContainerLogStream", arguments: nil)
+    }
+
+    private func clearLogHandlers() {
         logChunkHandler = nil
         logDoneHandler = nil
         logErrorHandler = nil
-        _ = try? await invokeDataMethodAsync("stopContainerLogStream", arguments: nil)
+        logSession = nil
     }
 
     private func handleLogCallback(
@@ -60,12 +80,20 @@ class ChannelManager {
     ) {
         let arguments = call.arguments as? [String: Any] ?? [:]
         switch call.method {
-        case "containerLogChunk":
-            logChunkHandler?(arguments["chunk"] as? String ?? "")
-        case "containerLogDone":
-            logDoneHandler?()
-        case "containerLogError":
-            logErrorHandler?(arguments["error"] as? String ?? "Log stream failed")
+        case "containerLogChunk", "containerLogDone", "containerLogError":
+            guard let session = arguments["session"] as? Int,
+                  session == logSession else {
+                result(nil)
+                return
+            }
+            switch call.method {
+            case "containerLogChunk":
+                logChunkHandler?(arguments["chunk"] as? String ?? "")
+            case "containerLogDone":
+                logDoneHandler?()
+            default:
+                logErrorHandler?(arguments["error"] as? String ?? "Log stream failed")
+            }
         default:
             result(FlutterMethodNotImplemented)
             return

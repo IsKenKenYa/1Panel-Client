@@ -3,17 +3,45 @@ import Foundation
 
 /// 容器日志跟随流的共享状态。
 ///
-/// Dart 侧订阅 SSE 后逐块回调，这里累积文本并在结束时置位；
-/// 取消订阅时通知 Dart 停止，避免服务端连接悬挂。
+/// Dart 侧订阅 SSE 后逐块回调，这里累积文本并维护连接阶段；
+/// 每次跟随分配新的代次，停止后旧代次的回调即使到达也会被丢弃。
+/// 跟随文本按上限保留尾部，长时间连接不会无限增长。
 @MainActor
 public final class ContainerLogStreamStore: ObservableObject {
+    /// 日志流阶段。
+    public enum Phase: Equatable {
+        case idle
+        case starting
+        case following
+        case ended
+        case failed
+    }
+
     @Published public private(set) var text = ""
-    @Published public private(set) var isFollowing = false
+    @Published public private(set) var phase: Phase = .idle
     @Published public private(set) var errorMessage: String?
+    /// 文本每次变化时递增，供视图滚动到底部使用。
+    @Published public private(set) var revision = 0
+
+    /// 正在连接或已经处于跟随状态。
+    public var isActive: Bool { phase == .starting || phase == .following }
+    /// 流已由服务端正常结束。
+    public var hasEnded: Bool { phase == .ended }
+    /// 正在接收后续日志。
+    public var isFollowing: Bool { phase == .following }
+
+    private static let maxCharacters = 700_000
+    private static let retainedCharacters = 500_000
 
     private let start: @MainActor (String, String?, @escaping (String) -> Void,
         @escaping () -> Void, @escaping (String) -> Void) async throws -> Void
     private let stop: @MainActor () async -> Void
+
+    private var generation = 0
+    private var characterCount = 0
+    private var isClosed = false
+    private var pendingStop: Task<Void, Never>?
+    private var pendingStopToken = UUID()
 
     public init(
         start: @escaping @MainActor (
@@ -30,35 +58,90 @@ public final class ContainerLogStreamStore: ObservableObject {
     }
 
     /// 开始跟随容器日志。
+    ///
+    /// 等上一次停止完成后才发起新的订阅，避免快速停止再恢复时
+    /// 通道上的停止请求晚于开始请求到达。
     public func follow(container: String, tail: String? = "200") async {
-        guard !isFollowing else { return }
+        while let pending = pendingStop {
+            await pending.value
+            // 停止完成到清空 pendingStop 之间需要让出主 actor，
+            // 否则会在已完成的任务上原地循环。
+            await Task.yield()
+        }
+        guard !isClosed, !isActive else { return }
+        generation += 1
+        let run = generation
         text = ""
+        characterCount = 0
         errorMessage = nil
-        isFollowing = true
+        phase = .starting
         do {
             try await start(container, tail, { [weak self] chunk in
                 Task { @MainActor in
-                    guard let self, self.isFollowing else { return }
-                    self.text += chunk
+                    self?.append(chunk, generation: run)
                 }
             }, { [weak self] in
-                Task { @MainActor in self?.isFollowing = false }
+                Task { @MainActor in
+                    guard let self, self.generation == run else { return }
+                    self.phase = .ended
+                }
             }, { [weak self] message in
                 Task { @MainActor in
-                    self?.errorMessage = message
-                    self?.isFollowing = false
+                    guard let self, self.generation == run else { return }
+                    self.errorMessage = message
+                    self.phase = .failed
                 }
             })
+            if generation == run, phase == .starting {
+                phase = .following
+            }
         } catch {
-            errorMessage = error.localizedDescription
-            isFollowing = false
+            if generation == run {
+                errorMessage = error.localizedDescription
+                phase = .failed
+            }
         }
     }
 
-    /// 停止跟随。
+    /// 停止跟随，保留当前文本。
     public func stopFollowing() async {
-        guard isFollowing else { return }
-        isFollowing = false
-        await stop()
+        generation += 1
+        phase = .idle
+        errorMessage = nil
+        let token = UUID()
+        pendingStopToken = token
+        let task = Task { await stop() }
+        pendingStop = task
+        await task.value
+        if pendingStopToken == token {
+            pendingStop = nil
+        }
+    }
+
+    /// 结束视图生命周期：停止订阅并拒绝后续开始。
+    ///
+    /// 视图退出时可能还有重试任务尚未执行，关闭后这些任务不会再建立
+    /// 新的订阅。
+    public func close() async {
+        isClosed = true
+        await stopFollowing()
+    }
+
+    private func append(_ chunk: String, generation run: Int) {
+        guard generation == run, isActive else { return }
+        text.append(chunk)
+        characterCount += chunk.count
+        if characterCount > Self.maxCharacters {
+            let drop = characterCount - Self.retainedCharacters
+            let start = text.index(text.startIndex, offsetBy: drop)
+            let tail = text[start...]
+            if let newline = tail.firstIndex(of: "\n") {
+                text = String(tail[tail.index(after: newline)...])
+            } else {
+                text = String(tail)
+            }
+            characterCount = text.count
+        }
+        revision += 1
     }
 }
