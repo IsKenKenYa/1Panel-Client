@@ -394,7 +394,7 @@ private struct ContainerLogsSheet: View {
                 Toggle(
                     translations.get("containerLogsAutoRefresh", fallback: "Auto Refresh"),
                     isOn: Binding(
-                        get: { stream.isFollowing },
+                        get: { stream.isActive },
                         set: { follow in
                             Task {
                                 if follow {
@@ -417,7 +417,7 @@ private struct ContainerLogsSheet: View {
                 .disabled(isLoading)
                 .help(translations.get("commonRefresh", fallback: "Refresh"))
             }
-            if stream.isFollowing {
+            if stream.phase != .idle {
                 if !stream.text.isEmpty {
                     ScrollView {
                         Text(verbatim: stream.text)
@@ -425,13 +425,35 @@ private struct ContainerLogsSheet: View {
                             .textSelection(.enabled)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                } else {
+                } else if stream.isActive {
                     LoadingView()
+                } else if stream.hasEnded {
+                    EmptyStateView(
+                        icon: "doc.text",
+                        message: translations.get("containerLogsEmpty", fallback: "No logs")
+                    )
                 }
                 if let streamError = stream.errorMessage {
-                    Label(streamError, systemImage: "exclamationmark.triangle")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        Label(streamError, systemImage: "exclamationmark.triangle")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                        Button(translations.get("commonRetry", fallback: "Retry")) {
+                            Task { await stream.follow(container: containerName) }
+                        }
+                    }
+                } else if stream.hasEnded {
+                    HStack(spacing: 8) {
+                        Text(translations.get("containerLogsStreamEnded",
+                                              fallback: "Log stream ended"))
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                        Button(translations.get("containerLogsResumeFollow",
+                                                fallback: "Resume following")) {
+                            Task { await stream.follow(container: containerName) }
+                        }
+                    }
                 }
             } else if let logs {
                 if let loadError {
@@ -463,7 +485,7 @@ private struct ContainerLogsSheet: View {
         .padding(20)
         .frame(width: 640, height: 480)
         .onDisappear {
-            Task { await stream.stopFollowing() }
+            Task { await stream.close() }
         }
         .task(id: refreshCount) {
             isLoading = true
