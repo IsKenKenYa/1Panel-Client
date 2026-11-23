@@ -33,7 +33,10 @@ struct ContainerDetailView: View {
 
             switch tab {
             case "logs":
-                logsContent
+                ContainerLogsFollowView(containerName: containerName) {
+                    try await viewModel.fetchLogsAsync(name: containerName)
+                }
+                .id(containerName)
             case "files":
                 ContainerFilesView(containerId: containerName)
             case "terminal":
@@ -72,16 +75,14 @@ struct ContainerDetailView: View {
                     Label(translations.get("websitesDetailActionsTitle", fallback: "Quick actions"),
                           systemImage: "ellipsis.circle")
                 }
-                Button {
-                    if tab == "info" {
+                if tab == "info" {
+                    Button {
                         viewModel.fetchInspect(name: containerName)
-                    } else if tab == "logs" {
-                        viewModel.fetchLogs(name: containerName)
+                    } label: {
+                        Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                     }
-                } label: {
-                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
+                    .disabled(viewModel.isLoadingInspect)
                 }
-                .disabled(viewModel.isLoadingInspect || viewModel.isLoadingLogs || tab == "terminal")
             }
         }
         .confirmationDialog(
@@ -100,16 +101,11 @@ struct ContainerDetailView: View {
             }
         }
         .onAppear {
-            if tab == "logs" {
-                viewModel.fetchLogs(name: containerName)
-            } else if tab == "info" {
+            if tab == "info" {
                 viewModel.fetchInspect(name: containerName)
             }
         }
         .onChange(of: tab) { newValue in
-            if newValue == "logs" && viewModel.logs.isEmpty {
-                viewModel.fetchLogs(name: containerName)
-            }
             if newValue == "info" && viewModel.inspectText.isEmpty {
                 viewModel.fetchInspect(name: containerName)
             }
@@ -173,10 +169,7 @@ struct ContainerDetailView: View {
     }
 
     private var refreshFailed: Bool {
-        if tab == "logs" {
-            return viewModel.logsFailed && !viewModel.logs.isEmpty
-        }
-        return viewModel.inspectFailed && !viewModel.inspectText.isEmpty
+        viewModel.inspectFailed && !viewModel.inspectText.isEmpty
     }
 
     @ViewBuilder
@@ -196,30 +189,6 @@ struct ContainerDetailView: View {
             ScrollView {
                 Text(viewModel.inspectText)
                     .font(.system(.caption2, design: .monospaced))
-                    .textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var logsContent: some View {
-        if viewModel.isLoadingLogs && viewModel.logs.isEmpty {
-            LoadingView()
-        } else if viewModel.logsFailed && viewModel.logs.isEmpty {
-            ErrorView(message: translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
-                viewModel.fetchLogs(name: containerName)
-            }
-        } else if viewModel.logs.isEmpty {
-            EmptyStateView(
-                icon: "doc.text",
-                message: translations.get("containerLogsEmpty", fallback: "No logs")
-            )
-        } else {
-            ScrollView {
-                Text(viewModel.logs)
-                    .font(.system(.caption, design: .monospaced))
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()

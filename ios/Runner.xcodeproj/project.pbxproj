@@ -59,6 +59,7 @@
 		B10S0001000000000000002D /* AppInstallDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002D /* AppInstallDetailView.swift */; };
 		B10S0001000000000000002E /* TerminalSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002E /* TerminalSessionModel.swift */; };
 		B10S0001000000000000002F /* ContainerTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002F /* ContainerTerminalView.swift */; };
+		B10S0001000000000000005F /* ContainerLogsFollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000005F /* ContainerLogsFollowView.swift */; };
 		B10S00010000000000000030 /* DatabaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000030 /* DatabaseDetailView.swift */; };
 		B10S00010000000000000031 /* FileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000031 /* FileContentView.swift */; };
 		B10S00010000000000000032 /* ContainersSubTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000032 /* ContainersSubTabsView.swift */; };
@@ -190,6 +191,7 @@
 		F10S0001000000000000002D /* AppInstallDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInstallDetailView.swift; sourceTree = "<group>"; };
 		F10S0001000000000000002E /* TerminalSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSessionModel.swift; sourceTree = "<group>"; };
 		F10S0001000000000000002F /* ContainerTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerTerminalView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000005F /* ContainerLogsFollowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerLogsFollowView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000030 /* DatabaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDetailView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000031 /* FileContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileContentView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000032 /* ContainersSubTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainersSubTabsView.swift; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 				F10S0001000000000000000B /* ContainersViewModel.swift */,
 				F10S0001000000000000000C /* ContainersView.swift */,
 				F10S0001000000000000001C /* ContainerDetailView.swift */,
+				F10S0001000000000000005F /* ContainerLogsFollowView.swift */,
 				F10S0001000000000000002E /* TerminalSessionModel.swift */,
 				F10S0001000000000000002F /* ContainerTerminalView.swift */,
 				F10S00010000000000000032 /* ContainersSubTabsView.swift */,
@@ -895,6 +898,7 @@
 				B10S0001000000000000002D /* AppInstallDetailView.swift in Sources */,
 				B10S0001000000000000002E /* TerminalSessionModel.swift in Sources */,
 				B10S0001000000000000002F /* ContainerTerminalView.swift in Sources */,
+				B10S0001000000000000005F /* ContainerLogsFollowView.swift in Sources */,
 				B10S00010000000000000030 /* DatabaseDetailView.swift in Sources */,
 				B10S00010000000000000031 /* FileContentView.swift in Sources */,
 				B10S00010000000000000032 /* ContainersSubTabsView.swift in Sources */,

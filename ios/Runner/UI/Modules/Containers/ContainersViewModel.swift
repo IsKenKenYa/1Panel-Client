@@ -17,34 +17,26 @@ class ContainersViewModel: ObservableObject {
     @Published var isProcessing = false
     @Published private(set) var loadFailed = false
 
-    /// 容器日志（getContainerLogs 通道，尾部 200 行）。
-    @Published var logs: String = ""
-    @Published var isLoadingLogs = false
-    @Published private(set) var logsFailed = false
+    /// 容器日志快照（getContainerLogs 通道，非跟随状态下的尾部回放）。
+    func fetchLogsAsync(name: String, tail: String = "200") async throws -> String {
+        let result = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getContainerLogs",
+            arguments: ["name": name, "tail": tail]
+        )
+        guard let text = result as? String else {
+            throw NSError(
+                domain: "onepanel.containerLogs",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Container logs returned no text"]
+            )
+        }
+        return text
+    }
+
     /// 容器 inspect（getContainerInspect 通道，格式化 JSON）。
     @Published var inspectText: String = ""
     @Published var isLoadingInspect = false
     @Published private(set) var inspectFailed = false
-
-    func fetchLogs(name: String, tail: String = "200") {
-        guard !isLoadingLogs else { return }
-        isLoadingLogs = true
-        logsFailed = false
-        ChannelManager.shared.invokeDataMethod(
-            "getContainerLogs",
-            arguments: ["name": name, "tail": tail]
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                self.isLoadingLogs = false
-                guard let text = result as? String else {
-                    self.logsFailed = true
-                    return
-                }
-                self.logs = text
-            }
-        }
-    }
 
     func fetchInspect(name: String) {
         guard !isLoadingInspect else { return }
