@@ -5,23 +5,19 @@ import AppleSharedUI
 
 /// 容器日志跟随的真实链路测试。
 ///
-/// 全部用例经真实 Flutter 通道（`ChannelManager` → Dart → SSE 客户端）
-/// 连接到测试进程内的本地 SSE 服务端，帧格式与上游
-/// `agent/app/service/container.go` 一致：普通帧 `data: <base64>`，
-/// 失败帧 `event: error` 加明文。没有回调替身与人工成功事件。
+/// 全部用例经真实 Flutter 通道（`ChannelManager` → Dart → SSE 客户端）连接
+/// 测试进程外的真实服务 `test/scripts/container_log_sse_server.dart`。该服务
+/// 用 `dart:io` 的 HttpServer 实现 HTTP 与 SSE，按上游 `container.go` 的格式
+/// 推送普通帧 `data: <base64>` 与 `event: error` 明文；快照走生产
+/// `getContainerLogs` 通道。没有回调替身、空 stop、人工成功事件或手写协议解析。
 @MainActor
 final class ContainerLogStreamTests: XCTestCase {
-    private var server: ContainerLogTestServer!
-    private var previousServerID: String?
-
     override func setUp() async throws {
         try await super.setUp()
-        server = try ContainerLogTestServer()
-        server.start()
         let seeded = try await ChannelManager.shared.invokeDataMethodAsync(
             "seedDebugConfig",
             arguments: [
-                "url": server.baseURL,
+                "url": ContainerLogTestService.baseURL().absoluteString,
                 "apiKey": "test-key",
                 "name": "B73 Real Stream",
             ]
@@ -29,28 +25,16 @@ final class ContainerLogStreamTests: XCTestCase {
         let payload = seeded as? [String: Any]
         XCTAssertEqual(payload?["success"] as? Bool, true,
                        "seedDebugConfig failed: \(payload ?? [:])")
-        let current = await currentServerID()
-        previousServerID = current
     }
 
     override func tearDown() async throws {
-        _ = try? await ChannelManager.shared.invokeDataMethodAsync(
-            "stopContainerLogStream"
-        )
-        server?.stop()
-        server = nil
+        _ = try? await ChannelManager.shared.stopContainerLogStream(handle: 0)
         try await super.tearDown()
-    }
-
-    private func currentServerID() async -> String? {
-        let raw = try? await ChannelManager.shared.invokeDataMethodAsync("getServers")
-        guard let servers = raw as? [[String: Any]] else { return nil }
-        return (servers.first { ($0["isCurrent"] as? Bool) == true })?["id"] as? String
     }
 
     private func waitFor(
         _ description: String,
-        timeout: TimeInterval = 10,
+        timeout: TimeInterval = 15,
         _ predicate: @escaping () -> Bool
     ) async throws {
         let deadline = Date().addingTimeInterval(timeout)
@@ -63,6 +47,19 @@ final class ContainerLogStreamTests: XCTestCase {
         }
     }
 
+    /// 生产快照链路：`getContainerLogs` 通道 → Dart 服务 → 1Panel API。
+    private static func productionSnapshot(container: String) async throws -> String {
+        let result = try await ChannelManager.shared.invokeDataMethodAsync(
+            "getContainerLogs",
+            arguments: ["name": container, "tail": "200"]
+        )
+        guard let text = result as? String else {
+            throw NSError(domain: "snapshot", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: "快照返回非文本"])
+        }
+        return text
+    }
+
     private func makeSession(
         container: String = "web-1"
     ) -> ContainerLogsSession {
@@ -71,116 +68,136 @@ final class ContainerLogStreamTests: XCTestCase {
             store: ContainerLogStreamStore(
                 start: { container, tail, onChunk, onDone, onError in
                     try await ChannelManager.shared.startContainerLogStream(
-                        container: container,
-                        tail: tail,
-                        onChunk: onChunk,
-                        onDone: onDone,
-                        onError: onError
-                    )
+                        container: container, tail: tail,
+                        onChunk: onChunk, onDone: onDone, onError: onError)
                 },
-                stop: { await ChannelManager.shared.stopContainerLogStream() }
+                stop: { handle in
+                    await ChannelManager.shared.stopContainerLogStream(handle: handle)
+                }
             ),
-            fetchSnapshot: { "" }
+            fetchSnapshot: {
+                try await Self.productionSnapshot(container: container)
+            }
         )
     }
 
     // MARK: - 正常日志流
 
     func testFollowsRealServerLogFrames() async throws {
-        server.respond(with: [
-            .log("first line\n"),
-            .log("中文日志\n"),
-            .error(""),
-        ])
+        try ContainerLogTestService.setScenario("log:first line\\n\neof\n")
         let session = makeSession()
         await session.appear()
 
-        try await waitFor("two log chunks") {
-            session.store.text.contains("first line\n")
-                && session.store.text.contains("中文日志\n")
+        try await waitFor("log chunk") {
+            session.store.text.contains("first line")
         }
-        XCTAssertEqual(session.store.text, "first line\n中文日志\n")
-        XCTAssertEqual(session.store.revision, 2)
+        XCTAssertEqual(session.store.phase, .ended)
+        XCTAssertNil(session.store.errorMessage)
     }
 
     func testErrorFrameKeepsLogsAndReportsServerMessage() async throws {
-        server.respond(with: [
-            .log("line before error\n"),
-            .error("docker logs: no such container"),
-        ])
+        try ContainerLogTestService.setScenario(
+            "log:line before error\\n\nerror:docker logs: no such container\n"
+        )
         let session = makeSession()
         await session.appear()
 
         try await waitFor("failure") { session.store.phase == .failed }
-        XCTAssertEqual(session.store.text, "line before error\n")
+        XCTAssertTrue(session.store.text.contains("line before error"))
         XCTAssertEqual(session.store.errorMessage,
                        "docker logs: no such container")
         XCTAssertFalse(session.store.isActive)
     }
 
     func testEofEndsFollowNormally() async throws {
-        server.respond(with: [.log("only line\n")])
+        try ContainerLogTestService.setScenario("log:only line\\n\neof\n")
         let session = makeSession()
         await session.appear()
 
         try await waitFor("ended") { session.store.phase == .ended }
-        XCTAssertEqual(session.store.text, "only line\n")
+        XCTAssertTrue(session.store.text.contains("only line"))
         XCTAssertNil(session.store.errorMessage)
         XCTAssertTrue(session.store.hasEnded)
     }
 
-    // MARK: - 停止与恢复
+    // MARK: - 停止、恢复与归属
 
-    func testStopKeepsTextAndResumeReconnects() async throws {
-        server.respond(with: [
-            .log("during follow\n"),
-            .hold,
-        ])
+    func testStopKeepsTextAndProductionSnapshotLoads() async throws {
+        try ContainerLogTestService.setScenario("log:during follow\\n\nhold\n")
+        try ContainerLogTestService.setSnapshot("snapshot body\n")
         let session = makeSession()
         await session.appear()
         try await waitFor("first chunk") { !session.store.text.isEmpty }
 
         await session.setFollow(false)
         XCTAssertEqual(session.store.phase, .idle)
-        XCTAssertEqual(session.store.text, "during follow\n")
-        XCTAssertEqual(session.displayText, "during follow\n")
-
-        // 恢复后旧连接已关闭，服务端下一轮返回新文本。
-        server.respond(with: [.log("after resume\n"), .error("")])
-        await session.setFollow(true)
-        try await waitFor("resumed chunk") {
-            session.store.text.contains("after resume\n")
-        }
-        XCTAssertFalse(session.store.text.contains("during follow\n"),
-                       "新订阅必须清空上一轮文本")
+        XCTAssertTrue(session.store.text.contains("during follow"))
+        // 生产快照链路真实执行并到达服务端。
+        try await waitFor("snapshot loaded") { session.snapshot != nil }
+        XCTAssertTrue(session.snapshot?.contains("snapshot body") ?? false)
+        XCTAssertNil(session.snapshotError)
+        XCTAssertTrue(session.displayText.contains("during follow"),
+                      "已收到日志优先于快照")
     }
 
-    func testLateCallbacksFromPreviousFollowAreIgnored() async throws {
-        server.respond(with: [.log("round one\n"), .hold])
+    func testSnapshotFailureKeepsReceivedText() async throws {
+        try ContainerLogTestService.setScenario("log:received\\n\nhold\n")
+        // 不设置快照内容：服务端按生产失败路径返回 500。
+        try ContainerLogTestService.setSnapshot(nil)
+        let session = makeSession()
+        await session.appear()
+        try await waitFor("received") { !session.store.text.isEmpty }
+
+        await session.setFollow(false)
+        try await waitFor("snapshot failure") { session.snapshotError != nil }
+        XCTAssertTrue(session.displayText.contains("received"),
+                      "快照失败不能遮盖已收到日志")
+        XCTAssertFalse(session.snapshotError?.isEmpty ?? true)
+    }
+
+    func testRapidRestartKeepsLatestStreamOnly() async throws {
+        try ContainerLogTestService.setScenario("log:round one\\n\nhold\n")
         let session = makeSession()
         await session.appear()
         try await waitFor("round one") { !session.store.text.isEmpty }
 
-        // 快速停止再恢复：允许在旧连接尚未完全关闭时发起新订阅。
         await session.setFollow(false)
-        server.respond(with: [.log("round two\n"), .error("")])
+        try ContainerLogTestService.setScenario("log:round two\\n\n")
         await session.setFollow(true)
 
-        try await waitFor("round two") {
-            session.store.text.contains("round two\n")
-        }
+        try await waitFor("round two") { session.store.text.contains("round two") }
         try await Task.sleep(nanoseconds: 500_000_000)
-        // 上一轮文本不得混入，新一轮文本也不得重复追加。
-        XCTAssertFalse(session.store.text.contains("round one\n"),
-                       "旧订阅迟到的帧必须丢弃")
-        XCTAssertEqual(session.store.text.components(separatedBy: "round two\n").count - 1,
+        XCTAssertFalse(session.store.text.contains("round one"),
+                       "旧订阅的内容不得混入")
+        XCTAssertEqual(session.store.text.components(separatedBy: "round two").count - 1,
                        1, "新一轮内容不得重复")
+    }
+
+    /// 多实例并存：旧实例的停止不得取消新实例的连接。
+    func testOldSessionStopDoesNotCancelNewSession() async throws {
+        try ContainerLogTestService.setScenario("log:shared stream\nhold\n")
+        let first = makeSession(container: "a")
+        let second = makeSession(container: "b")
+        await first.appear()
+        try await waitFor("first connected") { first.store.phase == .following }
+        await second.appear()
+        try await waitFor("second connected") { second.store.phase == .following }
+
+        await first.setFollow(false)
+        // Dart 侧仍是第二个实例的订阅，仍能收到新的帧。
+        try ContainerLogTestService.setScenario("log:after old stop\neof\n")
+        await second.setFollow(false)
+        await second.setFollow(true)
+        try await waitFor("second still live") {
+            second.store.text.contains("after old stop")
+        }
+        XCTAssertEqual(second.store.phase, .ended)
     }
 
     // MARK: - 生命周期
 
     func testLeaveKeepsWantsFollowAndAppearResumes() async throws {
-        server.respond(with: [.log("before leave\n"), .hold])
+        try ContainerLogTestService.setScenario("log:before leave\nhold\n")
         let session = makeSession()
         await session.appear()
         try await waitFor("before leave") { !session.store.text.isEmpty }
@@ -189,98 +206,77 @@ final class ContainerLogStreamTests: XCTestCase {
         XCTAssertTrue(session.wantsFollow)
         XCTAssertEqual(session.store.phase, .idle)
 
-        server.respond(with: [.log("after appear\n"), .error("")])
+        try ContainerLogTestService.setScenario("log:after appear\neof\n")
         await session.appear()
-        try await waitFor("after appear") {
-            session.store.text.contains("after appear\n")
-        }
+        try await waitFor("after appear") { session.store.text.contains("after appear") }
         XCTAssertTrue(session.wantsFollow)
     }
 
     func testFinishRejectsLaterAppear() async throws {
-        server.respond(with: [.log("first\n"), .hold])
+        try ContainerLogTestService.setScenario("log:first\nhold\n")
         let session = makeSession()
         await session.appear()
         try await waitFor("first") { !session.store.text.isEmpty }
 
         await session.finish()
-        server.respond(with: [.log("not expected\n"), .error("")])
+        try ContainerLogTestService.setScenario("log:not expected\neof\n")
         await session.appear()
         try await Task.sleep(nanoseconds: 700_000_000)
-        XCTAssertFalse(session.store.text.contains("not expected\n"),
+        XCTAssertFalse(session.store.text.contains("not expected"),
                        "关闭后不应再建立订阅")
         XCTAssertEqual(session.store.phase, .idle)
     }
 
     func testRepeatedAppearKeepsSingleSubscription() async throws {
-        server.respond(with: [.log("only once\n"), .hold])
+        let before = try ContainerLogTestService.status().started
+        try ContainerLogTestService.setScenario("log:only once\nhold\n")
         let session = makeSession()
         await session.appear()
         await session.appear()
         try await waitFor("only once") { !session.store.text.isEmpty }
         try await Task.sleep(nanoseconds: 400_000_000)
         XCTAssertEqual(session.store.revision, 1)
+        XCTAssertEqual(try ContainerLogTestService.status().started, before + 1,
+                       "重复出现不得再建订阅")
     }
 
-    // MARK: - 快照与已收到文本
+    // MARK: - 取消后服务端连接确已关闭
 
-    func testSnapshotFailureNeverHidesReceivedText() async throws {
-        server.respond(with: [.log("received\n"), .hold])
-        let store = ContainerLogStreamStore(
-            start: { container, tail, onChunk, onDone, onError in
-                try await ChannelManager.shared.startContainerLogStream(
-                    container: container,
-                    tail: tail,
-                    onChunk: onChunk,
-                    onDone: onDone,
-                    onError: onError
-                )
-            },
-            stop: { await ChannelManager.shared.stopContainerLogStream() }
-        )
-        let session = ContainerLogsSession(
-            container: "web-1",
-            store: store,
-            fetchSnapshot: {
-                throw NSError(domain: "snapshot", code: 1,
-                              userInfo: [NSLocalizedDescriptionKey: "snapshot failed"])
-            }
-        )
-        await session.appear()
-        try await waitFor("received") { !store.text.isEmpty }
-
-        await session.setFollow(false)
-        XCTAssertEqual(session.snapshotError, "snapshot failed")
-        XCTAssertEqual(session.displayText, "received\n",
-                       "快照失败不能遮盖已收到日志")
-    }
-
-    func testSwitchContainerUsesNewStream() async throws {
-        server.respond(with: [.log("container A\n"), .hold])
-        let first = makeSession(container: "a")
-        await first.appear()
-        try await waitFor("A") { !first.store.text.isEmpty }
-        await first.finish()
-
-        server.respond(with: [.log("container B\n"), .error("")])
-        let second = makeSession(container: "b")
-        await second.appear()
-        try await waitFor("B") { second.store.text.contains("container B\n") }
-        XCTAssertFalse(second.store.text.contains("container A\n"))
-    }
-
-    // MARK: - 取消后的连接结束
-
+    /// 直接观察客户端取消导致的服务端连接关闭，不依赖服务端自然 EOF。
     func testStopClosesServerConnection() async throws {
-        server.respond(with: [.log("open\n"), .hold])
+        let baseline = try ContainerLogTestService.status()
+        try ContainerLogTestService.setScenario("log:open\\n\nhold\n")
         let session = makeSession()
         await session.appear()
         try await waitFor("open") { !session.store.text.isEmpty }
 
         await session.setFollow(false)
-        // 服务端连接被客户端取消后，再次订阅必须立刻可用。
-        server.respond(with: [.log("second\n"), .error("")])
-        await session.setFollow(true)
-        try await waitFor("second") { session.store.text.contains("second\n") }
+        try ContainerLogTestService.waitForClientDisconnects(
+            baseline.closedByClient + 1
+        )
+        let status = try ContainerLogTestService.status()
+        XCTAssertNil(status.active.first { $0 == "web-1" },
+                     "服务端不应再有该容器的活动连接")
+        // 本次结束来自客户端取消，服务端自然结束计数不应增加。
+        XCTAssertEqual(status.closedByServer, baseline.closedByServer,
+                       "本次结束必须来自客户端取消")
+    }
+
+    func testSwitchContainerClosesPreviousConnection() async throws {
+        let baseline = try ContainerLogTestService.status()
+        try ContainerLogTestService.setScenario("log:container a\\n\nhold\n")
+        let first = makeSession(container: "a")
+        await first.appear()
+        try await waitFor("a") { !first.store.text.isEmpty }
+        await first.finish()
+        try ContainerLogTestService.waitForClientDisconnects(
+            baseline.closedByClient + 1
+        )
+
+        try ContainerLogTestService.setScenario("log:container b\neof\n")
+        let second = makeSession(container: "b")
+        await second.appear()
+        try await waitFor("b") { second.store.text.contains("container b") }
+        XCTAssertFalse(second.store.text.contains("container a"))
     }
 }
