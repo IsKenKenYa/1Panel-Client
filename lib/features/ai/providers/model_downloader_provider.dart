@@ -18,8 +18,11 @@ class ModelDownloaderProvider extends ChangeNotifier with SafeChangeNotifier {
 
   // ==================== 推荐 ====================
 
-  FeaturedModelPage _featured =
-      const FeaturedModelPage(items: <FeaturedModel>[], total: 0);
+  FeaturedModelPage _featured = const FeaturedModelPage(
+    items: <FeaturedModel>[],
+    total: 0,
+    families: <String>[],
+  );
   bool _featuredLoading = false;
   String? _featuredError;
   String? _featuredFamily;
@@ -89,8 +92,11 @@ class ModelDownloaderProvider extends ChangeNotifier with SafeChangeNotifier {
 
   Future<void> onServerChanged() async {
     _service.resetForServerChange();
-    _featured =
-        const FeaturedModelPage(items: <FeaturedModel>[], total: 0);
+    _featured = const FeaturedModelPage(
+      items: <FeaturedModel>[],
+      total: 0,
+      families: <String>[],
+    );
     _searchResults = const <ModelItem>[];
     _tasks = const <ModelDownloadTaskItem>[];
     _localModels = const <LocalModelItem>[];
@@ -130,6 +136,7 @@ class ModelDownloaderProvider extends ChangeNotifier with SafeChangeNotifier {
       _featured = const FeaturedModelPage(
         items: <FeaturedModel>[],
         total: 0,
+        families: <String>[],
       );
       _featuredError = ErrorMessageUtils.userFacingMessage(error);
     } finally {

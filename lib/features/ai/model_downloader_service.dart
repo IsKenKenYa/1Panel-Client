@@ -47,8 +47,11 @@ class ModelDownloaderService extends BaseComponent {
           info: info,
         ),
       );
-      return response.data ??
-          const FeaturedModelPage(items: <FeaturedModel>[], total: 0);
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回推荐模型列表');
+      }
+      return data;
     });
   }
 
@@ -88,7 +91,11 @@ class ModelDownloaderService extends BaseComponent {
       final response = await (await _ensureApi()).getHuggingFaceModelInfo(
         ModelInfoReq(repoID: repoID, revision: revision),
       );
-      return response.data ?? const ModelInfo();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回 Hugging Face 模型 $repoID 的详情');
+      }
+      return data;
     });
   }
 
@@ -128,7 +135,11 @@ class ModelDownloaderService extends BaseComponent {
       final response = await (await _ensureApi()).getModelScopeModelInfo(
         ModelInfoReq(repoID: repoID, revision: revision),
       );
-      return response.data ?? const ModelInfo();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回 ModelScope 模型 $repoID 的详情');
+      }
+      return data;
     });
   }
 
