@@ -65,10 +65,28 @@ MaterialApp harness(Widget child, {VmProvider? vm, AlertProvider? alert}) {
 
 VmProvider stubVmProvider() {
   final service = _MockVMService();
-  when(() => service.checkEnvironment())
-      .thenAnswer((_) async => const VMEnvironment(ready: true));
+  when(() => service.checkEnvironment()).thenAnswer(
+    (_) async => const VMEnvironment(
+      arch: 'x86_64',
+      archSupported: true,
+      ready: true,
+      helperExist: true,
+      helperMessage: '',
+      kvmExist: true,
+      kvmMessage: '',
+      libvirtExist: true,
+      libvirtActive: true,
+      libvirtMessage: '',
+      storageExist: true,
+      storageMessage: '',
+    ),
+  );
   when(() => service.searchVMs(info: any(named: 'info')))
-      .thenAnswer((_) async => const VMSearchResult());
+      .thenAnswer((_) async => const VMSearchResult(
+            items: <VMItem>[],
+            total: 0,
+            limit: 0,
+          ));
   when(() => service.listIso()).thenAnswer((_) async => const <VMIsoItem>[]);
   when(() => service.listTemplates())
       .thenAnswer((_) async => const <VMTemplateItem>[]);

@@ -38,11 +38,19 @@ void main() {
 
   testWidgets('storage usage presents the same capacity in both views', (tester) async {
     const storage = VMStorageItem(
+      id: 1,
       name: 'pool',
+      type: 'dir',
       path: '/vm/pool',
+      autoStart: false,
+      description: '',
+      createdAt: '',
+      status: 'running',
+      error: '',
       capacity: 4 * 1024 * 1024,
       available: 1024 * 1024,
       vmCount: 2,
+      vms: <VMResourceRef>[],
     );
     for (final detailed in [false, true]) {
       await tester.pumpWidget(wrap(VmStorageUsage(storage: storage, detailed: detailed)));
@@ -52,8 +60,42 @@ void main() {
       final bar = tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator));
       expect(bar.value, 0.75);
     }
-    expect(const VMStorageItem().usagePercent, 0.0);
-    expect(const VMStorageItem(usedPercent: 88.5).usagePercent, 88.5);
+    expect(
+      const VMStorageItem(
+        id: 0,
+        name: '',
+        type: '',
+        path: '',
+        autoStart: false,
+        description: '',
+        createdAt: '',
+        status: '',
+        error: '',
+        capacity: 0,
+        available: 0,
+        vmCount: 0,
+        vms: <VMResourceRef>[],
+      ).usagePercent,
+      0.0,
+    );
+    expect(
+      const VMStorageItem(
+        id: 0,
+        name: '',
+        type: '',
+        path: '',
+        autoStart: false,
+        description: '',
+        createdAt: '',
+        status: '',
+        error: '',
+        capacity: 1000,
+        available: 115,
+        vmCount: 0,
+        vms: <VMResourceRef>[],
+      ).usagePercent,
+      88.5,
+    );
   });
 
   group('Vm instance card', () {
@@ -63,12 +105,23 @@ void main() {
           vm: const VMItem(
             id: 1,
             name: 'demo-vm',
+            uuid: 'uuid-demo',
             cpu: 4,
             memory: 4096,
             diskSize: 21474836480,
-            status: 'running',
-            network: 'default',
+            diskBus: 'virtio',
+            diskPath: '/vm/demo.qcow2',
             storagePool: 'default-pool',
+            isoPaths: <String>[],
+            imagePath: '',
+            network: 'default',
+            bootOrder: 'hd',
+            autoStart: false,
+            status: 'running',
+            disks: <VMDisk>[],
+            interfaces: <VMInterface>[],
+            taskID: '',
+            createTaskID: '',
             description: 'ubuntu node',
           ),
           onOpenActions: () {},
@@ -94,7 +147,28 @@ void main() {
       var opened = 0;
       await tester.pumpWidget(wrap(
         VmInstanceCard(
-          vm: const VMItem(id: 1, name: 'tap-me', status: 'running'),
+          vm: const VMItem(
+            id: 1,
+            name: 'tap-me',
+            uuid: 'uuid-tap',
+            cpu: 2,
+            memory: 2048,
+            diskSize: 10737418240,
+            diskBus: 'virtio',
+            diskPath: '/vm/tap.qcow2',
+            storagePool: 'default',
+            isoPaths: <String>[],
+            imagePath: '',
+            network: 'default',
+            bootOrder: 'hd',
+            autoStart: false,
+            status: 'running',
+            disks: <VMDisk>[],
+            interfaces: <VMInterface>[],
+            taskID: '',
+            createTaskID: '',
+            description: '',
+          ),
           onOpenActions: () => opened++,
         ),
       ));
@@ -115,10 +189,14 @@ void main() {
           archSupported: true,
           ready: true,
           helperExist: true,
+          helperMessage: '',
           kvmExist: true,
+          kvmMessage: '',
           libvirtExist: true,
           libvirtActive: true,
+          libvirtMessage: '',
           storageExist: true,
+          storageMessage: '',
         ),
       );
       final provider = VmProvider(service: service);
@@ -151,6 +229,7 @@ void main() {
           libvirtActive: false,
           libvirtMessage: 'libvirtd inactive',
           storageExist: true,
+          storageMessage: '',
         ),
       );
       final provider = VmProvider(service: service);
@@ -171,7 +250,20 @@ void main() {
         (tester) async {
       final service = _MockVMService();
       when(() => service.checkEnvironment())
-          .thenAnswer((_) async => const VMEnvironment(ready: true));
+          .thenAnswer((_) async => const VMEnvironment(
+                arch: 'x86_64',
+                archSupported: true,
+                ready: true,
+                helperExist: true,
+                helperMessage: '',
+                kvmExist: true,
+                kvmMessage: '',
+                libvirtExist: true,
+                libvirtActive: true,
+                libvirtMessage: '',
+                storageExist: true,
+                storageMessage: '',
+              ));
       when(() => service.listIso())
           .thenAnswer((_) async => const <VMIsoItem>[]);
       when(() => service.listTemplates())
@@ -181,7 +273,11 @@ void main() {
       when(() => service.listStorages())
           .thenAnswer((_) async => const <VMStorageItem>[]);
       when(() => service.searchVMs(info: any(named: 'info')))
-          .thenAnswer((_) async => const VMSearchResult());
+          .thenAnswer((_) async => const VMSearchResult(
+                items: <VMItem>[],
+                total: 0,
+                limit: 0,
+              ));
       final provider = VmProvider(service: service);
       await provider.loadAll();
       addTearDown(provider.dispose);

@@ -15,18 +15,46 @@ void main() {
   const running = VMItem(
     id: 1,
     name: 'vm-a',
+    uuid: 'uuid-a',
     cpu: 2,
     memory: 2048,
     diskSize: 20 * 1024 * 1024 * 1024,
+    diskBus: 'virtio',
+    diskPath: '/vm/a.qcow2',
+    storagePool: 'default-pool',
+    isoPaths: <String>[],
+    imagePath: '',
+    network: 'nat',
+    bootOrder: 'hd',
+    autoStart: false,
     status: 'running',
+    disks: <VMDisk>[],
+    interfaces: <VMInterface>[],
+    taskID: '',
+    createTaskID: '',
+    description: '',
   );
   const shutOff = VMItem(
     id: 2,
     name: 'vm-b',
+    uuid: 'uuid-b',
     cpu: 4,
     memory: 4096,
     diskSize: 40 * 1024 * 1024 * 1024,
+    diskBus: 'virtio',
+    diskPath: '/vm/b.qcow2',
+    storagePool: 'default-pool',
+    isoPaths: <String>[],
+    imagePath: '',
+    network: 'nat',
+    bootOrder: 'hd',
+    autoStart: false,
     status: 'shut off',
+    disks: <VMDisk>[],
+    interfaces: <VMInterface>[],
+    taskID: '',
+    createTaskID: '',
+    description: '',
   );
 
   setUpAll(() {
@@ -144,6 +172,8 @@ void main() {
       when(() => service.searchVMs(info: any(named: 'info')))
           .thenAnswer((_) async => const VMSearchResult(
                 items: <VMItem>[running, shutOff],
+                total: 2,
+                limit: 0,
               ));
 
       await provider.loadVms();
@@ -170,23 +200,40 @@ void main() {
                 archSupported: true,
                 ready: true,
                 helperExist: true,
+                helperMessage: '',
                 kvmExist: true,
+                kvmMessage: '',
                 libvirtExist: true,
                 libvirtActive: true,
+                libvirtMessage: '',
                 storageExist: true,
+                storageMessage: '',
               ));
 
       await provider.loadEnvironment();
 
       expect(provider.environmentReady, isTrue);
-      expect(provider.environment.kvmExist, isTrue);
+      expect(provider.environment!.kvmExist, isTrue);
       expect(provider.environmentState.error, isNull);
     });
 
     test('enableEnvironment reloads environment state', () async {
       when(() => service.enableEnvironment()).thenAnswer((_) async {});
       when(() => service.checkEnvironment())
-          .thenAnswer((_) async => const VMEnvironment(ready: true));
+          .thenAnswer((_) async => const VMEnvironment(
+                arch: 'x86_64',
+                archSupported: true,
+                ready: true,
+                helperExist: true,
+                helperMessage: '',
+                kvmExist: true,
+                kvmMessage: '',
+                libvirtExist: true,
+                libvirtActive: true,
+                libvirtMessage: '',
+                storageExist: true,
+                storageMessage: '',
+              ));
 
       final success = await provider.enableEnvironment();
 
@@ -197,7 +244,11 @@ void main() {
 
     test('setVmSearch forwards the trimmed keyword', () async {
       when(() => service.searchVMs(info: any(named: 'info')))
-          .thenAnswer((_) async => const VMSearchResult());
+          .thenAnswer((_) async => const VMSearchResult(
+                items: <VMItem>[],
+                total: 0,
+                limit: 0,
+              ));
 
       await provider.setVmSearch('  demo  ');
 
@@ -209,6 +260,8 @@ void main() {
       when(() => service.searchVMs(info: any(named: 'info')))
           .thenAnswer((_) async => const VMSearchResult(
                 items: <VMItem>[running, shutOff],
+                total: 2,
+                limit: 0,
               ));
 
       await provider.setVmStatusFilter('shut off');
@@ -220,7 +273,11 @@ void main() {
     test('operate uses the given power operation', () async {
       when(() => service.operateVM(any(), any())).thenAnswer((_) async {});
       when(() => service.searchVMs(info: any(named: 'info')))
-          .thenAnswer((_) async => const VMSearchResult());
+          .thenAnswer((_) async => const VMSearchResult(
+                items: <VMItem>[],
+                total: 0,
+                limit: 0,
+              ));
 
       await provider.operate('vm-a', 'shutdown');
 
@@ -261,9 +318,26 @@ void main() {
     test('onServerChanged resets service and reloads sections', () async {
       when(() => service.resetForServerChange()).thenReturn(null);
       when(() => service.checkEnvironment())
-          .thenAnswer((_) async => const VMEnvironment());
+          .thenAnswer((_) async => const VMEnvironment(
+                arch: 'x86_64',
+                archSupported: true,
+                ready: false,
+                helperExist: false,
+                helperMessage: '',
+                kvmExist: false,
+                kvmMessage: '',
+                libvirtExist: false,
+                libvirtActive: false,
+                libvirtMessage: '',
+                storageExist: false,
+                storageMessage: '',
+              ));
       when(() => service.searchVMs(info: any(named: 'info')))
-          .thenAnswer((_) async => const VMSearchResult());
+          .thenAnswer((_) async => const VMSearchResult(
+                items: <VMItem>[],
+                total: 0,
+                limit: 0,
+              ));
       when(() => service.listIso()).thenAnswer((_) async => const <VMIsoItem>[]);
       when(() => service.listTemplates())
           .thenAnswer((_) async => const <VMTemplateItem>[]);
