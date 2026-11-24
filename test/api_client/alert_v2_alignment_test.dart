@@ -55,11 +55,20 @@ void main() {
               'items': <Map<String, dynamic>>[
                 <String, dynamic>{
                   'id': 1,
+                  'createdAt': '2024-01-01T00:00:00Z',
+                  'updatedAt': '2024-01-01T00:00:00Z',
                   'type': 'disk',
+                  'subType': '',
+                  'cycle': 0,
+                  'count': 80,
+                  'interval': 1,
                   'method': 'email',
                   'title': '磁盘告警',
+                  'project': '',
                   'status': 'Enable',
+                  'sendCount': 1,
                   'sendMethod': <String>['email'],
+                  'advancedParams': '',
                 },
               ],
               'total': 1,
@@ -68,7 +77,12 @@ void main() {
 
       final api = AlertV2Api(client);
       final response = await api.searchAlerts(
-        const AlertSearch(page: 1, pageSize: 20, orderBy: 'created_at'),
+        const AlertSearch(
+          page: 1,
+          pageSize: 20,
+          orderBy: 'created_at',
+          order: 'descending',
+        ),
       );
 
       expect(requestMethod, 'POST');
@@ -114,8 +128,16 @@ void main() {
             'data': <Map<String, dynamic>>[
               <String, dynamic>{
                 'path': '/',
+                'type': 'ext4',
                 'device': 'vda1',
+                'total': 100,
+                'free': 20,
+                'used': 80,
                 'usedPercent': 82.5,
+                'inodesTotal': 100,
+                'inodesUsed': 80,
+                'inodesFree': 20,
+                'inodesUsedPercent': 82.5,
               },
             ],
           };
@@ -135,15 +157,36 @@ void main() {
               'items': <Map<String, dynamic>>[
                 <String, dynamic>{
                   'id': 9,
+                  'createdAt': '2024-01-01T00:00:00Z',
+                  'updatedAt': '2024-01-01T00:00:00Z',
                   'alertId': 1,
+                  'count': 1,
+                  'method': 'mail',
+                  'status': 'Error',
                   'message': 'disk usage high',
                   'alertDetail': <String, dynamic>{
                     'type': 'disk',
+                    'licenseId': '',
                     'title': '磁盘告警',
+                    'project': '',
+                    'method': 'mail',
                   },
                   'alertRule': <String, dynamic>{
                     'id': 1,
+                    'createdAt': '2024-01-01T00:00:00Z',
+                    'updatedAt': '2024-01-01T00:00:00Z',
                     'type': 'disk',
+                    'subType': '',
+                    'cycle': 0,
+                    'count': 80,
+                    'interval': 1,
+                    'method': 'mail',
+                    'title': '磁盘告警',
+                    'project': '',
+                    'status': 'Enable',
+                    'sendCount': 1,
+                    'sendMethod': <String>['mail'],
+                    'advancedParams': '',
                   },
                 },
               ],
@@ -168,6 +211,8 @@ void main() {
             'data': <Map<String, dynamic>>[
               <String, dynamic>{
                 'id': 2,
+                'createdAt': '2024-01-01T00:00:00Z',
+                'updatedAt': '2024-01-01T00:00:00Z',
                 'type': 'email',
                 'title': '邮件通知',
                 'config': '{"host":"smtp.example.com"}',
