@@ -33,18 +33,18 @@ Map<String, dynamic> _$SystemSettingsToJson(SystemSettings instance) =>
     };
 
 SystemInfo _$SystemInfoFromJson(Map<String, dynamic> json) => SystemInfo(
-      version: json['version'] as String?,
-      build: json['build'] as String?,
-      arch: json['arch'] as String?,
-      os: json['os'] as String?,
-      goVersion: json['goVersion'] as String?,
-      dockerVersion: json['dockerVersion'] as String?,
-      uptime: json['uptime'] as String?,
-      totalMemory: (json['totalMemory'] as num?)?.toInt(),
-      usedMemory: (json['usedMemory'] as num?)?.toInt(),
-      totalDisk: (json['totalDisk'] as num?)?.toInt(),
-      usedDisk: (json['usedDisk'] as num?)?.toInt(),
-    );
+  version: json['version'] as String?,
+  build: json['build'] as String?,
+  arch: json['arch'] as String?,
+  os: json['os'] as String?,
+  goVersion: json['goVersion'] as String?,
+  dockerVersion: json['dockerVersion'] as String?,
+  uptime: json['uptime'] as String?,
+  totalMemory: (json['totalMemory'] as num?)?.toInt(),
+  usedMemory: (json['usedMemory'] as num?)?.toInt(),
+  totalDisk: (json['totalDisk'] as num?)?.toInt(),
+  usedDisk: (json['usedDisk'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$SystemInfoToJson(SystemInfo instance) =>
     <String, dynamic>{
@@ -62,15 +62,12 @@ Map<String, dynamic> _$SystemInfoToJson(SystemInfo instance) =>
     };
 
 SystemTime _$SystemTimeFromJson(Map<String, dynamic> json) => SystemTime(
-      time: json['time'] as String?,
-      timeZone: json['timeZone'] as String?,
-    );
+  time: json['time'] as String?,
+  timeZone: json['timeZone'] as String?,
+);
 
 Map<String, dynamic> _$SystemTimeToJson(SystemTime instance) =>
-    <String, dynamic>{
-      'time': instance.time,
-      'timeZone': instance.timeZone,
-    };
+    <String, dynamic>{'time': instance.time, 'timeZone': instance.timeZone};
 
 SystemTimeSet _$SystemTimeSetFromJson(Map<String, dynamic> json) =>
     SystemTimeSet(
@@ -79,10 +76,7 @@ SystemTimeSet _$SystemTimeSetFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$SystemTimeSetToJson(SystemTimeSet instance) =>
-    <String, dynamic>{
-      'time': instance.time,
-      'timeZone': instance.timeZone,
-    };
+    <String, dynamic>{'time': instance.time, 'timeZone': instance.timeZone};
 
 SecuritySettings _$SecuritySettingsFromJson(Map<String, dynamic> json) =>
     SecuritySettings(
@@ -107,28 +101,28 @@ Map<String, dynamic> _$SecuritySettingsToJson(SecuritySettings instance) =>
     };
 
 SecuritySettingsUpdate _$SecuritySettingsUpdateFromJson(
-        Map<String, dynamic> json) =>
-    SecuritySettingsUpdate(
-      allowIPs: json['allowIPs'] as bool?,
-      allowedIPs: (json['allowedIPs'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      authMethod: json['authMethod'] as String?,
-      failedAttempts: (json['failedAttempts'] as num?)?.toInt(),
-      lockTime: (json['lockTime'] as num?)?.toInt(),
-      passwordPolicy: json['passwordPolicy'] as String?,
-    );
+  Map<String, dynamic> json,
+) => SecuritySettingsUpdate(
+  allowIPs: json['allowIPs'] as bool?,
+  allowedIPs: (json['allowedIPs'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  authMethod: json['authMethod'] as String?,
+  failedAttempts: (json['failedAttempts'] as num?)?.toInt(),
+  lockTime: (json['lockTime'] as num?)?.toInt(),
+  passwordPolicy: json['passwordPolicy'] as String?,
+);
 
 Map<String, dynamic> _$SecuritySettingsUpdateToJson(
-        SecuritySettingsUpdate instance) =>
-    <String, dynamic>{
-      'allowIPs': instance.allowIPs,
-      'allowedIPs': instance.allowedIPs,
-      'authMethod': instance.authMethod,
-      'failedAttempts': instance.failedAttempts,
-      'lockTime': instance.lockTime,
-      'passwordPolicy': instance.passwordPolicy,
-    };
+  SecuritySettingsUpdate instance,
+) => <String, dynamic>{
+  'allowIPs': instance.allowIPs,
+  'allowedIPs': instance.allowedIPs,
+  'authMethod': instance.authMethod,
+  'failedAttempts': instance.failedAttempts,
+  'lockTime': instance.lockTime,
+  'passwordPolicy': instance.passwordPolicy,
+};
 
 PanelSettings _$PanelSettingsFromJson(Map<String, dynamic> json) =>
     PanelSettings(
@@ -173,29 +167,29 @@ PanelSettingsUpdate _$PanelSettingsUpdateFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PanelSettingsUpdateToJson(
-        PanelSettingsUpdate instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'logo': instance.logo,
-      'theme': instance.theme,
-      'language': instance.language,
-      'serverName': instance.serverName,
-      'serverAddr': instance.serverAddr,
-      'port': instance.port,
-      'ssl': instance.ssl,
-      'ipv6': instance.ipv6,
-      'bind': instance.bind,
-    };
+  PanelSettingsUpdate instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'logo': instance.logo,
+  'theme': instance.theme,
+  'language': instance.language,
+  'serverName': instance.serverName,
+  'serverAddr': instance.serverAddr,
+  'port': instance.port,
+  'ssl': instance.ssl,
+  'ipv6': instance.ipv6,
+  'bind': instance.bind,
+};
 
 UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => UserSettings(
-      username: json['username'] as String?,
-      email: json['email'] as String?,
-      language: json['language'] as String?,
-      theme: json['theme'] as String?,
-      timeZone: json['timeZone'] as String?,
-      failedLoginAttempts: (json['failedLoginAttempts'] as num?)?.toInt(),
-      lockTime: (json['lockTime'] as num?)?.toInt(),
-    );
+  username: json['username'] as String?,
+  email: json['email'] as String?,
+  language: json['language'] as String?,
+  theme: json['theme'] as String?,
+  timeZone: json['timeZone'] as String?,
+  failedLoginAttempts: (json['failedLoginAttempts'] as num?)?.toInt(),
+  lockTime: (json['lockTime'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) =>
     <String, dynamic>{
@@ -231,56 +225,56 @@ Map<String, dynamic> _$UserSettingsUpdateToJson(UserSettingsUpdate instance) =>
     };
 
 NotificationSettings _$NotificationSettingsFromJson(
-        Map<String, dynamic> json) =>
-    NotificationSettings(
-      emailEnabled: json['emailEnabled'] as bool?,
-      emailServer: json['emailServer'] as String?,
-      emailPort: json['emailPort'] as String?,
-      emailUsername: json['emailUsername'] as String?,
-      emailPassword: json['emailPassword'] as String?,
-      emailFrom: json['emailFrom'] as String?,
-      webhookEnabled: json['webhookEnabled'] as bool?,
-      webhookUrl: json['webhookUrl'] as String?,
-    );
+  Map<String, dynamic> json,
+) => NotificationSettings(
+  emailEnabled: json['emailEnabled'] as bool?,
+  emailServer: json['emailServer'] as String?,
+  emailPort: json['emailPort'] as String?,
+  emailUsername: json['emailUsername'] as String?,
+  emailPassword: json['emailPassword'] as String?,
+  emailFrom: json['emailFrom'] as String?,
+  webhookEnabled: json['webhookEnabled'] as bool?,
+  webhookUrl: json['webhookUrl'] as String?,
+);
 
 Map<String, dynamic> _$NotificationSettingsToJson(
-        NotificationSettings instance) =>
-    <String, dynamic>{
-      'emailEnabled': instance.emailEnabled,
-      'emailServer': instance.emailServer,
-      'emailPort': instance.emailPort,
-      'emailUsername': instance.emailUsername,
-      'emailPassword': instance.emailPassword,
-      'emailFrom': instance.emailFrom,
-      'webhookEnabled': instance.webhookEnabled,
-      'webhookUrl': instance.webhookUrl,
-    };
+  NotificationSettings instance,
+) => <String, dynamic>{
+  'emailEnabled': instance.emailEnabled,
+  'emailServer': instance.emailServer,
+  'emailPort': instance.emailPort,
+  'emailUsername': instance.emailUsername,
+  'emailPassword': instance.emailPassword,
+  'emailFrom': instance.emailFrom,
+  'webhookEnabled': instance.webhookEnabled,
+  'webhookUrl': instance.webhookUrl,
+};
 
 NotificationSettingsUpdate _$NotificationSettingsUpdateFromJson(
-        Map<String, dynamic> json) =>
-    NotificationSettingsUpdate(
-      emailEnabled: json['emailEnabled'] as bool?,
-      emailServer: json['emailServer'] as String?,
-      emailPort: json['emailPort'] as String?,
-      emailUsername: json['emailUsername'] as String?,
-      emailPassword: json['emailPassword'] as String?,
-      emailFrom: json['emailFrom'] as String?,
-      webhookEnabled: json['webhookEnabled'] as bool?,
-      webhookUrl: json['webhookUrl'] as String?,
-    );
+  Map<String, dynamic> json,
+) => NotificationSettingsUpdate(
+  emailEnabled: json['emailEnabled'] as bool?,
+  emailServer: json['emailServer'] as String?,
+  emailPort: json['emailPort'] as String?,
+  emailUsername: json['emailUsername'] as String?,
+  emailPassword: json['emailPassword'] as String?,
+  emailFrom: json['emailFrom'] as String?,
+  webhookEnabled: json['webhookEnabled'] as bool?,
+  webhookUrl: json['webhookUrl'] as String?,
+);
 
 Map<String, dynamic> _$NotificationSettingsUpdateToJson(
-        NotificationSettingsUpdate instance) =>
-    <String, dynamic>{
-      'emailEnabled': instance.emailEnabled,
-      'emailServer': instance.emailServer,
-      'emailPort': instance.emailPort,
-      'emailUsername': instance.emailUsername,
-      'emailPassword': instance.emailPassword,
-      'emailFrom': instance.emailFrom,
-      'webhookEnabled': instance.webhookEnabled,
-      'webhookUrl': instance.webhookUrl,
-    };
+  NotificationSettingsUpdate instance,
+) => <String, dynamic>{
+  'emailEnabled': instance.emailEnabled,
+  'emailServer': instance.emailServer,
+  'emailPort': instance.emailPort,
+  'emailUsername': instance.emailUsername,
+  'emailPassword': instance.emailPassword,
+  'emailFrom': instance.emailFrom,
+  'webhookEnabled': instance.webhookEnabled,
+  'webhookUrl': instance.webhookUrl,
+};
 
 BackupSettings _$BackupSettingsFromJson(Map<String, dynamic> json) =>
     BackupSettings(
@@ -301,24 +295,24 @@ Map<String, dynamic> _$BackupSettingsToJson(BackupSettings instance) =>
     };
 
 BackupSettingsUpdate _$BackupSettingsUpdateFromJson(
-        Map<String, dynamic> json) =>
-    BackupSettingsUpdate(
-      backupDir: json['backupDir'] as String?,
-      backupType: json['backupType'] as String?,
-      backupRetention: json['backupRetention'] as String?,
-      backupEnabled: json['backupEnabled'] as bool?,
-      backupSchedule: json['backupSchedule'] as String?,
-    );
+  Map<String, dynamic> json,
+) => BackupSettingsUpdate(
+  backupDir: json['backupDir'] as String?,
+  backupType: json['backupType'] as String?,
+  backupRetention: json['backupRetention'] as String?,
+  backupEnabled: json['backupEnabled'] as bool?,
+  backupSchedule: json['backupSchedule'] as String?,
+);
 
 Map<String, dynamic> _$BackupSettingsUpdateToJson(
-        BackupSettingsUpdate instance) =>
-    <String, dynamic>{
-      'backupDir': instance.backupDir,
-      'backupType': instance.backupType,
-      'backupRetention': instance.backupRetention,
-      'backupEnabled': instance.backupEnabled,
-      'backupSchedule': instance.backupSchedule,
-    };
+  BackupSettingsUpdate instance,
+) => <String, dynamic>{
+  'backupDir': instance.backupDir,
+  'backupType': instance.backupType,
+  'backupRetention': instance.backupRetention,
+  'backupEnabled': instance.backupEnabled,
+  'backupSchedule': instance.backupSchedule,
+};
 
 ThemeSettings _$ThemeSettingsFromJson(Map<String, dynamic> json) =>
     ThemeSettings(
@@ -345,13 +339,13 @@ ThemeSettingsUpdate _$ThemeSettingsUpdateFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$ThemeSettingsUpdateToJson(
-        ThemeSettingsUpdate instance) =>
-    <String, dynamic>{
-      'theme': instance.theme,
-      'primaryColor': instance.primaryColor,
-      'backgroundColor': instance.backgroundColor,
-      'textColor': instance.textColor,
-    };
+  ThemeSettingsUpdate instance,
+) => <String, dynamic>{
+  'theme': instance.theme,
+  'primaryColor': instance.primaryColor,
+  'backgroundColor': instance.backgroundColor,
+  'textColor': instance.textColor,
+};
 
 LanguageSettings _$LanguageSettingsFromJson(Map<String, dynamic> json) =>
     LanguageSettings(
@@ -360,52 +354,43 @@ LanguageSettings _$LanguageSettingsFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$LanguageSettingsToJson(LanguageSettings instance) =>
-    <String, dynamic>{
-      'language': instance.language,
-      'region': instance.region,
-    };
+    <String, dynamic>{'language': instance.language, 'region': instance.region};
 
 LanguageSet _$LanguageSetFromJson(Map<String, dynamic> json) => LanguageSet(
-      language: json['language'] as String?,
-      region: json['region'] as String?,
-    );
+  language: json['language'] as String?,
+  region: json['region'] as String?,
+);
 
 Map<String, dynamic> _$LanguageSetToJson(LanguageSet instance) =>
-    <String, dynamic>{
-      'language': instance.language,
-      'region': instance.region,
-    };
+    <String, dynamic>{'language': instance.language, 'region': instance.region};
 
 NTPSync _$NTPSyncFromJson(Map<String, dynamic> json) => NTPSync(
-      enabled: json['enabled'] as bool?,
-      server: json['server'] as String?,
-      interval: json['interval'] as String?,
-      timezone: json['timezone'] as String?,
-    );
+  enabled: json['enabled'] as bool?,
+  server: json['server'] as String?,
+  interval: json['interval'] as String?,
+  timezone: json['timezone'] as String?,
+);
 
 Map<String, dynamic> _$NTPSyncToJson(NTPSync instance) => <String, dynamic>{
-      'enabled': instance.enabled,
-      'server': instance.server,
-      'interval': instance.interval,
-      'timezone': instance.timezone,
-    };
+  'enabled': instance.enabled,
+  'server': instance.server,
+  'interval': instance.interval,
+  'timezone': instance.timezone,
+};
 
 TimezoneInfo _$TimezoneInfoFromJson(Map<String, dynamic> json) => TimezoneInfo(
-      zone: json['zone'] as String?,
-      offset: json['offset'] as String?,
-    );
+  zone: json['zone'] as String?,
+  offset: json['offset'] as String?,
+);
 
 Map<String, dynamic> _$TimezoneInfoToJson(TimezoneInfo instance) =>
-    <String, dynamic>{
-      'zone': instance.zone,
-      'offset': instance.offset,
-    };
+    <String, dynamic>{'zone': instance.zone, 'offset': instance.offset};
 
 LanguageInfo _$LanguageInfoFromJson(Map<String, dynamic> json) => LanguageInfo(
-      code: json['code'] as String?,
-      name: json['name'] as String?,
-      nativeName: json['nativeName'] as String?,
-    );
+  code: json['code'] as String?,
+  name: json['name'] as String?,
+  nativeName: json['nativeName'] as String?,
+);
 
 Map<String, dynamic> _$LanguageInfoToJson(LanguageInfo instance) =>
     <String, dynamic>{
@@ -415,18 +400,18 @@ Map<String, dynamic> _$LanguageInfoToJson(LanguageInfo instance) =>
     };
 
 ThemeInfo _$ThemeInfoFromJson(Map<String, dynamic> json) => ThemeInfo(
-      name: json['name'] as String?,
-      displayName: json['displayName'] as String?,
-      primaryColor: json['primaryColor'] as String?,
-      backgroundColor: json['backgroundColor'] as String?,
-    );
+  name: json['name'] as String?,
+  displayName: json['displayName'] as String?,
+  primaryColor: json['primaryColor'] as String?,
+  backgroundColor: json['backgroundColor'] as String?,
+);
 
 Map<String, dynamic> _$ThemeInfoToJson(ThemeInfo instance) => <String, dynamic>{
-      'name': instance.name,
-      'displayName': instance.displayName,
-      'primaryColor': instance.primaryColor,
-      'backgroundColor': instance.backgroundColor,
-    };
+  'name': instance.name,
+  'displayName': instance.displayName,
+  'primaryColor': instance.primaryColor,
+  'backgroundColor': instance.backgroundColor,
+};
 
 SettingsExport _$SettingsExportFromJson(Map<String, dynamic> json) =>
     SettingsExport(
@@ -449,23 +434,20 @@ SettingsImport _$SettingsImportFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$SettingsImportToJson(SettingsImport instance) =>
-    <String, dynamic>{
-      'data': instance.data,
-      'overwrite': instance.overwrite,
-    };
+    <String, dynamic>{'data': instance.data, 'overwrite': instance.overwrite};
 
 TerminalInfo _$TerminalInfoFromJson(Map<String, dynamic> json) => TerminalInfo(
-      cursorBlink: json['cursorBlink'] as String?,
-      cursorStyle: json['cursorStyle'] as String?,
-      fontSize: json['fontSize'] as String?,
-      fontFamily: json['fontFamily'] as String?,
-      backgroundColor: json['backgroundColor'] as String?,
-      foregroundColor: json['foregroundColor'] as String?,
-      letterSpacing: json['letterSpacing'] as String?,
-      lineHeight: json['lineHeight'] as String?,
-      scrollSensitivity: json['scrollSensitivity'] as String?,
-      scrollback: json['scrollback'] as String?,
-    );
+  cursorBlink: json['cursorBlink'] as String?,
+  cursorStyle: json['cursorStyle'] as String?,
+  fontSize: json['fontSize'] as String?,
+  fontFamily: json['fontFamily'] as String?,
+  backgroundColor: json['backgroundColor'] as String?,
+  foregroundColor: json['foregroundColor'] as String?,
+  letterSpacing: json['letterSpacing'] as String?,
+  lineHeight: json['lineHeight'] as String?,
+  scrollSensitivity: json['scrollSensitivity'] as String?,
+  scrollback: json['scrollback'] as String?,
+);
 
 Map<String, dynamic> _$TerminalInfoToJson(TerminalInfo instance) =>
     <String, dynamic>{
@@ -580,3 +562,25 @@ Map<String, dynamic> _$SystemSettingInfoToJson(SystemSettingInfo instance) =>
       'ipWhiteList': instance.ipWhiteList,
       'apiKeyValidityTime': instance.apiKeyValidityTime,
     };
+
+ModelDownloaderSetting _$ModelDownloaderSettingFromJson(
+  Map<String, dynamic> json,
+) => ModelDownloaderSetting(
+  modelDir: json['modelDir'] as String,
+  featuredModelsSync: json['featuredModelsSync'] as String?,
+  hfEndpoint: json['hfEndpoint'] as String?,
+  hfToken: json['hfToken'] as String?,
+  modelScopeEndpoint: json['modelScopeEndpoint'] as String?,
+  modelScopeToken: json['modelScopeToken'] as String?,
+);
+
+Map<String, dynamic> _$ModelDownloaderSettingToJson(
+  ModelDownloaderSetting instance,
+) => <String, dynamic>{
+  'modelDir': instance.modelDir,
+  'featuredModelsSync': instance.featuredModelsSync,
+  'hfEndpoint': instance.hfEndpoint,
+  'hfToken': instance.hfToken,
+  'modelScopeEndpoint': instance.modelScopeEndpoint,
+  'modelScopeToken': instance.modelScopeToken,
+};

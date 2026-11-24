@@ -1,6 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'model_downloader_models.g.dart';
 
 /// 推荐模型条目（dto.FeaturedModel）。
+///
+/// sources / sourceModelIds / description 在上游为值类型集合，服务端
+/// 始终返回这三个键（可能为空集合）。
+@JsonSerializable()
 class FeaturedModel extends Equatable {
   final String key;
   final String repoID;
@@ -16,43 +23,24 @@ class FeaturedModel extends Equatable {
   final int sort;
 
   const FeaturedModel({
-    this.key = '',
-    this.repoID = '',
-    this.family = '',
-    this.architecture = '',
-    this.backboneParams = '',
-    this.activeParams = '',
-    this.engram = '',
-    this.weightGB = 0,
-    this.sources = const <String>[],
-    this.sourceModelIds = const <String, String>{},
-    this.description = const <String, String>{},
-    this.sort = 0,
+    required this.key,
+    required this.repoID,
+    required this.family,
+    required this.architecture,
+    required this.backboneParams,
+    required this.activeParams,
+    required this.engram,
+    required this.weightGB,
+    required this.sources,
+    required this.sourceModelIds,
+    required this.description,
+    required this.sort,
   });
 
-  factory FeaturedModel.fromJson(Map<String, dynamic> json) {
-    return FeaturedModel(
-      key: json['key'] as String? ?? '',
-      repoID: json['repoID'] as String? ?? '',
-      family: json['family'] as String? ?? '',
-      architecture: json['architecture'] as String? ?? '',
-      backboneParams: json['backboneParams'] as String? ?? '',
-      activeParams: json['activeParams'] as String? ?? '',
-      engram: json['engram'] as String? ?? '',
-      weightGB: (json['weightGB'] as num?)?.toDouble() ?? 0,
-      sources: (json['sources'] as List<dynamic>?)
-              ?.whereType<String>()
-              .toList(growable: false) ??
-          const <String>[],
-      sourceModelIds: (json['sourceModelIds'] as Map?)
-              ?.map((key, value) => MapEntry(key.toString(), value.toString())) ??
-          const <String, String>{},
-      description: (json['description'] as Map?)
-              ?.map((key, value) => MapEntry(key.toString(), value.toString())) ??
-          const <String, String>{},
-      sort: json['sort'] as int? ?? 0,
-    );
-  }
+  factory FeaturedModel.fromJson(Map<String, dynamic> json) =>
+      _$FeaturedModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FeaturedModelToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -72,37 +60,29 @@ class FeaturedModel extends Equatable {
 }
 
 /// 推荐模型分页结果（dto.FeaturedModelPage）。
+@JsonSerializable()
 class FeaturedModelPage extends Equatable {
   final List<FeaturedModel> items;
   final int total;
   final List<String> families;
 
   const FeaturedModelPage({
-    this.items = const <FeaturedModel>[],
-    this.total = 0,
-    this.families = const <String>[],
+    required this.items,
+    required this.total,
+    required this.families,
   });
 
-  factory FeaturedModelPage.fromJson(Map<String, dynamic> json) {
-    return FeaturedModelPage(
-      items: (json['items'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(FeaturedModel.fromJson)
-              .toList(growable: false) ??
-          const <FeaturedModel>[],
-      total: json['total'] as int? ?? 0,
-      families: (json['families'] as List<dynamic>?)
-              ?.whereType<String>()
-              .toList(growable: false) ??
-          const <String>[],
-    );
-  }
+  factory FeaturedModelPage.fromJson(Map<String, dynamic> json) =>
+      _$FeaturedModelPageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FeaturedModelPageToJson(this);
 
   @override
   List<Object?> get props => <Object?>[items, total, families];
 }
 
 /// 推荐模型分页请求（dto.FeaturedModelSearch）。
+@JsonSerializable()
 class FeaturedModelSearch extends Equatable {
   final int page;
   final int pageSize;
@@ -116,18 +96,17 @@ class FeaturedModelSearch extends Equatable {
     this.info,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (family != null) 'family': family,
-        if (info != null) 'info': info,
-      };
+  factory FeaturedModelSearch.fromJson(Map<String, dynamic> json) =>
+      _$FeaturedModelSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FeaturedModelSearchToJson(this);
 
   @override
   List<Object?> get props => <Object?>[page, pageSize, family, info];
 }
 
 /// 模型市场条目（dto.ModelItem；HF/ModelScope 搜索结果）。
+@JsonSerializable()
 class ModelItem extends Equatable {
   final String repoID;
   final String name;
@@ -137,24 +116,18 @@ class ModelItem extends Equatable {
   final String sizeFormatted;
 
   const ModelItem({
-    this.repoID = '',
-    this.name = '',
-    this.downloads = 0,
-    this.likes = 0,
-    this.size = 0,
-    this.sizeFormatted = '',
+    required this.repoID,
+    required this.name,
+    required this.downloads,
+    required this.likes,
+    required this.size,
+    required this.sizeFormatted,
   });
 
-  factory ModelItem.fromJson(Map<String, dynamic> json) {
-    return ModelItem(
-      repoID: json['repoID'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      downloads: json['downloads'] as int? ?? 0,
-      likes: json['likes'] as int? ?? 0,
-      size: json['size'] as int? ?? 0,
-      sizeFormatted: json['sizeFormatted'] as String? ?? '',
-    );
-  }
+  factory ModelItem.fromJson(Map<String, dynamic> json) =>
+      _$ModelItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelItemToJson(this);
 
   @override
   List<Object?> get props =>
@@ -165,6 +138,7 @@ class ModelItem extends Equatable {
 ///
 /// sort 取值：trending / downloads / updated / created / likes /
 /// most_params / least_params；pageSize 上限 100。
+@JsonSerializable()
 class ModelSearch extends Equatable {
   final int page;
   final int pageSize;
@@ -180,43 +154,39 @@ class ModelSearch extends Equatable {
     this.limit,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (query != null) 'query': query,
-        if (sort != null) 'sort': sort,
-        if (limit != null) 'limit': limit,
-      };
+  factory ModelSearch.fromJson(Map<String, dynamic> json) =>
+      _$ModelSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelSearchToJson(this);
 
   @override
   List<Object?> get props => <Object?>[page, pageSize, query, sort, limit];
 }
 
 /// 模型文件（dto.ModelFile）。
+@JsonSerializable()
 class ModelFile extends Equatable {
   final String name;
   final int size;
   final String sizeFormatted;
 
   const ModelFile({
-    this.name = '',
-    this.size = 0,
-    this.sizeFormatted = '',
+    required this.name,
+    required this.size,
+    required this.sizeFormatted,
   });
 
-  factory ModelFile.fromJson(Map<String, dynamic> json) {
-    return ModelFile(
-      name: json['name'] as String? ?? '',
-      size: json['size'] as int? ?? 0,
-      sizeFormatted: json['sizeFormatted'] as String? ?? '',
-    );
-  }
+  factory ModelFile.fromJson(Map<String, dynamic> json) =>
+      _$ModelFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelFileToJson(this);
 
   @override
   List<Object?> get props => <Object?>[name, size, sizeFormatted];
 }
 
 /// 模型详情（dto.ModelInfo；HF/ModelScope info）。
+@JsonSerializable()
 class ModelInfo extends Equatable {
   final String repoID;
   final String name;
@@ -228,32 +198,20 @@ class ModelInfo extends Equatable {
   final List<ModelFile> files;
 
   const ModelInfo({
-    this.repoID = '',
-    this.name = '',
-    this.downloads = 0,
-    this.likes = 0,
-    this.size = 0,
-    this.sizeFormatted = '',
-    this.modelCard = '',
-    this.files = const <ModelFile>[],
+    required this.repoID,
+    required this.name,
+    required this.downloads,
+    required this.likes,
+    required this.size,
+    required this.sizeFormatted,
+    required this.modelCard,
+    required this.files,
   });
 
-  factory ModelInfo.fromJson(Map<String, dynamic> json) {
-    return ModelInfo(
-      repoID: json['repoID'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      downloads: json['downloads'] as int? ?? 0,
-      likes: json['likes'] as int? ?? 0,
-      size: json['size'] as int? ?? 0,
-      sizeFormatted: json['sizeFormatted'] as String? ?? '',
-      modelCard: json['modelCard'] as String? ?? '',
-      files: (json['files'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(ModelFile.fromJson)
-              .toList(growable: false) ??
-          const <ModelFile>[],
-    );
-  }
+  factory ModelInfo.fromJson(Map<String, dynamic> json) =>
+      _$ModelInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelInfoToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -269,16 +227,17 @@ class ModelInfo extends Equatable {
 }
 
 /// 模型详情请求（dto.ModelInfoReq）。
+@JsonSerializable()
 class ModelInfoReq extends Equatable {
   final String repoID;
   final String? revision;
 
   const ModelInfoReq({required this.repoID, this.revision});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'repoID': repoID,
-        if (revision != null) 'revision': revision,
-      };
+  factory ModelInfoReq.fromJson(Map<String, dynamic> json) =>
+      _$ModelInfoReqFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelInfoReqToJson(this);
 
   @override
   List<Object?> get props => <Object?>[repoID, revision];
@@ -287,6 +246,7 @@ class ModelInfoReq extends Equatable {
 /// 模型下载请求（dto.ModelDownload）。
 ///
 /// downloadType 取值：all / tokenizer。
+@JsonSerializable()
 class ModelDownload extends Equatable {
   final String repoID;
   final String? revision;
@@ -298,17 +258,17 @@ class ModelDownload extends Equatable {
     this.downloadType,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'repoID': repoID,
-        if (revision != null) 'revision': revision,
-        if (downloadType != null) 'downloadType': downloadType,
-      };
+  factory ModelDownload.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloadFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelDownloadToJson(this);
 
   @override
   List<Object?> get props => <Object?>[repoID, revision, downloadType];
 }
 
 /// 本地已下载模型（dto.LocalModelItem）。
+@JsonSerializable()
 class LocalModelItem extends Equatable {
   final String name;
   final String repoID;
@@ -321,30 +281,21 @@ class LocalModelItem extends Equatable {
   final String createdAt;
 
   const LocalModelItem({
-    this.name = '',
-    this.repoID = '',
-    this.revision = '',
-    this.downloadType = '',
-    this.source = '',
-    this.path = '',
-    this.size = 0,
-    this.sizeFormatted = '',
-    this.createdAt = '',
+    required this.name,
+    required this.repoID,
+    required this.revision,
+    required this.downloadType,
+    required this.source,
+    required this.path,
+    required this.size,
+    required this.sizeFormatted,
+    required this.createdAt,
   });
 
-  factory LocalModelItem.fromJson(Map<String, dynamic> json) {
-    return LocalModelItem(
-      name: json['name'] as String? ?? '',
-      repoID: json['repoID'] as String? ?? '',
-      revision: json['revision'] as String? ?? '',
-      downloadType: json['downloadType'] as String? ?? '',
-      source: json['source'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      size: json['size'] as int? ?? 0,
-      sizeFormatted: json['sizeFormatted'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-    );
-  }
+  factory LocalModelItem.fromJson(Map<String, dynamic> json) =>
+      _$LocalModelItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalModelItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -361,6 +312,7 @@ class LocalModelItem extends Equatable {
 }
 
 /// 本地模型分页请求（dto.LocalModelSearch）。
+@JsonSerializable()
 class LocalModelSearch extends Equatable {
   final int page;
   final int pageSize;
@@ -374,18 +326,17 @@ class LocalModelSearch extends Equatable {
     this.downloadType,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (info != null) 'info': info,
-        if (downloadType != null) 'downloadType': downloadType,
-      };
+  factory LocalModelSearch.fromJson(Map<String, dynamic> json) =>
+      _$LocalModelSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalModelSearchToJson(this);
 
   @override
   List<Object?> get props => <Object?>[page, pageSize, info, downloadType];
 }
 
 /// 本地模型删除请求（dto.LocalModelDelete）。
+@JsonSerializable()
 class LocalModelDelete extends Equatable {
   final String name;
   final String? downloadType;
@@ -397,17 +348,19 @@ class LocalModelDelete extends Equatable {
     this.withFile,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        if (downloadType != null) 'downloadType': downloadType,
-        if (withFile != null) 'withFile': withFile,
-      };
+  factory LocalModelDelete.fromJson(Map<String, dynamic> json) =>
+      _$LocalModelDeleteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalModelDeleteToJson(this);
 
   @override
   List<Object?> get props => <Object?>[name, downloadType, withFile];
 }
 
 /// 模型下载任务（dto.ModelDownloadTaskItem）。
+///
+/// errorMessage 与三个时间戳在上游为指针，任务未开始或未结束时为空。
+@JsonSerializable()
 class ModelDownloadTaskItem extends Equatable {
   final int id;
   final String modelName;
@@ -430,52 +383,31 @@ class ModelDownloadTaskItem extends Equatable {
   final LocalModelItem? localModel;
 
   const ModelDownloadTaskItem({
-    this.id = 0,
-    this.modelName = '',
-    this.repoID = '',
-    this.revision = '',
-    this.downloadType = '',
-    this.source = '',
-    this.status = '',
-    this.progress = 0,
-    this.downloadedSize = 0,
-    this.totalSize = 0,
-    this.targetDir = '',
+    required this.id,
+    required this.modelName,
+    required this.repoID,
+    required this.revision,
+    required this.downloadType,
+    required this.source,
+    required this.status,
+    required this.progress,
+    required this.downloadedSize,
+    required this.totalSize,
+    required this.targetDir,
     this.errorMessage,
     this.createdAt,
     this.startedAt,
     this.completedAt,
-    this.canCancel = false,
-    this.canRetry = false,
-    this.canRemoveRecord = false,
+    required this.canCancel,
+    required this.canRetry,
+    required this.canRemoveRecord,
     this.localModel,
   });
 
-  factory ModelDownloadTaskItem.fromJson(Map<String, dynamic> json) {
-    return ModelDownloadTaskItem(
-      id: json['id'] as int? ?? 0,
-      modelName: json['modelName'] as String? ?? '',
-      repoID: json['repoID'] as String? ?? '',
-      revision: json['revision'] as String? ?? '',
-      downloadType: json['downloadType'] as String? ?? '',
-      source: json['source'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      progress: (json['progress'] as num?)?.toDouble() ?? 0,
-      downloadedSize: json['downloadedSize'] as int? ?? 0,
-      totalSize: json['totalSize'] as int? ?? 0,
-      targetDir: json['targetDir'] as String? ?? '',
-      errorMessage: json['errorMessage'] as String?,
-      createdAt: json['createdAt'] as String?,
-      startedAt: json['startedAt'] as String?,
-      completedAt: json['completedAt'] as String?,
-      canCancel: json['canCancel'] as bool? ?? false,
-      canRetry: json['canRetry'] as bool? ?? false,
-      canRemoveRecord: json['canRemoveRecord'] as bool? ?? false,
-      localModel: json['localModel'] is Map<String, dynamic>
-          ? LocalModelItem.fromJson(json['localModel'] as Map<String, dynamic>)
-          : null,
-    );
-  }
+  factory ModelDownloadTaskItem.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloadTaskItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelDownloadTaskItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -504,6 +436,7 @@ class ModelDownloadTaskItem extends Equatable {
 /// 下载任务分页请求（dto.ModelDownloadTaskSearch）。
 ///
 /// includeLocal 为 true 时同时返回本地已下载模型。
+@JsonSerializable()
 class ModelDownloadTaskSearch extends Equatable {
   final int page;
   final int pageSize;
@@ -521,14 +454,10 @@ class ModelDownloadTaskSearch extends Equatable {
     this.includeLocal,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (info != null) 'info': info,
-        if (status != null) 'status': status,
-        if (downloadType != null) 'downloadType': downloadType,
-        if (includeLocal != null) 'includeLocal': includeLocal,
-      };
+  factory ModelDownloadTaskSearch.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloadTaskSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelDownloadTaskSearchToJson(this);
 
   @override
   List<Object?> get props =>
@@ -536,16 +465,17 @@ class ModelDownloadTaskSearch extends Equatable {
 }
 
 /// 下载任务取消/移除请求（dto.ModelDownloadTaskOperate）。
+@JsonSerializable()
 class ModelDownloadTaskOperate extends Equatable {
   final int id;
   final bool? withFile;
 
   const ModelDownloadTaskOperate({required this.id, this.withFile});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (withFile != null) 'withFile': withFile,
-      };
+  factory ModelDownloadTaskOperate.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloadTaskOperateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelDownloadTaskOperateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, withFile];
@@ -554,12 +484,16 @@ class ModelDownloadTaskOperate extends Equatable {
 /// 推荐模型自动同步设置请求（dto.ModelDownloaderSyncSetting）。
 ///
 /// value 取值：Enable / Disable。
+@JsonSerializable()
 class ModelDownloaderSyncSetting extends Equatable {
   final String value;
 
   const ModelDownloaderSyncSetting({required this.value});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{'value': value};
+  factory ModelDownloaderSyncSetting.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloaderSyncSettingFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelDownloaderSyncSettingToJson(this);
 
   @override
   List<Object?> get props => <Object?>[value];

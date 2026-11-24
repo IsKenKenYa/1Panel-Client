@@ -1,6 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-/// 告警规则（dto.AlertInfo 语义；POST /alert/search 列表项）。
+part 'alert_models.g.dart';
+
+/// 告警规则（上游 Alert.AlertDetail 与 dto.AlertDTO；POST /alert/search 列表项）。
+///
+/// taskName / alertTriggerMode / createUser / updateUser 只在对应类型或
+/// 有操作记录时出现，上游对 taskName 声明了 omitempty。
+@JsonSerializable()
 class AlertInfo extends Equatable {
   final int id;
   final String createdAt;
@@ -23,53 +30,31 @@ class AlertInfo extends Equatable {
   final String? updateUser;
 
   const AlertInfo({
-    this.id = 0,
-    this.createdAt = '',
-    this.updatedAt = '',
-    this.type = '',
-    this.subType = '',
-    this.cycle = 0,
-    this.count = 0,
-    this.interval = 0,
-    this.method = '',
-    this.title = '',
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.type,
+    required this.subType,
+    required this.cycle,
+    required this.count,
+    required this.interval,
+    required this.method,
+    required this.title,
     this.taskName,
-    this.project = '',
-    this.status = '',
-    this.sendCount = 0,
-    this.sendMethod = const <String>[],
-    this.advancedParams = '',
+    required this.project,
+    required this.status,
+    required this.sendCount,
+    required this.sendMethod,
+    required this.advancedParams,
     this.alertTriggerMode,
     this.createUser,
     this.updateUser,
   });
 
-  factory AlertInfo.fromJson(Map<String, dynamic> json) {
-    return AlertInfo(
-      id: json['id'] as int? ?? 0,
-      createdAt: json['createdAt'] as String? ?? '',
-      updatedAt: json['updatedAt'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      subType: json['subType'] as String? ?? '',
-      cycle: json['cycle'] as int? ?? 0,
-      count: json['count'] as int? ?? 0,
-      interval: json['interval'] as int? ?? 0,
-      method: json['method'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      taskName: json['taskName'] as String?,
-      project: json['project'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      sendCount: json['sendCount'] as int? ?? 0,
-      sendMethod: (json['sendMethod'] as List<dynamic>?)
-              ?.whereType<String>()
-              .toList(growable: false) ??
-          const <String>[],
-      advancedParams: json['advancedParams'] as String? ?? '',
-      alertTriggerMode: json['alertTriggerMode'] as String?,
-      createUser: json['createUser'] as String?,
-      updateUser: json['updateUser'] as String?,
-    );
-  }
+  factory AlertInfo.fromJson(Map<String, dynamic> json) =>
+      _$AlertInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertInfoToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -98,6 +83,7 @@ class AlertInfo extends Equatable {
 /// 告警日志中的规则详情（上游 Alert.AlertDetail）。
 ///
 /// params 在上游为字符串或 {index,key,value} 列表两种形态，原样保留。
+@JsonSerializable()
 class AlertDetail extends Equatable {
   final String type;
   final String? subType;
@@ -108,26 +94,19 @@ class AlertDetail extends Equatable {
   final Object? params;
 
   const AlertDetail({
-    this.type = '',
+    required this.type,
     this.subType,
-    this.licenseId = '',
-    this.title = '',
-    this.project = '',
-    this.method = '',
+    required this.licenseId,
+    required this.title,
+    required this.project,
+    required this.method,
     this.params,
   });
 
-  factory AlertDetail.fromJson(Map<String, dynamic> json) {
-    return AlertDetail(
-      type: json['type'] as String? ?? '',
-      subType: json['subType'] as String?,
-      licenseId: json['licenseId'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      project: json['project'] as String? ?? '',
-      method: json['method'] as String? ?? '',
-      params: json['params'],
-    );
-  }
+  factory AlertDetail.fromJson(Map<String, dynamic> json) =>
+      _$AlertDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertDetailToJson(this);
 
   @override
   List<Object?> get props =>
@@ -135,6 +114,9 @@ class AlertDetail extends Equatable {
 }
 
 /// 告警日志（POST /alert/logs/search 列表项）。
+///
+/// 上游前端把 alertDetail 与 alertRule 都声明为必填对象。
+@JsonSerializable()
 class AlertLog extends Equatable {
   final int id;
   final String createdAt;
@@ -148,36 +130,22 @@ class AlertLog extends Equatable {
   final String method;
 
   const AlertLog({
-    this.id = 0,
-    this.createdAt = '',
-    this.updatedAt = '',
-    this.alertId = 0,
-    this.alertDetail = const AlertDetail(),
-    this.alertRule = const AlertInfo(),
-    this.count = 0,
-    this.message = '',
-    this.status = '',
-    this.method = '',
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.alertId,
+    required this.alertDetail,
+    required this.alertRule,
+    required this.count,
+    required this.message,
+    required this.status,
+    required this.method,
   });
 
-  factory AlertLog.fromJson(Map<String, dynamic> json) {
-    return AlertLog(
-      id: json['id'] as int? ?? 0,
-      createdAt: json['createdAt'] as String? ?? '',
-      updatedAt: json['updatedAt'] as String? ?? '',
-      alertId: json['alertId'] as int? ?? 0,
-      alertDetail: json['alertDetail'] is Map<String, dynamic>
-          ? AlertDetail.fromJson(json['alertDetail'] as Map<String, dynamic>)
-          : const AlertDetail(),
-      alertRule: json['alertRule'] is Map<String, dynamic>
-          ? AlertInfo.fromJson(json['alertRule'] as Map<String, dynamic>)
-          : const AlertInfo(),
-      count: json['count'] as int? ?? 0,
-      message: json['message'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      method: json['method'] as String? ?? '',
-    );
-  }
+  factory AlertLog.fromJson(Map<String, dynamic> json) =>
+      _$AlertLogFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertLogToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -194,7 +162,8 @@ class AlertLog extends Equatable {
       ];
 }
 
-/// 磁盘信息（GET /alert/disks/list；告警目标选择）。
+/// 磁盘信息（dto.DiskDTO；GET /alert/disks/list）。
+@JsonSerializable()
 class AlertDisk extends Equatable {
   final String path;
   final String type;
@@ -209,35 +178,23 @@ class AlertDisk extends Equatable {
   final double inodesUsedPercent;
 
   const AlertDisk({
-    this.path = '',
-    this.type = '',
-    this.device = '',
-    this.total = 0,
-    this.free = 0,
-    this.used = 0,
-    this.usedPercent = 0,
-    this.inodesTotal = 0,
-    this.inodesUsed = 0,
-    this.inodesFree = 0,
-    this.inodesUsedPercent = 0,
+    required this.path,
+    required this.type,
+    required this.device,
+    required this.total,
+    required this.free,
+    required this.used,
+    required this.usedPercent,
+    required this.inodesTotal,
+    required this.inodesUsed,
+    required this.inodesFree,
+    required this.inodesUsedPercent,
   });
 
-  factory AlertDisk.fromJson(Map<String, dynamic> json) {
-    return AlertDisk(
-      path: json['path'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      device: json['device'] as String? ?? '',
-      total: json['total'] as int? ?? 0,
-      free: json['free'] as int? ?? 0,
-      used: json['used'] as int? ?? 0,
-      usedPercent: (json['usedPercent'] as num?)?.toDouble() ?? 0,
-      inodesTotal: json['inodesTotal'] as int? ?? 0,
-      inodesUsed: json['inodesUsed'] as int? ?? 0,
-      inodesFree: json['inodesFree'] as int? ?? 0,
-      inodesUsedPercent:
-          (json['inodesUsedPercent'] as num?)?.toDouble() ?? 0,
-    );
-  }
+  factory AlertDisk.fromJson(Map<String, dynamic> json) =>
+      _$AlertDiskFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertDiskToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -256,6 +213,7 @@ class AlertDisk extends Equatable {
 }
 
 /// 杀毒扫描目标（GET /alert/clams/list）。
+@JsonSerializable()
 class AlertClam extends Equatable {
   final int id;
   final String name;
@@ -265,24 +223,18 @@ class AlertClam extends Equatable {
   final String updatedAt;
 
   const AlertClam({
-    this.id = 0,
-    this.name = '',
-    this.status = '',
-    this.path = '',
-    this.createdAt = '',
-    this.updatedAt = '',
+    required this.id,
+    required this.name,
+    required this.status,
+    required this.path,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory AlertClam.fromJson(Map<String, dynamic> json) {
-    return AlertClam(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      updatedAt: json['updatedAt'] as String? ?? '',
-    );
-  }
+  factory AlertClam.fromJson(Map<String, dynamic> json) =>
+      _$AlertClamFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertClamToJson(this);
 
   @override
   List<Object?> get props =>
@@ -290,6 +242,7 @@ class AlertClam extends Equatable {
 }
 
 /// 计划任务选项（POST /alert/cronjob/list）。
+@JsonSerializable()
 class AlertCronJob extends Equatable {
   final int id;
   final String name;
@@ -299,24 +252,18 @@ class AlertCronJob extends Equatable {
   final String updatedAt;
 
   const AlertCronJob({
-    this.id = 0,
-    this.name = '',
-    this.type = '',
-    this.status = '',
-    this.createdAt = '',
-    this.updatedAt = '',
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory AlertCronJob.fromJson(Map<String, dynamic> json) {
-    return AlertCronJob(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      updatedAt: json['updatedAt'] as String? ?? '',
-    );
-  }
+  factory AlertCronJob.fromJson(Map<String, dynamic> json) =>
+      _$AlertCronJobFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertCronJobToJson(this);
 
   @override
   List<Object?> get props =>
@@ -325,16 +272,17 @@ class AlertCronJob extends Equatable {
 
 /// 告警规则搜索请求（dto.AlertSearch）。
 ///
-/// 服务端把 `orderBy` 声明为必填，缺失时返回参数错误；`orderBy` 当前仅
-/// `created_at`，`order` 取值 `ascending` / `descending`。
+/// 服务端把 `orderBy` 与 `order` 声明为必填，缺失时返回参数错误；
+/// `orderBy` 当前仅 `created_at`，`order` 取值 `ascending` / `descending`。
+@JsonSerializable()
 class AlertSearch extends Equatable {
   final int page;
   final int pageSize;
   final String? type;
   final String? status;
   final String? method;
-  final String? orderBy;
-  final String? order;
+  final String orderBy;
+  final String order;
 
   const AlertSearch({
     this.page = 1,
@@ -342,19 +290,14 @@ class AlertSearch extends Equatable {
     this.type,
     this.status,
     this.method,
-    this.orderBy,
-    this.order,
+    required this.orderBy,
+    required this.order,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (type != null) 'type': type,
-        if (status != null) 'status': status,
-        if (method != null) 'method': method,
-        if (orderBy != null) 'orderBy': orderBy,
-        if (order != null) 'order': order,
-      };
+  factory AlertSearch.fromJson(Map<String, dynamic> json) =>
+      _$AlertSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertSearchToJson(this);
 
   @override
   List<Object?> get props =>
@@ -362,6 +305,7 @@ class AlertSearch extends Equatable {
 }
 
 /// 创建告警规则请求（dto.AlertCreate）。
+@JsonSerializable()
 class AlertCreate extends Equatable {
   final String type;
   final String method;
@@ -387,18 +331,10 @@ class AlertCreate extends Equatable {
     this.advancedParams,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'method': method,
-        if (cycle != null) 'cycle': cycle,
-        if (count != null) 'count': count,
-        if (interval != null) 'interval': interval,
-        if (project != null) 'project': project,
-        if (status != null) 'status': status,
-        if (title != null) 'title': title,
-        if (sendCount != null) 'sendCount': sendCount,
-        if (advancedParams != null) 'advancedParams': advancedParams,
-      };
+  factory AlertCreate.fromJson(Map<String, dynamic> json) =>
+      _$AlertCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertCreateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -416,6 +352,7 @@ class AlertCreate extends Equatable {
 }
 
 /// 更新告警规则请求（dto.AlertUpdate）。
+@JsonSerializable()
 class AlertUpdate extends Equatable {
   final int id;
   final String? type;
@@ -443,19 +380,10 @@ class AlertUpdate extends Equatable {
     this.advancedParams,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (type != null) 'type': type,
-        if (method != null) 'method': method,
-        if (cycle != null) 'cycle': cycle,
-        if (count != null) 'count': count,
-        if (interval != null) 'interval': interval,
-        if (project != null) 'project': project,
-        if (status != null) 'status': status,
-        if (title != null) 'title': title,
-        if (sendCount != null) 'sendCount': sendCount,
-        if (advancedParams != null) 'advancedParams': advancedParams,
-      };
+  factory AlertUpdate.fromJson(Map<String, dynamic> json) =>
+      _$AlertUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertUpdateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -474,6 +402,7 @@ class AlertUpdate extends Equatable {
 }
 
 /// 告警状态更新请求（dto.AlertUpdateStatus）。
+@JsonSerializable()
 class AlertUpdateStatus extends Equatable {
   final int id;
   final String status;
@@ -483,16 +412,17 @@ class AlertUpdateStatus extends Equatable {
     required this.status,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'status': status,
-      };
+  factory AlertUpdateStatus.fromJson(Map<String, dynamic> json) =>
+      _$AlertUpdateStatusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertUpdateStatusToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, status];
 }
 
 /// 告警日志搜索请求（dto.AlertLogSearch）。
+@JsonSerializable()
 class AlertLogSearch extends Equatable {
   final int page;
   final int pageSize;
@@ -510,14 +440,10 @@ class AlertLogSearch extends Equatable {
     this.endTime,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (status != null) 'status': status,
-        if (count != null) 'count': count,
-        if (startTime != null) 'startTime': startTime,
-        if (endTime != null) 'endTime': endTime,
-      };
+  factory AlertLogSearch.fromJson(Map<String, dynamic> json) =>
+      _$AlertLogSearchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertLogSearchToJson(this);
 
   @override
   List<Object?> get props =>
@@ -525,6 +451,7 @@ class AlertLogSearch extends Equatable {
 }
 
 /// 计划任务选项过滤请求（dto.CronJobReq）。
+@JsonSerializable()
 class AlertCronJobReq extends Equatable {
   final String? name;
   final String? type;
@@ -532,17 +459,17 @@ class AlertCronJobReq extends Equatable {
 
   const AlertCronJobReq({this.name, this.type, this.status});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (name != null) 'name': name,
-        if (type != null) 'type': type,
-        if (status != null) 'status': status,
-      };
+  factory AlertCronJobReq.fromJson(Map<String, dynamic> json) =>
+      _$AlertCronJobReqFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertCronJobReqToJson(this);
 
   @override
   List<Object?> get props => <Object?>[name, type, status];
 }
 
 /// 告警配置（POST /alert/config/info 与 /alert/config/search 列表项）。
+@JsonSerializable()
 class AlertConfigInfo extends Equatable {
   final int id;
   final String createdAt;
@@ -555,30 +482,21 @@ class AlertConfigInfo extends Equatable {
   final String? updateUser;
 
   const AlertConfigInfo({
-    this.id = 0,
-    this.createdAt = '',
-    this.updatedAt = '',
-    this.type = '',
-    this.title = '',
-    this.config = '',
-    this.status = '',
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.type,
+    required this.title,
+    required this.config,
+    required this.status,
     this.createUser,
     this.updateUser,
   });
 
-  factory AlertConfigInfo.fromJson(Map<String, dynamic> json) {
-    return AlertConfigInfo(
-      id: json['id'] as int? ?? 0,
-      createdAt: json['createdAt'] as String? ?? '',
-      updatedAt: json['updatedAt'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      config: json['config'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      createUser: json['createUser'] as String?,
-      updateUser: json['updateUser'] as String?,
-    );
-  }
+  factory AlertConfigInfo.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigInfoToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -594,21 +512,24 @@ class AlertConfigInfo extends Equatable {
       ];
 }
 
-/// 配置过滤请求（dto.AlertConfigFilterReq）。
+/// 配置过滤请求（dto.AlertConfigQuery）。
+@JsonSerializable()
 class AlertConfigFilterReq extends Equatable {
   final List<String>? excludeTypes;
 
   const AlertConfigFilterReq({this.excludeTypes});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (excludeTypes != null) 'excludeTypes': excludeTypes,
-      };
+  factory AlertConfigFilterReq.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigFilterReqFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigFilterReqToJson(this);
 
   @override
   List<Object?> get props => <Object?>[excludeTypes];
 }
 
 /// 配置分页请求（dto.AlertConfigPageReq）。
+@JsonSerializable()
 class AlertConfigPageReq extends Equatable {
   final int page;
   final int pageSize;
@@ -620,17 +541,17 @@ class AlertConfigPageReq extends Equatable {
     this.excludeTypes,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'page': page,
-        'pageSize': pageSize,
-        if (excludeTypes != null) 'excludeTypes': excludeTypes,
-      };
+  factory AlertConfigPageReq.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigPageReqFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigPageReqToJson(this);
 
   @override
   List<Object?> get props => <Object?>[page, pageSize, excludeTypes];
 }
 
 /// 更新告警配置请求（dto.AlertConfigUpdate）。
+@JsonSerializable()
 class AlertConfigUpdate extends Equatable {
   final int id;
   final String? type;
@@ -648,14 +569,10 @@ class AlertConfigUpdate extends Equatable {
     this.displayName,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (type != null) 'type': type,
-        if (title != null) 'title': title,
-        if (config != null) 'config': config,
-        if (status != null) 'status': status,
-        if (displayName != null) 'displayName': displayName,
-      };
+  factory AlertConfigUpdate.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigUpdateToJson(this);
 
   @override
   List<Object?> get props =>
@@ -666,6 +583,7 @@ class AlertConfigUpdate extends Equatable {
 ///
 /// swagger 字段为邮箱测试形态；type/config/id 来自上游前端调用链路
 /// （type=email 邮箱测试、type=custom 自定义 webhook 测试）。
+@JsonSerializable()
 class AlertConfigTest extends Equatable {
   final String? type;
   final String? config;
@@ -693,19 +611,10 @@ class AlertConfigTest extends Equatable {
     this.userName,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (type != null) 'type': type,
-        if (config != null) 'config': config,
-        if (id != null) 'id': id,
-        if (displayName != null) 'displayName': displayName,
-        if (encryption != null) 'encryption': encryption,
-        if (host != null) 'host': host,
-        if (password != null) 'password': password,
-        if (port != null) 'port': port,
-        if (recipient != null) 'recipient': recipient,
-        if (sender != null) 'sender': sender,
-        if (userName != null) 'userName': userName,
-      };
+  factory AlertConfigTest.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigTestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigTestToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -724,6 +633,7 @@ class AlertConfigTest extends Equatable {
 }
 
 /// 告警配置测试结果（上游 Alert.AlertConfigCustomTestResult）。
+@JsonSerializable()
 class AlertConfigTestResult extends Equatable {
   final bool success;
   final int? statusCode;
@@ -732,22 +642,17 @@ class AlertConfigTestResult extends Equatable {
   final String? response;
 
   const AlertConfigTestResult({
-    this.success = false,
+    required this.success,
     this.statusCode,
     this.duration,
     this.message,
     this.response,
   });
 
-  factory AlertConfigTestResult.fromJson(Map<String, dynamic> json) {
-    return AlertConfigTestResult(
-      success: json['success'] as bool? ?? false,
-      statusCode: json['statusCode'] as int?,
-      duration: json['duration'] as int?,
-      message: json['message'] as String?,
-      response: json['response'] as String?,
-    );
-  }
+  factory AlertConfigTestResult.fromJson(Map<String, dynamic> json) =>
+      _$AlertConfigTestResultFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AlertConfigTestResultToJson(this);
 
   @override
   List<Object?> get props =>

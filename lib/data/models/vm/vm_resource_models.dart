@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'vm_resource_models.g.dart';
 
 /// 虚拟机模板（dto.VMTemplateInfo；POST /vms/templates/list）。
+@JsonSerializable()
 class VMTemplateItem extends Equatable {
   final int id;
   final String name;
@@ -15,58 +19,31 @@ class VMTemplateItem extends Equatable {
   final String bootOrder;
   final bool isExist;
   final int size;
-  final String status;
-  final String error;
-  final String tempFileID;
-  final String tempFileType;
   final String createdAt;
   final String description;
 
   const VMTemplateItem({
-    this.id = 0,
-    this.name = '',
-    this.sourceVM = '',
-    this.cpu = 0,
-    this.memory = 0,
-    this.diskSize = 0,
-    this.diskBus = '',
-    this.diskPath = '',
-    this.storagePool = '',
-    this.network = '',
-    this.bootOrder = '',
-    this.isExist = false,
-    this.size = 0,
-    this.status = '',
-    this.error = '',
-    this.tempFileID = '',
-    this.tempFileType = '',
-    this.createdAt = '',
-    this.description = '',
+    required this.id,
+    required this.name,
+    required this.sourceVM,
+    required this.cpu,
+    required this.memory,
+    required this.diskSize,
+    required this.diskBus,
+    required this.diskPath,
+    required this.storagePool,
+    required this.network,
+    required this.bootOrder,
+    required this.isExist,
+    required this.size,
+    required this.createdAt,
+    required this.description,
   });
 
-  factory VMTemplateItem.fromJson(Map<String, dynamic> json) {
-    return VMTemplateItem(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      sourceVM: json['sourceVM'] as String? ?? '',
-      cpu: json['cpu'] as int? ?? 0,
-      memory: json['memory'] as int? ?? 0,
-      diskSize: json['diskSize'] as int? ?? 0,
-      diskBus: json['diskBus'] as String? ?? '',
-      diskPath: json['diskPath'] as String? ?? '',
-      storagePool: json['storagePool'] as String? ?? '',
-      network: json['network'] as String? ?? '',
-      bootOrder: json['bootOrder'] as String? ?? '',
-      isExist: json['isExist'] as bool? ?? false,
-      size: json['size'] as int? ?? 0,
-      status: json['status'] as String? ?? '',
-      error: json['error'] as String? ?? '',
-      tempFileID: json['tempFileID'] as String? ?? '',
-      tempFileType: json['tempFileType'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-    );
-  }
+  factory VMTemplateItem.fromJson(Map<String, dynamic> json) =>
+      _$VMTemplateItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMTemplateItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -83,16 +60,13 @@ class VMTemplateItem extends Equatable {
         bootOrder,
         isExist,
         size,
-        status,
-        error,
-        tempFileID,
-        tempFileType,
         createdAt,
         description,
       ];
 }
 
 /// 从虚拟机创建模板请求（dto.VMTemplateCreate）。
+@JsonSerializable()
 class VMTemplateCreate extends Equatable {
   final String? taskID;
   final String name;
@@ -108,13 +82,10 @@ class VMTemplateCreate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (taskID != null) 'taskID': taskID,
-        'name': name,
-        'templateName': templateName,
-        if (storagePool != null) 'storagePool': storagePool,
-        if (description != null) 'description': description,
-      };
+  factory VMTemplateCreate.fromJson(Map<String, dynamic> json) =>
+      _$VMTemplateCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMTemplateCreateToJson(this);
 
   @override
   List<Object?> get props =>
@@ -122,6 +93,7 @@ class VMTemplateCreate extends Equatable {
 }
 
 /// 删除模板请求（dto.VMTemplateDelete）。
+@JsonSerializable()
 class VMTemplateDelete extends Equatable {
   final String? taskID;
   final int id;
@@ -133,17 +105,17 @@ class VMTemplateDelete extends Equatable {
     this.deleteDisk = false,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (taskID != null) 'taskID': taskID,
-        'id': id,
-        'deleteDisk': deleteDisk,
-      };
+  factory VMTemplateDelete.fromJson(Map<String, dynamic> json) =>
+      _$VMTemplateDeleteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMTemplateDeleteToJson(this);
 
   @override
   List<Object?> get props => <Object?>[taskID, id, deleteDisk];
 }
 
 /// ISO 镜像记录（dto.VMIsoInfo）。
+@JsonSerializable()
 class VMIsoItem extends Equatable {
   final int id;
   final String type;
@@ -159,36 +131,24 @@ class VMIsoItem extends Equatable {
   final String description;
 
   const VMIsoItem({
-    this.id = 0,
-    this.type = '',
-    this.name = '',
-    this.path = '',
-    this.isExist = false,
-    this.size = 0,
-    this.status = '',
-    this.error = '',
-    this.tempFileID = '',
-    this.tempFileType = '',
-    this.createdAt = '',
-    this.description = '',
+    required this.id,
+    required this.type,
+    required this.name,
+    required this.path,
+    required this.isExist,
+    required this.size,
+    required this.status,
+    required this.error,
+    required this.tempFileID,
+    required this.tempFileType,
+    required this.createdAt,
+    required this.description,
   });
 
-  factory VMIsoItem.fromJson(Map<String, dynamic> json) {
-    return VMIsoItem(
-      id: json['id'] as int? ?? 0,
-      type: json['type'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      isExist: json['isExist'] as bool? ?? false,
-      size: json['size'] as int? ?? 0,
-      status: json['status'] as String? ?? '',
-      error: json['error'] as String? ?? '',
-      tempFileID: json['tempFileID'] as String? ?? '',
-      tempFileType: json['tempFileType'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-    );
-  }
+  factory VMIsoItem.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -208,6 +168,7 @@ class VMIsoItem extends Equatable {
 }
 
 /// 新建 ISO 记录请求（dto.VMIsoCreate）。
+@JsonSerializable()
 class VMIsoCreate extends Equatable {
   final String type;
   final String name;
@@ -221,18 +182,17 @@ class VMIsoCreate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'name': name,
-        'path': path,
-        if (description != null) 'description': description,
-      };
+  factory VMIsoCreate.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoCreateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[type, name, path, description];
 }
 
 /// 更新 ISO 记录请求（dto.VMIsoUpdate）。
+@JsonSerializable()
 class VMIsoUpdate extends Equatable {
   final int id;
   final String type;
@@ -248,19 +208,17 @@ class VMIsoUpdate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'type': type,
-        'name': name,
-        'path': path,
-        if (description != null) 'description': description,
-      };
+  factory VMIsoUpdate.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoUpdateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, type, name, path, description];
 }
 
 /// 删除 ISO 请求（dto.VMIsoDelete）。
+@JsonSerializable()
 class VMIsoDelete extends Equatable {
   final int id;
   final bool deleteFile;
@@ -270,10 +228,10 @@ class VMIsoDelete extends Equatable {
     this.deleteFile = false,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'deleteFile': deleteFile,
-      };
+  factory VMIsoDelete.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoDeleteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoDeleteToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, deleteFile];
@@ -282,6 +240,7 @@ class VMIsoDelete extends Equatable {
 /// ISO 导入启动请求（dto.VMIsoImportStart）。
 ///
 /// status 取值：uploading / downloading。
+@JsonSerializable()
 class VMIsoImportStart extends Equatable {
   final String type;
   final String name;
@@ -301,15 +260,10 @@ class VMIsoImportStart extends Equatable {
     this.tempFileType,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'name': name,
-        'path': path,
-        if (description != null) 'description': description,
-        'status': status,
-        if (tempFileID != null) 'tempFileID': tempFileID,
-        if (tempFileType != null) 'tempFileType': tempFileType,
-      };
+  factory VMIsoImportStart.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoImportStartFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoImportStartToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -326,6 +280,7 @@ class VMIsoImportStart extends Equatable {
 /// ISO 导入状态更新请求（dto.VMIsoImportUpdate）。
 ///
 /// status 取值：uploading / downloading / ready / failed。
+@JsonSerializable()
 class VMIsoImportUpdate extends Equatable {
   final int id;
   final String status;
@@ -341,13 +296,10 @@ class VMIsoImportUpdate extends Equatable {
     this.tempFileType,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'status': status,
-        if (error != null) 'error': error,
-        if (tempFileID != null) 'tempFileID': tempFileID,
-        if (tempFileType != null) 'tempFileType': tempFileType,
-      };
+  factory VMIsoImportUpdate.fromJson(Map<String, dynamic> json) =>
+      _$VMIsoImportUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMIsoImportUpdateToJson(this);
 
   @override
   List<Object?> get props =>
@@ -355,43 +307,44 @@ class VMIsoImportUpdate extends Equatable {
 }
 
 /// 网络与存储池删除请求（dto.VMResourceDelete）。
+@JsonSerializable()
 class VMResourceDelete extends Equatable {
   final int id;
-  final bool? force;
+  final bool force;
 
   const VMResourceDelete({
     required this.id,
-    this.force,
+    this.force = false,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (force != null) 'force': force,
-      };
+  factory VMResourceDelete.fromJson(Map<String, dynamic> json) =>
+      _$VMResourceDeleteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMResourceDeleteToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, force];
 }
 
 /// 关联虚拟机引用（dto.VMResourceRef）。
+@JsonSerializable()
 class VMResourceRef extends Equatable {
   final int id;
   final String name;
 
-  const VMResourceRef({this.id = 0, this.name = ''});
+  const VMResourceRef({required this.id, required this.name});
 
-  factory VMResourceRef.fromJson(Map<String, dynamic> json) {
-    return VMResourceRef(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-    );
-  }
+  factory VMResourceRef.fromJson(Map<String, dynamic> json) =>
+      _$VMResourceRefFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMResourceRefToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, name];
 }
 
 /// 网络上占用的 IP（dto.VMNetworkIPUsage）。
+@JsonSerializable()
 class VMNetworkIPUsage extends Equatable {
   final String ip;
   final String vmName;
@@ -399,26 +352,25 @@ class VMNetworkIPUsage extends Equatable {
   final String source;
 
   const VMNetworkIPUsage({
-    this.ip = '',
-    this.vmName = '',
-    this.mac = '',
-    this.source = '',
+    required this.ip,
+    required this.vmName,
+    required this.mac,
+    required this.source,
   });
 
-  factory VMNetworkIPUsage.fromJson(Map<String, dynamic> json) {
-    return VMNetworkIPUsage(
-      ip: json['ip'] as String? ?? '',
-      vmName: json['vmName'] as String? ?? '',
-      mac: json['mac'] as String? ?? '',
-      source: json['source'] as String? ?? '',
-    );
-  }
+  factory VMNetworkIPUsage.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkIPUsageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkIPUsageToJson(this);
 
   @override
   List<Object?> get props => <Object?>[ip, vmName, mac, source];
 }
 
 /// 虚拟机网络（dto.VMNetworkItem）。
+///
+/// 上游结构体的 error 是值类型字符串，没有错误时为空串。
+@JsonSerializable()
 class VMNetworkItem extends Equatable {
   final int id;
   final String name;
@@ -433,63 +385,37 @@ class VMNetworkItem extends Equatable {
   final String description;
   final String createdAt;
   final String status;
-  final String? error;
+  final String error;
   final int vmCount;
   final List<VMResourceRef> vms;
   final bool registered;
   final List<VMNetworkIPUsage> usedIPs;
 
   const VMNetworkItem({
-    this.id = 0,
-    this.name = '',
-    this.type = '',
-    this.bridgeName = '',
-    this.sourceInterface = '',
-    this.cidr = '',
-    this.gateway = '',
-    this.dhcpStart = '',
-    this.dhcpEnd = '',
-    this.autoStart = false,
-    this.description = '',
-    this.createdAt = '',
-    this.status = '',
-    this.error,
-    this.vmCount = 0,
-    this.vms = const <VMResourceRef>[],
-    this.registered = false,
-    this.usedIPs = const <VMNetworkIPUsage>[],
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.bridgeName,
+    required this.sourceInterface,
+    required this.cidr,
+    required this.gateway,
+    required this.dhcpStart,
+    required this.dhcpEnd,
+    required this.autoStart,
+    required this.description,
+    required this.createdAt,
+    required this.status,
+    required this.error,
+    required this.vmCount,
+    required this.vms,
+    required this.registered,
+    required this.usedIPs,
   });
 
-  factory VMNetworkItem.fromJson(Map<String, dynamic> json) {
-    return VMNetworkItem(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      bridgeName: json['bridgeName'] as String? ?? '',
-      sourceInterface: json['sourceInterface'] as String? ?? '',
-      cidr: json['cidr'] as String? ?? '',
-      gateway: json['gateway'] as String? ?? '',
-      dhcpStart: json['dhcpStart'] as String? ?? '',
-      dhcpEnd: json['dhcpEnd'] as String? ?? '',
-      autoStart: json['autoStart'] as bool? ?? false,
-      description: json['description'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      error: json['error'] as String?,
-      vmCount: json['vmCount'] as int? ?? 0,
-      vms: (json['vms'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(VMResourceRef.fromJson)
-              .toList(growable: false) ??
-          const <VMResourceRef>[],
-      registered: json['registered'] as bool? ?? false,
-      usedIPs: (json['usedIPs'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(VMNetworkIPUsage.fromJson)
-              .toList(growable: false) ??
-          const <VMNetworkIPUsage>[],
-    );
-  }
+  factory VMNetworkItem.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -515,54 +441,49 @@ class VMNetworkItem extends Equatable {
 }
 
 /// 宿主机网络接口（dto.VMNetworkInterfaceItem；GET /vms/networks/interfaces）。
+@JsonSerializable()
 class VMNetworkInterfaceItem extends Equatable {
   final String name;
   final List<String> addresses;
 
   const VMNetworkInterfaceItem({
-    this.name = '',
-    this.addresses = const <String>[],
+    required this.name,
+    required this.addresses,
   });
 
-  factory VMNetworkInterfaceItem.fromJson(Map<String, dynamic> json) {
-    return VMNetworkInterfaceItem(
-      name: json['name'] as String? ?? '',
-      addresses: (json['addresses'] as List<dynamic>?)
-              ?.whereType<String>()
-              .toList(growable: false) ??
-          const <String>[],
-    );
-  }
+  factory VMNetworkInterfaceItem.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkInterfaceItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkInterfaceItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[name, addresses];
 }
 
 /// 宿主机网桥（dto.VMNetworkBridgeItem；GET /vms/networks/bridges）。
+@JsonSerializable()
 class VMNetworkBridgeItem extends Equatable {
   final String name;
   final bool recommended;
   final String description;
 
   const VMNetworkBridgeItem({
-    this.name = '',
-    this.recommended = false,
-    this.description = '',
+    required this.name,
+    required this.recommended,
+    required this.description,
   });
 
-  factory VMNetworkBridgeItem.fromJson(Map<String, dynamic> json) {
-    return VMNetworkBridgeItem(
-      name: json['name'] as String? ?? '',
-      recommended: json['recommended'] as bool? ?? false,
-      description: json['description'] as String? ?? '',
-    );
-  }
+  factory VMNetworkBridgeItem.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkBridgeItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkBridgeItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[name, recommended, description];
 }
 
 /// 创建网络请求（dto.VMNetworkCreate）。type 取值：nat / bridge / macvtap。
+@JsonSerializable()
 class VMNetworkCreate extends Equatable {
   final String name;
   final String type;
@@ -588,18 +509,10 @@ class VMNetworkCreate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        'type': type,
-        if (bridgeName != null) 'bridgeName': bridgeName,
-        if (sourceInterface != null) 'sourceInterface': sourceInterface,
-        if (cidr != null) 'cidr': cidr,
-        if (gateway != null) 'gateway': gateway,
-        if (dhcpStart != null) 'dhcpStart': dhcpStart,
-        if (dhcpEnd != null) 'dhcpEnd': dhcpEnd,
-        'autoStart': autoStart,
-        if (description != null) 'description': description,
-      };
+  factory VMNetworkCreate.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkCreateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -617,6 +530,9 @@ class VMNetworkCreate extends Equatable {
 }
 
 /// 更新网络请求（dto.VMNetworkUpdate）。
+///
+/// autoStart / status / description 在上游是指针，只有显式赋值才发送。
+@JsonSerializable()
 class VMNetworkUpdate extends Equatable {
   final int id;
   final bool? autoStart;
@@ -630,18 +546,19 @@ class VMNetworkUpdate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (autoStart != null) 'autoStart': autoStart,
-        if (status != null) 'status': status,
-        if (description != null) 'description': description,
-      };
+  factory VMNetworkUpdate.fromJson(Map<String, dynamic> json) =>
+      _$VMNetworkUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMNetworkUpdateToJson(this);
 
   @override
   List<Object?> get props => <Object?>[id, autoStart, status, description];
 }
 
 /// 虚拟机存储池（dto.VMStorageItem）。
+///
+/// 上游结构体没有 usedPercent 字段，使用率由 capacity 与 available 计算。
+@JsonSerializable()
 class VMStorageItem extends Equatable {
   final int id;
   final String name;
@@ -651,55 +568,36 @@ class VMStorageItem extends Equatable {
   final String description;
   final String createdAt;
   final String status;
-  final String? error;
+  final String error;
   final int capacity;
   final int available;
-  final double? usedPercent;
   final int vmCount;
   final List<VMResourceRef> vms;
 
   const VMStorageItem({
-    this.id = 0,
-    this.name = '',
-    this.type = '',
-    this.path = '',
-    this.autoStart = false,
-    this.description = '',
-    this.createdAt = '',
-    this.status = '',
-    this.error,
-    this.capacity = 0,
-    this.available = 0,
-    this.usedPercent,
-    this.vmCount = 0,
-    this.vms = const <VMResourceRef>[],
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.path,
+    required this.autoStart,
+    required this.description,
+    required this.createdAt,
+    required this.status,
+    required this.error,
+    required this.capacity,
+    required this.available,
+    required this.vmCount,
+    required this.vms,
   });
 
-  double get usagePercent =>
-      usedPercent ?? (capacity > 0 ? (capacity - available) / capacity * 100 : 0.0);
+  factory VMStorageItem.fromJson(Map<String, dynamic> json) =>
+      _$VMStorageItemFromJson(json);
 
-  factory VMStorageItem.fromJson(Map<String, dynamic> json) {
-    return VMStorageItem(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      autoStart: json['autoStart'] as bool? ?? false,
-      description: json['description'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-      error: json['error'] as String?,
-      capacity: json['capacity'] as int? ?? 0,
-      available: json['available'] as int? ?? 0,
-      usedPercent: (json['usedPercent'] as num?)?.toDouble(),
-      vmCount: json['vmCount'] as int? ?? 0,
-      vms: (json['vms'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(VMResourceRef.fromJson)
-              .toList(growable: false) ??
-          const <VMResourceRef>[],
-    );
-  }
+  Map<String, dynamic> toJson() => _$VMStorageItemToJson(this);
+
+  /// 已用容量占比；capacity 为 0 时返回 0。
+  double get usagePercent =>
+      capacity > 0 ? (capacity - available) / capacity * 100 : 0.0;
 
   @override
   List<Object?> get props => <Object?>[
@@ -714,13 +612,13 @@ class VMStorageItem extends Equatable {
         error,
         capacity,
         available,
-        usedPercent,
         vmCount,
         vms,
       ];
 }
 
 /// 创建存储池请求（dto.VMStorageCreate）。type 当前仅支持 dir。
+@JsonSerializable()
 class VMStorageCreate extends Equatable {
   final String name;
   final String type;
@@ -736,13 +634,10 @@ class VMStorageCreate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        'type': type,
-        'path': path,
-        'autoStart': autoStart,
-        if (description != null) 'description': description,
-      };
+  factory VMStorageCreate.fromJson(Map<String, dynamic> json) =>
+      _$VMStorageCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMStorageCreateToJson(this);
 
   @override
   List<Object?> get props =>
@@ -750,6 +645,9 @@ class VMStorageCreate extends Equatable {
 }
 
 /// 更新存储池请求（dto.VMStorageUpdate）。
+///
+/// name / path 在上游是值类型，autoStart / status / description 是指针。
+@JsonSerializable()
 class VMStorageUpdate extends Equatable {
   final int id;
   final String? name;
@@ -767,14 +665,10 @@ class VMStorageUpdate extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        if (name != null) 'name': name,
-        if (path != null) 'path': path,
-        if (autoStart != null) 'autoStart': autoStart,
-        if (status != null) 'status': status,
-        if (description != null) 'description': description,
-      };
+  factory VMStorageUpdate.fromJson(Map<String, dynamic> json) =>
+      _$VMStorageUpdateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMStorageUpdateToJson(this);
 
   @override
   List<Object?> get props =>
@@ -782,6 +676,7 @@ class VMStorageUpdate extends Equatable {
 }
 
 /// 虚拟机快照（dto.VMSnapshotInfo）。
+@JsonSerializable()
 class VMSnapshotItem extends Equatable {
   final String name;
   final String description;
@@ -794,30 +689,21 @@ class VMSnapshotItem extends Equatable {
   final int children;
 
   const VMSnapshotItem({
-    this.name = '',
-    this.description = '',
-    this.createdAt = 0,
-    this.state = '',
-    this.parent = '',
-    this.path = '',
-    this.size = 0,
-    this.current = false,
-    this.children = 0,
+    required this.name,
+    required this.description,
+    required this.createdAt,
+    required this.state,
+    required this.parent,
+    required this.path,
+    required this.size,
+    required this.current,
+    required this.children,
   });
 
-  factory VMSnapshotItem.fromJson(Map<String, dynamic> json) {
-    return VMSnapshotItem(
-      name: json['name'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      createdAt: json['createdAt'] as int? ?? 0,
-      state: json['state'] as String? ?? '',
-      parent: json['parent'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      size: json['size'] as int? ?? 0,
-      current: json['current'] as bool? ?? false,
-      children: json['children'] as int? ?? 0,
-    );
-  }
+  factory VMSnapshotItem.fromJson(Map<String, dynamic> json) =>
+      _$VMSnapshotItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMSnapshotItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[
@@ -834,6 +720,7 @@ class VMSnapshotItem extends Equatable {
 }
 
 /// 快照创建/恢复/删除请求（dto.VMSnapshotReq）。
+@JsonSerializable()
 class VMSnapshotReq extends Equatable {
   final String? taskID;
   final String name;
@@ -847,12 +734,10 @@ class VMSnapshotReq extends Equatable {
     this.description,
   });
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        if (taskID != null) 'taskID': taskID,
-        'name': name,
-        'snapshotName': snapshotName,
-        if (description != null) 'description': description,
-      };
+  factory VMSnapshotReq.fromJson(Map<String, dynamic> json) =>
+      _$VMSnapshotReqFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMSnapshotReqToJson(this);
 
   @override
   List<Object?> get props =>
@@ -862,6 +747,7 @@ class VMSnapshotReq extends Equatable {
 /// 孤儿数据项（dto.VMOrphanItem）。
 ///
 /// type 取值：orphan_domain_disk / orphan_snapshot / partial_file。
+@JsonSerializable()
 class VMOrphanItem extends Equatable {
   final String type;
   final String path;
@@ -871,39 +757,30 @@ class VMOrphanItem extends Equatable {
   const VMOrphanItem({
     required this.type,
     required this.path,
-    this.size = 0,
-    this.modifiedAt = 0,
+    required this.size,
+    required this.modifiedAt,
   });
 
-  factory VMOrphanItem.fromJson(Map<String, dynamic> json) {
-    return VMOrphanItem(
-      type: json['type'] as String? ?? '',
-      path: json['path'] as String? ?? '',
-      size: json['size'] as int? ?? 0,
-      modifiedAt: json['modifiedAt'] as int? ?? 0,
-    );
-  }
+  factory VMOrphanItem.fromJson(Map<String, dynamic> json) =>
+      _$VMOrphanItemFromJson(json);
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'path': path,
-        'size': size,
-        'modifiedAt': modifiedAt,
-      };
+  Map<String, dynamic> toJson() => _$VMOrphanItemToJson(this);
 
   @override
   List<Object?> get props => <Object?>[type, path, size, modifiedAt];
 }
 
 /// 孤儿数据清理请求（dto.VMOrphanClean）。
+@JsonSerializable()
 class VMOrphanClean extends Equatable {
   final List<VMOrphanItem> items;
 
   const VMOrphanClean({required this.items});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'items': items.map((VMOrphanItem item) => item.toJson()).toList(),
-      };
+  factory VMOrphanClean.fromJson(Map<String, dynamic> json) =>
+      _$VMOrphanCleanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VMOrphanCleanToJson(this);
 
   @override
   List<Object?> get props => <Object?>[items];

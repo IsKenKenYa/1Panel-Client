@@ -1090,6 +1090,8 @@ class PasskeyInfo extends Equatable {
   List<Object?> get props => [id, name, createdAt, lastUsedAt];
 }
 
+/// 模型下载器设置（dto.ModelDownloaderSetting；swagger 声明 modelDir 必填）。
+@JsonSerializable()
 class ModelDownloaderSetting extends Equatable {
   final String modelDir;
   final String? featuredModelsSync;
@@ -1107,30 +1109,10 @@ class ModelDownloaderSetting extends Equatable {
     this.modelScopeToken,
   });
 
-  factory ModelDownloaderSetting.fromJson(Map<String, dynamic> json) {
-    return ModelDownloaderSetting(
-      modelDir: json['modelDir'] as String? ?? '',
-      featuredModelsSync: json['featuredModelsSync'] as String?,
-      hfEndpoint: json['hfEndpoint'] as String?,
-      hfToken: json['hfToken'] as String?,
-      modelScopeEndpoint: json['modelScopeEndpoint'] as String?,
-      modelScopeToken: json['modelScopeToken'] as String?,
-    );
-  }
+  factory ModelDownloaderSetting.fromJson(Map<String, dynamic> json) =>
+      _$ModelDownloaderSettingFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{'modelDir': modelDir};
-    if (featuredModelsSync != null) {
-      json['featuredModelsSync'] = featuredModelsSync;
-    }
-    if (hfEndpoint != null) json['hfEndpoint'] = hfEndpoint;
-    if (hfToken != null) json['hfToken'] = hfToken;
-    if (modelScopeEndpoint != null) {
-      json['modelScopeEndpoint'] = modelScopeEndpoint;
-    }
-    if (modelScopeToken != null) json['modelScopeToken'] = modelScopeToken;
-    return json;
-  }
+  Map<String, dynamic> toJson() => _$ModelDownloaderSettingToJson(this);
 
   @override
   List<Object?> get props => [
