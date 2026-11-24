@@ -69,23 +69,28 @@ public final class ContainerLogsSession: ObservableObject {
 
     /// 切换跟随意愿。
     ///
-    /// 开启时重新建立订阅并清除过期快照状态；关闭时停止订阅并回放快照。
+    /// 开启时在页面可见且未结束时建立订阅并清除过期快照状态；关闭时停止订阅
+    /// 并回放快照。与 `appear`、`retry` 共用同一可见性与关闭条件，避免
+    /// 暂时离开期间被交错的任务重新订阅。
     public func setFollow(_ enabled: Bool) async {
         wantsFollow = enabled
         if enabled {
-            snapshot = nil
-            snapshotError = nil
-            isLoadingSnapshot = false
-            snapshotRequest += 1
-            await store.follow(container: container)
+            await openStreamIfAllowed()
         } else {
             await stopAndLoadSnapshot()
         }
     }
 
     /// 错误与结束后的重试入口：恢复跟随并重新建立连接。
+    ///
+    /// 页面此时不可见或已结束时不建立订阅，等重新出现时由 `appear` 恢复。
     public func retry() async {
         wantsFollow = true
+        await openStreamIfAllowed()
+    }
+
+    private func openStreamIfAllowed() async {
+        guard !closed, visible, wantsFollow, !store.isActive else { return }
         snapshot = nil
         snapshotError = nil
         isLoadingSnapshot = false
@@ -94,12 +99,7 @@ public final class ContainerLogsSession: ObservableObject {
     }
 
     private func resumeIfWanted() async {
-        guard !closed, visible, wantsFollow, !store.isActive else { return }
-        snapshot = nil
-        snapshotError = nil
-        isLoadingSnapshot = false
-        snapshotRequest += 1
-        await store.follow(container: container)
+        await openStreamIfAllowed()
     }
 
     private func stopAndLoadSnapshot() async {

@@ -146,7 +146,7 @@ struct ContainerLogsFollowView: View {
             .accessibilityIdentifier("containerLogs.status.ended")
         case .failed:
             HStack(spacing: 8) {
-                Text(session.store.errorMessage
+                Text(LogStreamErrorText.display(session.store.errorMessage)
                      ?? t("commonLoadFailedTitle", "Failed to load"))
                     .font(.caption)
                     .foregroundStyle(.red)
@@ -157,7 +157,7 @@ struct ContainerLogsFollowView: View {
                 .font(.caption)
             }
             .accessibilityElement(children: .contain)
-            .accessibilityLabel(session.store.errorMessage
+            .accessibilityLabel(LogStreamErrorText.display(session.store.errorMessage)
                                  ?? t("commonLoadFailedTitle", "Failed to load"))
             .accessibilityIdentifier("containerLogs.status.failed")
         case .idle:

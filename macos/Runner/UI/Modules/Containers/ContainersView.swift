@@ -356,32 +356,50 @@ struct ContainersView: View {
     }
 }
 
-private struct ContainerLogsSheet: View {
+struct ContainerLogsSheet: View {
     let containerName: String
     let fetchLogs: @MainActor () async throws -> String
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var translations: TranslationsManager
-    @State private var logs: String?
-    @State private var loadError: String?
-    @State private var isLoading = true
+    /// 与 iOS 共用的会话：跟随意愿、连接状态与快照规则只有一处实现。
+    @StateObject private var session: ContainerLogsSession
     @State private var refreshCount = 0
-    /// 用户的跟随意愿；弹窗关闭只结束连接，不改变意愿。
-    @State private var wantsFollow = true
-    @StateObject private var stream = ContainerLogStreamStore(
-        start: { container, tail, onChunk, onDone, onError in
-            try await ChannelManager.shared.startContainerLogStream(
-                container: container,
-                tail: tail,
-                onChunk: onChunk,
-                onDone: onDone,
-                onError: onError
-            )
-        },
-        stop: { handle in
-            await ChannelManager.shared.stopContainerLogStream(handle: handle)
-        }
-    )
+
+    init(
+        containerName: String,
+        fetchLogs: @escaping @MainActor () async throws -> String
+    ) {
+        self.containerName = containerName
+        self.fetchLogs = fetchLogs
+        _session = StateObject(wrappedValue: ContainerLogsSession(
+            container: containerName,
+            store: ContainerLogStreamStore(
+                start: { container, tail, onChunk, onDone, onError in
+                    try await ChannelManager.shared.startContainerLogStream(
+                        container: container,
+                        tail: tail,
+                        onChunk: onChunk,
+                        onDone: onDone,
+                        onError: onError
+                    )
+                },
+                stop: { handle in
+                    await ChannelManager.shared.stopContainerLogStream(handle: handle)
+                }
+            ),
+            fetchSnapshot: fetchLogs
+        ))
+    }
+
+    /// 用调用方提供的会话渲染，供真实链路测试观察同一实例。
+    init(containerName: String, session: ContainerLogsSession) {
+        self.containerName = containerName
+        self.fetchLogs = { "" }
+        _session = StateObject(wrappedValue: session)
+    }
+
+    private var stream: ContainerLogStreamStore { session.store }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -392,22 +410,12 @@ private struct ContainerLogsSheet: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                 Spacer()
-                if isLoading && logs != nil {
-                    ProgressView().controlSize(.small)
-                }
                 Toggle(
                     translations.get("containerLogsAutoRefresh", fallback: "Auto Refresh"),
                     isOn: Binding(
-                        get: { wantsFollow },
+                        get: { session.wantsFollow },
                         set: { follow in
-                            wantsFollow = follow
-                            Task {
-                                if follow {
-                                    await stream.follow(container: containerName)
-                                } else {
-                                    await stream.stopFollowing()
-                                }
-                            }
+                            Task { await session.setFollow(follow) }
                         }
                     )
                 )
@@ -419,81 +427,9 @@ private struct ContainerLogsSheet: View {
                     Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                         .labelStyle(.iconOnly)
                 }
-                .disabled(isLoading)
                 .help(translations.get("commonRefresh", fallback: "Refresh"))
             }
-            if stream.phase != .idle {
-                if !stream.text.isEmpty {
-                    ScrollView {
-                        Text(verbatim: stream.text)
-                            .font(.system(.caption, design: .monospaced))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                } else if stream.isActive {
-                    LoadingView()
-                } else if stream.hasEnded {
-                    EmptyStateView(
-                        icon: "doc.text",
-                        message: translations.get("containerLogsEmpty", fallback: "No logs")
-                    )
-                }
-                if let streamError = stream.errorMessage {
-                    HStack(spacing: 8) {
-                        Label(streamError, systemImage: "exclamationmark.triangle")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                        Button(translations.get("commonRetry", fallback: "Retry")) {
-                            Task { await stream.follow(container: containerName) }
-                        }
-                    }
-                } else if stream.hasEnded {
-                    HStack(spacing: 8) {
-                        Text(translations.get("containerLogsStreamEnded",
-                                              fallback: "Log stream ended"))
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                        Button(translations.get("containerLogsResumeFollow",
-                                                fallback: "Resume following")) {
-                            Task { await stream.follow(container: containerName) }
-                        }
-                    }
-                }
-            } else if !stream.text.isEmpty {
-                // 已收到的跟随日志优先于一键快照：快照加载与失败都不遮盖它。
-                if let loadError {
-                    Label(loadError, systemImage: "exclamationmark.triangle")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-                ScrollView {
-                    Text(verbatim: stream.text)
-                        .font(.system(.caption, design: .monospaced))
-                        .textSelection(.enabled)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            } else if let logs {                if let loadError {
-                    Label(loadError, systemImage: "exclamationmark.triangle")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-                if logs.isEmpty {
-                    EmptyStateView(icon: "doc.text", message: translations.get("containerLogsEmpty", fallback: "No logs"))
-                } else {
-                    ScrollView {
-                        Text(verbatim: logs)
-                            .font(.system(.caption, design: .monospaced))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
-            } else if let loadError {
-                ErrorView(message: loadError) { refreshCount += 1 }
-            } else {
-                LoadingView()
-            }
+            content
             HStack {
                 Spacer()
                 Button(translations.get("commonClose", fallback: "Close")) { dismiss() }
@@ -502,21 +438,143 @@ private struct ContainerLogsSheet: View {
         }
         .padding(20)
         .frame(width: 640, height: 480)
-        .onDisappear {
-            Task { await stream.close() }
+        .onAppear {
+            // 打开弹窗即按初始跟随意愿建立连接，不要求用户先关再开。
+            Task { await session.appear() }
         }
-        .task(id: refreshCount) {
-            isLoading = true
-            loadError = nil
-            do {
-                let received = try await fetchLogs()
-                try Task.checkCancellation()
-                logs = received
-            } catch {
-                guard !Task.isCancelled else { return }
-                loadError = error.localizedDescription
+        .onDisappear {
+            // 弹窗关闭视为对象永久结束，连接立即终止并拒绝后续开始。
+            Task { await session.finish() }
+        }
+        .onReceive(NotificationCenter.default.publisher(
+            for: NSApplication.didResignActiveNotification
+        )) { _ in
+            Task { await session.leave() }
+        }
+        .onReceive(NotificationCenter.default.publisher(
+            for: NSApplication.didBecomeActiveNotification
+        )) { _ in
+            Task { await session.appear() }
+        }
+        .onChange(of: refreshCount) { _ in
+            Task { await session.setFollow(false) }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if session.wantsFollow && stream.phase == .idle {
+            if stream.text.isEmpty {
+                LoadingView()
+            } else {
+                logScroll(stream.text)
             }
-            isLoading = false
+        } else if stream.isActive || stream.hasEnded || stream.phase == .failed {
+            streamContent
+        } else if !session.displayText.isEmpty {
+            VStack(spacing: 0) {
+                if let snapshotError = session.snapshotError, !stream.text.isEmpty {
+                    inlineNotice(snapshotError)
+                }
+                logScroll(session.displayText)
+            }
+        } else if session.isLoadingSnapshot || session.snapshotError != nil {
+            snapshotContent
+        } else {
+            LoadingView()
+        }
+    }
+
+    @ViewBuilder
+    private var streamContent: some View {
+        if stream.text.isEmpty {
+            if stream.phase == .failed {
+                ErrorView(message: LogStreamErrorText.display(stream.errorMessage)
+                          ?? translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
+                    Task { await session.retry() }
+                }
+            } else if stream.hasEnded {
+                EmptyStateView(
+                    icon: "doc.text",
+                    message: translations.get("containerLogsEmpty", fallback: "No logs")
+                )
+            } else {
+                LoadingView()
+            }
+        } else {
+            VStack(spacing: 0) {
+                logScroll(stream.text)
+                statusFooter
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var statusFooter: some View {
+        if let streamError = LogStreamErrorText.display(stream.errorMessage) {
+            HStack(spacing: 8) {
+                Label(streamError, systemImage: "exclamationmark.triangle")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(3)
+                    .help(stream.errorMessage ?? "")
+                Button(translations.get("commonRetry", fallback: "Retry")) {
+                    Task { await session.retry() }
+                }
+            }
+        } else if stream.hasEnded {
+            HStack(spacing: 8) {
+                Text(translations.get("containerLogsStreamEnded",
+                                      fallback: "Log stream ended"))
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                Button(translations.get("containerLogsResumeFollow",
+                                        fallback: "Resume following")) {
+                    Task { await session.retry() }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var snapshotContent: some View {
+        if session.isLoadingSnapshot && session.snapshot == nil {
+            LoadingView()
+        } else if let snapshotError = session.snapshotError, session.snapshot == nil {
+            ErrorView(message: snapshotError) {
+                Task { await session.setFollow(false) }
+            }
+        } else if let snapshot = session.snapshot {
+            if snapshot.isEmpty {
+                EmptyStateView(
+                    icon: "doc.text",
+                    message: translations.get("containerLogsEmpty", fallback: "No logs")
+                )
+            } else {
+                logScroll(snapshot)
+            }
+        } else {
+            LoadingView()
+        }
+    }
+
+    private func inlineNotice(_ text: String) -> some View {
+        Label(text, systemImage: "exclamationmark.triangle")
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .lineLimit(3)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func logScroll(_ text: String) -> some View {
+        ScrollView {
+            Text(verbatim: text)
+                .font(.system(.caption, design: .monospaced))
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(text)
+                .accessibilityIdentifier("containerLogs.text")
         }
     }
 }
