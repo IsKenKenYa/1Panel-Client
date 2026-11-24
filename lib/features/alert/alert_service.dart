@@ -191,7 +191,11 @@ class AlertService extends BaseComponent {
   Future<AlertConfigTestResult> testConfig(AlertConfigTest request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).testAlertConfig(request);
-      return response.data ?? const AlertConfigTestResult();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回告警配置测试结果');
+      }
+      return data;
     });
   }
 }

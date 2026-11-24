@@ -40,7 +40,7 @@ class AlertChannelTab extends StatelessWidget {
               const Spacer(),
               FilledButton.tonalIcon(
                 onPressed: () => showAlertChannelForm(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.alertChannelCreateAction),
               ),
             ],

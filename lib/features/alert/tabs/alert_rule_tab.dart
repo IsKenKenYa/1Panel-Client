@@ -113,7 +113,7 @@ class _RuleFilterBar extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: FilledButton.tonalIcon(
               onPressed: () => showAlertRuleForm(context),
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               label: Text(l10n.alertRuleCreateAction),
             ),
           ),
