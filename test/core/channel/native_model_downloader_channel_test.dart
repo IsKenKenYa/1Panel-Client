@@ -12,6 +12,10 @@ void main() {
         'key': 'qwen',
         'repoID': 'Qwen/Qwen3',
         'family': 'Qwen',
+        'architecture': 'Dense',
+        'backboneParams': '8B',
+        'activeParams': '8B',
+        'engram': '',
         'weightGB': 8.5,
         'sources': <String>['modelScope', 'hf'],
         'sourceModelIds': <String, String>{
@@ -22,6 +26,7 @@ void main() {
           'en': 'General model',
           'zh': '通用模型',
         },
+        'sort': 1,
       });
 
       final payload = modelDownloaderFeaturedPayload(model);
@@ -34,7 +39,18 @@ void main() {
 
     test('缺少来源时回落到 hf 与 repoID', () {
       final model = FeaturedModel.fromJson(<String, dynamic>{
+        'key': 'org-model',
         'repoID': 'org/model',
+        'family': 'org',
+        'architecture': 'Dense',
+        'backboneParams': '7B',
+        'activeParams': '7B',
+        'engram': '',
+        'weightGB': 14.0,
+        'sources': <String>[],
+        'sourceModelIds': <String, String>{},
+        'description': <String, String>{},
+        'sort': 0,
       });
 
       final payload = modelDownloaderFeaturedPayload(model);
@@ -49,15 +65,39 @@ void main() {
       final percent = ModelDownloadTaskItem.fromJson(<String, dynamic>{
         'id': 4,
         'modelName': 'qwen',
+        'repoID': 'Qwen/Qwen3-8B',
+        'revision': 'main',
+        'downloadType': 'all',
+        'source': 'hf',
         'status': 'running',
         'progress': 42,
+        'downloadedSize': 6764573491,
+        'totalSize': 16106127360,
+        'targetDir': '/opt/models/Qwen3-8B',
+        'createdAt': '2026-05-12T08:20:03+08:00',
+        'startedAt': '2026-05-12T08:31:07+08:00',
         'canCancel': true,
+        'canRetry': false,
+        'canRemoveRecord': false,
       });
       final ratio = ModelDownloadTaskItem.fromJson(<String, dynamic>{
         'id': 5,
         'modelName': 'llama',
+        'repoID': 'meta-llama/Llama-3.1-8B',
+        'revision': 'main',
+        'downloadType': 'all',
+        'source': 'modelScope',
         'status': 'completed',
         'progress': 0.75,
+        'downloadedSize': 12075024384,
+        'totalSize': 16100032512,
+        'targetDir': '/opt/models/Llama-3.1-8B',
+        'createdAt': '2026-05-12T07:44:19+08:00',
+        'startedAt': '2026-05-12T07:45:02+08:00',
+        'completedAt': '2026-05-12T08:52:31+08:00',
+        'canCancel': false,
+        'canRetry': true,
+        'canRemoveRecord': true,
       });
 
       final percentPayload = modelDownloaderTaskPayload(percent);
@@ -73,11 +113,39 @@ void main() {
     test('失败与取消状态给出语义色分组', () {
       final failed = ModelDownloadTaskItem.fromJson(<String, dynamic>{
         'id': 6,
+        'modelName': 'mistral',
+        'repoID': 'mistralai/Mistral-7B-v0.3',
+        'revision': 'main',
+        'downloadType': 'all',
+        'source': 'hf',
         'status': 'failed',
+        'progress': 18.4,
+        'downloadedSize': 2687106560,
+        'totalSize': 14602888806,
+        'targetDir': '/opt/models/Mistral-7B-v0.3',
+        'errorMessage': 'network connection reset by peer',
+        'createdAt': '2026-05-12T06:18:44+08:00',
+        'startedAt': '2026-05-12T06:19:05+08:00',
+        'canCancel': false,
+        'canRetry': true,
+        'canRemoveRecord': true,
       });
       final cancelled = ModelDownloadTaskItem.fromJson(<String, dynamic>{
         'id': 7,
+        'modelName': 'deepseek',
+        'repoID': 'deepseek-ai/DeepSeek-V3',
+        'revision': 'main',
+        'downloadType': 'tokenizer',
+        'source': 'modelScope',
         'status': 'cancelled',
+        'progress': 2.5,
+        'downloadedSize': 109051904,
+        'totalSize': 4362076160,
+        'targetDir': '/opt/models/DeepSeek-V3',
+        'createdAt': '2026-05-12T05:02:11+08:00',
+        'canCancel': false,
+        'canRetry': true,
+        'canRemoveRecord': true,
       });
 
       expect(modelDownloaderTaskPayload(failed)['statusTone'], 'negative');

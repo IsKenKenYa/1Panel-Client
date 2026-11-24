@@ -44,10 +44,18 @@ void main() {
           )).thenAnswer((_) async => const FeaturedModelPage(
             items: <FeaturedModel>[
               FeaturedModel(
-                key: 'qwen',
+                key: 'qwen3-7b',
                 repoID: 'Qwen/Qwen3',
                 family: 'Qwen',
+                architecture: 'qwen3',
+                backboneParams: '7B',
+                activeParams: '7B',
+                engram: '',
                 weightGB: 6.2,
+                sources: <String>['hf'],
+                sourceModelIds: <String, String>{'hf': 'Qwen/Qwen3'},
+                description: <String, String>{'zh': '通义千问 3 7B'},
+                sort: 1,
               ),
             ],
             total: 1,
@@ -67,7 +75,11 @@ void main() {
             pageSize: any(named: 'pageSize'),
             family: any(named: 'family'),
             info: any(named: 'info'),
-          )).thenAnswer((_) async => const FeaturedModelPage());
+          )).thenAnswer((_) async => const FeaturedModelPage(
+            items: <FeaturedModel>[],
+            total: 0,
+            families: <String>[],
+          ));
 
       await provider.loadFeatured(family: 'Qwen');
 
@@ -88,7 +100,14 @@ void main() {
             sort: any(named: 'sort'),
           )).thenAnswer((_) async => const PageResult<ModelItem>(
             items: <ModelItem>[
-              ModelItem(repoID: 'org/model', sizeFormatted: '7B'),
+              ModelItem(
+                repoID: 'org/model',
+                name: 'org/model',
+                downloads: 120,
+                likes: 8,
+                size: 7000000000,
+                sizeFormatted: '7B',
+              ),
             ],
             total: 1,
           ));
@@ -158,9 +177,18 @@ void main() {
           ));
 
       const model = FeaturedModel(
+        key: 'qwen3-7b',
         repoID: 'Qwen/Qwen3',
+        family: 'Qwen',
+        architecture: 'qwen3',
+        backboneParams: '7B',
+        activeParams: '7B',
+        engram: '',
+        weightGB: 6.2,
         sources: <String>['hf', 'modelscope'],
         sourceModelIds: <String, String>{'hf': 'Qwen/Qwen3-HF'},
+        description: <String, String>{'zh': '通义千问 3 7B'},
+        sort: 1,
       );
 
       await provider.downloadFeatured(model);
@@ -188,7 +216,20 @@ void main() {
             total: 0,
           ));
 
-      const model = FeaturedModel(repoID: 'Qwen/Qwen3');
+      const model = FeaturedModel(
+        key: 'qwen3-7b',
+        repoID: 'Qwen/Qwen3',
+        family: 'Qwen',
+        architecture: 'qwen3',
+        backboneParams: '7B',
+        activeParams: '7B',
+        engram: '',
+        weightGB: 6.2,
+        sources: <String>[],
+        sourceModelIds: <String, String>{},
+        description: <String, String>{},
+        sort: 1,
+      );
 
       await provider.downloadFeatured(model);
 
@@ -207,7 +248,22 @@ void main() {
             includeLocal: any(named: 'includeLocal'),
           )).thenAnswer((_) async => const PageResult<ModelDownloadTaskItem>(
             items: <ModelDownloadTaskItem>[
-              ModelDownloadTaskItem(id: 1, status: 'running', progress: 0.4),
+              ModelDownloadTaskItem(
+                id: 1,
+                modelName: 'Qwen3-7B',
+                repoID: 'Qwen/Qwen3',
+                revision: 'main',
+                downloadType: 'all',
+                source: 'hf',
+                status: 'running',
+                progress: 0.4,
+                downloadedSize: 4000000000,
+                totalSize: 6200000000,
+                targetDir: '/opt/models',
+                canCancel: true,
+                canRetry: false,
+                canRemoveRecord: false,
+              ),
             ],
             total: 1,
           ));
@@ -226,7 +282,22 @@ void main() {
             includeLocal: any(named: 'includeLocal'),
           )).thenAnswer((_) async => const PageResult<ModelDownloadTaskItem>(
             items: <ModelDownloadTaskItem>[
-              ModelDownloadTaskItem(id: 1, status: 'completed', progress: 1),
+              ModelDownloadTaskItem(
+                id: 1,
+                modelName: 'Qwen3-7B',
+                repoID: 'Qwen/Qwen3',
+                revision: 'main',
+                downloadType: 'all',
+                source: 'hf',
+                status: 'completed',
+                progress: 1,
+                downloadedSize: 6200000000,
+                totalSize: 6200000000,
+                targetDir: '/opt/models',
+                canCancel: false,
+                canRetry: false,
+                canRemoveRecord: true,
+              ),
             ],
             total: 1,
           ));
@@ -311,7 +382,11 @@ void main() {
             pageSize: any(named: 'pageSize'),
             family: any(named: 'family'),
             info: any(named: 'info'),
-          )).thenAnswer((_) async => const FeaturedModelPage());
+          )).thenAnswer((_) async => const FeaturedModelPage(
+            items: <FeaturedModel>[],
+            total: 0,
+            families: <String>[],
+          ));
       when(() => service.searchTasks(
             page: any(named: 'page'),
             pageSize: any(named: 'pageSize'),

@@ -9,16 +9,37 @@ void main() {
     test('启停状态给出可读语义', () {
       final enabled = alertRulePayload(const AlertInfo(
         id: 3,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
         type: 'cpu',
-        title: 'CPU',
-        status: 'Enable',
+        subType: '',
+        cycle: 0,
+        count: 80,
+        interval: 1,
         method: 'mail',
+        title: 'CPU',
+        project: '',
+        status: 'Enable',
+        sendCount: 1,
+        sendMethod: <String>['mail'],
+        advancedParams: '',
       ));
       final disabled = alertRulePayload(const AlertInfo(
         id: 4,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
         type: 'disk',
+        subType: '',
+        cycle: 0,
+        count: 80,
+        interval: 1,
+        method: 'mail',
         title: 'Disk',
+        project: '',
         status: 'Disable',
+        sendCount: 1,
+        sendMethod: <String>['mail'],
+        advancedParams: '',
       ));
 
       expect(enabled['enabled'], isTrue);
@@ -32,19 +53,70 @@ void main() {
     test('标题回落与状态分组', () {
       final log = AlertLog.fromJson(<String, dynamic>{
         'id': 9,
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
+        'alertId': 1,
+        'count': 1,
+        'method': 'mail',
         'status': 'Error',
         'message': 'cpu high',
         'alertDetail': <String, dynamic>{
           'title': 'CPU alert',
           'type': 'cpu',
+          'licenseId': '',
+          'project': '',
+          'method': 'mail',
+        },
+        'alertRule': <String, dynamic>{
+          'id': 1,
+          'createdAt': '2024-01-01T00:00:00Z',
+          'updatedAt': '2024-01-01T00:00:00Z',
+          'type': 'cpu',
+          'subType': '',
+          'cycle': 0,
+          'count': 80,
+          'interval': 1,
+          'method': 'mail',
+          'title': 'CPU rule',
+          'project': '',
+          'status': 'Enable',
+          'sendCount': 1,
+          'sendMethod': <String>['mail'],
+          'advancedParams': '',
         },
       });
       final fallback = AlertLog.fromJson(<String, dynamic>{
         'id': 10,
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
+        'alertId': 2,
+        'count': 1,
+        'method': 'mail',
         'status': 'Success',
+        'message': 'memory high',
+        'alertDetail': <String, dynamic>{
+          'title': '',
+          'type': '',
+          'licenseId': '',
+          'project': '',
+          'method': 'mail',
+        },
         'alertRule': <String, dynamic>{
-          'title': 'Rule title',
+          'id': 2,
+          'createdAt': '2024-01-01T00:00:00Z',
+          'updatedAt': '2024-01-01T00:00:00Z',
           'type': 'memory',
+          'subType': '',
+          'cycle': 0,
+          'count': 80,
+          'interval': 1,
+          'method': 'mail',
+          'title': 'Rule title',
+          'project': '',
+          'status': 'Enable',
+          'sendCount': 1,
+          'sendMethod': <String>['mail'],
+          'advancedParams': '',
         },
       });
 
@@ -63,15 +135,21 @@ void main() {
     test('渠道能力标记与配置摘要', () {
       final email = alertChannelPayload(const AlertConfigInfo(
         id: 1,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
         type: 'email',
         title: 'Mail',
         config: '{}',
+        status: 'Enable',
       ));
       final custom = alertChannelPayload(const AlertConfigInfo(
         id: 2,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
         type: 'custom',
         title: 'Hook',
         config: '{"url":"https://example.test"}',
+        status: 'Enable',
       ));
 
       expect(email['isEmail'], isTrue);

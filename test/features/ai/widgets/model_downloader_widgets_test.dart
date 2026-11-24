@@ -42,7 +42,11 @@ ModelDownloaderProvider emptyProvider() {
         pageSize: any(named: 'pageSize'),
         family: any(named: 'family'),
         info: any(named: 'info'),
-      )).thenAnswer((_) async => const FeaturedModelPage());
+      )).thenAnswer((_) async => const FeaturedModelPage(
+        items: <FeaturedModel>[],
+        total: 0,
+        families: <String>[],
+      ));
   when(() => service.searchTasks(
         page: any(named: 'page'),
         pageSize: any(named: 'pageSize'),

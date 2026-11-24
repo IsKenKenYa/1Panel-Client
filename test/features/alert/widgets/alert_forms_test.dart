@@ -74,13 +74,20 @@ void main() {
         const AlertRuleForm(
           editing: AlertInfo(
             id: 1,
-            title: 'CPU 过高',
+            createdAt: '2024-01-01T00:00:00Z',
+            updatedAt: '2024-01-01T00:00:00Z',
             type: 'cpu',
+            subType: '',
+            cycle: 0,
             count: 80,
             interval: 5,
-            sendCount: 2,
+            method: 'Mail',
+            title: 'CPU 过高',
+            project: '',
             status: 'Enable',
+            sendCount: 2,
             sendMethod: <String>['Mail'],
+            advancedParams: '',
           ),
         ),
         provider: provider,
@@ -121,6 +128,8 @@ void main() {
         const AlertChannelForm(
           editing: AlertConfigInfo(
             id: 1,
+            createdAt: '2024-01-01T00:00:00Z',
+            updatedAt: '2024-01-01T00:00:00Z',
             type: 'email',
             title: 'Mail',
             config: '{}',

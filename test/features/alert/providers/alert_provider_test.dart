@@ -12,7 +12,9 @@ void main() {
   late AlertProvider provider;
 
   setUpAll(() {
-    registerFallbackValue(const AlertSearch());
+    registerFallbackValue(
+      const AlertSearch(orderBy: 'created_at', order: 'descending'),
+    );
     registerFallbackValue(const AlertCreate(type: 'cpu', method: 'mail'));
     registerFallbackValue(const AlertUpdate(id: 1));
     registerFallbackValue(const AlertUpdateStatus(id: 1, status: 'Enable'));
@@ -41,7 +43,23 @@ void main() {
             status: any(named: 'status'),
           )).thenAnswer((_) async => const PageResult<AlertInfo>(
             items: <AlertInfo>[
-              AlertInfo(id: 1, title: 'CPU alert', type: 'cpu', status: 'Enable'),
+              AlertInfo(
+                id: 1,
+                createdAt: '2024-01-01T00:00:00Z',
+                updatedAt: '2024-01-01T00:00:00Z',
+                type: 'cpu',
+                subType: '',
+                cycle: 0,
+                count: 80,
+                interval: 1,
+                method: 'mail',
+                title: 'CPU alert',
+                project: '',
+                status: 'Enable',
+                sendCount: 1,
+                sendMethod: <String>['mail'],
+                advancedParams: '',
+              ),
             ],
             total: 1,
           ));
@@ -109,7 +127,40 @@ void main() {
             status: any(named: 'status'),
           )).thenAnswer((_) async => const PageResult<AlertLog>(
             items: <AlertLog>[
-              AlertLog(id: 1, status: 'Error', message: 'smtp timeout'),
+              AlertLog(
+                id: 1,
+                createdAt: '2024-01-01T00:00:00Z',
+                updatedAt: '2024-01-01T00:00:00Z',
+                alertId: 1,
+                alertDetail: AlertDetail(
+                  type: 'cpu',
+                  licenseId: '',
+                  title: 'CPU alert',
+                  project: '',
+                  method: 'mail',
+                ),
+                alertRule: AlertInfo(
+                  id: 1,
+                  createdAt: '2024-01-01T00:00:00Z',
+                  updatedAt: '2024-01-01T00:00:00Z',
+                  type: 'cpu',
+                  subType: '',
+                  cycle: 0,
+                  count: 80,
+                  interval: 1,
+                  method: 'mail',
+                  title: 'CPU alert',
+                  project: '',
+                  status: 'Enable',
+                  sendCount: 1,
+                  sendMethod: <String>['mail'],
+                  advancedParams: '',
+                ),
+                count: 1,
+                message: 'smtp timeout',
+                status: 'Error',
+                method: 'mail',
+              ),
             ],
             total: 1,
           ));
@@ -139,8 +190,24 @@ void main() {
     test('loadChannels filters hidden types from the service result', () async {
       when(() => service.listConfigs()).thenAnswer((_) async =>
           const <AlertConfigInfo>[
-            AlertConfigInfo(id: 1, type: 'email', title: 'Mail', status: 'Enable'),
-            AlertConfigInfo(id: 2, type: 'sms', title: 'SMS', status: 'Enable'),
+            AlertConfigInfo(
+              id: 1,
+              createdAt: '2024-01-01T00:00:00Z',
+              updatedAt: '2024-01-01T00:00:00Z',
+              type: 'email',
+              title: 'Mail',
+              config: '{}',
+              status: 'Enable',
+            ),
+            AlertConfigInfo(
+              id: 2,
+              createdAt: '2024-01-01T00:00:00Z',
+              updatedAt: '2024-01-01T00:00:00Z',
+              type: 'sms',
+              title: 'SMS',
+              config: '{}',
+              status: 'Enable',
+            ),
           ]);
 
       await provider.loadChannels();
@@ -153,8 +220,24 @@ void main() {
     test('enabledChannels excludes disabled entries', () async {
       when(() => service.listConfigs()).thenAnswer((_) async =>
           const <AlertConfigInfo>[
-            AlertConfigInfo(id: 1, type: 'email', title: 'Mail', status: 'Enable'),
-            AlertConfigInfo(id: 2, type: 'bark', title: 'Bark', status: 'Disable'),
+            AlertConfigInfo(
+              id: 1,
+              createdAt: '2024-01-01T00:00:00Z',
+              updatedAt: '2024-01-01T00:00:00Z',
+              type: 'email',
+              title: 'Mail',
+              config: '{}',
+              status: 'Enable',
+            ),
+            AlertConfigInfo(
+              id: 2,
+              createdAt: '2024-01-01T00:00:00Z',
+              updatedAt: '2024-01-01T00:00:00Z',
+              type: 'bark',
+              title: 'Bark',
+              config: '{}',
+              status: 'Disable',
+            ),
           ]);
 
       await provider.loadChannels();
@@ -166,15 +249,41 @@ void main() {
     test('loadTargetOptions loads disks, clams and cronjobs', () async {
       when(() => service.listDisks())
           .thenAnswer((_) async => const <AlertDisk>[
-                AlertDisk(path: '/', type: 'ext4'),
+                AlertDisk(
+                  path: '/',
+                  type: 'ext4',
+                  device: 'vda1',
+                  total: 100,
+                  free: 20,
+                  used: 80,
+                  usedPercent: 80.0,
+                  inodesTotal: 100,
+                  inodesUsed: 80,
+                  inodesFree: 20,
+                  inodesUsedPercent: 80.0,
+                ),
               ]);
       when(() => service.listClams())
           .thenAnswer((_) async => const <AlertClam>[
-                AlertClam(id: 1, name: 'daily-scan'),
+                AlertClam(
+                  id: 1,
+                  name: 'daily-scan',
+                  status: 'Enable',
+                  path: '/var/lib/clamav',
+                  createdAt: '2024-01-01T00:00:00Z',
+                  updatedAt: '2024-01-01T00:00:00Z',
+                ),
               ]);
       when(() => service.listCronJobs(type: any(named: 'type')))
           .thenAnswer((_) async => const <AlertCronJob>[
-                AlertCronJob(id: 1, name: 'backup', type: 'shell'),
+                AlertCronJob(
+                  id: 1,
+                  name: 'backup',
+                  type: 'shell',
+                  status: 'Enable',
+                  createdAt: '2024-01-01T00:00:00Z',
+                  updatedAt: '2024-01-01T00:00:00Z',
+                ),
               ]);
 
       await provider.loadTargetOptions();
