@@ -85,13 +85,22 @@ class NativeChannelContainerReadHandlers {
               'chunk': chunk,
             });
           },
-          onError: (Object error) {
+          onError: (Object error, StackTrace stackTrace) {
             if (session != _containerLogSession) return;
+            // 通道保留完整原始错误，供原生侧记录与详情展示；
+            // 展示层按用户反馈规范自行截断，不在基础通道丢失信息。
+            final message = ErrorMessageUtils.normalize(error);
+            appLogger.eWithPackage(
+              'core.channel.container_logs',
+              '容器日志流中断',
+              error: error,
+              stackTrace: stackTrace,
+            );
             _logChannel?.invokeMethod<void>('containerLogError', {
               'container': container,
               'session': session,
               if (requestID != null) 'requestID': requestID,
-              'error': ErrorMessageUtils.userFacingMessage(error),
+              'error': message,
             });
           },
           onDone: () {
