@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-/// 一帧 SSE 事件。
+import 'package:sse_parser/sse_parser.dart';
+
+/// 一帧容器日志事件。
 ///
-/// 普通日志帧只携带原始字节，由订阅端跨帧做 UTF-8 解码；
-/// `event: error` 帧携带服务端明文错误消息。
+/// 普通事件携带 base64 解码后的原始字节，由订阅端跨帧做 UTF-8 解码；
+/// `event: error` 事件携带服务端明文错误消息。
 class SseFrame {
   const SseFrame._({
     required this.event,
@@ -40,58 +42,32 @@ class SseServerError implements Exception {
   String toString() => message;
 }
 
-/// 解析 1Panel 日志 SSE 帧。
+/// 把 `sse_parser` 解析出的 [SseEvent] 映射为容器日志帧。
 ///
-/// 普通事件 `data:<base64>` 解码为日志字节；`event: error` 的 data 是
-/// 服务端明文错误消息（见 agent/app/service/container.go 的
-/// writeContainerLogMessage），保留明文交给订阅端转为流错误。
+/// 协议层（行终结符、注释、多行 data、BOM）由 `sse_parser` 处理；这里只做
+/// 1Panel 的业务解码：普通事件 data 是 base64 编码的日志字节，
+/// `event: error` 的 data 是服务端明文错误消息（见
+/// agent/app/service/container.go 的 writeContainerLogMessage）。
 /// 空帧、`data:null` 与非法 base64 帧被丢弃，避免把协议噪声写入日志视图。
-class SseFrameDecoder extends StreamTransformerBase<String, SseFrame> {
+class SseFrameDecoder extends StreamTransformerBase<SseEvent, SseFrame> {
   const SseFrameDecoder();
 
   @override
-  Stream<SseFrame> bind(Stream<String> stream) => _frames(stream);
+  Stream<SseFrame> bind(Stream<SseEvent> stream) => stream.expand(_toFrames);
 
-  Stream<SseFrame> _frames(Stream<String> stream) async* {
-    final buffer = StringBuffer();
-    var event = '';
-    await for (final line in stream) {
-      if (line.isEmpty) {
-        final frame = _decodeFrame(event, buffer.toString());
-        buffer.clear();
-        event = '';
-        if (frame != null) yield frame;
-        continue;
-      }
-      if (line.startsWith(':')) continue;
-      final separator = line.indexOf(':');
-      final field = separator < 0 ? line : line.substring(0, separator);
-      var value = separator < 0 ? '' : line.substring(separator + 1);
-      if (value.startsWith(' ')) value = value.substring(1);
-      switch (field) {
-        case 'event':
-          event = value.trim();
-        case 'data':
-          buffer.write(value);
-      }
-    }
-    final frame = _decodeFrame(event, buffer.toString());
-    if (frame != null) yield frame;
-  }
-
-  /// 错误帧保留明文；普通帧按 base64 解码，失败时返回 null。
-  SseFrame? _decodeFrame(String event, String payload) {
-    final data = payload.trim();
+  Iterable<SseFrame> _toFrames(SseEvent event) sync* {
+    final data = event.data.trim();
     if (data.isEmpty || data == 'null') {
-      return null;
+      return;
     }
-    if (event == 'error') {
-      return SseFrame.error(data);
+    if (event.event == 'error') {
+      yield SseFrame.error(data);
+      return;
     }
     try {
-      return SseFrame.log(base64Decode(data));
+      yield SseFrame.log(base64Decode(data));
     } on FormatException {
-      return null;
+      // 非法 base64 帧按协议噪声丢弃。
     }
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:sse_parser/sse_parser.dart';
 
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
@@ -23,6 +24,7 @@ class ContainerLogStreamV2Api {
   /// [follow] 为 true 时服务端持续推送新日志；[tail] 控制起始行数；
   /// [timestamps] 控制是否携带时间戳。普通帧为已解码的日志文本块；
   /// 服务端以 `event: error` 发送的错误转为流错误并结束本次订阅。
+  /// SSE 帧解析交给 `sse_parser`，取消经取消令牌与订阅取消传到网络层。
   Stream<String> streamContainerLogs({
     required String container,
     String? since,
@@ -84,8 +86,7 @@ class ContainerLogStreamV2Api {
             .startChunkedConversion(events);
         subscription = body.stream
             .cast<List<int>>()
-            .transform(const Utf8Decoder())
-            .transform(const LineSplitter())
+            .parseSse()
             .transform(const SseFrameDecoder())
             .listen(
           (frame) {
