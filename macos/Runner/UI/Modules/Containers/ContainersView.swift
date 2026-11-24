@@ -366,6 +366,8 @@ private struct ContainerLogsSheet: View {
     @State private var loadError: String?
     @State private var isLoading = true
     @State private var refreshCount = 0
+    /// 用户的跟随意愿；弹窗关闭只结束连接，不改变意愿。
+    @State private var wantsFollow = true
     @StateObject private var stream = ContainerLogStreamStore(
         start: { container, tail, onChunk, onDone, onError in
             try await ChannelManager.shared.startContainerLogStream(
@@ -394,8 +396,9 @@ private struct ContainerLogsSheet: View {
                 Toggle(
                     translations.get("containerLogsAutoRefresh", fallback: "Auto Refresh"),
                     isOn: Binding(
-                        get: { stream.isActive },
+                        get: { wantsFollow },
                         set: { follow in
+                            wantsFollow = follow
                             Task {
                                 if follow {
                                     await stream.follow(container: containerName)
@@ -455,8 +458,21 @@ private struct ContainerLogsSheet: View {
                         }
                     }
                 }
-            } else if let logs {
+            } else if !stream.text.isEmpty {
+                // 已收到的跟随日志优先于一键快照：快照加载与失败都不遮盖它。
                 if let loadError {
+                    Label(loadError, systemImage: "exclamationmark.triangle")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                ScrollView {
+                    Text(verbatim: stream.text)
+                        .font(.system(.caption, design: .monospaced))
+                        .textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            } else if let logs {                if let loadError {
                     Label(loadError, systemImage: "exclamationmark.triangle")
                         .font(.callout)
                         .foregroundStyle(.secondary)

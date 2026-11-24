@@ -4,7 +4,9 @@ import SwiftUI
 /// 容器日志跟随视图。
 ///
 /// 跟随中持续追加并滚动到底部；关闭跟随回放最近一次日志快照。
-/// 视图离开或应用进入后台时结束订阅，避免服务端连接悬挂。
+/// 暂时离开（切换标签、返回上一级、进入后台）只结束当前连接，
+/// 用户首次进入时的跟随意愿保留，重新出现或回到前台时恢复跟随；
+/// 已收到的日志在暂停与快照加载期间始终优先显示。
 /// 快速停止再恢复由 `ContainerLogStreamStore` 按代次丢弃旧回调。
 struct ContainerLogsFollowView: View {
     let containerName: String
@@ -13,26 +15,32 @@ struct ContainerLogsFollowView: View {
     @EnvironmentObject private var translations: TranslationsManager
     @EnvironmentObject private var navigation: ServerNavigation
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var stream = ContainerLogStreamStore(
-        start: { container, tail, onChunk, onDone, onError in
-            try await ChannelManager.shared.startContainerLogStream(
-                container: container,
-                tail: tail,
-                onChunk: onChunk,
-                onDone: onDone,
-                onError: onError
-            )
-        },
-        stop: { await ChannelManager.shared.stopContainerLogStream() }
-    )
+    @StateObject private var session: ContainerLogsSession
 
-    @State private var snapshot: String?
-    @State private var snapshotError: String?
-    @State private var isLoadingSnapshot = false
-    @State private var snapshotRequest = 0
     @State private var followServerID: String?
 
     private let bottomID = "container-log-bottom"
+
+    init(containerName: String, fetchSnapshot: @escaping () async throws -> String) {
+        self.containerName = containerName
+        self.fetchSnapshot = fetchSnapshot
+        _session = StateObject(wrappedValue: ContainerLogsSession(
+            container: containerName,
+            store: ContainerLogStreamStore(
+                start: { container, tail, onChunk, onDone, onError in
+                    try await ChannelManager.shared.startContainerLogStream(
+                        container: container,
+                        tail: tail,
+                        onChunk: onChunk,
+                        onDone: onDone,
+                        onError: onError
+                    )
+                },
+                stop: { await ChannelManager.shared.stopContainerLogStream() }
+            ),
+            fetchSnapshot: fetchSnapshot
+        ))
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -42,23 +50,26 @@ struct ContainerLogsFollowView: View {
         }
         .task {
             followServerID = navigation.activeServerID
-            await stream.follow(container: containerName)
+            await session.appear()
         }
         .onChange(of: navigation.activeServerID) { serverID in
             if followServerID == nil {
                 followServerID = serverID
                 return
             }
-            guard stream.isActive, followServerID != serverID else { return }
+            guard followServerID != serverID else { return }
             followServerID = serverID
-            Task { await stream.stopFollowing() }
+            Task { await session.leave() }
         }
         .onChange(of: scenePhase) { phase in
-            guard phase == .background else { return }
-            Task { await stream.stopFollowing() }
+            if phase == .background {
+                Task { await session.leave() }
+            } else if phase == .active {
+                Task { await session.appear() }
+            }
         }
         .onDisappear {
-            Task { await stream.close() }
+            Task { await session.leave() }
         }
     }
 
@@ -83,20 +94,16 @@ struct ContainerLogsFollowView: View {
 
     private var followBinding: Binding<Bool> {
         Binding(
-            get: { stream.isActive },
+            get: { session.wantsFollow },
             set: { enabled in
-                if enabled {
-                    Task { await stream.follow(container: containerName) }
-                } else {
-                    Task { await stopAndLoadSnapshot() }
-                }
+                Task { await session.setFollow(enabled) }
             }
         )
     }
 
     @ViewBuilder
     private var statusContent: some View {
-        switch stream.phase {
+        switch session.store.phase {
         case .starting:
             HStack(spacing: 6) {
                 ProgressView().controlSize(.small)
@@ -115,19 +122,19 @@ struct ContainerLogsFollowView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Button(t("containerLogsResumeFollow", "Resume following")) {
-                    Task { await stream.follow(container: containerName) }
+                    Task { await session.retry() }
                 }
                 .font(.caption)
             }
         case .failed:
             HStack(spacing: 8) {
-                Text(stream.errorMessage
+                Text(session.store.errorMessage
                      ?? t("commonLoadFailedTitle", "Failed to load"))
                     .font(.caption)
                     .foregroundStyle(.red)
                     .lineLimit(2)
                 Button(t("commonRetry", "Retry")) {
-                    Task { await stream.follow(container: containerName) }
+                    Task { await session.retry() }
                 }
                 .font(.caption)
             }
@@ -141,12 +148,25 @@ struct ContainerLogsFollowView: View {
 
     @ViewBuilder
     private var content: some View {
-        if stream.isActive || stream.hasEnded || stream.phase == .failed {
+        let store = session.store
+        if session.wantsFollow && store.phase == .idle {
+            if store.text.isEmpty {
+                LoadingView()
+            } else {
+                logScroll(store.text, autoScroll: false)
+            }
+        } else if store.isActive || store.hasEnded || store.phase == .failed {
             streamContent
-        } else if isLoadingSnapshot || snapshot != nil || snapshotError != nil {
+        } else if !session.displayText.isEmpty {
+            // 已收到的日志优先于一键快照：快照加载与失败都不遮盖它。
+            VStack(spacing: 0) {
+                if session.snapshotError != nil, !store.text.isEmpty {
+                    inlineNotice(session.snapshotError ?? "")
+                }
+                logScroll(session.displayText, autoScroll: false)
+            }
+        } else if session.isLoadingSnapshot || session.snapshotError != nil {
             snapshotContent
-        } else if !stream.text.isEmpty {
-            logScroll(stream.text, autoScroll: false)
         } else {
             LoadingView()
         }
@@ -154,13 +174,14 @@ struct ContainerLogsFollowView: View {
 
     @ViewBuilder
     private var streamContent: some View {
-        if stream.text.isEmpty {
-            if stream.phase == .failed {
-                ErrorView(message: stream.errorMessage
+        let store = session.store
+        if store.text.isEmpty {
+            if store.phase == .failed {
+                ErrorView(message: store.errorMessage
                           ?? t("commonLoadFailedTitle", "Failed to load")) {
-                    Task { await stream.follow(container: containerName) }
+                    Task { await session.retry() }
                 }
-            } else if stream.hasEnded {
+            } else if store.hasEnded {
                 EmptyStateView(
                     icon: "doc.text",
                     message: t("containerLogsEmpty", "No logs")
@@ -169,19 +190,30 @@ struct ContainerLogsFollowView: View {
                 LoadingView()
             }
         } else {
-            logScroll(stream.text, autoScroll: stream.isActive)
+            logScroll(store.text, autoScroll: store.isActive)
         }
+    }
+
+    private func inlineNotice(_ text: String) -> some View {
+        Label(text, systemImage: "exclamationmark.triangle")
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Color(uiColor: .secondarySystemBackground))
     }
 
     @ViewBuilder
     private var snapshotContent: some View {
-        if isLoadingSnapshot && snapshot == nil {
+        if session.isLoadingSnapshot && session.snapshot == nil {
             LoadingView()
-        } else if let snapshotError, snapshot == nil {
+        } else if let snapshotError = session.snapshotError, session.snapshot == nil {
             ErrorView(message: snapshotError) {
-                Task { await loadSnapshot() }
+                Task { await session.setFollow(false) }
             }
-        } else if let snapshot {
+        } else if let snapshot = session.snapshot {
             if snapshot.isEmpty {
                 EmptyStateView(
                     icon: "doc.text",
@@ -205,8 +237,8 @@ struct ContainerLogsFollowView: View {
                     .padding(12)
                     .id(bottomID)
             }
-            .onChange(of: stream.revision) { _ in
-                guard autoScroll, stream.isActive else { return }
+            .onChange(of: session.store.revision) { _ in
+                guard autoScroll, session.store.isActive else { return }
                 proxy.scrollTo(bottomID, anchor: .bottom)
             }
             .onAppear {
@@ -214,31 +246,6 @@ struct ContainerLogsFollowView: View {
                     proxy.scrollTo(bottomID, anchor: .bottom)
                 }
             }
-        }
-    }
-
-    private func stopAndLoadSnapshot() async {
-        isLoadingSnapshot = true
-        snapshotError = nil
-        await stream.stopFollowing()
-        await loadSnapshot()
-    }
-
-    private func loadSnapshot() async {
-        snapshotRequest += 1
-        let request = snapshotRequest
-        isLoadingSnapshot = true
-        snapshotError = nil
-        do {
-            let text = try await fetchSnapshot()
-            guard request == snapshotRequest else { return }
-            snapshot = text
-        } catch {
-            guard request == snapshotRequest else { return }
-            snapshotError = error.localizedDescription
-        }
-        if request == snapshotRequest {
-            isLoadingSnapshot = false
         }
     }
 
