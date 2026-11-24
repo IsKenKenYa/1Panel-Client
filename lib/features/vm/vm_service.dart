@@ -29,12 +29,27 @@ class VMService extends BaseComponent {
     _repository.resetForServerChange();
   }
 
+  /// 任务句柄缺失时就地判定失败：异步操作没有 taskID 无法追踪结果。
+  ///
+  /// 上游 `dto.VMTaskResp` 的 taskID 是值类型字符串，服务端一定返回该键，
+  /// 但排队失败等场景可能回空串，空串同样无法追踪，按失败处理。
+  static VMTaskResp _requireTaskResp(VMTaskResp? data, String operation) {
+    if (data == null || data.taskID.isEmpty) {
+      throw StateError('服务端未返回$operation的任务编号');
+    }
+    return data;
+  }
+
   // ==================== 环境 ====================
 
   Future<VMEnvironment> checkEnvironment() {
     return runGuarded(() async {
       final response = await (await _ensureApi()).getVMEnvironment();
-      return response.data ?? const VMEnvironment();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机环境检测结果');
+      }
+      return data;
     });
   }
 
@@ -55,7 +70,11 @@ class VMService extends BaseComponent {
           pageSize: pageSize,
         ),
       );
-      return response.data ?? const VMSearchResult();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机列表');
+      }
+      return data;
     });
   }
 
@@ -69,7 +88,11 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response =
           await (await _ensureApi()).getVMInfo(VMInfoReq(name: name, checkDisks: checkDisks));
-      return response.data ?? const VMItem();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机 $name 的详情');
+      }
+      return data;
     });
   }
 
@@ -77,7 +100,11 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response = await (await _ensureApi())
           .healthCheckVM(OperationWithName(name: name));
-      return response.data ?? const VMHealthCheckResult();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机 $name 的健康检查结果');
+      }
+      return data;
     });
   }
 
@@ -85,21 +112,25 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response =
           await (await _ensureApi()).getVMStats(OperationWithName(name: name));
-      return response.data ?? const VMStats();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机 $name 的实时统计');
+      }
+      return data;
     });
   }
 
   Future<VMTaskResp> createVM(VMCreate request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).createVM(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '创建虚拟机');
     });
   }
 
   Future<VMTaskResp> updateVM(VMUpdate request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).updateVM(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '更新虚拟机');
     });
   }
 
@@ -114,7 +145,7 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response =
           await (await _ensureApi()).deleteVM(VMDelete(id: id, force: force));
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '删除虚拟机');
     });
   }
 
@@ -127,7 +158,7 @@ class VMService extends BaseComponent {
       final response = await (await _ensureApi()).resizeVMDisk(
         VMDiskResize(name: name, target: target, sizeGiB: sizeGiB),
       );
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '扩容磁盘');
     });
   }
 
@@ -135,7 +166,7 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response =
           await (await _ensureApi()).renameVM(VMRename(name: name, newName: newName));
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '重命名虚拟机');
     });
   }
 
@@ -144,7 +175,11 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response =
           await (await _ensureApi()).getVMConsole(OperationWithName(name: name));
-      return response.data ?? const VMGraphics();
+      final data = response.data;
+      if (data == null) {
+        throw StateError('服务端未返回虚拟机 $name 的控制台信息');
+      }
+      return data;
     });
   }
 
@@ -159,9 +194,11 @@ class VMService extends BaseComponent {
   }) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      final graphics =
-          (await api.getVMConsole(OperationWithName(name: name))).data ??
-              const VMGraphics();
+      final response = await api.getVMConsole(OperationWithName(name: name));
+      final graphics = response.data;
+      if (graphics == null) {
+        throw StateError('服务端未返回虚拟机 $name 的控制台信息');
+      }
       final explicit = graphics.url;
       if (explicit != null && explicit.isNotEmpty) {
         return explicit;
@@ -196,7 +233,7 @@ class VMService extends BaseComponent {
   Future<VMTaskResp> createTemplate(VMTemplateCreate request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).createVMTemplate(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '创建模板');
     });
   }
 
@@ -204,7 +241,7 @@ class VMService extends BaseComponent {
     return runGuarded(() async {
       final response = await (await _ensureApi())
           .deleteVMTemplate(VMTemplateDelete(id: id, deleteDisk: deleteDisk));
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '删除模板');
     });
   }
 
@@ -221,21 +258,21 @@ class VMService extends BaseComponent {
   Future<VMTaskResp> createSnapshot(VMSnapshotReq request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).createVMSnapshot(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '创建快照');
     });
   }
 
   Future<VMTaskResp> recoverSnapshot(VMSnapshotReq request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).recoverVMSnapshot(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '恢复快照');
     });
   }
 
   Future<VMTaskResp> deleteSnapshot(VMSnapshotReq request) {
     return runGuarded(() async {
       final response = await (await _ensureApi()).deleteVMSnapshot(request);
-      return response.data ?? const VMTaskResp();
+      return _requireTaskResp(response.data, '删除快照');
     });
   }
 

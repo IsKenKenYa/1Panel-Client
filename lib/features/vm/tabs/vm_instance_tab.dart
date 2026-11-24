@@ -120,7 +120,7 @@ class _InstanceToolbar extends StatelessWidget {
                 onPressed: canCreate
                     ? () => showVmCreateDialog(context)
                     : null,
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.vmInstanceCreateAction),
               ),
             ],
@@ -132,7 +132,7 @@ class _InstanceToolbar extends StatelessWidget {
                 children: <Widget>[
                   Icon(
                     canCreate
-                        ? Icons.info_outline
+                        ? Icons.info_outlined
                         : Icons.warning_amber_outlined,
                     size: 16,
                     color: canCreate ? scheme.onSurfaceVariant : scheme.tertiary,
@@ -186,12 +186,13 @@ Future<void> showVmInstanceActions(BuildContext context, VMItem vm) async {
           _VmActionOption(
               'monitor', l10n.vmInstanceActionMonitor, Icons.monitor_heart_outlined),
         _VmActionOption('detail', l10n.vmInstanceActionDetail,
-            Icons.info_outline),
+            Icons.info_outlined),
         if (VmStatus.canInspectResources(vm))
           _VmActionOption('health', l10n.vmInstanceActionHealthCheck,
               Icons.medical_services_outlined),
         if (VmStatus.canOperate(vm, 'start'))
-          _VmActionOption('start', l10n.vmInstanceActionStart, Icons.play_arrow),
+          _VmActionOption('start', l10n.vmInstanceActionStart,
+              Icons.play_arrow_outlined),
         if (VmStatus.canOperate(vm, 'shutdown'))
           _VmActionOption(
               'shutdown', l10n.vmInstanceActionShutdown, Icons.power_settings_new),

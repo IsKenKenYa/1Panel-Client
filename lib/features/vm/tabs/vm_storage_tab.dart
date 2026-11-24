@@ -39,7 +39,7 @@ class VmStorageTab extends StatelessWidget {
               ),
               FilledButton.tonalIcon(
                 onPressed: () => showVmStorageForm(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.vmStorageCreateAction),
               ),
             ],
@@ -117,7 +117,7 @@ class _StorageCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: storage.error == null
+                  color: storage.error.isEmpty
                       ? scheme.secondaryContainer
                       : scheme.errorContainer,
                   borderRadius:
@@ -127,7 +127,7 @@ class _StorageCard extends StatelessWidget {
                 child: Icon(
                   Icons.storage_outlined,
                   size: 20,
-                  color: storage.error == null
+                  color: storage.error.isEmpty
                       ? scheme.onSecondaryContainer
                       : scheme.onErrorContainer,
                 ),
@@ -138,11 +138,10 @@ class _StorageCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     VmStorageUsage(storage: storage, detailed: true),
-                    if (storage.error != null &&
-                        storage.error!.isNotEmpty) ...[
+                    if (storage.error.isNotEmpty) ...[
                       const SizedBox(height: AppDesignTokens.spacingXs),
                       Text(
-                        storage.error!,
+                        storage.error,
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: scheme.error),
                       ),

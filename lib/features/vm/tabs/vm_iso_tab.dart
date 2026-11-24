@@ -38,7 +38,7 @@ class VmIsoTab extends StatelessWidget {
               ),
               FilledButton.tonalIcon(
                 onPressed: () => showVmIsoForm(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.vmIsoCreateAction),
               ),
             ],

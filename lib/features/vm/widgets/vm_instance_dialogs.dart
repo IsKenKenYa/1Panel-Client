@@ -522,13 +522,13 @@ class _VmSnapshotViewState extends State<VmSnapshotView> {
                 onPressed: _loading || _saving
                     ? null
                     : () => _createSnapshot(context),
-                icon: const Icon(Icons.add, size: 18),
+                icon: const Icon(Icons.add_outlined, size: 18),
                 label: Text(l10n.vmInstanceSnapshotCreateAction),
               ),
               const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: _loading || _saving ? null : _load,
-                icon: const Icon(Icons.refresh, size: 18),
+                icon: const Icon(Icons.refresh_outlined, size: 18),
                 label: Text(l10n.commonRefresh),
               ),
             ],

@@ -178,8 +178,6 @@ Map<String, Object?> vmTemplatePayload(VMTemplateItem template) {
     'network': template.network,
     'isExist': template.isExist,
     'size': template.size,
-    'status': template.status,
-    'error': template.error,
     'createdAt': template.createdAt,
     'description': template.description,
   };

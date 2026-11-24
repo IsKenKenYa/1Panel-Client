@@ -526,13 +526,19 @@ class _VmResizePanelState extends State<_VmResizePanel> {
     super.dispose();
   }
 
+  VMDisk? _resolveCurrentDisk() {
+    final target = _target;
+    if (target == null) return null;
+    for (final disk in _disks) {
+      if (disk.target == target) return disk;
+    }
+    throw StateError('在磁盘列表中找不到目标磁盘 $target');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final currentDisk = _disks.firstWhere(
-      (disk) => disk.target == _target,
-      orElse: () => const VMDisk(),
-    );
+    final currentDisk = _resolveCurrentDisk();
     return AppFormPanel(
       title: l10n.vmInstanceDiskResizeTitle,
       isSaving: _saving,
@@ -565,7 +571,7 @@ class _VmResizePanelState extends State<_VmResizePanel> {
           const SizedBox(height: 12),
           Text(
             '${l10n.vmInstanceDiskCapacityLabel}: '
-            '${_formatBytes(currentDisk.capacity)}',
+            '${currentDisk == null ? '-' : _formatBytes(currentDisk.capacity)}',
           ),
           const SizedBox(height: 8),
           TextField(

@@ -21,6 +21,7 @@ class VmEnvironmentBanner extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     if (provider.environmentState.isLoading &&
+        environment != null &&
         environment.arch.isEmpty &&
         environment.helperMessage.isEmpty) {
       // 环境探测在未安装 KVM 的主机上可达 90 秒；加载态必须给出说明，
@@ -50,7 +51,7 @@ class VmEnvironmentBanner extends StatelessWidget {
       );
     }
 
-    if (environment.ready) {
+    if (environment == null || environment.ready) {
       return const SizedBox.shrink();
     }
 

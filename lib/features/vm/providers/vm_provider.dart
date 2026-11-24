@@ -37,7 +37,7 @@ class VmProvider extends ChangeNotifier with SafeChangeNotifier {
 
   final VMService _service;
 
-  VMEnvironment _environment = const VMEnvironment();
+  VMEnvironment? _environment;
   VmSectionState _environmentState = const VmSectionState();
 
   List<VMItem> _vms = const <VMItem>[];
@@ -61,9 +61,9 @@ class VmProvider extends ChangeNotifier with SafeChangeNotifier {
 
   bool _isMutating = false;
 
-  VMEnvironment get environment => _environment;
+  VMEnvironment? get environment => _environment;
   VmSectionState get environmentState => _environmentState;
-  bool get environmentReady => _environment.ready;
+  bool get environmentReady => _environment?.ready ?? false;
 
   List<VMItem> get vms => _vms;
   int get vmTotal => _vmTotal;
@@ -103,7 +103,7 @@ class VmProvider extends ChangeNotifier with SafeChangeNotifier {
 
   Future<void> onServerChanged() async {
     _service.resetForServerChange();
-    _environment = const VMEnvironment();
+    _environment = null;
     _environmentState = const VmSectionState();
     _vms = const <VMItem>[];
     _vmTotal = 0;

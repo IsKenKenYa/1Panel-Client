@@ -38,7 +38,7 @@ class VmNetworkTab extends StatelessWidget {
               ),
               FilledButton.tonalIcon(
                 onPressed: () => showVmNetworkForm(context),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.vmNetworkCreateAction),
               ),
             ],
@@ -128,7 +128,7 @@ class _NetworkCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: network.error == null
+                  color: network.error.isEmpty
                       ? scheme.secondaryContainer
                       : scheme.errorContainer,
                   borderRadius:
@@ -138,7 +138,7 @@ class _NetworkCard extends StatelessWidget {
                 child: Icon(
                   Icons.lan_outlined,
                   size: 20,
-                  color: network.error == null
+                  color: network.error.isEmpty
                       ? scheme.onSecondaryContainer
                       : scheme.onErrorContainer,
                 ),

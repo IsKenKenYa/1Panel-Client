@@ -355,7 +355,7 @@ class _RisksSection extends StatelessWidget {
     required this.storages,
   });
 
-  final VMEnvironment environment;
+  final VMEnvironment? environment;
   final List<VMItem> vms;
   final List<VMStorageItem> storages;
 
@@ -406,7 +406,8 @@ class _RisksSection extends StatelessWidget {
 
   List<_VmRisk> _collectRisks(l10n) {
     final risks = <_VmRisk>[];
-    if (!environment.ready) {
+    // 环境尚未加载或加载后不就绪，都按「环境未就绪」提示。
+    if (environment?.ready != true) {
       risks.add(_VmRisk(l10n.vmOverviewRiskEnvironment, critical: true));
     }
     for (final storage in storages) {
