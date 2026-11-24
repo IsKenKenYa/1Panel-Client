@@ -11,9 +11,12 @@ class ChannelManager {
     private var logChunkHandler: ((String) -> Void)?
     private var logDoneHandler: (() -> Void)?
     private var logErrorHandler: ((String) -> Void)?
-    /// Dart 侧分配的会话编号，回调编号不一致时丢弃。
-    private var logSession: Int?
-    /// 本端发起次数的编号，用于识别被后续开始或停止覆盖的请求。
+    /// 本端分配的请求编号，随开始参数下发并随回调回传。
+    ///
+    /// Dart 在开始订阅后会立刻推帧，回复到达前回调就可能到达；
+    /// 用请求编号而不是回复里的会话编号匹配，先到的帧不会被丢弃，
+    /// 上一轮订阅的迟到帧也仍能被识别。
+    private var logRequestID: Int?
     private var logRequest = 0
 
     private init() {}
@@ -29,10 +32,15 @@ class ChannelManager {
     ) async throws {
         logRequest += 1
         let request = logRequest
+        logRequestID = request
         logChunkHandler = onChunk
         logDoneHandler = onDone
         logErrorHandler = onError
-        var arguments: [String: Any] = ["container": container, "follow": true]
+        var arguments: [String: Any] = [
+            "container": container,
+            "follow": true,
+            "requestID": request,
+        ]
         if let tail, !tail.isEmpty { arguments["tail"] = tail }
         do {
             let raw = try await invokeDataMethodAsync(
@@ -52,7 +60,6 @@ class ChannelManager {
                     ]
                 )
             }
-            logSession = payload["session"] as? Int
         } catch {
             if request == logRequest { clearLogHandlers() }
             throw error
@@ -71,7 +78,7 @@ class ChannelManager {
         logChunkHandler = nil
         logDoneHandler = nil
         logErrorHandler = nil
-        logSession = nil
+        logRequestID = nil
     }
 
     private func handleLogCallback(
@@ -81,8 +88,8 @@ class ChannelManager {
         let arguments = call.arguments as? [String: Any] ?? [:]
         switch call.method {
         case "containerLogChunk", "containerLogDone", "containerLogError":
-            guard let session = arguments["session"] as? Int,
-                  session == logSession else {
+            guard let requestID = arguments["requestID"] as? Int,
+                  requestID == logRequestID else {
                 result(nil)
                 return
             }

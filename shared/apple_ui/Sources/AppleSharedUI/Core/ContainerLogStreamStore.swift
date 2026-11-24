@@ -39,6 +39,7 @@ public final class ContainerLogStreamStore: ObservableObject {
 
     private var generation = 0
     private var characterCount = 0
+    /// 对象永久结束标记：`close()` 置位后不再接受新的跟随。
     private var isClosed = false
     private var pendingStop: Task<Void, Never>?
     private var pendingStopToken = UUID()
@@ -120,8 +121,8 @@ public final class ContainerLogStreamStore: ObservableObject {
 
     /// 结束视图生命周期：停止订阅并拒绝后续开始。
     ///
-    /// 视图退出时可能还有重试任务尚未执行，关闭后这些任务不会再建立
-    /// 新的订阅。
+    /// 适用对象永久结束的视图（关闭弹窗、切换容器）；暂时离开的页面
+    /// 应使用 `stopFollowing()`，让跟随意愿在返回时继续生效。
     public func close() async {
         isClosed = true
         await stopFollowing()
