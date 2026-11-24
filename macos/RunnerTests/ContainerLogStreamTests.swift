@@ -10,10 +10,18 @@ import AppleSharedUI
 /// 用 `dart:io` 的 HttpServer 实现 HTTP 与 SSE，按上游 `container.go` 的格式
 /// 推送普通帧 `data: <base64>` 与 `event: error` 明文；快照走生产
 /// `getContainerLogs` 通道。没有回调替身、空 stop、人工成功事件或手写协议解析。
+///
+/// 测试会临时把当前服务器切到本地服务：`setUp` 先记录原有服务器列表、
+/// 当前选中项与凭据，`tearDown` 恢复原列表与选择并删除本次新增的条目；
+/// 不删除用户原有数据。
 @MainActor
 final class ContainerLogStreamTests: XCTestCase {
+    private var baselineServers: [[String: Any]] = []
+    private var baselineCurrentID: String?
+
     override func setUp() async throws {
         try await super.setUp()
+        try await captureServerBaseline()
         let seeded = try await ChannelManager.shared.invokeDataMethodAsync(
             "seedDebugConfig",
             arguments: [
@@ -29,7 +37,56 @@ final class ContainerLogStreamTests: XCTestCase {
 
     override func tearDown() async throws {
         _ = try? await ChannelManager.shared.stopContainerLogStream(handle: 0)
+        try await restoreServerBaseline()
         try await super.tearDown()
+    }
+
+    /// 记录测试开始前的服务器列表与当前选中项。
+    private func captureServerBaseline() async throws {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync("getServers")
+        baselineServers = (raw as? [[String: Any]]) ?? []
+        let selected = baselineServers
+            .first { ($0["isCurrent"] as? Bool) == true }?["id"] as? String
+        if let selected {
+            baselineCurrentID = selected
+        } else {
+            baselineCurrentID = try await currentServerID()
+        }
+    }
+
+    private func currentServerID() async throws -> String? {
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync("getCurrentServer")
+        return (raw as? [String: Any])?["id"] as? String
+    }
+
+    /// 恢复原服务器列表与当前选择，并删除本次新增的本地服务条目。
+    ///
+    /// 原有条目只做存在性核对与当前选择恢复，不覆盖、不删除；
+    /// 本次新增的 `B73 Real Stream` 条目会被移除，避免残留本地地址。
+    private func restoreServerBaseline() async throws {
+        let raw = try? await ChannelManager.shared.invokeDataMethodAsync("getServers")
+        let current = (raw as? [[String: Any]]) ?? []
+        let baselineIDs = Set(baselineServers.compactMap { $0["id"] as? String })
+        for server in current {
+            guard let id = server["id"] as? String, !baselineIDs.contains(id) else {
+                continue
+            }
+            _ = try? await ChannelManager.shared.invokeDataMethodAsync(
+                "deleteServer",
+                arguments: ["id": id]
+            )
+        }
+        if let baselineCurrentID {
+            _ = try? await ChannelManager.shared.invokeDataMethodAsync(
+                "connectServer",
+                arguments: ["id": baselineCurrentID]
+            )
+        }
+        // 核对原有条目仍在，未被测试清理逻辑波及。
+        let after = try? await ChannelManager.shared.invokeDataMethodAsync("getServers")
+        let afterIDs = Set(((after as? [[String: Any]]) ?? []).compactMap { $0["id"] as? String })
+        XCTAssertTrue(baselineIDs.isSubset(of: afterIDs),
+                      "测试不得删除原有服务器条目")
     }
 
     private func waitFor(
@@ -107,6 +164,56 @@ final class ContainerLogStreamTests: XCTestCase {
         XCTAssertEqual(session.store.errorMessage,
                        "docker logs: no such container")
         XCTAssertFalse(session.store.isActive)
+    }
+
+    /// 长错误不能在基础通道被截断：通道保留全文，展示层才限长。
+    func testLongServerErrorSurvivesChannelIntact() async throws {
+        let fullError = "docker logs failed: " + String(repeating: "very long reason ", count: 20)
+        try ContainerLogTestService.setScenario(
+            "log:before\\n\nerror:\(fullError)\\n"
+        )
+        let session = makeSession()
+        await session.appear()
+
+        try await waitFor("failure") { session.store.phase == .failed }
+        let received = session.store.errorMessage ?? ""
+        // SSE 的 data 行按协议舍去行尾空白，比较时按同一规则处理。
+        XCTAssertEqual(received.trimmingCharacters(in: .whitespaces),
+                       fullError.trimmingCharacters(in: .whitespaces),
+                       "通道必须保留完整原始错误")
+        XCTAssertGreaterThan(received.count, LogStreamErrorText.displayLimit)
+        let display = LogStreamErrorText.display(received) ?? ""
+        XCTAssertLessThanOrEqual(display.count, LogStreamErrorText.displayLimit,
+                                 "展示层按规范截断")
+    }
+
+    /// 暂时离开后紧接着点重试：不可见期间不得重新建立订阅。
+    func testRetryWhileHiddenDoesNotSubscribe() async throws {
+        let baseline = try ContainerLogTestService.status()
+        try ContainerLogTestService.setScenario("log:first\\n\nhold\n")
+        let session = makeSession()
+        await session.appear()
+        try await waitFor("first") { !session.store.text.isEmpty }
+
+        await session.leave()
+        let startedAfterLeave = try ContainerLogTestService.status().started
+        await session.retry()
+        try await Task.sleep(nanoseconds: 500_000_000)
+        XCTAssertEqual(try ContainerLogTestService.status().started, startedAfterLeave,
+                       "不可见期间的重试不得建立订阅")
+        XCTAssertEqual(session.store.phase, .idle)
+        XCTAssertTrue(session.wantsFollow)
+
+        // 重新出现后按意愿恢复。
+        try ContainerLogTestService.setScenario("log:after reappear\\n\n")
+        await session.appear()
+        try await waitFor("reappear") {
+            session.store.text.contains("after reappear")
+        }
+        XCTAssertGreaterThanOrEqual(
+            try ContainerLogTestService.status().started,
+            baseline.started + 2
+        )
     }
 
     func testEofEndsFollowNormally() async throws {

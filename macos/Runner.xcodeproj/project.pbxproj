@@ -33,6 +33,7 @@
 		331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C80D7294CF71000263BE5 /* RunnerTests.swift */; };
 		A11D00020000000000000003 /* ContainerLogStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11D00020000000000000004 /* ContainerLogStreamTests.swift */; };
 		A11D00020000000000000005 /* ContainerLogTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11D00020000000000000006 /* ContainerLogTestService.swift */; };
+		A11D00020000000000000007 /* ContainerLogsSheetRenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11D00020000000000000008 /* ContainerLogsSheetRenderTests.swift */; };
 		335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */; };
 		33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC10F02044A3C60003C045 /* AppDelegate.swift */; };
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
@@ -157,6 +158,7 @@
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		A11D00020000000000000004 /* ContainerLogStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerLogStreamTests.swift; sourceTree = "<group>"; };
 		A11D00020000000000000006 /* ContainerLogTestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerLogTestService.swift; sourceTree = "<group>"; };
+		A11D00020000000000000008 /* ContainerLogsSheetRenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerLogsSheetRenderTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
 		33CC10ED2044A3C60003C045 /* onepanel_client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = onepanel_client.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -337,6 +339,7 @@ children = (
 				331C80D7294CF71000263BE5 /* RunnerTests.swift */,
 				A11D00020000000000000004 /* ContainerLogStreamTests.swift */,
 				A11D00020000000000000006 /* ContainerLogTestService.swift */,
+				A11D00020000000000000008 /* ContainerLogsSheetRenderTests.swift */,
 			);
 			path = RunnerTests;
 			sourceTree = "<group>";
@@ -852,6 +855,7 @@ children = (
 				331C80D8294CF71000263BE5 /* RunnerTests.swift in Sources */,
 				A11D00020000000000000003 /* ContainerLogStreamTests.swift in Sources */,
 				A11D00020000000000000005 /* ContainerLogTestService.swift in Sources */,
+				A11D00020000000000000007 /* ContainerLogsSheetRenderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
