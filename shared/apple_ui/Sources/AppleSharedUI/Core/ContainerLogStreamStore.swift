@@ -34,13 +34,15 @@ public final class ContainerLogStreamStore: ObservableObject {
     private static let retainedCharacters = 500_000
 
     private let start: @MainActor (String, String?, @escaping (String) -> Void,
-        @escaping () -> Void, @escaping (String) -> Void) async throws -> Void
-    private let stop: @MainActor () async -> Void
+        @escaping () -> Void, @escaping (String) -> Void) async throws -> Int
+    private let stop: @MainActor (Int) async -> Void
 
     private var generation = 0
     private var characterCount = 0
     /// 对象永久结束标记：`close()` 置位后不再接受新的跟随。
     private var isClosed = false
+    /// 本次订阅的归属句柄，由 start 返回，stop 只按它终止。
+    private var handle: Int?
     private var pendingStop: Task<Void, Never>?
     private var pendingStopToken = UUID()
 
@@ -51,8 +53,8 @@ public final class ContainerLogStreamStore: ObservableObject {
             @escaping (String) -> Void,
             @escaping () -> Void,
             @escaping (String) -> Void
-        ) async throws -> Void,
-        stop: @escaping @MainActor () async -> Void
+        ) async throws -> Int,
+        stop: @escaping @MainActor (Int) async -> Void
     ) {
         self.start = start
         self.stop = stop
@@ -77,7 +79,7 @@ public final class ContainerLogStreamStore: ObservableObject {
         errorMessage = nil
         phase = .starting
         do {
-            try await start(container, tail, { [weak self] chunk in
+            let opened = try await start(container, tail, { [weak self] chunk in
                 Task { @MainActor in
                     self?.append(chunk, generation: run)
                 }
@@ -93,7 +95,13 @@ public final class ContainerLogStreamStore: ObservableObject {
                     self.phase = .failed
                 }
             })
-            if generation == run, phase == .starting {
+            guard generation == run else {
+                // 开始期间已被停止覆盖，立即结束这个刚建立的订阅。
+                await stop(opened)
+                return
+            }
+            handle = opened
+            if phase == .starting {
                 phase = .following
             }
         } catch {
@@ -105,13 +113,19 @@ public final class ContainerLogStreamStore: ObservableObject {
     }
 
     /// 停止跟随，保留当前文本。
+    ///
+    /// 只终止本实例持有的订阅；其他页面新建的连接不受影响。
     public func stopFollowing() async {
         generation += 1
         phase = .idle
         errorMessage = nil
+        let owned = handle
+        handle = nil
         let token = UUID()
         pendingStopToken = token
-        let task = Task { await stop() }
+        let task = Task {
+            if let owned { await stop(owned) }
+        }
         pendingStop = task
         await task.value
         if pendingStopToken == token {
@@ -127,6 +141,9 @@ public final class ContainerLogStreamStore: ObservableObject {
         isClosed = true
         await stopFollowing()
     }
+
+    /// 供测试与诊断读取当前订阅句柄。
+    public var activeHandle: Int? { handle }
 
     private func append(_ chunk: String, generation run: Int) {
         guard generation == run, isActive else { return }

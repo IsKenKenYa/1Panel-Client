@@ -39,6 +39,8 @@ class NativeChannelContainerReadHandlers {
 
   static StreamSubscription<String>? _containerLogSubscription;
   static int _containerLogSession = 0;
+  /// 当前活动订阅的归属令牌，由原生侧传入的 requestID。
+  static int? _containerLogRequestID;
 
   /// 开始跟随容器日志。
   ///
@@ -64,6 +66,7 @@ class NativeChannelContainerReadHandlers {
         'session': _containerLogSession,
       };
     }
+    _containerLogRequestID = requestID;
     final follow = arguments?['follow'] as bool? ?? true;
     _containerLogSubscription = ContainerService()
         .streamContainerLogs(
@@ -109,8 +112,16 @@ class NativeChannelContainerReadHandlers {
   }
 
   /// 停止跟随容器日志。
-  static Future<dynamic> stopContainerLogStream() async {
+  ///
+  /// 原生侧传入 `requestID` 时只终止该归属的订阅：多个页面并存时，
+  /// 旧页面的停止不会取消新页面刚建立的连接。
+  static Future<dynamic> stopContainerLogStream(dynamic arguments) async {
+    final requestID = arguments is Map ? arguments['requestID'] as int? : null;
+    if (requestID != null && requestID != _containerLogRequestID) {
+      return <String, dynamic>{'success': true, 'skipped': true};
+    }
     _containerLogSession++;
+    _containerLogRequestID = null;
     final subscription = _containerLogSubscription;
     _containerLogSubscription = null;
     await subscription?.cancel();

@@ -85,7 +85,7 @@ class NativeChannelManager implements NativeChannelPort {
       case 'startContainerLogStream':
         return NativeChannelReadHandlers.startContainerLogStream(arguments);
       case 'stopContainerLogStream':
-        return NativeChannelReadHandlers.stopContainerLogStream();
+        return NativeChannelReadHandlers.stopContainerLogStream(arguments);
       case 'getContainerInspect':
         return NativeChannelReadHandlers.getContainerInspect(arguments);
       case 'getContainerImages':

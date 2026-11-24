@@ -378,7 +378,9 @@ private struct ContainerLogsSheet: View {
                 onError: onError
             )
         },
-        stop: { await ChannelManager.shared.stopContainerLogStream() }
+        stop: { handle in
+            await ChannelManager.shared.stopContainerLogStream(handle: handle)
+        }
     )
 
     var body: some View {

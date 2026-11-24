@@ -36,10 +36,19 @@ struct ContainerLogsFollowView: View {
                         onError: onError
                     )
                 },
-                stop: { await ChannelManager.shared.stopContainerLogStream() }
+                stop: { handle in
+                    await ChannelManager.shared.stopContainerLogStream(handle: handle)
+                }
             ),
             fetchSnapshot: fetchSnapshot
         ))
+    }
+
+    /// 用调用方提供的会话渲染，供真实链路测试观察同一实例。
+    init(containerName: String, session: ContainerLogsSession) {
+        self.containerName = containerName
+        self.fetchSnapshot = { "" }
+        _session = StateObject(wrappedValue: session)
     }
 
     var body: some View {
@@ -70,6 +79,10 @@ struct ContainerLogsFollowView: View {
         }
         .onDisappear {
             Task { await session.leave() }
+        }
+        .onAppear {
+            // `.task` 只在视图首次出现时执行一次；重新出现同样需要恢复订阅。
+            Task { await session.appear() }
         }
     }
 
@@ -111,11 +124,13 @@ struct ContainerLogsFollowView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .accessibilityIdentifier("containerLogs.status.starting")
         case .following:
             Label(t("containerLogsFollowing", "Following live logs"),
                   systemImage: "podcasts")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityIdentifier("containerLogs.status.following")
         case .ended:
             HStack(spacing: 8) {
                 Text(t("containerLogsStreamEnded", "Log stream ended"))
@@ -126,6 +141,9 @@ struct ContainerLogsFollowView: View {
                 }
                 .font(.caption)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(t("containerLogsStreamEnded", "Log stream ended"))
+            .accessibilityIdentifier("containerLogs.status.ended")
         case .failed:
             HStack(spacing: 8) {
                 Text(session.store.errorMessage
@@ -138,11 +156,16 @@ struct ContainerLogsFollowView: View {
                 }
                 .font(.caption)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(session.store.errorMessage
+                                 ?? t("commonLoadFailedTitle", "Failed to load"))
+            .accessibilityIdentifier("containerLogs.status.failed")
         case .idle:
             Text(t("containerLogsFollowPaused",
                    "Follow stopped, showing loaded logs"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityIdentifier("containerLogs.status.idle")
         }
     }
 
@@ -236,6 +259,11 @@ struct ContainerLogsFollowView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(12)
                     .id(bottomID)
+                    // 文本会被合并进上位容器；显式提升为独立元素，辅助功能与
+                    // 渲染验证都能直接读到日志正文。
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(text)
+                    .accessibilityIdentifier("containerLogs.text")
             }
             .onChange(of: session.store.revision) { _ in
                 guard autoScroll, session.store.isActive else { return }

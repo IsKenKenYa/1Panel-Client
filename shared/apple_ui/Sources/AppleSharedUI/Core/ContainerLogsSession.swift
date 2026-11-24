@@ -23,6 +23,8 @@ public final class ContainerLogsSession: ObservableObject {
     private var snapshotRequest = 0
     private var visible = false
     private var closed = false
+    /// 转发共享状态的变更，让观察会话的视图在日志追加、结束与失败时重建。
+    private var storeObservation: AnyCancellable?
 
     public init(
         container: String,
@@ -32,6 +34,10 @@ public final class ContainerLogsSession: ObservableObject {
         self.container = container
         self.store = store
         self.fetchSnapshot = fetchSnapshot
+        // 会话本身不复制 store 的字段，也不修改 store，转发不会形成回环。
+        storeObservation = store.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }
     }
 
     /// 停止跟随状态下的显示文本：跟随文本优先，快照只作补充。

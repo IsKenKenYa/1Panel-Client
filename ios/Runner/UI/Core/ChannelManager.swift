@@ -8,20 +8,22 @@ class ChannelManager {
     private var shellChannel: FlutterMethodChannel?
 
     /// 容器日志跟随回调：Dart 侧订阅 SSE 后逐块回调。
-    private var logChunkHandler: ((String) -> Void)?
-    private var logDoneHandler: (() -> Void)?
-    private var logErrorHandler: ((String) -> Void)?
-    /// 本端分配的请求编号，随开始参数下发并随回调回传。
     ///
-    /// Dart 在开始订阅后会立刻推帧，回复到达前回调就可能到达；
-    /// 用请求编号而不是回复里的会话编号匹配，先到的帧不会被丢弃，
-    /// 上一轮订阅的迟到帧也仍能被识别。
-    private var logRequestID: Int?
+    /// 用句柄登记每一次订阅：句柄由本端生成并随开始参数下发，Dart 原样
+    /// 回传。开始回复到达前先到的帧按句柄也能匹配；停止只终止调用方持有的
+    /// 句柄，其他页面新建的连接不受影响。
+    private var logHandlers: [Int: (
+        chunk: (String) -> Void,
+        done: () -> Void,
+        error: (String) -> Void
+    )] = [:]
     private var logRequest = 0
 
     private init() {}
 
     /// 订阅容器日志流。
+    ///
+    /// 返回本次订阅的归属句柄，调用方停止时交回。
     @MainActor
     func startContainerLogStream(
         container: String,
@@ -29,17 +31,14 @@ class ChannelManager {
         onChunk: @escaping (String) -> Void,
         onDone: @escaping () -> Void,
         onError: @escaping (String) -> Void
-    ) async throws {
+    ) async throws -> Int {
         logRequest += 1
-        let request = logRequest
-        logRequestID = request
-        logChunkHandler = onChunk
-        logDoneHandler = onDone
-        logErrorHandler = onError
+        let handle = logRequest
+        logHandlers[handle] = (onChunk, onDone, onError)
         var arguments: [String: Any] = [
             "container": container,
             "follow": true,
-            "requestID": request,
+            "requestID": handle,
         ]
         if let tail, !tail.isEmpty { arguments["tail"] = tail }
         do {
@@ -47,10 +46,9 @@ class ChannelManager {
                 "startContainerLogStream",
                 arguments: arguments
             )
-            guard request == logRequest else { return }
             let payload = raw as? [String: Any] ?? [:]
             guard payload["success"] as? Bool == true else {
-                clearLogHandlers()
+                logHandlers[handle] = nil
                 throw NSError(
                     domain: "onepanel.containerLogs",
                     code: 1,
@@ -60,25 +58,23 @@ class ChannelManager {
                     ]
                 )
             }
+            return handle
         } catch {
-            if request == logRequest { clearLogHandlers() }
+            logHandlers[handle] = nil
             throw error
         }
     }
 
-    /// 停止容器日志跟随。
+    /// 停止指定句柄的容器日志跟随。
+    ///
+    /// 只清理并通知 Dart 终止该句柄；其他页面的订阅继续接收。
     @MainActor
-    func stopContainerLogStream() async {
-        logRequest += 1
-        clearLogHandlers()
-        _ = try? await invokeDataMethodAsync("stopContainerLogStream", arguments: nil)
-    }
-
-    private func clearLogHandlers() {
-        logChunkHandler = nil
-        logDoneHandler = nil
-        logErrorHandler = nil
-        logRequestID = nil
+    func stopContainerLogStream(handle: Int) async {
+        logHandlers[handle] = nil
+        _ = try? await invokeDataMethodAsync(
+            "stopContainerLogStream",
+            arguments: ["requestID": handle]
+        )
     }
 
     private func handleLogCallback(
@@ -89,17 +85,17 @@ class ChannelManager {
         switch call.method {
         case "containerLogChunk", "containerLogDone", "containerLogError":
             guard let requestID = arguments["requestID"] as? Int,
-                  requestID == logRequestID else {
+                  let handlers = logHandlers[requestID] else {
                 result(nil)
                 return
             }
             switch call.method {
             case "containerLogChunk":
-                logChunkHandler?(arguments["chunk"] as? String ?? "")
+                handlers.chunk(arguments["chunk"] as? String ?? "")
             case "containerLogDone":
-                logDoneHandler?()
+                handlers.done()
             default:
-                logErrorHandler?(arguments["error"] as? String ?? "Log stream failed")
+                handlers.error(arguments["error"] as? String ?? "Log stream failed")
             }
         default:
             result(FlutterMethodNotImplemented)
@@ -150,18 +146,26 @@ class ChannelManager {
 
     func invokeDataMethodAsync(_ method: String, arguments: Any? = nil) async throws -> Any? {
         return try await withCheckedThrowingContinuation { continuation in
-            guard let dataChannel = dataChannel else {
-                continuation.resume(throwing: NSError(domain: "ChannelManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data channel not initialized"]))
-                return
-            }
-            dataChannel.invokeMethod(method, arguments: arguments) { result in
-                if let flutterError = result as? FlutterError {
-                    continuation.resume(throwing: NSError(domain: "FlutterError", code: Int(flutterError.code) ?? -1, userInfo: [NSLocalizedDescriptionKey: flutterError.message ?? "Unknown error"]))
-                } else if (result as AnyObject) === FlutterMethodNotImplemented {
-                    continuation.resume(throwing: NSError(domain: "FlutterError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Method not implemented"]))
-                } else {
-                    continuation.resume(returning: result)
+            // 平台通道只允许在主线程发消息；不在主线程时先切回主线程。
+            let send = {
+                guard let dataChannel = self.dataChannel else {
+                    continuation.resume(throwing: NSError(domain: "ChannelManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data channel not initialized"]))
+                    return
                 }
+                dataChannel.invokeMethod(method, arguments: arguments) { result in
+                    if let flutterError = result as? FlutterError {
+                        continuation.resume(throwing: NSError(domain: "FlutterError", code: Int(flutterError.code) ?? -1, userInfo: [NSLocalizedDescriptionKey: flutterError.message ?? "Unknown error"]))
+                    } else if (result as AnyObject) === FlutterMethodNotImplemented {
+                        continuation.resume(throwing: NSError(domain: "FlutterError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Method not implemented"]))
+                    } else {
+                        continuation.resume(returning: result)
+                    }
+                }
+            }
+            if Thread.isMainThread {
+                send()
+            } else {
+                DispatchQueue.main.async(execute: send)
             }
         }
     }
