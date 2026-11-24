@@ -16,8 +16,11 @@ struct FlutterViewControllerRepresentable: UIViewControllerRepresentable {
     }
 }
 
-/// 原生壳导航结构：4 个 tab，与 MDUI3 iPhone 壳底部导航语义一致
-/// （服务器 / 文件 / 安全 / 设置），业务模块从服务器首页进入。
+/// 原生壳导航结构：4 个 tab（服务器 / 文件 / 安全 / 设置）。
+/// 业务模块从服务器首页按 `ModuleRoute` 进入，容器、网站、应用与监控
+/// 都在服务器 tab 内部以入栈方式打开。
+/// MDUI3 iPhone 壳的底部导航为服务器 / 文件 / 容器 / 设置，第三项是
+/// 可固定的业务模块；两套壳的 tab 集合因此不同，模块本身两端都可到达。
 /// TabView + NavigationStack 在 iOS 26 自动获得 Liquid Glass 材质。
 ///
 /// 支持启动参数 `ONEPANEL_INITIAL_TAB`（files/security/settings，默认 servers）

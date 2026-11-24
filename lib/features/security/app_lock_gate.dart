@@ -52,7 +52,7 @@ class AppLockUnlockView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.lock_outline),
+                const Icon(Icons.lock_outlined),
                 const SizedBox(height: 12),
                 Text(l10n.appLockTitle,
                     style: Theme.of(context).textTheme.titleLarge),

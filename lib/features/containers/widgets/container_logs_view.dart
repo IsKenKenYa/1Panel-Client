@@ -105,7 +105,8 @@ class _FollowBar extends StatelessWidget {
             onPressed: provider.followLogs
                 ? provider.stopFollowing
                 : () => provider.loadLogs(follow: true),
-            icon: Icon(provider.followLogs ? Icons.stop : Icons.play_arrow),
+            icon: Icon(
+                provider.followLogs ? Icons.stop : Icons.play_arrow_outlined),
             label: Text(
               provider.followLogs
                   ? l10n.containerLogsStopFollow
