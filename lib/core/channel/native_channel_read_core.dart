@@ -42,9 +42,11 @@ class NativeChannelCoreHandlers {
     final prefs = AppPreferencesService();
     final mode = await prefs.loadUIRenderMode(refresh: true);
     final locale = await prefs.loadLocale();
+    final themeMode = await prefs.loadThemeMode();
     return {
       'renderMode': mode.name,
       'language': locale?.languageCode ?? 'system',
+      'themeMode': themeMode.name,
     };
   }
 

@@ -5,21 +5,31 @@ import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:provider/provider.dart';
 
 class AppLockGate extends StatelessWidget {
-  const AppLockGate({super.key, required this.target, required this.child});
+  const AppLockGate({
+    super.key,
+    required this.target,
+    required this.child,
+    this.onVisibilityChanged,
+  });
 
   final String? target;
   final Widget child;
+  final ValueChanged<bool>? onVisibilityChanged;
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<AppLockController?>();
-    if (controller == null) return child;
+    if (controller == null) {
+      onVisibilityChanged?.call(true);
+      return child;
+    }
     final name = target;
     final locked = controller.requiresResumeUnlock ||
         (name == AppRoutes.settingsAppLock &&
             controller.isEnabled &&
             !controller.isSessionUnlocked) ||
         (name != null && controller.shouldRequireUnlockForModuleId(name));
+    onVisibilityChanged?.call(!locked);
     return Stack(
       fit: StackFit.expand,
       children: [

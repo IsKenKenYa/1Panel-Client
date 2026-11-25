@@ -61,6 +61,7 @@ import '../../data/repositories/website_repository.dart';
 import '../../core/config/api_config.dart';
 import '../../core/config/debug_seed_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import '../../data/models/backup_account_models.dart';
 import '../../data/models/backup_request_models.dart';
 import '../../data/models/database_models.dart';
@@ -2989,7 +2990,7 @@ class NativeChannelWriteHandlers {
   // ── 设置 ────────────────────────────────────────────────────────────────
 
   /// 写客户端偏好（供 WinUI3 原生宿主切换渲染模式/语言）。
-  /// 参数：`{key: 'renderMode'|'language', value: String}`
+  /// 参数：`{key: 'renderMode'|'language'|'themeMode', value: String}`
   static Future<Map<String, dynamic>> updateSetting(dynamic arguments) async {
     try {
       final key = arguments['key'] as String;
@@ -3009,6 +3010,11 @@ class NativeChannelWriteHandlers {
             throw ArgumentError.value(value, key);
           }
           await prefs.saveLocale(locale);
+          return _ok();
+        case 'themeMode':
+          final mode = ThemeMode.values.asNameMap()[value];
+          if (mode == null) throw ArgumentError.value(value, key);
+          await prefs.saveThemeMode(mode);
           return _ok();
         default:
           return {'success': false, 'error': 'Unknown setting key: $key'};
