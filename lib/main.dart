@@ -27,6 +27,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/channel/native_channel_port.dart';
 import 'package:onepanel_client/core/channel/native_terminal_bridge.dart';
+import 'package:onepanel_client/core/channel/harmony_ui_bridge.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
@@ -311,13 +312,31 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _navigator = GlobalKey<NavigatorState>();
   final _lockTarget = ValueNotifier<String?>(null);
+  HarmonyUIBridge? _harmonyUI;
   late final _routes = ServerRouteObserver(
     isAppNavigator: true,
     lockTarget: _lockTarget,
   );
 
   @override
+  void initState() {
+    super.initState();
+    if (PlatformCapabilities.current().isOhos) {
+      _harmonyUI = HarmonyUIBridge(
+        navigatorKey: _navigator,
+        refreshSettings: () async {
+          await Future.wait([
+            context.read<AppSettingsController>().load(),
+            context.read<ThemeController>().load(),
+          ]);
+        },
+      );
+    }
+  }
+
+  @override
   void dispose() {
+    _harmonyUI?.dispose();
     _lockTarget.dispose();
     super.dispose();
   }
@@ -330,6 +349,11 @@ class _MyAppState extends State<MyApp> {
     final locale = context.select((AppSettingsController settings) => settings.locale);
     return Consumer<ThemeController>(
       builder: (context, themeController, _) {
+        _harmonyUI?.updatePresentation(
+          mode: context.watch<AppSettingsController>().uiRenderMode,
+          locale: locale,
+          themeMode: themeController.themeMode,
+        );
         final density = AdaptiveLayoutSpec.of(context).adaptiveDensity;
         return DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
@@ -342,17 +366,25 @@ class _MyAppState extends State<MyApp> {
 
             return MaterialApp(
               navigatorKey: _navigator,
-              navigatorObservers: [_routes],
+              navigatorObservers: [_routes, if (_harmonyUI != null) _harmonyUI!],
               title: 'KenPanel',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
                 final content = Provider<ColorScheme?>.value(
                   value: lightDynamic,
-                  child: ValueListenableBuilder<String?>(
-                    valueListenable: _lockTarget,
+                  child: AnimatedBuilder(
+                    animation: Listenable.merge([
+                      _lockTarget,
+                      if (_harmonyUI != null) _harmonyUI!,
+                    ]),
                     child: child ?? const SizedBox(),
-                    builder: (_, target, navigator) =>
-                        AppLockGate(target: target, child: navigator!),
+                    builder: (_, navigator) => AppLockGate(
+                      target: _harmonyUI?.nativeRootEnabled == true
+                          ? _harmonyUI!.activeModule
+                          : _lockTarget.value,
+                      onVisibilityChanged: _harmonyUI?.setGateVisible,
+                      child: navigator!,
+                    ),
                   ),
                 );
                 if (kIsWeb) {

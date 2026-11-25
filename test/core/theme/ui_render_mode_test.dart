@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/core/platform/platform_capabilities.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
@@ -10,9 +12,24 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('UIRenderPolicy', () {
+    final harmonyPlatform =
+        TargetPlatform.values.where((platform) => platform.name == 'ohos').firstOrNull;
+
     tearDown(() {
       UIRenderPolicy.liquidGlassEnabled = false;
+      PlatformCapabilities.setTargetPlatformForTest(null);
     });
+
+    test('OHOS native 保留 Flutter 启动、认证和功能页面', () {
+      PlatformCapabilities.setTargetPlatformForTest(harmonyPlatform!);
+
+      expect(UIRenderPolicy.defaultMode(appLockEnabled: true), UIRenderMode.native);
+      expect(UIRenderPolicy.canSelectNativeMode(), isTrue);
+      expect(UIRenderPolicy.resolveSupportedMode(UIRenderMode.native),
+          UIRenderMode.native);
+      expect(UIRenderPolicy.shouldUseFlutterUI(UIRenderMode.native), isTrue);
+      expect(UIRenderPolicy.isNativeModeFallback(UIRenderMode.native), isFalse);
+    }, skip: harmonyPlatform == null ? '需要 Flutter-OH TargetPlatform.ohos' : false);
 
     test('liquidGlass renders Flutter UI on every host', () {
       expect(
@@ -26,6 +43,7 @@ void main() {
       final expected = switch (Platform.operatingSystem) {
         'ios' => UIRenderMode.liquidGlass,
         'macos' => UIRenderMode.native,
+        'ohos' => UIRenderMode.native,
         'android' => UIRenderMode.md3,
         _ => UIRenderMode.liquidGlass,
       };
@@ -65,7 +83,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final service = AppPreferencesService();
       final expected = switch (Platform.operatingSystem) {
-        'ios' || 'macos' => UIRenderMode.native,
+        'ios' || 'macos' || 'ohos' => UIRenderMode.native,
         'android' => UIRenderMode.md3,
         _ => UIRenderMode.liquidGlass,
       };

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:glass/glass.dart';
 
+import '../platform/platform_capabilities.dart';
 import 'ui_render_mode.dart';
 
 /// 原生宿主与 Flutter 界面的启动策略。
@@ -35,6 +36,7 @@ class UIRenderPolicy {
       !kIsWeb && (Platform.isIOS || Platform.isMacOS);
 
   static UIRenderMode defaultMode({required bool appLockEnabled}) {
+    if (PlatformCapabilities.current().isOhos) return UIRenderMode.native;
     if (!kIsWeb && Platform.isIOS && appLockEnabled) {
       return UIRenderMode.liquidGlass;
     }
@@ -52,16 +54,19 @@ class UIRenderPolicy {
       return false;
     }
 
-    return isAppleHost || Platform.isWindows;
+    return isAppleHost ||
+        Platform.isWindows ||
+        PlatformCapabilities.current().isOhos;
   }
 
   static bool shouldUseFlutterUI(UIRenderMode configuredMode) {
+    if (PlatformCapabilities.current().isOhos) return true;
     return configuredMode != UIRenderMode.native || !supportsNativeHost();
   }
 
   static bool isNativeModeFallback(UIRenderMode configuredMode) {
     return configuredMode == UIRenderMode.native &&
-        shouldUseFlutterUI(configuredMode);
+        !supportsNativeHost();
   }
 
   static UIRenderMode resolveSupportedMode(UIRenderMode configuredMode) {
