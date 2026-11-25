@@ -43,8 +43,13 @@ void main() {
       return;
     }
     expect(phase, 'read');
+    addTearDown(() async {
+      await ApiConfigManager.clearServerDirectory();
+      await storage.deleteAll();
+      await platformStorage.delete(key: platformKey);
+      expect((await SharedPreferences.getInstance()).getKeys(), isEmpty);
+    });
     expect(await platformStorage.read(key: platformKey), 'platform-test-value');
-    await platformStorage.delete(key: platformKey);
     final saved = await repository.readConfig(id);
     expect(saved.apiKey, 'persistence-test-key');
     expect(saved.additionalCredentials, {'appId': 'test-app'});
@@ -67,6 +72,5 @@ void main() {
     final directory = await ApiConfigManager.getServerDirectory();
     expect(directory.servers, isEmpty);
     expect(directory.selectedId, isNull);
-    await storage.deleteAll();
   });
 }

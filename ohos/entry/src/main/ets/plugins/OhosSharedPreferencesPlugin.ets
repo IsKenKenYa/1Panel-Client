@@ -57,9 +57,12 @@ export default class OhosSharedPreferencesPlugin
 
     try {
       switch (call.method) {
-        case 'getAll':
-          result.success(await this.store.getAll());
+        case 'getAll': {
+          const all =
+            (await this.store.getAll()) as Record<string, preferences.ValueType>;
+          result.success(this.filterEntries(all, 'flutter.', null));
           return;
+        }
         case 'getAllWithParameters': {
           const prefix = call.argument('prefix') as string | null;
           const allowList = call.argument('allowList') as Array<string> | null;
