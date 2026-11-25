@@ -1,43 +1,37 @@
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
 
-interface HarmonySettingsDestination {
+interface HarmonySettingsEntry {
   titleKey: string;
   route: string;
+  icon: Resource;
 }
 
 @Component
 export struct HarmonySettingsPage {
+  @StorageLink('harmonyNativeRefresh') @Watch('loadSettings') private presentationRevision: number = 0;
   @State private isLoading: boolean = true;
   @State private isSaving: boolean = false;
   @State private loadError: string = '';
   @State private selectedLanguage: string = 'system';
   @State private selectedTheme: string = 'system';
   @State private selectedRenderMode: string = 'native';
-
+  @State private currentServerName: string = '';
+  @State private hasPanelSettings: boolean = false;
   private readonly bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
-  private readonly languageIds: string[] = ['system', 'zh', 'en'];
-  private readonly themeIds: string[] = ['system', 'light', 'dark'];
   private readonly renderModeIds: string[] = ['native', 'md3', 'liquidGlass'];
-  private readonly appDestinations: HarmonySettingsDestination[] = [
-    { titleKey: 'settingsAppearance', route: '/settings/theme' },
-    { titleKey: 'settingsAppLock', route: '/settings/app-lock' },
-    { titleKey: 'settingsCacheTitle', route: '/settings/storage' },
-    { titleKey: 'settingsServerManagement', route: '/server' },
+  private readonly securityEntries: HarmonySettingsEntry[] = [
+    { titleKey: 'settingsAppLock', route: '/settings/app-lock', icon: $r('sys.symbol.lock') },
+    { titleKey: 'settingsCacheTitle', route: '/settings/storage', icon: $r('sys.symbol.folder') },
   ];
-  private readonly supportDestinations: HarmonySettingsDestination[] = [
-    { titleKey: 'settingsFeedbackCenterTitle', route: '/settings/feedback-center' },
-    { titleKey: 'settingsLegalCenterTitle', route: '/settings/legal-center' },
-    { titleKey: 'settingsMainlandSdkDisclosureTitle', route: '/settings/legal-center/mainland-sdk' },
-    { titleKey: 'settingsAbout', route: '/settings/about' },
+  private readonly helpEntries: HarmonySettingsEntry[] = [
+    { titleKey: 'settingsFeedbackCenterTitle', route: '/settings/feedback-center', icon: $r('sys.symbol.message') },
+    { titleKey: 'settingsLegalCenterTitle', route: '/settings/legal-center', icon: $r('sys.symbol.doc_text') },
+    { titleKey: 'settingsAbout', route: '/settings/about', icon: $r('sys.symbol.info_circle') },
   ];
 
-  aboutToAppear(): void {
-    this.loadSettings();
-  }
+  aboutToAppear(): void { this.loadSettings(); }
 
-  private text(key: string): string {
-    return this.bridge.text(key);
-  }
+  private text(key: string): string { return this.bridge.text(key); }
 
   private async loadSettings(): Promise<void> {
     this.isLoading = true;
@@ -47,63 +41,26 @@ export struct HarmonySettingsPage {
       this.selectedLanguage = settings.get('language') as string;
       this.selectedTheme = settings.get('themeMode') as string;
       this.selectedRenderMode = settings.get('renderMode') as string;
+      const server = await this.bridge.invoke<Map<string, Object | null> | null>('getCurrentServer');
+      this.hasPanelSettings = server !== null && server.get('panelType') === '1panel';
+      this.currentServerName = server === null ? '' : server.get('name') as string;
     } catch (error) {
-      this.loadError = `${error}`;
+      this.loadError = (error as Error).message;
     } finally {
       this.isLoading = false;
     }
   }
 
-  private async saveSetting(key: string, settingValue: string): Promise<void> {
-    this.isSaving = true;
-    try {
-      const args = new Map<string, Object | null>();
-      args.set('key', key);
-      args.set('value', settingValue);
-      const result = await this.bridge.invoke<Map<string, Object | null>>('updateSetting', args);
-      if (result.get('success') !== true) {
-        throw new Error(result.get('error') as string);
-      }
-      await this.bridge.refreshSettings();
-      if (key === 'renderMode') {
-        return;
-      }
-      if (key === 'language' || key === 'themeMode') {
-        await this.bridge.loadTranslations();
-      }
-      await this.loadSettings();
-      this.getUIContext().getPromptAction().showToast({
-        message: this.text('commonSaveSuccess'),
-      });
-    } catch (error) {
-      this.getUIContext().getPromptAction().showToast({ message: `${error}`.slice(0, 120) });
-    } finally {
-      this.isSaving = false;
-    }
+  private languageLabel(): string {
+    if (this.selectedLanguage === 'zh') return this.text('languageZh');
+    if (this.selectedLanguage === 'en') return this.text('languageEn');
+    return this.text('languageSystem');
   }
 
-  private async openDestination(route: string): Promise<void> {
-    try {
-      await this.bridge.openFlutterPage(route);
-    } catch (error) {
-      this.getUIContext().getPromptAction().showToast({ message: `${error}`.slice(0, 120) });
-    }
-  }
-
-  private languageOptions(): SelectOption[] {
-    return [
-      { value: this.text('languageSystem') },
-      { value: this.text('languageZh') },
-      { value: this.text('languageEn') },
-    ];
-  }
-
-  private themeOptions(): SelectOption[] {
-    return [
-      { value: this.text('themeSystem') },
-      { value: this.text('themeLight') },
-      { value: this.text('themeDark') },
-    ];
+  private themeLabel(): string {
+    if (this.selectedTheme === 'light') return this.text('themeLight');
+    if (this.selectedTheme === 'dark') return this.text('themeDark');
+    return this.text('themeSystem');
   }
 
   private renderModeOptions(): SelectOption[] {
@@ -114,134 +71,153 @@ export struct HarmonySettingsPage {
     ];
   }
 
-  @Builder
-  private destinationRow(destination: HarmonySettingsDestination) {
-    Button({ type: ButtonType.Normal }) {
-      Row({ space: 12 }) {
-        Text(this.text(destination.titleKey))
-          .fontSize(16)
-          .fontColor($r('sys.color.ohos_id_color_text_primary'))
-          .layoutWeight(1)
-          .maxLines(2)
-        SymbolGlyph($r('sys.symbol.chevron_right'))
-          .fontSize(16)
-          .fontColor([$r('sys.color.ohos_id_color_text_secondary')])
-      }
-      .width('100%')
-      .padding(16)
+  private async saveRenderMode(index: number): Promise<void> {
+    if (this.isSaving || this.selectedRenderMode === this.renderModeIds[index]) return;
+    this.isSaving = true;
+    try {
+      const args = new Map<string, Object | null>();
+      args.set('key', 'renderMode');
+      args.set('value', this.renderModeIds[index]);
+      const result = await this.bridge.invoke<Map<string, Object | null>>('updateSetting', args);
+      if (result.get('success') !== true) throw new Error(result.get('error') as string);
+      this.selectedRenderMode = this.renderModeIds[index];
+      await this.bridge.refreshSettings();
+    } catch (error) {
+      this.getUIContext().getPromptAction().showToast({ message: (error as Error).message.slice(0, 120) });
+    } finally {
+      this.isSaving = false;
     }
-    .width('100%')
-    .constraintSize({ minHeight: 56 })
-    .buttonStyle(ButtonStyleMode.TEXTUAL)
-    .backgroundColor($r('sys.color.ohos_id_color_sub_background'))
-    .borderRadius(16)
-    .id(`harmony.settings.${destination.titleKey}`)
-    .accessibilityText(this.text(destination.titleKey))
-    .onClick((): void => {
-      this.openDestination(destination.route);
-    })
+  }
+
+  private async openDestination(route: string): Promise<void> {
+    try {
+      await this.bridge.openNativePage(route);
+    } catch (error) {
+      this.getUIContext().getPromptAction().showToast({ message: (error as Error).message.slice(0, 120) });
+    }
+  }
+
+  private async resetOnboarding(): Promise<void> {
+    try {
+      await this.bridge.invoke<Object | null>('resetHarmonyOnboarding');
+      this.getUIContext().getPromptAction().showToast({ message: this.text('settingsResetOnboardingDone') });
+    } catch (error) {
+      this.getUIContext().getPromptAction().showToast({ message: (error as Error).message.slice(0, 120) });
+    }
+  }
+
+  @Builder
+  private sectionHeader(titleKey: string) {
+    Text(this.text(titleKey)).fontSize(14).fontColor($r('sys.color.font_secondary'))
+      .width('100%').padding({ left: 16, top: 8, bottom: 8 })
+  }
+
+  @Builder
+  private appearanceHeader() { this.sectionHeader('settingsAppearanceLanguage') }
+
+  @Builder
+  private securityHeader() { this.sectionHeader('settingsSecurityStorage') }
+
+  @Builder
+  private connectionsHeader() { this.sectionHeader('settingsConnections') }
+
+  @Builder
+  private helpHeader() { this.sectionHeader('settingsHelpAbout') }
+
+  @Builder
+  private destinationRow(titleKey: string, route: string, icon: Resource, detail: string = '') {
+    ListItem() {
+      Row({ space: 12 }) {
+        SymbolGlyph(icon).fontSize(24).fontColor([$r('sys.color.icon_primary')])
+        Text(this.text(titleKey)).fontSize(16).fontColor($r('sys.color.font_primary')).layoutWeight(1)
+        if (detail.length > 0) {
+          Text(detail).fontSize(14).fontColor($r('sys.color.font_secondary'))
+            .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis })
+            .constraintSize({ maxWidth: '40%' })
+        }
+        SymbolGlyph($r('sys.symbol.chevron_right')).fontSize(14)
+          .fontColor([$r('sys.color.icon_tertiary')])
+      }.constraintSize({ minHeight: 56 }).width('100%')
+        .padding({ left: 16, right: 16, top: 8, bottom: 8 })
+    }
+    .id(`harmony.settings.${titleKey}`)
+    .backgroundColor($r('sys.color.comp_background_primary'))
+    .accessibilityText(`${this.text(titleKey)} ${detail}`)
+    .onClick((): void => { this.openDestination(route); })
+    .hoverEffect(HoverEffect.Highlight)
   }
 
   build() {
-    Scroll() {
-      Column({ space: 16 }) {
-        if (this.isLoading) {
-          LoadingProgress()
-            .width(40)
-            .height(40)
-            .accessibilityText(this.text('commonLoading'))
-        } else if (this.loadError.length > 0) {
-          Text(this.loadError)
-            .fontSize(16)
-            .fontColor($r('sys.color.ohos_id_color_text_primary'))
-          Button(this.text('commonRetry'))
-            .constraintSize({ minWidth: 48, minHeight: 48 })
-            .onClick((): void => {
-              this.loadSettings();
-            })
-        } else {
-          Column({ space: 8 }) {
-            Text(this.text('settingsLanguage'))
-              .fontSize(16)
-              .fontColor($r('sys.color.ohos_id_color_text_primary'))
-              .width('100%')
-            Select(this.languageOptions())
-              .selected(this.languageIds.indexOf(this.selectedLanguage))
-              .value(this.languageOptions()[this.languageIds.indexOf(this.selectedLanguage)].value)
-              .width('100%')
-              .height(48)
-              .enabled(!this.isSaving)
-              .id('harmony.settings.language')
-              .accessibilityText(this.text('settingsLanguage'))
-              .onSelect((index: number): void => {
-                this.saveSetting('language', this.languageIds[index]);
-              })
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Start)
-
-          Column({ space: 8 }) {
-            Text(this.text('settingsTheme'))
-              .fontSize(16)
-              .fontColor($r('sys.color.ohos_id_color_text_primary'))
-              .width('100%')
-            Select(this.themeOptions())
-              .selected(this.themeIds.indexOf(this.selectedTheme))
-              .value(this.themeOptions()[this.themeIds.indexOf(this.selectedTheme)].value)
-              .width('100%')
-              .height(48)
-              .enabled(!this.isSaving)
-              .id('harmony.settings.theme')
-              .accessibilityText(this.text('settingsTheme'))
-              .onSelect((index: number): void => {
-                this.saveSetting('themeMode', this.themeIds[index]);
-              })
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Start)
-
-          Column({ space: 8 }) {
-            Text(this.text('settingsUIRenderMode'))
-              .fontSize(16)
-              .fontColor($r('sys.color.ohos_id_color_text_primary'))
-              .width('100%')
-            Select(this.renderModeOptions())
-              .selected(this.renderModeIds.indexOf(this.selectedRenderMode))
-              .value(this.renderModeOptions()[this.renderModeIds.indexOf(this.selectedRenderMode)].value)
-              .width('100%')
-              .height(48)
-              .enabled(!this.isSaving)
-              .id('harmony.settings.renderMode')
-              .accessibilityText(this.text('settingsUIRenderMode'))
-              .onSelect((index: number): void => {
-                this.saveSetting('renderMode', this.renderModeIds[index]);
-              })
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Start)
-
-          ForEach(this.appDestinations, (destination: HarmonySettingsDestination) => {
-            this.destinationRow(destination)
-          }, (destination: HarmonySettingsDestination): string => destination.route)
-
-          Text(this.text('settingsHelpAbout'))
-            .fontSize(16)
-            .fontWeight(FontWeight.Medium)
-            .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-            .width('100%')
-            .margin({ top: 8 })
-          ForEach(this.supportDestinations, (destination: HarmonySettingsDestination) => {
-            this.destinationRow(destination)
-          }, (destination: HarmonySettingsDestination): string => destination.route)
-        }
+    Navigation() {
+      if (this.isLoading) {
+        LoadingProgress().width(48).height(48)
+      } else if (this.loadError.length > 0) {
+        Column({ space: 16 }) {
+          Text(this.loadError).fontSize(16).fontColor($r('sys.color.font_primary'))
+          Button(this.text('commonRetry')).height(48).onClick((): void => { this.loadSettings(); })
+        }.padding(24)
+      } else {
+        List({ space: 16 }) {
+          ListItemGroup({ header: this.appearanceHeader }) {
+            this.destinationRow('settingsTheme', '/settings/theme', $r('sys.symbol.paintbrush'), this.themeLabel())
+            ListItem() {
+              Row({ space: 12 }) {
+                SymbolGlyph($r('sys.symbol.slider_horizontal_2')).fontSize(24)
+                  .fontColor([$r('sys.color.icon_primary')])
+                Text(this.text('settingsUIRenderMode')).fontSize(16)
+                  .fontColor($r('sys.color.font_primary')).layoutWeight(1)
+                Select(this.renderModeOptions())
+                  .selected(this.renderModeIds.indexOf(this.selectedRenderMode))
+                  .value(this.renderModeOptions()[this.renderModeIds.indexOf(this.selectedRenderMode)].value)
+                  .font({ size: 14 }).fontColor($r('sys.color.font_secondary')).height(48)
+                  .backgroundColor(Color.Transparent)
+                  .enabled(!this.isSaving).id('harmony.settings.renderMode')
+                  .accessibilityText(this.text('settingsUIRenderMode'))
+                  .onSelect((index: number): void => { this.saveRenderMode(index); })
+              }.width('100%').constraintSize({ minHeight: 56 })
+                .padding({ left: 16, right: 12, top: 4, bottom: 4 })
+            }.backgroundColor($r('sys.color.comp_background_primary'))
+            this.destinationRow('settingsLanguage', '/settings/language', $r('sys.symbol.translate'), this.languageLabel())
+          }.borderRadius(16).clip(true)
+          ListItemGroup({ header: this.securityHeader }) {
+            ForEach(this.securityEntries, (entry: HarmonySettingsEntry): void => {
+              this.destinationRow(entry.titleKey, entry.route, entry.icon)
+            }, (entry: HarmonySettingsEntry): string => entry.route)
+          }.borderRadius(16).clip(true)
+          ListItemGroup({ header: this.connectionsHeader }) {
+            this.destinationRow('settingsServerManagement', '/server', $r('sys.symbol.externaldrive'))
+            if (this.hasPanelSettings) {
+              this.destinationRow('systemSettingsPanelSection', '/system-settings',
+                $r('sys.symbol.gearshape'), this.currentServerName)
+            }
+          }.borderRadius(16).clip(true)
+          ListItemGroup({ header: this.helpHeader }) {
+            ForEach(this.helpEntries, (entry: HarmonySettingsEntry): void => {
+              this.destinationRow(entry.titleKey, entry.route, entry.icon)
+            }, (entry: HarmonySettingsEntry): string => entry.route)
+            ListItem() {
+              Row({ space: 12 }) {
+                SymbolGlyph($r('sys.symbol.questionmark_circle')).fontSize(24)
+                  .fontColor([$r('sys.color.icon_primary')])
+                Text(this.text('settingsResetOnboarding')).fontSize(16)
+                  .fontColor($r('sys.color.font_primary')).layoutWeight(1)
+              }.width('100%').constraintSize({ minHeight: 56 }).padding(16)
+            }.backgroundColor($r('sys.color.comp_background_primary'))
+              .onClick((): void => { this.resetOnboarding(); })
+          }.borderRadius(16).clip(true)
+        }.width('100%').height('100%')
+          .padding({ left: 16, right: 16, bottom: 24 }).contentStartOffset(72)
+          .scrollBar(BarState.Auto)
       }
-      .width('100%')
-      .padding({ left: 16, right: 16, top: 16, bottom: 24 })
-      .alignItems(HorizontalAlign.Start)
     }
-    .width('100%')
-    .height('100%')
-    .scrollBar(BarState.Auto)
-    .backgroundColor($r('sys.color.ohos_id_color_background'))
+    .title(this.text('settingsPageTitle'), {
+      barStyle: BarStyle.STACK,
+      systemMaterial: titleBarMaterial,
+      scrollEffectOptions: { scrollEffectType: ScrollEffectType.COMMON_BLUR },
+    })
+    .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
+    .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
+    .mode(NavigationMode.Stack).width('100%').height('100%')
+    .backgroundColor($r('sys.color.background_secondary'))
   }
 }
