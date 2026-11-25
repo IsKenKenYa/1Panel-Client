@@ -349,7 +349,7 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
   - HarmonyOS：作为一等目标平台推进，当前以 Dart 共享业务核心 + ArkTS Platform Bridge 补齐系统能力，文件、下载、日志、媒体、认证等缺口优先走项目自有 facade 与 ArkTS 桥接。构建需要单独安装 Flutter-OH 与 DevEco Studio，环境准备与本机验证基线见 `docs/development/harmonyos_build_and_sideload.md`
 - 无论使用何种 UI 体系，共享业务逻辑都必须复用同一套 Dart State/Service/Repository/API，不得分叉为多套业务实现。
 - 原生 UI 同样必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得跨层直接访问 API。
-- HarmonyOS 原生层只承载平台能力，不得复制 1Panel 业务逻辑；Flutter 侧必须通过 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade 访问平台能力，禁止业务代码直接使用 `MethodChannel`。
+- HarmonyOS 原生层承载 ArkUI Presentation 与平台能力，不得复制 1Panel 业务逻辑。HarmonyOS 7 使用原生服务器、文件、容器、设置和模块入口，复用 Dart 通道；完整 Flutter 功能页通过混合宿主访问。沉浸光感使用 API26 系统材质。Flutter 侧必须通过 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade 访问平台能力，禁止业务代码直接使用 `MethodChannel`。
 - 桌面缓存模块页必须禁用非当前页 Hero；带 `FloatingActionButton` 的页面必须显式设置 `heroTag` 或显式禁用 Hero。
 - 禁止可变 widget 自引用包装链。
 - 桌面模块切换必须留在统一壳内，普通切换不得再次 `push` 完整壳或首页。

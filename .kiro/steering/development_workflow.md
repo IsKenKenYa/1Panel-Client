@@ -226,6 +226,7 @@ hflutter build hap --release
 ## HarmonyOS / OHOS 开发规则
 
 - HarmonyOS 是一等目标平台，平台缺口通过 Dart facade + ArkTS bridge 补齐。
+- HarmonyOS 7 的 ArkUI 服务器、文件、容器、设置和模块入口复用 Dart 业务通道，完整功能页使用 Flutter 混合宿主；原生标题与悬浮底部导航使用 API26 沉浸光感。启动提示、引导与应用锁保持共享流程。
 - HarmonyOS 构建需要单独的 Flutter-OH SDK，当前基线 `3.44.9+ohos-1.0.0`；官方 Flutter 为 `3.44.9`。环境准备、版本线、参考文档见 `docs/development/harmonyos_build_and_sideload.md`。
 - 参与 HarmonyOS 开发必须自行安装 Flutter-OH 与 DevEco Studio 26.0.0，并配置 `DEVECO_SDK_HOME` 与 `hvigorw`、`ohpm`、`node`、`hdc` 路径；两套 SDK 不能共用同一份 `.dart_tool`。
 - Flutter 侧优先使用 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade，禁止在 UI/业务层直接使用 `MethodChannel`。

@@ -136,6 +136,8 @@ Native container capability can be introduced incrementally.
 
 HarmonyOS is a first-class target platform. Current delivery keeps the shared Dart state/service/repository/API core and fills platform capability gaps through project-owned Dart facades backed by ArkTS bridge code.
 
+HarmonyOS 7 provides ArkUI server, file, container, settings, and module entry pages over the existing Dart business channel. The mixed host keeps Flutter initialization, onboarding, startup warnings, and application locks. Complete Flutter feature pages remain reachable through the presentation channel. Navigation controls and the floating tab bar use API26 system immersive materials; older systems retain Flutter presentation.
+
 Mandatory constraints:
 
 - native and MDUI3 modes must share the same Dart non-UI core

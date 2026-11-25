@@ -16,7 +16,7 @@ Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态�
 - 核心基础设施：日志（自动 IP 掩码）、i18n（EN/ZH）、导航、Material Design 3
 - 容器管理、数据库管理、文件管理、网站管理、Dashboard 实时监控
 - Shell 架构：自适应壳 + 模块切换 + 服务器感知导航
-- HarmonyOS 平台适配（Flutter-OH bridge + HUKS 安全存储 + 原生下载器；官方 Flutter 3.44.9 与 Flutter-OH 3.44.9+ohos-1.0.0 双轨，环境准备见 `docs/development/harmonyos_build_and_sideload.md`）
+- HarmonyOS 平台适配（ArkUI 原生主页面、API26 沉浸光感、Flutter 混合宿主和平台桥接；复用 Dart 业务核心。官方 Flutter 3.44.9 与 Flutter-OH 3.44.9+ohos-1.0.0 双轨，环境准备见 `docs/development/harmonyos_build_and_sideload.md`）
 - 统一消息提示系统（SnackBarUtils，替换 272 处内联调用）
 - 33 个功能模块完整覆盖
 
