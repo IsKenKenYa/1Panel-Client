@@ -3,17 +3,17 @@ import 'dart:io';
 
 import 'package:synchronized/synchronized.dart';
 
+import '../platform/platform_capabilities.dart';
 import '../services/logger/logger_service.dart';
 
-/// 桌面端的凭据文件存储。
+/// 原生端应用私有目录中的凭据文件存储。
 ///
-/// 取舍：macOS 钥匙串在读取条目时会要求输入系统密码，数据保护钥匙串还要
-/// 求与签名匹配的访问组，对本机自用与开发构建得不偿失。这里把凭据写进
-/// 应用支持目录下的单个 JSON 文件，随应用数据保存与迁移，读写都不触发
-/// 系统授权；文件权限依赖用户目录本身，不做额外加固。
+/// 内容以 JSON 持久保存；macOS 与 Linux 文件权限限定为仅所有者可读写。
 class LocalCredentialVault {
-  LocalCredentialVault(this._resolveDirectory, {String fileName = 'panel_credentials.json'})
-      : _fileName = fileName;
+  LocalCredentialVault(
+    this._resolveDirectory, {
+    String fileName = 'panel_credentials.json',
+  }) : _fileName = fileName;
 
   final Future<Directory> Function() _resolveDirectory;
   final String _fileName;
@@ -32,25 +32,28 @@ class LocalCredentialVault {
 
   Future<void> write(String key, String value) async {
     await _lock.synchronized(() async {
-      final entries = await _entriesLocked();
+      final entries = Map<String, String>.of(await _entriesLocked());
       entries[key] = value;
       await _persist(entries);
+      _cache = entries;
     });
   }
 
   Future<void> delete(String key) async {
     await _lock.synchronized(() async {
-      final entries = await _entriesLocked();
+      final entries = Map<String, String>.of(await _entriesLocked());
       if (entries.remove(key) == null) return;
       await _persist(entries);
+      _cache = entries;
     });
   }
 
   Future<void> deleteAll() async {
     await _lock.synchronized(() async {
-      _cache = <String, String>{};
       final file = await _file();
-      if (await file.exists()) await file.delete();
+      final type = await FileSystemEntity.type(file.path, followLinks: false);
+      if (type != FileSystemEntityType.notFound) await file.delete();
+      _cache = <String, String>{};
     });
   }
 
@@ -66,19 +69,16 @@ class LocalCredentialVault {
       return _cache = <String, String>{};
     }
     final decoded = jsonDecode(await file.readAsString());
-    if (decoded is! Map) {
+    if (decoded is! Map<String, dynamic>) {
       throw const FormatException('Credential file is not a JSON object');
     }
-    return _cache = <String, String>{
-      for (final entry in decoded.entries)
-        if (entry.value is String) '${entry.key}': entry.value as String,
-    };
+    if (decoded.values.any((value) => value is! String)) {
+      throw const FormatException('Credential file contains a non-string value');
+    }
+    return _cache = Map<String, String>.from(decoded);
   }
 
-  /// 先写临时文件再改名，避免写入中断留下半截内容。
-  ///
-  /// 文件是明文凭据，创建后把权限收紧到仅所有者可读写；
-  /// POSIX 平台的默认 0644 会让同机其他用户读到。
+  /// 通过同目录临时文件与改名持久保存，桌面端同时设置文件权限。
   Future<void> _persist(Map<String, String> entries) async {
     final file = await _file();
     await file.parent.create(recursive: true);
@@ -86,11 +86,13 @@ class LocalCredentialVault {
     await temp.writeAsString(jsonEncode(entries), flush: true);
     await _restrictPermissions(temp);
     await temp.rename(file.path);
-    await _restrictPermissions(file);
   }
 
   Future<void> _restrictPermissions(File file) async {
-    if (Platform.isWindows) return;
+    if (PlatformCapabilities.current().isOhos ||
+        (!Platform.isMacOS && !Platform.isLinux)) {
+      return;
+    }
     try {
       final result = await Process.run('chmod', ['600', file.path]);
       if (result.exitCode != 0) {

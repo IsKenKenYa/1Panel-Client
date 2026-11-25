@@ -47,11 +47,12 @@ export default class OhosPathProviderPlugin
         case 'getApplicationDocumentsDirectory':
         case 'getLibraryDirectory':
         case 'getStorageDirectory':
+          // 持久数据统一放在 filesDir：Hive 库、日志与导出文件都不会被系统按缓存清理。
+          result.success(context.filesDir);
+          return;
         case 'getDownloadsDirectory':
-          // OHOS has no public Download directory accessible without SAF/picker.
-          // All these map to cacheDir as the safest sandboxed alternative.
-          // Actual file exports go through OhosPlatformPlugin's DocumentViewPicker flow.
-          result.success(context.cacheDir);
+          // 下载文件保存在应用持久目录。
+          result.success(`${context.filesDir}/Download`);
           return;
         case 'getApplicationCacheDirectory':
           result.success(context.cacheDir);
