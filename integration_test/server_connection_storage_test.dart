@@ -28,17 +28,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 String _credentialKey(ApiConfig config) {
   final identity = jsonEncode([config.id, config.panelType, config.url, config.credentialId]);
-  return 'kenpanel_credentials_${sha256.convert(utf8.encode(identity))}';
+  return '${_storageNamespace}panel_credentials_${sha256.convert(utf8.encode(identity))}';
 }
+
+late String _storageNamespace;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() {
     final run = DateTime.now().microsecondsSinceEpoch;
     SharedPreferences.setPrefix('kenpanel.connection_test.$run.');
+    _storageNamespace = 'connection_test.$run.';
+    ApiConfigManager.useStorageNamespace(_storageNamespace);
   });
 
-  testWidgets('系统安全存储支持重新打开、更新和删除凭据', (_) async {
+  tearDownAll(() async {
+    await ApiConfigManager.clearServerDirectory();
+    await (await PlatformSecureStorage.create(namespace: _storageNamespace)).deleteAll();
+    ApiConfigManager.useStorageNamespace('');
+  });
+
+  testWidgets('平台凭据存储支持重新打开、更新和删除凭据', (_) async {
     final key = 'kenpanel_test_${DateTime.now().microsecondsSinceEpoch}';
     final storage = await PlatformSecureStorage.create();
     addTearDown(() => storage.delete(key: key));
@@ -271,9 +281,8 @@ void main() {
     expect(second.get<int>('metric'), 42);
   });
 
-  testWidgets('同一地址轮换凭据时，重开目录仅读取其引用的版本', (_) async {
+  testWidgets('同一地址编辑凭据后保存新值并清理旧条目', (_) async {
     const repository = ServerRepository();
-    const directoryKey = 'kenpanel_servers';
     final id = 'credential-rotation-${DateTime.now().microsecondsSinceEpoch}';
     ApiConfig configFor(String secret) => ApiConfig(
           id: id,
@@ -282,36 +291,21 @@ void main() {
           panelType: ApiConfig.onePanelType,
           apiKey: secret,
         );
-    final preferences = await SharedPreferences.getInstance();
-    final vault = await PlatformSecureStorage.create();
-    addTearDown(preferences.clear);
+    final vault = await PlatformSecureStorage.create(namespace: _storageNamespace);
     addTearDown(() => repository.removeConfig(id));
     await repository.saveConfig(configFor('rotation-first'));
     final previous = await ApiConfigManager.getConfig(id);
-    final originalDirectory = preferences.getString(directoryKey)!;
     final previousKey = _credentialKey(previous);
     addTearDown(() => vault.delete(key: previousKey));
-    final previousValue = (await vault.read(key: previousKey))!;
 
     await repository.updateConfig(configFor('rotation-second'), expected: previous);
     final next = await ApiConfigManager.getConfig(id);
-    final nextDirectory = preferences.getString(directoryKey)!;
     final nextKey = _credentialKey(next);
     addTearDown(() => vault.delete(key: nextKey));
     expect(nextKey, isNot(previousKey));
     expect(await vault.read(key: previousKey), isNull);
     expect(await vault.read(key: nextKey), isNotNull);
 
-    // 重建进程被终止时可能保留的两份实际凭据，分别重新加载提交前后的目录。
-    await vault.write(key: previousKey, value: previousValue);
-    for (final state in [(originalDirectory, previous), (nextDirectory, next)]) {
-      expect(await preferences.setString(directoryKey, state.$1), isTrue);
-      await preferences.reload();
-      final reopened = await ApiConfigManager.getConfig(id);
-      expect(reopened.revision, state.$2.revision);
-      expect(reopened.apiKey, state.$2.apiKey);
-    }
-    await vault.delete(key: previousKey);
     expect((await ApiConfigManager.getConfig(id)).apiKey, next.apiKey);
     await repository.removeConfig(id);
     expect(await vault.read(key: nextKey), isNull);
@@ -491,21 +485,7 @@ void main() {
       apiKey: second.apiKey,
     );
     final retiredKey = _credentialKey(currentSecond);
-    final vault = await PlatformSecureStorage.create();
-    final originalCredentials = (await vault.read(key: retiredKey))!;
-    await vault.write(key: retiredKey, value: 'invalid');
-    try {
-      await expectLater(
-        repository.updateConfig(edited, expected: currentSecond),
-        throwsFormatException,
-      );
-      final unchanged = await ApiConfigManager.getCurrentServerMetadata();
-      expect(unchanged?.revision, currentSecond.revision);
-      expect(unchanged?.url, currentSecond.url);
-      expect(await vault.read(key: retiredKey), 'invalid');
-    } finally {
-      await vault.write(key: retiredKey, value: originalCredentials);
-    }
+    final vault = await PlatformSecureStorage.create(namespace: _storageNamespace);
     await repository.updateConfig(edited, expected: currentSecond);
     await controller.refresh();
     await tester.pump();

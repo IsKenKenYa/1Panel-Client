@@ -79,22 +79,13 @@ class ServerRepository {
 
   Future<ApiConfig> readConfig(String serverId) => ApiConfigManager.getConfig(serverId);
 
-  Future<void> _persist(String id, Future<void> Function() operation) async {
-    try {
-      await operation();
-    } on ConfigStorageException catch (error) {
-      if (error.changeCommitted != false) _release(id);
-      rethrow;
-    }
-  }
-
   void _release(String id) {
     _panels.release(id);
     ApiClientManager.instance.removeClient(id);
   }
 
   Future<void> updateConfig(ApiConfig config, {required ApiConfig expected}) async {
-    await _persist(config.id, () => ApiConfigManager.updateConfig(config, expected: expected));
+    await ApiConfigManager.updateConfig(config, expected: expected);
     _panels.invalidateIfChanged(config);
     ApiClientManager.instance.invalidateIfChanged(config);
   }
@@ -106,7 +97,7 @@ class ServerRepository {
 
   /// 删除服务器配置
   Future<void> removeConfig(String id) async {
-    await _persist(id, () => ApiConfigManager.deleteConfig(id));
+    await ApiConfigManager.deleteConfig(id);
     _release(id);
   }
 
@@ -115,7 +106,7 @@ class ServerRepository {
     if (config.id.trim().isEmpty || config.panelType.trim().isEmpty) {
       throw ArgumentError('服务器标识和面板类型不能为空');
     }
-    await _persist(config.id, () => ApiConfigManager.saveConfig(config));
+    await ApiConfigManager.saveConfig(config);
     _panels.invalidateIfChanged(config);
     ApiClientManager.instance.invalidateIfChanged(config);
   }

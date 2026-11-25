@@ -303,19 +303,7 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> _writeConfig(Future<void> operation) async {
-    try {
-      await operation;
-    } on ConfigStorageException catch (error, trace) {
-      if (error.changeCommitted != false) {
-        // 目录刷新会记录自己的错误，调用方仍收到原始写入结果。
-        try {
-          await _reloadAfterWrite();
-        } catch (_) {
-          Error.throwWithStackTrace(error, trace);
-        }
-      }
-      rethrow;
-    }
+    await operation;
     await _reloadAfterWrite();
   }
 

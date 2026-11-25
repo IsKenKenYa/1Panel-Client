@@ -41,22 +41,6 @@ class CurrentServerController extends ChangeNotifier with SafeChangeNotifier {
     late final Future<void> done;
     done = read.then<void>((directory) {
       _confirmed = directory;
-    }).onError<ConfigStorageException>((error, trace) async {
-      if (error.changeCommitted != false &&
-          !isDisposed &&
-          _pending?.done == done) {
-        try {
-          final stored = await ApiConfigManager.getServerDirectory();
-          if (_pending?.done == done) _confirmed = stored;
-        } catch (readError) {
-          Error.throwWithStackTrace(
-            ConfigStorageException(error.changeCommitted, error.cause,
-                [...error.recoveryErrors, readError]),
-            trace,
-          );
-        }
-      }
-      Error.throwWithStackTrace(error, trace);
     }).whenComplete(() {
       if (isDisposed || _pending?.done != done) return;
       _pending = null;

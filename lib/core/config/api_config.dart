@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
-import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/storage/platform_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:synchronized/synchronized.dart';
@@ -76,7 +75,6 @@ class ApiConfig {
         id: json['id'] as String,
         name: json['name'] as String,
         url: json['url'] as String,
-        // 旧版本存档没有面板类型与凭据版本字段，一律视为 1Panel 连接。
         panelType: json['panelType'] as String? ?? onePanelType,
         revision: json['revision'] as String? ?? '',
         credentialId: json['credentialId'] as String? ?? '',
@@ -91,33 +89,10 @@ class ApiConfig {
       );
 }
 
-class ConfigStorageException implements Exception {
-  const ConfigStorageException(
-    this.changeCommitted,
-    this.cause, [
-    this.recoveryErrors = const [],
-  ]);
-
-  /// null 表示平台未能确认哪份目录已持久保存。
-  final bool? changeCommitted;
-  final Object cause;
-  final List<Object> recoveryErrors;
-
-  @override
-  String toString() {
-    final status = switch (changeCommitted) {
-      true => 'directory updated; reopen the server list',
-      false => 'previous directory kept; you can retry',
-      null => 'saved directory could not be confirmed; reload the list',
-    };
-    final errors = [cause, ...recoveryErrors].map((e) => e.runtimeType).join(', ');
-    return 'Server storage error ($errors). $status';
-  }
-}
-
+/// 服务器目录读取结果。
 typedef ServerDirectory = ({List<ApiConfig> servers, String? selectedId});
 
-/// 安全存储里没有该连接的凭据。界面据此提示重新录入，而不是显示堆栈类型。
+/// 该连接缺少凭据，界面提示用户重新录入。
 class MissingCredentialException implements Exception {
   const MissingCredentialException();
 
@@ -125,49 +100,38 @@ class MissingCredentialException implements Exception {
   String toString() => 'Saved credential for this connection is missing. Open the server and enter the API key again.';
 }
 
-/// 安全存储里有条目但内容无法解析，通常来自旧版本的不同结构。
-class CredentialUnreadableException implements Exception {
-  const CredentialUnreadableException();
-
-  @override
-  String toString() => 'Saved credential for this connection cannot be read. Open the server and enter the API key again.';
-}
-
 abstract final class ApiConfigManager {
   /// 存储键按「连接」语义命名，不绑定具体面板品牌；新增面板类型时继续复用。
+  ///
+  /// 测试可通过 [useStorageNamespace] 把目录键与凭据文件切到独立命名空间，
+  /// 让测试配置与用户真实配置互不可见。
   static const _serversKey = 'panel_server_directory';
   static const _credentialKeyPrefix = 'panel_credentials_';
-  // 更早的品牌命名键与旧数组格式键；仅用于升级迁移。
-  static const _brandConfigsKey = 'kenpanel_servers';
-  static const _brandCredentialPrefix = 'kenpanel_credentials_';
-  static const _legacyConfigsKey = 'api_configs';
-  static const _legacySelectedIdKey = 'current_api_config_id';
-  static const _legacyCredentialPrefix = 'api_config_api_key_';
-  // 早期桌面调试写在偏好设置里的明文回退键前缀。
-  static const _plaintextFallbackPrefix = 'secure_api_key_fallback_';
   static final _lock = Lock();
   static PlatformSecureStorage? _storage;
-  static bool _requiresReload = false;
+  /// 当前存储命名空间前缀；为空表示用户真实存储。
+  static String _namespace = '';
+
+  /// 切换到独立存储命名空间。
+  ///
+  /// 全部读写（目录键与凭据文件）都绑定该命名空间；传入空字符串恢复用户
+  /// 命名空间。已缓存的凭据实例会重建。
+  static void useStorageNamespace(String namespace) {
+    _namespace = namespace;
+    _storage = null;
+  }
+
+  static String _ns(String key) => '$_namespace$key';
 
   static Future<PlatformSecureStorage> _vault() async =>
-      _storage ??= await PlatformSecureStorage.create();
+      _storage ??= await PlatformSecureStorage.create(namespace: _namespace);
 
-  static Future<SharedPreferences> _preferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_requiresReload) {
-      await prefs.reload();
-      _requiresReload = false;
-    }
-    return prefs;
-  }
+  static Future<SharedPreferences> _preferences() =>
+      SharedPreferences.getInstance();
 
   // 每次保存使用独立的凭据条目，且绑定服务器、面板类型与面板地址。
   static String _secretKey(ApiConfig config) =>
-      '$_credentialKeyPrefix${_secretHash(config)}';
-
-  /// 品牌命名时期的凭据键，仅用于首次读取时的迁移。
-  static String _brandSecretKey(ApiConfig config) =>
-      '$_brandCredentialPrefix${_secretHash(config)}';
+      _ns('$_credentialKeyPrefix${_secretHash(config)}');
 
   static String _secretHash(ApiConfig config) {
     final identity = jsonEncode(
@@ -176,86 +140,22 @@ abstract final class ApiConfigManager {
     return sha256.convert(utf8.encode(identity)).toString();
   }
 
-  /// 读取服务器目录。优先新键，其次品牌命名键，最后旧数组格式。
-  ///
-  /// 存档内容损坏时返回空目录而不是抛出：启动阶段就会读取这里，
-  /// 抛出会让应用直接崩溃，用户连修正数据的界面都进不去。
+  /// 读取服务器目录，解析错误交由调用方处理。
   static ServerDirectory _read(SharedPreferences prefs) {
-    final raw = prefs.getString(_serversKey) ?? prefs.getString(_brandConfigsKey);
-    if (raw == null) return _readLegacy(prefs);
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is! Map) return (servers: <ApiConfig>[], selectedId: null);
-      final data = Map<String, dynamic>.from(decoded);
-      final items = data['servers'];
-      if (items is! List) return (servers: <ApiConfig>[], selectedId: null);
-      final servers = <ApiConfig>[];
-      for (final item in items) {
-        if (item is! Map) continue;
-        try {
-          servers.add(ApiConfig.fromJson(Map<String, dynamic>.from(item)));
-        } catch (_) {
-          // 单条损坏不影响其余条目。
-        }
-      }
-      final selectedId = data['selectedId'];
-      return (
-        servers: servers,
-        selectedId: selectedId is String ? selectedId : null,
-      );
-    } catch (_) {
-      appLogger.e('Stored server directory is unreadable; starting empty');
-      return (servers: <ApiConfig>[], selectedId: null);
-    }
-  }
-
-  /// 旧版本把服务器列表存成数组并使用独立的凭据键。
-  /// 这里按原样读出，凭据在首次读取详情时迁移到新键。
-  static ServerDirectory _readLegacy(SharedPreferences prefs) {
-    final legacy = prefs.getString(_legacyConfigsKey);
-    if (legacy == null) return (servers: <ApiConfig>[], selectedId: null);
-    try {
-      final decoded = jsonDecode(legacy);
-      if (decoded is! List) return (servers: <ApiConfig>[], selectedId: null);
-      final servers = <ApiConfig>[];
-      for (final item in decoded) {
-        if (item is! Map) continue;
-        try {
-          servers.add(ApiConfig.fromJson(Map<String, dynamic>.from(item)));
-        } catch (_) {
-          // 单条损坏不影响其余条目。
-        }
-      }
-      return (
-        servers: servers,
-        selectedId: prefs.getString(_legacySelectedIdKey),
-      );
-    } catch (_) {
-      appLogger.e('Legacy server directory is unreadable; starting empty');
-      return (servers: <ApiConfig>[], selectedId: null);
-    }
+    final raw = prefs.getString(_ns(_serversKey));
+    if (raw == null) return (servers: <ApiConfig>[], selectedId: null);
+    final data = jsonDecode(raw) as Map<String, dynamic>;
+    return (
+      servers: (data['servers'] as List)
+          .map((item) => ApiConfig.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      selectedId: data['selectedId'] as String?,
+    );
   }
 
   static Future<ServerDirectory> getServerDirectory() =>
       _lock.synchronized(() async {
-        final prefs = await _preferences();
-        final directory = _read(prefs);
-        // 命中旧键时补写新键并移除旧键；写入失败不阻断读取，下次再迁移。
-        if (prefs.getString(_serversKey) != null) return directory;
-        if (prefs.getString(_brandConfigsKey) == null &&
-            prefs.getString(_legacyConfigsKey) == null) {
-          return directory;
-        }
-        final value = jsonEncode({
-          'servers': directory.servers,
-          'selectedId': directory.selectedId,
-        });
-        if (await prefs.setString(_serversKey, value)) {
-          await prefs.remove(_brandConfigsKey);
-          await prefs.remove(_legacyConfigsKey);
-          await prefs.remove(_legacySelectedIdKey);
-        }
-        return directory;
+        return _read(await _preferences());
       });
 
   static Future<List<ApiConfig>> getServerMetadata() async =>
@@ -264,192 +164,53 @@ abstract final class ApiConfigManager {
   static Future<ApiConfig> _withCredentials(ApiConfig config) async {
     final vault = await _vault();
     final raw = await vault.read(key: _secretKey(config));
-    if (raw != null) {
-      final secrets = decodeStoredCredential(raw);
-      if (secrets != null) {
-        return ApiConfig.fromJson(
-          config.toJson(),
-          apiKey: secrets.apiKey,
-          additionalCredentials: secrets.fields,
-        );
-      }
-    }
-    // 新键缺失或无法识别时，依次尝试品牌命名键与明文旧键。
-    final migrated = await _tryMigrateLegacy(config, vault);
-    if (migrated != null) return migrated;
     if (raw == null) throw const MissingCredentialException();
-    throw const CredentialUnreadableException();
-  }
-
-  /// 迁移历史凭据：品牌命名键、明文旧键与偏好设置里的明文回退键。
-  /// 成功搬移到新键后才清理来源键。
-  static Future<ApiConfig?> _tryMigrateLegacy(
-    ApiConfig config,
-    PlatformSecureStorage vault,
-  ) async {
-    final brandKey = _brandSecretKey(config);
-    final brandValue = await vault.read(key: brandKey);
-    if (brandValue != null) {
-      final secrets = decodeStoredCredential(brandValue);
-      if (secrets != null) {
-        await _writeCredential(config, secrets.apiKey, secrets.fields, vault);
-        await vault.delete(key: brandKey);
-        return ApiConfig.fromJson(
-          config.toJson(),
-          apiKey: secrets.apiKey,
-          additionalCredentials: secrets.fields,
-        );
-      }
-    }
-    final legacyKey = '$_legacyCredentialPrefix${config.id}';
-    final legacy = await vault.read(key: legacyKey);
-    if (legacy != null && legacy.isNotEmpty) {
-      final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
-      // 与正常保存使用同一结构，避免后续读取走不同的解析分支。
-      await _writeCredential(
-        migrated,
-        legacy,
-        migrated.additionalCredentials,
-        vault,
-      );
-      await vault.delete(key: legacyKey);
-      return migrated;
-    }
-    return _migratePrefsFallback(config, vault);
-  }
-
-  /// 早期桌面调试把密钥写进了偏好设置的明文回退键。
-  /// 读入后立即搬进安全存储并删除明文，避免继续留存在偏好设置。
-  static Future<ApiConfig?> _migratePrefsFallback(
-    ApiConfig config,
-    PlatformSecureStorage vault,
-  ) async {
-    final prefs = await _preferences();
-    final fallbackKey = '$_plaintextFallbackPrefix$_legacyCredentialPrefix${config.id}';
-    final plaintext = prefs.getString(fallbackKey);
-    if (plaintext == null || plaintext.isEmpty) return null;
-    final migrated = ApiConfig.fromJson(config.toJson(), apiKey: plaintext);
-    await _writeCredential(
-      migrated,
-      plaintext,
-      migrated.additionalCredentials,
-      vault,
+    final secrets = jsonDecode(raw) as Map<String, dynamic>;
+    return ApiConfig.fromJson(
+      config.toJson(),
+      apiKey: secrets['apiKey'] as String,
+      additionalCredentials: Map<String, String>.from(secrets['fields'] as Map),
     );
-    await prefs.remove(fallbackKey);
-    return migrated;
   }
-
-  static Future<void> _writeCredential(
-    ApiConfig config,
-    String apiKey,
-    Map<String, String> fields,
-    PlatformSecureStorage vault,
-  ) =>
-      vault.write(
-        key: _secretKey(config),
-        value: jsonEncode({'apiKey': apiKey, 'fields': fields}),
-      );
 
   static Future<ApiConfig> getConfig(String id) => _lock.synchronized(() async {
         final entries = _read(await _preferences()).servers;
         return _withCredentials(entries.firstWhere((c) => c.id == id));
       });
 
-  static Future<ConfigStorageException?> _writeDirectory(
+  static Future<void> _writeDirectory(
     SharedPreferences prefs,
     ServerDirectory directory,
   ) async {
-    final before = prefs.getString(_serversKey);
-    final value = jsonEncode({'servers': directory.servers, 'selectedId': directory.selectedId});
-    try {
-      if (!await prefs.setString(_serversKey, value)) {
-        throw StateError('Unable to save the server directory');
-      }
-      return null;
-    } catch (error) {
-      // SharedPreferences 在平台答复之前更新缓存。重新读取才能判断目录指向哪个凭据。
-      try {
-        await prefs.reload();
-        final stored = prefs.getString(_serversKey);
-        bool? committed;
-        if (stored == value) {
-          committed = true;
-        } else if (stored == before) {
-          committed = false;
-        }
-        return ConfigStorageException(committed, error);
-      } catch (readError) {
-        _requiresReload = true;
-        return ConfigStorageException(null, error, [readError]);
-      }
+    final value = jsonEncode({
+      'servers': directory.servers,
+      'selectedId': directory.selectedId,
+    });
+    if (!await prefs.setString(_ns(_serversKey), value)) {
+      throw StateError('Unable to save the server directory');
     }
-  }
-
-  static Future<Never> _discardStaged(
-    PlatformSecureStorage vault,
-    String? stagedKey,
-    Object cause, [
-    List<Object> recoveryErrors = const [],
-  ]) async {
-    if (stagedKey != null) {
-      try {
-        if (await vault.read(key: stagedKey) != null) await vault.delete(key: stagedKey);
-      } catch (error) {
-        throw ConfigStorageException(false, cause, [...recoveryErrors, error]);
-      }
-    }
-    throw ConfigStorageException(false, cause, recoveryErrors);
   }
 
   static Future<void> _replaceConfig({
     required SharedPreferences prefs,
-    required ServerDirectory before,
     required ServerDirectory after,
     required ApiConfig? previous,
     required ApiConfig? next,
   }) async {
     final vault = await _vault();
-    final retiredKey = previous == null ? null : _secretKey(previous);
-    final retiredValue = retiredKey == null ? null : await vault.read(key: retiredKey);
-    final stagedKey = next == null ? null : _secretKey(next);
-    if (next != null && stagedKey != null) {
-      try {
-        await vault.write(key: stagedKey, value: jsonEncode({
+    if (next != null) {
+      await vault.write(
+        key: _secretKey(next),
+        value: jsonEncode({
           'apiKey': next.apiKey,
           'fields': next.additionalCredentials,
-        }));
-      } catch (error) {
-        await _discardStaged(vault, stagedKey, error);
-      }
+        }),
+      );
     }
-
-    final commitError = await _writeDirectory(prefs, after);
-    if (commitError != null) {
-      if (commitError.changeCommitted == false) {
-        await _discardStaged(vault, stagedKey, commitError.cause, commitError.recoveryErrors);
-      }
-      // 保留可能被持久目录引用的凭据。
-      throw commitError;
-    }
-
-    if (retiredKey == null || retiredValue == null) return;
-    try {
-      await vault.delete(key: retiredKey);
-    } catch (deleteError) {
-      // 恢复期间也应始终能读取当前目录引用的凭据。
-      try {
-        if (await vault.read(key: retiredKey) != retiredValue) {
-          await vault.write(key: retiredKey, value: retiredValue);
-        }
-      } catch (restoreError) {
-        throw ConfigStorageException(true, deleteError, [restoreError]);
-      }
-      final revertError = await _writeDirectory(prefs, before);
-      if (revertError != null && revertError.changeCommitted != true) {
-        final committed = revertError.changeCommitted == false ? true : null;
-        throw ConfigStorageException(committed, deleteError, [revertError]);
-      }
-      await _discardStaged(vault, stagedKey, deleteError, [if (revertError != null) revertError]);
+    await _writeDirectory(prefs, after);
+    if (previous != null &&
+        (next == null || _secretKey(previous) != _secretKey(next))) {
+      await vault.delete(key: _secretKey(previous));
     }
   }
 
@@ -471,8 +232,7 @@ abstract final class ApiConfigManager {
         if (expected != null) {
           if (previous == null) throw StateError('This server has been deleted');
           if (expected.revision.isEmpty ||
-              previous.revision != expected.revision ||
-              !(await _withCredentials(previous)).sameConnectionAs(expected)) {
+              previous.revision != expected.revision) {
             throw StateError('Server configuration changed; reopen the editor');
           }
         }
@@ -494,7 +254,6 @@ abstract final class ApiConfigManager {
         entries[config.id] = next;
         await _replaceConfig(
           prefs: prefs,
-          before: state,
           after: (servers: entries.values.toList(), selectedId: state.selectedId ?? config.id),
           previous: previous,
           next: next,
@@ -513,7 +272,6 @@ abstract final class ApiConfigManager {
             : state.selectedId;
         await _replaceConfig(
           prefs: prefs,
-          before: state,
           after: (servers: remaining, selectedId: next),
           previous: target,
           next: null,
@@ -525,6 +283,17 @@ abstract final class ApiConfigManager {
     if (state.selectedId == null) return null;
     return state.servers.firstWhere((c) => c.id == state.selectedId);
   }
+
+  /// 清空当前命名空间下的服务器目录与其引用的凭据条目。
+  static Future<void> clearServerDirectory() => _lock.synchronized(() async {
+        final prefs = await _preferences();
+        final state = _read(prefs);
+        final vault = await _vault();
+        for (final config in state.servers) {
+          await vault.delete(key: _secretKey(config));
+        }
+        await prefs.remove(_ns(_serversKey));
+      });
 
   static Future<ApiConfig?> getCurrentConfig() => _lock.synchronized(() async {
         final state = _read(await _preferences());
@@ -540,33 +309,7 @@ abstract final class ApiConfigManager {
         }
         if (state.selectedId == id) return state;
         final directory = (servers: state.servers, selectedId: id);
-        final error = await _writeDirectory(prefs, directory);
-        if (error != null) throw error;
+        await _writeDirectory(prefs, directory);
         return directory;
       });
-}
-
-/// 解析存储中的凭据条目。
-///
-/// 早期迁移只写入了 `apiKey`，正常保存写入 `apiKey` 与 `fields`，
-/// 两种结构都必须能读出来；内容无法识别时返回 null。
-({String apiKey, Map<String, String> fields})? decodeStoredCredential(
-  String raw,
-) {
-  final Object? decoded;
-  try {
-    decoded = jsonDecode(raw);
-  } on FormatException {
-    return null;
-  }
-  if (decoded is! Map) return null;
-  final apiKey = decoded['apiKey'];
-  if (apiKey is! String) return null;
-  final rawFields = decoded['fields'];
-  return (
-    apiKey: apiKey,
-    fields: rawFields is Map
-        ? Map<String, String>.from(rawFields)
-        : const <String, String>{},
-  );
 }
