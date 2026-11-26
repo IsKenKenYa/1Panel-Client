@@ -29,7 +29,7 @@ class WebsiteConfigCenterProvider extends ChangeNotifier
   FileInfo? configFile;
   WebsiteNginxScopeResponse? scopeResponse;
   WebsiteInfo? website;
-  Map<String, dynamic>? resource;
+  List<WebsiteResource> resource = const [];
   Map<String, dynamic>? httpsSummary;
 
   Future<void> _ensureService() async {
@@ -56,7 +56,7 @@ class WebsiteConfigCenterProvider extends ChangeNotifier
       website = results[0] as WebsiteInfo;
       configFile = results[1] as FileInfo;
       scopeResponse = results[2] as WebsiteNginxScopeResponse;
-      resource = results[3] as Map<String, dynamic>;
+      resource = results[3] as List<WebsiteResource>;
       httpsSummary = results[4] as Map<String, dynamic>;
     } catch (e) {
       error = ErrorMessageUtils.userFacingMessage(e);

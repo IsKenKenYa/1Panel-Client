@@ -133,7 +133,7 @@ class WebsiteConfigService {
     await _repository.updateLoadBalancerFile(request);
   }
 
-  Future<Map<String, dynamic>> getResource(int websiteId) async {
+  Future<List<WebsiteResource>> getResource(int websiteId) async {
     return _repository.getResource(websiteId);
   }
 

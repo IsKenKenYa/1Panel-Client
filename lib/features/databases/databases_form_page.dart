@@ -40,6 +40,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
   final _descriptionController = TextEditingController();
   final _permissionIpsController = TextEditingController();
   String _mysqlPermission = '%';
+  String _mongodbPermission = 'dbOwner';
   bool _postgresqlSuperUser = true;
   DatabaseListItem? _selectedDatabaseTarget;
   String? _selectedDatabaseKey;
@@ -285,6 +286,24 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
                             const SizedBox(
                                 height: AppDesignTokens.spacingSm),
                           ],
+                          if (_scope == DatabaseScope.mongodb) ...[
+                            DropdownButtonFormField<String>(
+                              initialValue: _mongodbPermission,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.databasePermission,
+                              ),
+                              items: const [
+                                DropdownMenuItem(value: 'dbOwner', child: Text('dbOwner')),
+                                DropdownMenuItem(value: 'read', child: Text('read')),
+                                DropdownMenuItem(value: 'readWrite', child: Text('readWrite')),
+                                DropdownMenuItem(value: 'userAdmin', child: Text('userAdmin')),
+                              ],
+                              onChanged: (value) => setState(() {
+                                _mongodbPermission = value!;
+                              }),
+                            ),
+                            const SizedBox(height: AppDesignTokens.spacingMd),
+                          ],
                           TextFormField(
                             controller: _usernameController,
                             decoration: InputDecoration(
@@ -429,7 +448,11 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
           : _scope == DatabaseScope.postgresql
               ? 'UTF8'
               : null,
-      permission: _scope == DatabaseScope.mysql ? _mysqlPermission : null,
+      permission: switch (_scope) {
+        DatabaseScope.mysql => _mysqlPermission,
+        DatabaseScope.mongodb => _mongodbPermission,
+        _ => null,
+      },
       permissionIps: _mysqlPermission == 'ip'
           ? _permissionIpsController.text
               .split(',')

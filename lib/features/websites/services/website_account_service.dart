@@ -173,4 +173,9 @@ class WebsiteAccountService {
     final api = await _ensureApi();
     return api.downloadCertificateAuthorityFile(id);
   }
+
+  Future<List<int>> downloadCertificateAuthorityBytes(int id) async {
+    final api = await _ensureApi();
+    return api.downloadCertificateAuthorityBytes(id);
+  }
 }

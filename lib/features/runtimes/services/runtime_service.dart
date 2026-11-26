@@ -23,12 +23,16 @@ class RuntimeService {
     required String type,
     String? name,
     String? status,
+    int page = 1,
+    int pageSize = 20,
   }) {
     return _repository.searchRuntimes(
       RuntimeSearch(
         type: type,
         name: name?.trim().isEmpty == true ? null : name?.trim(),
         status: status?.trim().isEmpty == true ? null : status?.trim(),
+        page: page,
+        pageSize: pageSize,
       ),
     );
   }
@@ -137,7 +141,7 @@ class RuntimeService {
 
   RuntimeUpdate buildUpdateRequest(RuntimeFormDraft draft) {
     return RuntimeUpdate(
-      id: draft.id ?? 0,
+      id: draft.id ?? (throw ArgumentError.notNull('draft.id')),
       appDetailId: draft.resource == 'appstore' ? draft.appDetailId : null,
       appId: draft.resource == 'appstore' ? draft.appId : null,
       name: draft.name.trim(),

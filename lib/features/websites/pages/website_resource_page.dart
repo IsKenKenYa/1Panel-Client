@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
 import 'package:onepanel_client/features/websites/widgets/website_async_state_view.dart';
 
-/// Website resource monitoring page.
-/// Mirrors frontend's website resource tab: CPU/memory/traffic stats.
 class WebsiteResourcePage extends StatefulWidget {
   const WebsiteResourcePage({
     super.key,
@@ -22,7 +21,7 @@ class WebsiteResourcePage extends StatefulWidget {
 
 class _WebsiteResourcePageState extends State<WebsiteResourcePage> {
   final WebsiteConfigRepository _repo = WebsiteConfigRepository();
-  Map<String, dynamic>? _resource;
+  List<WebsiteResource> _resources = const [];
   bool _isLoading = true;
   String? _error;
 
@@ -36,7 +35,7 @@ class _WebsiteResourcePageState extends State<WebsiteResourcePage> {
     setState(() { _isLoading = true; _error = null; });
     try {
       final result = await _repo.getResource(widget.websiteId);
-      if (mounted) setState(() { _resource = result; _isLoading = false; });
+      if (mounted) setState(() { _resources = result; _isLoading = false; });
     } catch (e) {
       if (mounted) setState(() { _error = e.toString(); _isLoading = false; });
     }
@@ -56,50 +55,25 @@ class _WebsiteResourcePageState extends State<WebsiteResourcePage> {
         isLoading: _isLoading,
         error: _error,
         onRetry: _load,
-        child: _resource == null
+        child: _resources.isEmpty
             ?  Center(child: Text(context.l10n.commonEmpty))
             : ListView(
                 padding: AppDesignTokens.cardPadding,
                 children: [
-                  _buildStatCard('CPU', _resource?['cpu'], '%'),
-                  _buildStatCard('Memory', _resource?['memory'], 'MB'),
-                  _buildStatCard('Network In', _resource?['networkIn'], 'KB/s'),
-                  _buildStatCard('Network Out', _resource?['networkOut'], 'KB/s'),
-                  _buildStatCard('Disk Read', _resource?['diskRead'], 'KB/s'),
-                  _buildStatCard('Disk Write', _resource?['diskWrite'], 'KB/s'),
+                  for (final resource in _resources)
+                    ListTile(
+                      title: Text(resource.name),
+                      subtitle: Text(switch (resource.type) {
+                        'app' => context.l10n.serverModuleApps,
+                        'runtime' => context.l10n.serverModuleRuntime,
+                        'database' => context.l10n.serverModuleDatabases,
+                        _ => resource.type,
+                      }),
+                    ),
                 ],
               ),
       ),
     );
   }
 
-  Widget _buildStatCard(String label, dynamic value, String unit) {
-    return Card(
-      child: ListTile(
-        title: Text(label),
-        subtitle: Text('${value ?? 'N/A'} $unit'),
-        trailing: Icon(
-          _getIconForLabel(label),
-          color: Colors.blue,
-        ),
-      ),
-    );
-  }
-
-  IconData _getIconForLabel(String label) {
-    switch (label) {
-      case 'CPU':
-        return Icons.memory;
-      case 'Memory':
-        return Icons.storage;
-      case 'Network In':
-      case 'Network Out':
-        return Icons.network_check;
-      case 'Disk Read':
-      case 'Disk Write':
-        return Icons.sd_storage;
-      default:
-        return Icons.bar_chart;
-    }
-  }
 }

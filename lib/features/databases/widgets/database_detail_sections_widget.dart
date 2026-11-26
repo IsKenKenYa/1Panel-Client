@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'database_tile_content.dart';
@@ -76,8 +77,9 @@ class DatabaseDetailSectionsWidget extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+                color: AppTheme.cardSurface(scheme),
+                borderRadius:
+                    BorderRadius.circular(AppDesignTokens.radiusMd),
               ),
               child: SelectableText(
                 detailData!.rawConfigFile!,
@@ -204,7 +206,7 @@ class _MapValueList extends StatelessWidget {
               dense ? AppDesignTokens.spacingSm : AppDesignTokens.spacingMd,
             ),
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
+              color: AppTheme.cardSurface(scheme),
               borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
               border: Border.all(color: scheme.outlineVariant),
             ),
@@ -280,7 +282,7 @@ class _InfoTile extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 180, maxWidth: 320),
       padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
+        color: AppTheme.cardSurface(scheme),
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
       ),
       child: DatabaseTileContent.metric(icon: icon, title: label, subtitle: value),

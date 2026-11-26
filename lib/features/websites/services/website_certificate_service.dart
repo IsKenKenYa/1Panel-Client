@@ -68,7 +68,9 @@ class WebsiteCertificateService {
     return _repository.applyCertificate(request);
   }
 
-  Future<void> resolveCertificate(WebsiteSSLResolve request) {
+  Future<List<Map<String, dynamic>>> resolveCertificate(
+    WebsiteSSLResolve request,
+  ) {
     return _repository.resolveCertificate(request);
   }
 
@@ -86,5 +88,9 @@ class WebsiteCertificateService {
 
   Future<String?> downloadCertificate(int id) {
     return _repository.downloadCertificate(id);
+  }
+
+  Future<List<int>> downloadCertificateBytes(int id) {
+    return _repository.downloadCertificateBytes(id);
   }
 }
