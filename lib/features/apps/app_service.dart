@@ -72,14 +72,23 @@ class AppService extends BaseComponent {
   }
 
   Future<void> operateApp(int installId, String operate) {
+    return operateInstalledApp(AppInstalledOperateRequest(
+      installId: installId,
+      operate: operate,
+    ));
+  }
+
+  Future<void> operateInstalledApp(AppInstalledOperateRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      await api.operateApp(
-        AppInstalledOperateRequest(
-          installId: installId,
-          operate: operate,
-        ),
-      );
+      await api.operateApp(request);
+    });
+  }
+
+  Future<void> ignoreAppVersion({required int appId, required String scope, int? detailId}) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.ignoreAppVersion(appId: appId, scope: scope, detailId: detailId);
     });
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -207,7 +208,7 @@ class _BannerSurface extends StatelessWidget {
       ),
       child: Card(
         margin: EdgeInsets.zero,
-        color: scheme.surfaceContainerLow,
+        color: AppTheme.cardSurface(scheme),
         child: Padding(
           padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
           child: Column(

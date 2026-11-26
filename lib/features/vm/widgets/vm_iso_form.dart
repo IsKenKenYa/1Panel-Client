@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/files/services/file_transfer_service.dart';
@@ -217,8 +217,7 @@ class _VmIsoFormState extends State<VmIsoForm> {
   }
 
   Future<void> _pickFile() async {
-    final picked = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
+    final picked = await PlatformFileService().selectFiles(
       allowedExtensions: const <String>['iso', 'img'],
     );
     if (!mounted || picked == null) return;

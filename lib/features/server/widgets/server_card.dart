@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/panels/panel_presentation.dart';
 import 'package:onepanel_client/features/server/widgets/server_actions_menu.dart';
@@ -28,7 +29,7 @@ class ServerCard extends StatelessWidget {
     final panelType = data.config.panelType;
     return Card(
       clipBehavior: Clip.antiAlias,
-      color: scheme.surfaceContainerLow,
+      color: AppTheme.cardSurface(scheme),
       child: InkWell(
         onTap: onTap,
         child: Padding(

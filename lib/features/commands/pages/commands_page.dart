@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/features/commands/providers/commands_provider.dart';
 import 'package:onepanel_client/features/commands/widgets/command_card_widget.dart';
@@ -195,8 +195,7 @@ class _CommandsPageState extends State<CommandsPage>
   Future<void> _pickImportFile() async {
     final provider = context.read<CommandsProvider>();
     final pageContext = context;
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
+    final result = await PlatformFileService().selectFiles(
       allowedExtensions: const <String>['csv'],
       withData: true,
     );

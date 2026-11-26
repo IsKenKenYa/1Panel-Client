@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/data/models/ssh_cert_models.dart';
 
 class SshCertFormSheetWidget extends StatefulWidget {
@@ -168,14 +168,16 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
   }
 
   Future<void> _pickPublicKey() async {
-    final result = await FilePicker.platform.pickFiles(withData: true);
+    final result = await PlatformFileService().selectFiles(withData: true);
+    if (!mounted) return;
     if (result?.files.single.bytes case final bytes?) {
       _publicKeyController.text = utf8.decode(bytes);
     }
   }
 
   Future<void> _pickPrivateKey() async {
-    final result = await FilePicker.platform.pickFiles(withData: true);
+    final result = await PlatformFileService().selectFiles(withData: true);
+    if (!mounted) return;
     if (result?.files.single.bytes case final bytes?) {
       _privateKeyController.text = utf8.decode(bytes);
     }
