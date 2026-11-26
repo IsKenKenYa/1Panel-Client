@@ -17,7 +17,6 @@ export struct HarmonyWebsiteSslCenterPage {
   @Prop initialWebsiteId: number | null = null;
   @Prop initialRoute: string = '/website-ssl-center';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private paths: NavPathStack = new NavPathStack();
   @State private groups: Map<string, Object | null>[] = [];
   @State private providerOptions: string[] = [];

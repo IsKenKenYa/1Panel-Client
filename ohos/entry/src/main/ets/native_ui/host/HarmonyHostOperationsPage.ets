@@ -997,7 +997,7 @@ export struct HarmonyHostOperationsPage {
 
   build() {
     if (this.initialRoute === '/terminal') {
-      HarmonyHostTerminalPage({ onBack: this.onBack })
+      HarmonyHostTerminalPage()
     } else {
       this.hostPage()
     }

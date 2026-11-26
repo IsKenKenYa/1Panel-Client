@@ -16,7 +16,6 @@ interface HarmonyRuntimeDestination {
 export struct HarmonyRuntimesPage {
   initialRoute: string = '/runtimes';
   routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
 
   @State private items: Array<Map<string, Object | null>> = [];
   @State private languageIndex: number = 0;

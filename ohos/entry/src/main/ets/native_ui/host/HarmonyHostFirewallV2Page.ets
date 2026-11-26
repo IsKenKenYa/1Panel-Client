@@ -13,7 +13,6 @@ interface FirewallSection {
 @Component
 export struct HarmonyHostFirewallV2Page {
   @Prop initialRoute: string = '/firewall-v2';
-  onBack: () => void = (): void => {};
   @State private data: Map<string, Object | null> = new Map<string, Object | null>();
   @State private error: string = '';
   @State private loading: boolean = false;

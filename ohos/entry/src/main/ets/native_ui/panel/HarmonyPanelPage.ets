@@ -18,7 +18,6 @@ interface HarmonyPanelDestination {
 export struct HarmonyPanelPage {
   @Prop initialRoute: string = '/system-settings';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private loading: boolean = true;
   @State private errorMessage: string = '';
   @State private settings: Map<string, Object | null> = new Map<string, Object | null>();

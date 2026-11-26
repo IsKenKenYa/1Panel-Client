@@ -15,7 +15,6 @@ interface ToolboxEntry {
 @Component
 export struct HarmonyHostToolboxPage {
   @Prop initialRoute: string = '/toolbox';
-  onBack: () => void = (): void => {};
   @State private data: Map<string, Object | null> = new Map<string, Object | null>();
   @State private rows: Array<Map<string, Object | null>> = [];
   @State private updating: boolean = false;

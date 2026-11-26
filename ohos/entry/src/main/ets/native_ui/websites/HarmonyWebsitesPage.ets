@@ -19,7 +19,6 @@ interface HarmonyWebsiteSection {
 export struct HarmonyWebsitesPage {
   initialRoute: string = '/websites';
   routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private websites: HarmonyWebsiteRecord[] = [];
   /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;

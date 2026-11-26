@@ -6,7 +6,6 @@ import { HarmonyHostFailure, HarmonyHostLinkRow, hostString, hostText } from './
 @Available({ minApiVersion: '26.0.0' })
 @Component
 export struct HarmonyHostTerminalPage {
-  onBack: () => void = (): void => {};
   @State private hosts: Array<Map<string, Object | null>> = [];
   @State private connecting: boolean = false;
   @State private connected: boolean = false;

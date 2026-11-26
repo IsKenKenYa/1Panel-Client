@@ -13,7 +13,6 @@ interface OperationLink {
 export struct HarmonyHostActivityPage {
   @Prop initialRoute: string = '/operations';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private loading: boolean = false;
   @State private error: string = '';
   @State private logType: number = 0;
