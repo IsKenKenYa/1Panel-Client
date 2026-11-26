@@ -49,6 +49,7 @@ void main() {
       'systemMaterial: sheetMaterial',
       lookAhead: 10,
     );
+    _checkSplitPlaceholder(failures, file.path, lines);
   }
 
   _checkMaterialDefinition(
@@ -107,6 +108,24 @@ void _checkCall(
     if (!block.contains(requiredText)) {
       failures.add('$path:${index + 1} 缺少 $requiredText');
     }
+  }
+}
+
+void _checkSplitPlaceholder(
+  List<String> failures,
+  String path,
+  List<String> lines,
+) {
+  for (var index = 0; index < lines.length; index++) {
+    if (!lines[index].contains('.mode(NavigationMode.Auto)')) {
+      continue;
+    }
+    final endIndex = index + 12 < lines.length ? index + 12 : lines.length;
+    final block = lines.sublist(index, endIndex).join('\n');
+    if (!block.contains('.splitPlaceholder(')) {
+      failures.add('$path:${index + 1} 分栏模式缺少 .splitPlaceholder(');
+    }
+    return;
   }
 }
 
