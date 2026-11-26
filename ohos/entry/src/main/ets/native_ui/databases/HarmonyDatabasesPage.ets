@@ -330,6 +330,10 @@ export struct HarmonyDatabasesPage {
     }
   }
 
+  private updateSplitLayout(mode: NavigationMode): void {
+    this.splitLayout = mode === NavigationMode.Split;
+  }
+
   build() {
     Navigation(this.paths) { this.listContent() }
       .id('harmony.databases.page')
@@ -337,16 +341,13 @@ export struct HarmonyDatabasesPage {
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .navDestination(this.destination)
-      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .mode(NavigationMode.Auto)
       .navBarWidth(240)
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
-      .onAreaChange((_old: Area, current: Area): void => {
-        const measured = current.width;
-        if (typeof measured === 'number') {
-          this.splitLayout = measured >= 600;
-        }
+      .onNavigationModeChange((mode: NavigationMode): void => {
+        this.updateSplitLayout(mode);
       })
   }
 }

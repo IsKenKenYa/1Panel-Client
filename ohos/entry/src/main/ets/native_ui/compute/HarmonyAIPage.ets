@@ -1044,19 +1044,20 @@ export struct HarmonyAIPage {
     HarmonyAutomationTitle({ label: this.text('serverModuleAi'), showBack: this.showBack, onBack: this.onBack })
   }
 
+  private updateSplitLayout(mode: NavigationMode): void {
+    this.splitLayout = mode === NavigationMode.Split;
+  }
+
   build() {
     Navigation(this.paths) { this.body() }
       .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
       .menus(this.rootMenus()).navDestination(this.destination)
-      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .mode(NavigationMode.Auto)
       .navBarWidth(240)
       .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))
-      .onAreaChange((_old: Area, current: Area): void => {
-        const measured = current.width;
-        if (typeof measured === 'number') {
-          this.splitLayout = measured >= 600;
-        }
+      .onNavigationModeChange((mode: NavigationMode): void => {
+        this.updateSplitLayout(mode);
       })
   }
 }
