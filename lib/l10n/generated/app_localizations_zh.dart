@@ -66,6 +66,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonRefresh => '刷新';
 
   @override
+  String get commonPreviousPage => '上一页';
+
+  @override
+  String get commonNextPage => '下一页';
+
+  @override
   String get commonReset => '重置';
 
   @override
@@ -526,6 +532,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesSslProviderLabel => '证书提供商';
 
   @override
+  String get websiteDnsAccount => 'DNS 账户';
+
+  @override
+  String get websiteDnsManual => '手动 DNS 验证';
+
+  @override
+  String get websitesSslIsIp => 'IP 证书';
+
+  @override
   String get websitesSslOtherDomainsLabel => '其他域名（逗号分隔）';
 
   @override
@@ -548,6 +563,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesSslUploadTypeLocal => '本地路径';
+
+  @override
+  String get websitesSslUploadTypeDeviceFiles => '设备文件';
+
+  @override
+  String get websitesSslUploadTypeServerFiles => '服务器文件路径';
 
   @override
   String get websitesSslCertificateLabel => '证书内容';
@@ -4694,6 +4715,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appInstallPorts => '端口';
 
   @override
+  String get appInstallAllowPort => '允许外部访问';
+
+  @override
   String get appInstallEnv => '环境变量';
 
   @override
@@ -7606,6 +7630,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get menuSettingsEditTitle => '编辑菜单项';
+
+  @override
+  String get menuSettingsMoveUp => '向上移动';
+
+  @override
+  String get menuSettingsMoveDown => '向下移动';
 
   @override
   String get menuSettingsSaveSuccess => '菜单设置已保存';
@@ -12963,4 +12993,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesHttpsHstsSubdomains => 'HSTS 应用到子域名';
+
+  @override
+  String get websiteSslDisableCname => '禁用 CNAME';
+
+  @override
+  String get websiteSslPushDirectory => '同步到目录';
+
+  @override
+  String get websiteSslRunScript => '执行脚本';
+
+  @override
+  String get websiteSslPushNodes => '同步到节点';
+
+  @override
+  String get websiteSslNodeIds => '节点 ID，逗号分隔';
+
+  @override
+  String get websiteSslSelectAccount => '选择账户';
 }

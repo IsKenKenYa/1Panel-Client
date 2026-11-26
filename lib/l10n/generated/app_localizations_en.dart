@@ -66,6 +66,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRefresh => 'Refresh';
 
   @override
+  String get commonPreviousPage => 'Previous page';
+
+  @override
+  String get commonNextPage => 'Next page';
+
+  @override
   String get commonReset => 'Reset';
 
   @override
@@ -530,6 +536,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesSslProviderLabel => 'Provider';
 
   @override
+  String get websiteDnsAccount => 'DNS account';
+
+  @override
+  String get websiteDnsManual => 'Manual DNS verification';
+
+  @override
+  String get websitesSslIsIp => 'IP certificate';
+
+  @override
   String get websitesSslOtherDomainsLabel => 'Other domains (comma-separated)';
 
   @override
@@ -552,6 +567,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesSslUploadTypeLocal => 'Local path';
+
+  @override
+  String get websitesSslUploadTypeDeviceFiles => 'Device files';
+
+  @override
+  String get websitesSslUploadTypeServerFiles => 'Server file paths';
 
   @override
   String get websitesSslCertificateLabel => 'Certificate';
@@ -4861,6 +4882,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appInstallPorts => 'Ports';
 
   @override
+  String get appInstallAllowPort => 'Allow External Access';
+
+  @override
   String get appInstallEnv => 'Environment Variables';
 
   @override
@@ -7824,6 +7848,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menuSettingsEditTitle => 'Edit Menu Item';
+
+  @override
+  String get menuSettingsMoveUp => 'Move up';
+
+  @override
+  String get menuSettingsMoveDown => 'Move down';
 
   @override
   String get menuSettingsSaveSuccess => 'Menu settings saved';
@@ -13367,4 +13397,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesHttpsHstsSubdomains => 'Apply HSTS to subdomains';
+
+  @override
+  String get websiteSslDisableCname => 'Disable CNAME';
+
+  @override
+  String get websiteSslPushDirectory => 'Copy to directories';
+
+  @override
+  String get websiteSslRunScript => 'Run script';
+
+  @override
+  String get websiteSslPushNodes => 'Copy to nodes';
+
+  @override
+  String get websiteSslNodeIds => 'Node IDs, comma separated';
+
+  @override
+  String get websiteSslSelectAccount => 'Select account';
 }

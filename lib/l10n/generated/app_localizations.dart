@@ -212,6 +212,18 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get commonRefresh;
 
+  /// No description provided for @commonPreviousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get commonPreviousPage;
+
+  /// No description provided for @commonNextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get commonNextPage;
+
   /// No description provided for @commonReset.
   ///
   /// In en, this message translates to:
@@ -1100,6 +1112,24 @@ abstract class AppLocalizations {
   /// **'Provider'**
   String get websitesSslProviderLabel;
 
+  /// No description provided for @websiteDnsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS account'**
+  String get websiteDnsAccount;
+
+  /// No description provided for @websiteDnsManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual DNS verification'**
+  String get websiteDnsManual;
+
+  /// No description provided for @websitesSslIsIp.
+  ///
+  /// In en, this message translates to:
+  /// **'IP certificate'**
+  String get websitesSslIsIp;
+
   /// No description provided for @websitesSslOtherDomainsLabel.
   ///
   /// In en, this message translates to:
@@ -1147,6 +1177,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Local path'**
   String get websitesSslUploadTypeLocal;
+
+  /// No description provided for @websitesSslUploadTypeDeviceFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Device files'**
+  String get websitesSslUploadTypeDeviceFiles;
+
+  /// No description provided for @websitesSslUploadTypeServerFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Server file paths'**
+  String get websitesSslUploadTypeServerFiles;
 
   /// No description provided for @websitesSslCertificateLabel.
   ///
@@ -9104,6 +9146,12 @@ abstract class AppLocalizations {
   /// **'Ports'**
   String get appInstallPorts;
 
+  /// No description provided for @appInstallAllowPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow External Access'**
+  String get appInstallAllowPort;
+
   /// No description provided for @appInstallEnv.
   ///
   /// In en, this message translates to:
@@ -14712,6 +14760,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Menu Item'**
   String get menuSettingsEditTitle;
+
+  /// No description provided for @menuSettingsMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get menuSettingsMoveUp;
+
+  /// No description provided for @menuSettingsMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get menuSettingsMoveDown;
 
   /// No description provided for @menuSettingsSaveSuccess.
   ///
@@ -25206,6 +25266,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apply HSTS to subdomains'**
   String get websitesHttpsHstsSubdomains;
+
+  /// No description provided for @websiteSslDisableCname.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable CNAME'**
+  String get websiteSslDisableCname;
+
+  /// No description provided for @websiteSslPushDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to directories'**
+  String get websiteSslPushDirectory;
+
+  /// No description provided for @websiteSslRunScript.
+  ///
+  /// In en, this message translates to:
+  /// **'Run script'**
+  String get websiteSslRunScript;
+
+  /// No description provided for @websiteSslPushNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to nodes'**
+  String get websiteSslPushNodes;
+
+  /// No description provided for @websiteSslNodeIds.
+  ///
+  /// In en, this message translates to:
+  /// **'Node IDs, comma separated'**
+  String get websiteSslNodeIds;
+
+  /// No description provided for @websiteSslSelectAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Select account'**
+  String get websiteSslSelectAccount;
 }
 
 class _AppLocalizationsDelegate
