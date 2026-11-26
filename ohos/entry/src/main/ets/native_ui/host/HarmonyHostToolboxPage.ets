@@ -1,6 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyHostFailure, HarmonyHostLinkRow, HarmonyHostValueRow, hostString, hostText } from './HarmonyHostWidgets';
 
 interface ToolboxEntry {
@@ -180,24 +181,16 @@ export struct HarmonyHostToolboxPage {
     }.width('100%')
   }
 
-  @Builder
-  private titleBar() {
-    Row({ space: 8 }) {
-      Button() {
-        SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(20)
-      }
-      .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-      .accessibilityText(hostText('commonBack')).onClick(this.onBack)
-      Text(this.title()).fontSize(20).fontWeight(FontWeight.Medium).layoutWeight(1)
-    }.width('100%')
-  }
-
   private refreshMenu(): NavigationMenuItem[] {
     return [{
       value: hostText('commonRefresh'),
       symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_clockwise')),
       action: (): void => { this.load(); },
     }];
+  }
+
+  private rootMenus(): NavigationMenuItem[] {
+    return this.initialRoute === '/toolbox' ? [] : this.refreshMenu();
   }
 
   @Builder
@@ -450,10 +443,9 @@ export struct HarmonyHostToolboxPage {
         }.width('100%').height('100%')
       }
     }
-    .title(this.titleBar, { barStyle: BarStyle.STANDARD })
+    .title(this.title(), moduleTitleOptions)
     .titleMode(NavigationTitleMode.Mini)
-    .hideBackButton(true)
-    .menus(this.initialRoute === '/toolbox' ? [] : this.refreshMenu())
+    .menus(this.rootMenus())
     .navDestination(this.destination)
     .mode(NavigationMode.Stack)
     .width('100%').height('100%')

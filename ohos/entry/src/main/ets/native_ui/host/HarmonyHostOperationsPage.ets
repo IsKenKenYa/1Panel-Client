@@ -1,5 +1,7 @@
+import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyHostMonitoringHistory } from './HarmonyHostMonitoringHistory';
 import { HarmonyHostTerminalPage } from './HarmonyHostTerminalPage';
 import { HarmonyHostFailure, HarmonyHostLinkRow, HarmonyHostValueRow, hostString } from './HarmonyHostWidgets';
@@ -85,7 +87,7 @@ export struct HarmonyHostOperationsPage {
     if (this.initialRoute === '/hosts-assets/form') return this.text('operationsHostAssetFormTitle');
     if (this.initialRoute === '/hosts-assets') return this.text('operationsHostAssetsTitle');
     if (this.initialRoute === '/logs/system') return this.text('operationsSystemLogViewerTitle');
-    return this.text('dashboardTitle');
+    return this.text('serverModuleDashboard');
   }
 
   private async load(): Promise<void> {
@@ -451,25 +453,12 @@ export struct HarmonyHostOperationsPage {
     }
   }
 
-  @Builder
-  private rootTitle() {
-    Row({ space: 8 }) {
-      Button() {
-        SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(20)
-      }
-      .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-      .accessibilityText(this.text('commonBack'))
-      .onClick((): void => { this.onBack(); })
-      Text(this.routeTitle()).fontSize(20).fontWeight(FontWeight.Bold).layoutWeight(1)
-      Button() {
-        SymbolGlyph($r('sys.symbol.arrow_clockwise')).fontSize(20)
-      }
-      .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-      .accessibilityText(this.text('commonRefresh'))
-      .onClick((): void => { this.load(); })
-    }
-    .width('100%')
-    .padding({ left: 8, right: 8, top: 8 })
+  private rootMenus(): NavigationMenuItem[] {
+    return [{
+      value: this.text('commonRefresh'),
+      symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_clockwise')),
+      action: (): void => { this.load(); },
+    }];
   }
 
   @Builder
@@ -988,23 +977,19 @@ export struct HarmonyHostOperationsPage {
   @Builder
   private hostPage() {
     Navigation(this.paths) {
-      Column() {
-        this.rootTitle()
-        if (this.loading) {
-          Column() { LoadingProgress().width(48).height(48) }
-            .layoutWeight(1).width('100%').justifyContent(FlexAlign.Center)
-        } else if (this.errorMessage.length > 0) {
-          HarmonyHostFailure({ message: this.errorMessage, onRetry: (): void => { this.load(); } })
-            .layoutWeight(1)
-        } else {
-          this.pageContent()
-        }
+      if (this.loading) {
+        Column() { LoadingProgress().width(48).height(48) }
+          .layoutWeight(1).width('100%').justifyContent(FlexAlign.Center)
+      } else if (this.errorMessage.length > 0) {
+        HarmonyHostFailure({ message: this.errorMessage, onRetry: (): void => { this.load(); } })
+          .layoutWeight(1)
+      } else {
+        this.pageContent()
       }
-      .width('100%').height('100%')
     }
-    .title(this.routeTitle())
+    .title(this.routeTitle(), moduleTitleOptions)
     .titleMode(NavigationTitleMode.Mini)
-    .hideTitleBar(true)
+    .menus(this.rootMenus())
     .backgroundColor($r('sys.color.background_secondary'))
     .navDestination(this.destination)
     .mode(NavigationMode.Stack)
