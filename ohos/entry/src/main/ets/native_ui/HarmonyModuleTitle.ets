@@ -14,3 +14,25 @@ export const moduleTitleOptions: NavigationTitleOptions = {
 
 /** 侧边导航栏的统一宽度，取官方侧栏默认值 240vp。 */
 export const MODULE_NAV_BAR_WIDTH = 240;
+
+/**
+ * 分栏页导航页的默认宽度。
+ *
+ * 官方默认 240vp 在宽窗口下会挤压列表列，取 340vp 作为初始值。
+ */
+export const MODULE_SPLIT_NAV_BAR_WIDTH = 340;
+
+/**
+ * 分栏页导航页的宽度区间。
+ *
+ * 官方在同时设置 navBarWidthRange 与 minContentWidth 时允许拖拽分割线，
+ * 拖拽受内容区最小宽度约束；仅设置 navBarWidth 会固定宽度并禁止拖拽。
+ */
+export const MODULE_SPLIT_NAV_BAR_RANGE: [Dimension, Dimension] = [240, 432];
+
+/**
+ * 分栏页内容区最小宽度。
+ *
+ * 官方默认 360vp 会把宽折叠屏上的列表列压缩到 313vp，取 320vp 让列表与详情宽度接近。
+ */
+export const MODULE_SPLIT_MIN_CONTENT_WIDTH = 320;
