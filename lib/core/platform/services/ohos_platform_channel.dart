@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
 
 import 'ohos_channel_names.dart';
 
@@ -182,6 +183,20 @@ class OhosPlatformChannel {
     return _channel.invokeMethod<String>('pickSaveDirectory');
   }
 
+  Future<List<String>> pickFiles({
+    required bool allowMultiple,
+    List<String>? allowedExtensions,
+  }) async {
+    final paths = await _channel.invokeListMethod<String>('pickFiles', {
+      'allowMultiple': allowMultiple,
+      'fileSuffixFilters': [
+        for (final extension in allowedExtensions ?? const <String>[])
+          '.$extension',
+      ],
+    });
+    return paths!;
+  }
+
   /// Returns the OHOS public download directory the native side exposes
   /// to the user. Maps to `Files/Downloads/...` in the system Files app.
   /// Returns a map `{ path, displayName }` so callers can render a
@@ -218,8 +233,10 @@ class OhosPlatformChannel {
     required String savedDir,
     String? fileName,
     Map<String, String>? headers,
-    bool usePicker = true,
-  }) {
+    bool? usePicker,
+  }) async {
+    final chooseLocation = usePicker ??
+        await AppPreferencesService().loadUseFilePickerForFileOperations();
     return _downloadChannel.invokeMethod<String>(
       'enqueue',
       <String, Object?>{
@@ -227,7 +244,7 @@ class OhosPlatformChannel {
         'savedDir': savedDir,
         'fileName': fileName,
         'headers': headers ?? <String, String>{},
-        'usePicker': usePicker,
+        'usePicker': chooseLocation,
       },
     );
   }

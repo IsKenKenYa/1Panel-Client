@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
@@ -31,15 +32,49 @@ class PlatformFileService {
   final AppPreferencesService _preferencesService;
 
   Future<String?> pickFile({bool withData = false}) async {
-    final result = await FilePicker.platform.pickFiles(withData: withData);
+    final result = await selectFiles(withData: withData);
     return result?.files.single.path;
   }
 
   /// 选择多个文件，返回本地路径列表。
   Future<List<String>> pickFiles() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    final result = await selectFiles(allowMultiple: true);
     if (result == null) return const <String>[];
     return result.files.map((f) => f.path).whereType<String>().toList();
+  }
+
+  Future<FilePickerResult?> selectFiles({
+    bool allowMultiple = false,
+    bool withData = false,
+    bool withReadStream = false,
+    List<String>? allowedExtensions,
+  }) async {
+    if (!_capabilities.supportsNativeFilePicker) {
+      return FilePicker.platform.pickFiles(
+        allowMultiple: allowMultiple,
+        withData: withData,
+        withReadStream: withReadStream,
+        type: allowedExtensions == null ? FileType.any : FileType.custom,
+        allowedExtensions: allowedExtensions,
+      );
+    }
+    final paths = await _ohosChannel.pickFiles(
+      allowMultiple: allowMultiple,
+      allowedExtensions: allowedExtensions,
+    );
+    if (paths.isEmpty) return null;
+    final files = <PlatformFile>[];
+    for (final path in paths) {
+      final file = File(path);
+      files.add(PlatformFile(
+        name: p.basename(path),
+        path: path,
+        size: await file.length(),
+        bytes: withData ? await file.readAsBytes() : null,
+        readStream: withReadStream ? file.openRead() : null,
+      ));
+    }
+    return FilePickerResult(files);
   }
 
   /// Save bytes using a structured save pipeline. Replaces the previous
@@ -66,52 +101,24 @@ class PlatformFileService {
     final subDir = await _loadSubDirectoryName();
 
     if (_capabilities.supportsNativeFileSave) {
-      try {
-        if (usePicker) {
-          final outcome = await _ohosChannel.pickAndSaveBytesByKind(
-            fileName: safeFileName,
-            bytes: bytes,
-            mimeKind: mimeKind,
-            mimeType: mimeType,
-          );
-          if (outcome != null) {
-            return _outcomeFromOhos(outcome, safeFileName);
-          }
-          // User cancelled — return a cancelled result so the UI can
-          // surface a non-error message.
-          return SaveOutcome.cancelled();
-        }
-        // Picker disabled — write to public download directory.
-        final outcome = await _ohosChannel.saveBytesToPublicDownload(
+      if (usePicker) {
+        final outcome = await _ohosChannel.pickAndSaveBytesByKind(
           fileName: safeFileName,
           bytes: bytes,
-          category: effectiveCategory,
-          subDir: subDir,
+          mimeKind: mimeKind,
+          mimeType: mimeType,
         );
-        return _outcomeFromOhos(outcome, safeFileName);
-      } catch (error, stackTrace) {
-        appLogger.wWithPackage(
-          'core.platform.file_service',
-          'OHOS native save failed, falling back to app documents directory',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        // Fall back to in-app private dir on the Dart side as a last
-        // resort; record the fallback in the outcome so the UI can warn.
-        final path = await _saveToFallbackDirectory(
-          fileName: safeFileName,
-          bytes: bytes,
-          subDir: subDir,
-          category: effectiveCategory,
-        );
-        return SaveOutcome(
-          uri: path,
-          displayName: safeFileName,
-          kind: SaveLocationKind.privateFallback,
-          category: effectiveCategory,
-          privateFallbackUsed: true,
-        );
+        return outcome == null
+            ? SaveOutcome.cancelled()
+            : _outcomeFromOhos(outcome, safeFileName);
       }
+      final outcome = await _ohosChannel.saveBytesToPublicDownload(
+        fileName: safeFileName,
+        bytes: bytes,
+        category: effectiveCategory,
+        subDir: subDir,
+      );
+      return _outcomeFromOhos(outcome, safeFileName);
     }
 
     // Non-OHOS platforms use file_picker.
