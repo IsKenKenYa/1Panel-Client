@@ -1,5 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../../HarmonyModuleTitle';
 import { HarmonyRuntimeDetail } from './HarmonyRuntimeDetail';
 import { HarmonyRuntimeForm } from './HarmonyRuntimeForm';
 import { HarmonyRuntimePackages } from './HarmonyRuntimePackages';
@@ -128,18 +129,6 @@ export struct HarmonyRuntimesPage {
     ];
   }
 
-  @Builder
-  private titleContent() {
-    Row({ space: 4 }) {
-      Button() {
-        SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(22).fontColor([$r('sys.color.icon_primary')])
-      }.width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL).accessibilityText(this.text('commonBack'))
-        .onClick((): void => { this.onBack(); })
-      Text(this.text('operationsRuntimesTitle')).fontSize(20).fontWeight(FontWeight.Medium)
-        .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis })
-    }
-  }
-
   private rowSummary(item: Map<string, Object | null>): string {
     const status = item.get('status')?.toString() ?? '';
     const version = item.get('version')?.toString() ?? '';
@@ -259,9 +248,8 @@ export struct HarmonyRuntimesPage {
 
   build() {
     Navigation(this.paths) { this.runtimeList() }
-      .title(this.titleContent(), { barStyle: BarStyle.STANDARD })
+      .title(this.text('operationsRuntimesTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
-      .hideBackButton(true)
       .menus(this.menus())
       .navDestination(this.destination)
       .mode(NavigationMode.Stack)
