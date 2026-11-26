@@ -1,7 +1,8 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
-import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
+import { automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
 
 @Component
 export struct HarmonyGroupsPage {
@@ -184,14 +185,9 @@ export struct HarmonyGroupsPage {
     }
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: automationText('operationsGroupCenterTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   build() {
     Navigation(this.paths) { this.body() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(automationText('operationsGroupCenterTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.menus())
       .navDestination(this.destination).mode(NavigationMode.Stack)
       .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))

@@ -1,5 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyPanelEntry, HarmonyPanelValue } from './HarmonyPanelControls';
 import { HarmonyPanelConfigurationPage } from './HarmonyPanelConfigurationPage';
 import { HarmonyPanelTerminalPage } from './HarmonyPanelTerminalPage';
@@ -97,24 +98,6 @@ export struct HarmonyPanelPage {
   }
 
   @Builder
-  private rootTitle() {
-    Row({ space: 8 }) {
-      Button() {
-        SymbolGlyph($r('sys.symbol.chevron_left'))
-          .fontSize(20)
-      }
-      .width(48)
-      .height(48)
-      .buttonStyle(ButtonStyleMode.TEXTUAL)
-      .accessibilityText(this.text('commonBack'))
-      .onClick((): void => { this.onBack(); })
-      Text(this.text('systemSettingsTitle'))
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-    }
-  }
-
-  @Builder
   private sectionHeader(key: string) {
     Text(this.text(key))
       .fontSize(16)
@@ -200,15 +183,16 @@ export struct HarmonyPanelPage {
   }
 
   build() {
-    Navigation(this.paths) { this.content() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
-      .menus(this.menus())
-      .hideBackButton(true)
-      .titleMode(NavigationTitleMode.Mini)
-      .navDestination(this.destination)
-      .mode(NavigationMode.Stack)
-      .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
-      .width('100%').height('100%')
-      .backgroundColor($r('sys.color.background_secondary'))
+    Navigation(this.paths) {
+      this.content()
+    }
+    .title(this.text('systemSettingsTitle'), moduleTitleOptions)
+    .menus(this.menus())
+    .titleMode(NavigationTitleMode.Mini)
+    .navDestination(this.destination)
+    .mode(NavigationMode.Stack)
+    .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
+    .width('100%').height('100%')
+    .backgroundColor($r('sys.color.background_secondary'))
   }
 }

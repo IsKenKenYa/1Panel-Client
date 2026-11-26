@@ -1,8 +1,9 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyBackupAccountForm } from './HarmonyBackupAccountForm';
-import { HarmonyAutomationTitle, automationText, automationString, automationWrite } from './HarmonyAutomationUI';
+import { automationText, automationString, automationWrite } from './HarmonyAutomationUI';
 
 @Component
 export struct HarmonyBackupsPage {
@@ -447,14 +448,9 @@ export struct HarmonyBackupsPage {
     ];
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: automationText('backupAccountsSectionTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   build() {
     Navigation(this.paths) { this.accountRows() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(automationText('backupAccountsSectionTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.menus())
       .navDestination(this.destination).mode(NavigationMode.Stack)
       .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))

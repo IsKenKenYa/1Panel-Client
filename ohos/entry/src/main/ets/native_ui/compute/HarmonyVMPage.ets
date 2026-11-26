@@ -1,11 +1,11 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { common } from '@kit.AbilityKit';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeInfo, computeText, computeWrite } from './HarmonyComputeControls';
 import { HarmonyVMFormPage } from './HarmonyVMFormPage';
-import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
 
 @Component
 export struct HarmonyVMPage {
@@ -341,14 +341,17 @@ export struct HarmonyVMPage {
     return [
       { value: this.text('commonRefresh'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_clockwise')),
         action: (): void => { this.loadAll(); } },
-      { value: this.text('vmInstanceSyncAction'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_2_circlepath')),
-        isEnabled: this.environment.get('ready') === true,
-        action: (): void => { this.mutate('syncVms', new Map<string, Object | null>(), true); } },
       { value: this.text('commonCreate'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.plus')),
         isEnabled: this.environment.get('ready') === true && this.selectedTab < 5,
         action: (): void => { this.openForm(this.selectedTab < 2 ? 'instance' : ['network', 'storage', 'iso'][this.selectedTab - 2]); } },
-      { value: this.text('vmOrphanDialogTitle'), isEnabled: this.environment.get('ready') === true,
-        action: (): void => { this.loadOrphans(); } },
+    ];
+  }
+
+  /** 侧栏栏宽有限，同步与孤儿信息通过列表侧「更多」菜单承载。 */
+  private secondaryActions(): MenuElement[] {
+    return [
+      { value: this.text('vmInstanceSyncAction'), action: (): void => { this.mutate('syncVms', new Map<string, Object | null>(), true); } },
+      { value: this.text('vmOrphanDialogTitle'), action: (): void => { this.loadOrphans(); } },
     ];
   }
 
@@ -447,6 +450,15 @@ export struct HarmonyVMPage {
             Button(this.text(key), { buttonStyle: this.selectedTab === index ? ButtonStyleMode.NORMAL : ButtonStyleMode.TEXTUAL })
               .height(48).onClick((): void => { this.selectedTab = index; })
           }, (key: string): string => key)
+          if (this.splitLayout) {
+            Button({ type: ButtonType.Circle, buttonStyle: ButtonStyleMode.TEXTUAL }) {
+              SymbolGlyph($r('sys.symbol.more')).fontSize(22)
+                .fontColor([$r('sys.color.ohos_id_color_text_primary')])
+            }
+            .width(48).height(48)
+            .accessibilityText(this.text('commonMore'))
+            .bindMenu(this.secondaryActions(), { systemMaterial: menuMaterial })
+          }
         }
       }.scrollable(ScrollDirection.Horizontal).scrollBar(BarState.Off).width('100%')
       if (this.selectedTab === 1) {
@@ -748,18 +760,13 @@ export struct HarmonyVMPage {
     });
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: this.text('vmPageTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   private updateSplitLayout(mode: NavigationMode): void {
     this.splitLayout = mode === NavigationMode.Split;
   }
 
   build() {
     Navigation(this.paths) { this.listContent() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(this.text('vmPageTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .menus(this.rootMenus())

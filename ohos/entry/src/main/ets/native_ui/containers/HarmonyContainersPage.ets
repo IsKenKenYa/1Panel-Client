@@ -1,6 +1,7 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
-import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyContainerFormPage } from './HarmonyContainerFormPage';
 import { HarmonyContainerFilesPage } from './HarmonyContainerFilesPage';
 import { HarmonyContainerAssetsPage } from './HarmonyContainerAssetsPage';
@@ -578,11 +579,7 @@ export struct HarmonyContainersPage {
   build() {
     Navigation(this.paths) { this.rootContent() }
       .id('harmony-containers-page')
-      .title(this.label('containerTitle'), {
-        barStyle: BarStyle.STACK,
-        systemMaterial: titleBarMaterial,
-        scrollEffectOptions: { scrollEffectType: ScrollEffectType.COMMON_BLUR },
-      })
+      .title(this.label('containerTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.rootMenus())
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)

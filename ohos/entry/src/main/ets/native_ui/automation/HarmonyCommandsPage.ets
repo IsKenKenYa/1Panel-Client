@@ -1,8 +1,9 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
-import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol, automationCopySymbol } from './HarmonyAutomationUI';
+import { automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol, automationCopySymbol } from './HarmonyAutomationUI';
 
 @Component
 export struct HarmonyCommandsPage {
@@ -330,14 +331,9 @@ export struct HarmonyCommandsPage {
     }
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: automationText('operationsCommandsTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   build() {
     Navigation(this.paths) { this.listBody() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(automationText('operationsCommandsTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
       .menus(this.menus()).navDestination(this.destinations).mode(NavigationMode.Stack)
       .width('100%').height('100%')

@@ -1,5 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyWebsiteForm } from './HarmonyWebsiteForm';
 import { HarmonyWebsiteDomains } from './HarmonyWebsiteDomains';
 import { HarmonyWebsiteConfigPage } from './config/HarmonyWebsiteConfigPage';
@@ -240,6 +241,12 @@ export struct HarmonyWebsitesPage {
         action: (): void => { this.load(); } },
       { value: this.text('websitesLifecycleCreateTitle'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.plus')),
         action: (): void => { this.push('create'); } },
+    ];
+  }
+
+  /** 侧栏栏宽有限，次级入口通过列表侧「更多」菜单承载。 */
+  private secondaryActions(): MenuElement[] {
+    return [
       { value: this.text('websitesTemplateTitle'), action: (): void => { this.push('templates'); } },
       { value: this.text('websitesSslPageTitle'), action: (): void => { this.openNative('/website-ssl-center'); } },
       { value: this.text('operationsRuntimesTitle'), action: (): void => { this.openNative('/runtimes'); } },
@@ -315,13 +322,28 @@ export struct HarmonyWebsitesPage {
         .onChange((content: string): void => { this.query = content; })
         .onSubmit((): void => { this.pageNumber = 1; this.load(); })
       Row({ space: 8 }) {
-        Select(this.typeOptions()).selected(this.selectedType).layoutWeight(1).height(48)
+        Select(this.typeOptions()).selected(this.selectedType)
+          .value(this.typeOptions()[this.selectedType].value)
+          .height(48).constraintSize({ minWidth: 132 })
+          .font({ size: 14 })
           .onSelect((index: number): void => { this.selectedType = index; this.pageNumber = 1; this.load(); })
-        Select(this.groupOptions()).selected(this.selectedGroup).layoutWeight(1).height(48)
+        Select(this.groupOptions()).selected(this.selectedGroup)
+          .value(this.groupOptions()[this.selectedGroup].value)
+          .height(48).constraintSize({ minWidth: 132 })
+          .font({ size: 14 })
           .onSelect((index: number): void => { this.selectedGroup = index; this.pageNumber = 1; this.load(); })
         Button(this.text(this.selecting ? 'commonCancel' : 'websitesSelectionEnable'))
           .height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
           .onClick((): void => { this.selecting = !this.selecting; this.selectedIds = []; })
+        if (this.splitLayout) {
+          Button({ type: ButtonType.Circle, buttonStyle: ButtonStyleMode.TEXTUAL }) {
+            SymbolGlyph($r('sys.symbol.more')).fontSize(22)
+              .fontColor([$r('sys.color.ohos_id_color_text_primary')])
+          }
+          .width(48).height(48)
+          .accessibilityText(this.text('commonMore'))
+          .bindMenu(this.secondaryActions(), { systemMaterial: menuMaterial })
+        }
       }.width('100%')
       if (this.selectedIds.length > 0) {
         Row({ space: 8 }) {
@@ -418,17 +440,6 @@ export struct HarmonyWebsitesPage {
   }
 
   @Builder
-  private rootTitleBar() {
-    Row({ space: 8 }) {
-      Button() { SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(22) }
-        .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(this.text('commonBack')).onClick(this.onBack)
-      Text(this.text('websitesPageTitle')).fontSize(20).fontWeight(FontWeight.Medium)
-        .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis }).layoutWeight(1)
-    }.width('100%')
-  }
-
-  @Builder
   private destination(name: string, parameter: Object) {
     if (name === 'create') {
       NavDestination() {
@@ -485,7 +496,7 @@ export struct HarmonyWebsitesPage {
 
   build() {
     Navigation(this.paths) { this.listBody() }
-      .title(this.rootTitleBar, { barStyle: BarStyle.STANDARD })
+      .title(this.text('websitesPageTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .menus(this.navigationMenus())

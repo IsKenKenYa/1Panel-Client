@@ -1,7 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyComputeField, HarmonyComputeToggle, computeWrite } from './HarmonyComputeControls';
-import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
 
 @Observed
 class HarmonyAlertWebhookPair {
@@ -729,14 +729,9 @@ export struct HarmonyAlertPage {
     }
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: this.text('alertPageTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   build() {
     Navigation(this.pathStack) { this.body() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(this.text('alertPageTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true).menus(this.menus()).navDestination(this.destination)
       .mode(NavigationMode.Stack)

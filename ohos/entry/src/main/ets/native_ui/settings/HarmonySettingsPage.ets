@@ -1,6 +1,7 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
-import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 
 interface HarmonySettingsEntry {
   titleKey: string;
@@ -238,11 +239,7 @@ export struct HarmonySettingsPage {
         }.width('100%').height('100%').justifyContent(FlexAlign.Center)
       }
     }
-    .title(this.text('settingsPageTitle'), {
-      barStyle: BarStyle.STACK,
-      systemMaterial: titleBarMaterial,
-      scrollEffectOptions: { scrollEffectType: ScrollEffectType.COMMON_BLUR },
-    })
+    .title(this.text('settingsPageTitle'), moduleTitleOptions)
     .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
     .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
     .mode(NavigationMode.Stack).width('100%').height('100%')

@@ -1,6 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
-import { HarmonyNativeBridge, menuMaterial, titleBarMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp } from './HarmonyAppModels';
 import { HarmonyAppInstallPage } from './HarmonyAppInstallPage';
 import { HarmonyAppConfigPage } from './HarmonyAppConfigPage';
@@ -126,9 +127,6 @@ export struct HarmonyAppsPage {
   }
 
   private menus(): NavigationMenuItem[] {
-    if (this.splitLayout) {
-      return [];
-    }
     return [
       {
         value: this.text('commonRefresh'),
@@ -142,33 +140,12 @@ export struct HarmonyAppsPage {
         isEnabled: !this.operating,
         action: (): void => { this.synchronize(this.selectedTab === 0 ? 'syncInstalledApps' : 'syncRemoteApps'); },
       },
-      {
-        value: this.text('appStoreSyncLocal'),
-        symbolIcon: new SymbolGlyphModifier($r('sys.symbol.folder')),
-        isEnabled: !this.operating,
-        action: (): void => { this.synchronize('syncLocalApps'); },
-      },
-      {
-        value: this.text('appIgnoredUpdatesTitle'),
-        symbolIcon: new SymbolGlyphModifier($r('sys.symbol.list_bullet')),
-        action: (): void => { this.paths.pushPath({ name: 'ignored' }); },
-      },
     ];
   }
 
-  /** 分栏时标题栏不放菜单，动作收敛到列表侧边按钮。 */
+  /** 侧栏栏宽有限，低频动作通过列表侧「更多」菜单承载。 */
   private listActions(): MenuElement[] {
     return [
-      {
-        value: this.text('commonRefresh'),
-        action: (): void => { this.load(); },
-      },
-      {
-        value: this.text('appStoreSync'),
-        action: (): void => {
-          this.synchronize(this.selectedTab === 0 ? 'syncInstalledApps' : 'syncRemoteApps');
-        },
-      },
       {
         value: this.text('appStoreSyncLocal'),
         action: (): void => { this.synchronize('syncLocalApps'); },
@@ -356,23 +333,6 @@ export struct HarmonyAppsPage {
   }
 
   @Builder
-  private rootTitle() {
-    Row({ space: 8 }) {
-      if (!this.splitLayout) {
-        Button({ type: ButtonType.Circle, buttonStyle: ButtonStyleMode.TEXTUAL }) {
-          SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(20)
-            .fontColor([$r('sys.color.ohos_id_color_text_primary')])
-        }
-        .width(48).height(48).accessibilityText(this.text('commonBack'))
-        .onClick((): void => { this.onBack(); })
-      }
-      Text(this.text('appsPageTitle')).fontSize(16).fontWeight(FontWeight.Medium)
-        .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis })
-    }
-    .constraintSize({ maxWidth: this.splitLayout ? 96 : '100%' })
-  }
-
-  @Builder
   private destination(name: string, parameter: Object) {
     if (name === 'installed') {
       HarmonyInstalledAppPage({ installId: (parameter as HarmonyAppDestinationArgs).installId as number })
@@ -400,11 +360,7 @@ export struct HarmonyAppsPage {
   build() {
     Navigation(this.paths) { this.bodyContent() }
       .id('harmony.apps.root')
-      .title(this.rootTitle, {
-        barStyle: BarStyle.STACK,
-        systemMaterial: titleBarMaterial,
-        scrollEffectOptions: { scrollEffectType: ScrollEffectType.COMMON_BLUR },
-      })
+      .title(this.text('appsPageTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .menus(this.menus())

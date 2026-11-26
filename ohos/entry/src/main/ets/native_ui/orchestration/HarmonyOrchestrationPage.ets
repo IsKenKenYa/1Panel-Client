@@ -1,6 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
-import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 
 class HarmonyComposeProject {
   projectId: string;
@@ -339,14 +339,9 @@ export struct HarmonyOrchestrationPage {
       }, (project: HarmonyComposeProject): string => project.projectId)
     }
   }
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: this.text('orchestrationTitle'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   build() {
-    Navigation(this.paths) { this.listContent() }.title(this.rootTitle,
-      { barStyle: BarStyle.STANDARD })
+    Navigation(this.paths) { this.listContent() }
+      .title(this.text('orchestrationTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.rootMenus()).navDestination(this.destination)
       .mode(NavigationMode.Stack).expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary')).width('100%').height('100%')

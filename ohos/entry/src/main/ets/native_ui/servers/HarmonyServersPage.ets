@@ -1,5 +1,6 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
-import { HarmonyNativeBridge, menuMaterial, titleBarMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyModulesPage } from '../modules/HarmonyModulesPage';
 
 class HarmonyServerRecord {
@@ -833,11 +834,7 @@ export struct HarmonyServersPage {
     Navigation(this.paths) { this.listBody() }
       .id('harmony-servers-page')
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
-      .title(this.bridge.text('serverPageTitle'), {
-        barStyle: BarStyle.STACK,
-        systemMaterial: titleBarMaterial,
-        scrollEffectOptions: { scrollEffectType: ScrollEffectType.COMMON_BLUR },
-      })
+      .title(this.bridge.text('serverPageTitle'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .menus(this.navigationMenus())

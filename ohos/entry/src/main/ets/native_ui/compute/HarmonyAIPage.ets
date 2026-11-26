@@ -1,9 +1,9 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { util } from '@kit.ArkTS';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeArguments, computeWrite } from './HarmonyComputeControls';
-import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
 
 @Component
 export struct HarmonyAIPage {
@@ -1051,18 +1051,13 @@ export struct HarmonyAIPage {
     catch (error) { this.errorMessage = (error as Error).message; }
   }
 
-  @Builder
-  private rootTitle() {
-    HarmonyAutomationTitle({ label: this.text('serverModuleAi'), showBack: this.showBack, onBack: this.onBack })
-  }
-
   private updateSplitLayout(mode: NavigationMode): void {
     this.splitLayout = mode === NavigationMode.Split;
   }
 
   build() {
     Navigation(this.paths) { this.body() }
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(this.text('serverModuleAi'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
       .menus(this.rootMenus()).navDestination(this.destination)
       .mode(NavigationMode.Auto)

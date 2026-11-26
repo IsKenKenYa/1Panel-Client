@@ -1,5 +1,7 @@
+import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyDatabaseItem, harmonyDatabaseText } from './HarmonyDatabaseModels';
 import { HarmonyDatabaseForm } from './HarmonyDatabaseForm';
 import { HarmonyDatabaseDetail, HarmonyDatabaseSlowLog } from './HarmonyDatabaseDetail';
@@ -174,23 +176,6 @@ export struct HarmonyDatabasesPage {
   }
 
   @Builder
-  private rootTitle() {
-    Row({ space: 8 }) {
-      Button() { SymbolGlyph($r('sys.symbol.chevron_backward')).fontSize(24) }
-        .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(harmonyDatabaseText('commonBack'))
-        .onClick((): void => { this.onBack(); })
-      Text(harmonyDatabaseText('serverModuleDatabases')).fontSize(20).fontWeight(FontWeight.Medium).layoutWeight(1)
-      Button() { SymbolGlyph($r('sys.symbol.plus')).fontSize(24) }
-        .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(harmonyDatabaseText('commonCreate'))
-        .enabled(this.currentScope !== 'redis')
-        .onClick((): void => { this.open('form', new Map<string, Object | null>()); })
-    }
-    .width('100%')
-  }
-
-  @Builder
   private listContent() {
     Column({ space: 12 }) {
       Row({ space: 12 }) {
@@ -337,9 +322,17 @@ export struct HarmonyDatabasesPage {
   build() {
     Navigation(this.paths) { this.listContent() }
       .id('harmony.databases.page')
-      .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
+      .title(harmonyDatabaseText('serverModuleDatabases'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
+      .menus([
+        {
+          value: harmonyDatabaseText('commonCreate'),
+          symbolIcon: new SymbolGlyphModifier($r('sys.symbol.plus')),
+          isEnabled: this.currentScope !== 'redis',
+          action: (): void => { this.open('form', new Map<string, Object | null>()); },
+        },
+      ])
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
