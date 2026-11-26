@@ -31,7 +31,7 @@ void main() {
             compact ? 44 : kMinInteractiveDimension);
         final color = theme.chipTheme.labelStyle?.color;
         expect(WidgetStateProperty.resolveAs<Color?>(color, {WidgetState.selected}),
-            theme.colorScheme.onPrimary);
+            theme.colorScheme.onSecondaryContainer);
         expect(WidgetStateProperty.resolveAs<Color?>(color, {}),
             theme.colorScheme.onSurface);
       }

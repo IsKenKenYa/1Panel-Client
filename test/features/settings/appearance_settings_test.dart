@@ -14,8 +14,15 @@ void main() {
       seedColor: Colors.teal,
       brightness: Brightness.dark,
     );
-    expect(AppTheme.getLightTheme(dynamicScheme: scheme).colorScheme, scheme);
-    expect(AppTheme.getDarkTheme(dynamicScheme: dark).colorScheme, dark);
+    // 表面层级由主题按 M3 容器角色统一决定，强调色沿用传入方案的取值。
+    for (final (theme, scheme) in [
+      (AppTheme.getLightTheme(dynamicScheme: scheme), scheme),
+      (AppTheme.getDarkTheme(dynamicScheme: dark), dark),
+    ]) {
+      expect(theme.colorScheme.primary, scheme.primary);
+      expect(theme.colorScheme.secondary, scheme.secondary);
+      expect(theme.colorScheme.brightness, scheme.brightness);
+    }
   });
 
   testWidgets('系统配色可用时显示开关，设备无配色时提供主题色选择', (tester) async {

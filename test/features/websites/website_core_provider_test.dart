@@ -37,6 +37,7 @@ class FakeWebsiteRepository extends WebsiteRepository {
   Future<PageResult<WebsiteInfo>> searchWebsites({
     String? name,
     String? type,
+    int? websiteGroupId,
     int page = 1,
     int pageSize = 100,
   }) async {

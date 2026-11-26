@@ -30,8 +30,8 @@ class _FakeWebsiteConfigService extends WebsiteConfigService {
   }
 
   @override
-  Future<Map<String, dynamic>> getResource(int websiteId) async {
-    return const {'cpu': '1'};
+  Future<List<WebsiteResource>> getResource(int websiteId) async {
+    return const [WebsiteResource(id: 16, type: 'runtime', name: 'PHP')];
   }
 
   @override
@@ -64,6 +64,7 @@ void main() {
     expect(provider.error, isNull);
     expect(provider.website?.primaryDomain, 'example.com');
     expect(provider.configFile?.path, '/etc/nginx/conf.d/example.conf');
+    expect(provider.resource.single.name, 'PHP');
     expect(provider.httpsSummary?['enable'], isTrue);
   });
 }
