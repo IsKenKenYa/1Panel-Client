@@ -1,6 +1,7 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyFileContentPage } from './HarmonyFileContentPage';
 
 class HarmonyFileEntry {
@@ -25,6 +26,8 @@ export struct HarmonyFilesPage {
   /** 窗口宽度达到 600vp 时按官方分栏规范让目录与文件详情同屏显示。 */
   @State private splitLayout: boolean = false;
   private readonly paths: NavPathStack = new NavPathStack();
+  private readonly splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.folder'));
   @State private currentPath: string = '/';
   @State private serverName: string = '';
   @State private entries: HarmonyFileEntry[] = [];
@@ -639,6 +642,7 @@ export struct HarmonyFilesPage {
     .navDestination(this.destination)
     .mode(NavigationMode.Auto)
     .navBarWidth(240)
+    .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
     .width('100%')
     .height('100%')
     .backgroundColor($r('sys.color.background_secondary'))

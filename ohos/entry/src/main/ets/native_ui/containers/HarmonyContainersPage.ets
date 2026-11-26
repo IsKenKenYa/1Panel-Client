@@ -2,6 +2,7 @@ import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyContainerFormPage } from './HarmonyContainerFormPage';
 import { HarmonyContainerFilesPage } from './HarmonyContainerFilesPage';
 import { HarmonyContainerAssetsPage } from './HarmonyContainerAssetsPage';
@@ -53,6 +54,8 @@ export struct HarmonyContainersPage {
   @State private commitPause: boolean = true;
   private paths: NavPathStack = new NavPathStack();
   private bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
+  private splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.square_stack_3d'));
   private initialOpened: boolean = false;
   private logVisible: boolean = false;
   private logRequestId: number = 0;
@@ -583,6 +586,7 @@ export struct HarmonyContainersPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary')).width('100%').height('100%')
       .onNavigationModeChange((mode: NavigationMode): void => {

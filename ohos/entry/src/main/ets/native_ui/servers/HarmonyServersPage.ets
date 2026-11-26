@@ -1,6 +1,7 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyModulesPage } from '../modules/HarmonyModulesPage';
 
 class HarmonyServerRecord {
@@ -63,6 +64,8 @@ export struct HarmonyServersPage {
 
   private bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
   private paths: NavPathStack = new NavPathStack();
+  private splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.externaldrive'));
 
   aboutToAppear(): void {
     this.loadInitialRoute();
@@ -840,6 +843,7 @@ export struct HarmonyServersPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .width('100%')
       .height('100%')
       .backgroundColor($r('sys.color.background_secondary'))

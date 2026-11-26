@@ -2,6 +2,7 @@ import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp } from './HarmonyAppModels';
 import { HarmonyAppInstallPage } from './HarmonyAppInstallPage';
 import { HarmonyAppConfigPage } from './HarmonyAppConfigPage';
@@ -30,6 +31,8 @@ export struct HarmonyAppsPage {
   private initialOpened: boolean = false;
   private readonly bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
   private readonly paths: NavPathStack = new NavPathStack();
+  private readonly splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.square_grid_2x2'));
 
   aboutToAppear(): void {
     this.selectedTab = this.initialRoute === '/app-store' || this.initialRoute === '/app-detail' ? 1 : 0;
@@ -367,6 +370,7 @@ export struct HarmonyAppsPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary'))
       .width('100%')
