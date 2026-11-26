@@ -25,6 +25,8 @@ import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
+import 'package:onepanel_client/core/channel/harmony_entry_presentation.dart';
+import 'package:onepanel_client/core/channel/native_channel_harmony_privacy.dart';
 import 'package:onepanel_client/core/channel/native_channel_port.dart';
 import 'package:onepanel_client/core/channel/native_terminal_bridge.dart';
 import 'package:onepanel_client/core/channel/harmony_ui_bridge.dart';
@@ -61,6 +63,9 @@ void main() async {
 
   final capabilities = PlatformCapabilities.current();
   final isAndroid = capabilities.supportsBackgroundDownloader;
+  if (isAndroid) {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
   final isDesktopHost =
       !kIsWeb && (Platform.isMacOS || Platform.isWindows || Platform.isLinux);
 
@@ -322,8 +327,22 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     if (PlatformCapabilities.current().isOhos) {
+      NativeChannelHarmonyPrivacy.bind(
+        context.read<AppLockController>(),
+        context.read<AppSettingsController>(),
+      );
       _harmonyUI = HarmonyUIBridge(
         navigatorKey: _navigator,
+        requiresUnlock: (module) => AppLockGate.requiresUnlock(
+          context.read<AppLockController?>(),
+          module,
+        ),
+        unlock: () {
+          final context = _navigator.currentContext!;
+          return context.read<AppLockController>().authenticateForUnlock(
+            reason: AppLocalizations.of(context).appLockUnlockReasonAppOpen,
+          );
+        },
         refreshSettings: () async {
           await Future.wait([
             context.read<AppSettingsController>().load(),
@@ -370,20 +389,30 @@ class _MyAppState extends State<MyApp> {
               title: 'KenPanel',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
-                final content = Provider<ColorScheme?>.value(
-                  value: lightDynamic,
-                  child: AnimatedBuilder(
-                    animation: Listenable.merge([
-                      _lockTarget,
-                      if (_harmonyUI != null) _harmonyUI!,
-                    ]),
-                    child: child ?? const SizedBox(),
-                    builder: (_, navigator) => AppLockGate(
-                      target: _harmonyUI?.nativeRootEnabled == true
-                          ? _harmonyUI!.activeModule
-                          : _lockTarget.value,
-                      onVisibilityChanged: _harmonyUI?.setGateVisible,
-                      child: navigator!,
+                if (_harmonyUI case final harmonyUI?) {
+                  final appLock = context.watch<AppLockController?>();
+                  harmonyUI.updateUnlockState(
+                    busy: appLock?.isUnlocking ?? false,
+                    error: appLock?.lastError,
+                  );
+                }
+                final content = Provider<HarmonyEntryPresentation?>.value(
+                  value: _harmonyUI?.entry,
+                  child: Provider<ColorScheme?>.value(
+                    value: lightDynamic,
+                    child: AnimatedBuilder(
+                      animation: Listenable.merge([
+                        _lockTarget,
+                        if (_harmonyUI != null) _harmonyUI!,
+                      ]),
+                      child: child ?? const SizedBox(),
+                      builder: (_, navigator) => AppLockGate(
+                        target: _harmonyUI?.nativeRootEnabled == true
+                            ? _harmonyUI!.lockTarget
+                            : _lockTarget.value,
+                        onVisibilityChanged: _harmonyUI?.setGateVisible,
+                        child: navigator!,
+                      ),
                     ),
                   ),
                 );
@@ -392,6 +421,9 @@ class _MyAppState extends State<MyApp> {
                       Localizations.localeOf(context).toLanguageTag());
                   return content;
                 }
+                final isAndroid =
+                    defaultTargetPlatform == TargetPlatform.android &&
+                    _harmonyUI == null;
                 final l10n = AppLocalizations.of(context);
                 return PlatformMenuBar(
                   menus: [
@@ -465,7 +497,19 @@ class _MyAppState extends State<MyApp> {
                       ],
                     ),
                   ],
-                  child: content,
+                  child: isAndroid
+                      ? AnnotatedRegion<SystemUiOverlayStyle>(
+                          value: SystemUiOverlayStyle(
+                            systemNavigationBarColor: Colors.transparent,
+                            systemNavigationBarDividerColor: Colors.transparent,
+                            systemNavigationBarIconBrightness:
+                                Theme.brightnessOf(context) == Brightness.dark
+                                    ? Brightness.light
+                                    : Brightness.dark,
+                          ),
+                          child: content,
+                        )
+                      : content,
                 );
               },
               theme: AppTheme.getLightTheme(
