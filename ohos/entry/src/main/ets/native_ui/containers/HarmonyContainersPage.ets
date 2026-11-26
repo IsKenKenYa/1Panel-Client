@@ -95,8 +95,21 @@ export struct HarmonyContainersPage {
       this.containers = records.map((record: Map<string, Object | null>): HarmonyContainerItem =>
         new HarmonyContainerItem(record));
       this.openInitialRoute();
+      this.autoSelectOnSplit();
     } catch (error) { this.errorMessage = (error as Error).message; }
     finally { this.loading = false; }
+  }
+
+  /** 分栏时右侧详情区需要内容，默认打开首个容器的详情，避免右侧出现空白区域。 */
+  private autoSelectOnSplit(): void {
+    if (!this.splitLayout || this.selected.length > 0 || this.containers.length === 0) return;
+    if (this.paths.size() > 0) return;
+    const first = this.visibleContainers()[0];
+    if (first === undefined) return;
+    this.selected = [first];
+    this.renameText = first.name;
+    this.upgradeImage = first.image;
+    this.push('detail');
   }
 
   private openInitialRoute(): void {
@@ -549,7 +562,13 @@ export struct HarmonyContainersPage {
       .onAreaChange((_old: Area, current: Area): void => {
         const measured = current.width;
         if (typeof measured === 'number') {
-          this.splitLayout = measured >= 600;
+          const split = measured >= 600;
+          if (split && !this.splitLayout) {
+            this.splitLayout = split;
+            this.autoSelectOnSplit();
+            return;
+          }
+          this.splitLayout = split;
         }
       })
   }
