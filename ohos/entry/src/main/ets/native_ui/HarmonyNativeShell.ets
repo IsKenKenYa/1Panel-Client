@@ -153,24 +153,21 @@ export struct HarmonyNativeShell {
   @Builder
   private sidebarPage() {
     if (this.selectedModule === 'servers') {
-      HarmonyServersPage({
-        initialRoute: this.rootRoute === '/server-config' ? this.rootRoute : '/server',
-        shellSidebar: true,
-      })
+      HarmonyServersPage({ initialRoute: this.rootRoute === '/server-config' ? this.rootRoute : '/server' })
     } else if (this.selectedModule === 'files') {
-      HarmonyNativeDestination({ route: '/files', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/files', tab: true })
     } else if (this.selectedModule === 'containers') {
-      HarmonyNativeDestination({ route: '/containers', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/containers', tab: true })
     } else if (this.selectedModule === 'apps') {
-      HarmonyNativeDestination({ route: '/apps', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/apps', tab: true })
     } else if (this.selectedModule === 'websites') {
-      HarmonyNativeDestination({ route: '/websites', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/websites', tab: true })
     } else if (this.selectedModule === 'ai') {
-      HarmonyNativeDestination({ route: '/ai', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/ai', tab: true })
     } else if (this.selectedModule === 'vm') {
-      HarmonyNativeDestination({ route: '/vm', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/vm', tab: true })
     } else if (this.selectedModule === 'verification') {
-      HarmonyNativeDestination({ route: '/security-verification', tab: true, shellSidebar: true })
+      HarmonyNativeDestination({ route: '/security-verification', tab: true })
     } else {
       HarmonySettingsPage()
     }

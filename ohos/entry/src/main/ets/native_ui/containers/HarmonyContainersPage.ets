@@ -25,8 +25,6 @@ export class HarmonyContainerItem {
 export struct HarmonyContainersPage {
   @Prop initialRoute: string = '/containers';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  /** 主壳侧栏已占据左侧空间，此时页面自身不再分栏，避免两层导航栏重复挤压内容。 */
-  @Prop shellSidebar: boolean = false;
   @State private containers: HarmonyContainerItem[] = [];
   /** 窗口宽度达到 600vp 时按官方分栏规范让列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;
@@ -504,29 +502,36 @@ export struct HarmonyContainersPage {
     if (name === 'create') {
       NavDestination() { HarmonyContainerFormPage({ onSaved: (): void => { this.paths.pop(); this.load(); } }) }
         .title(this.label('containerCreate'), { barStyle: BarStyle.STANDARD })
+        .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
     } else if (name === 'docker') {
       NavDestination() { HarmonyDockerConfigPage() }
         .title(this.label('dockerConfigTitle'), { barStyle: BarStyle.STANDARD })
+        .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
     } else if (name === 'images' || name === 'networks' || name === 'volumes' || name === 'repositories') {
       NavDestination() { HarmonyContainerAssetsPage({ initialSection: name, embedded: true }) }
         .title(this.assetsTitle(name), { barStyle: BarStyle.STANDARD })
+        .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
     } else {
       ForEach(this.selected, (entry: HarmonyContainerItem): void => {
         if (name === 'detail') {
           NavDestination() { this.detailContent(entry) }
             .title(entry.name, { barStyle: BarStyle.STANDARD })
             .menus(this.detailMenus(entry))
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'edit') {
           NavDestination() {
             HarmonyContainerFormPage({ containerId: entry.id, containerName: entry.name, containerImage: entry.image,
               onSaved: (): void => { this.paths.pop(); this.load(); } })
           }.title(this.label('containerActionEdit'), { barStyle: BarStyle.STANDARD })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'files') {
           NavDestination() { HarmonyContainerFilesPage({ containerId: entry.id }) }
             .title(this.label('containerTabFiles'), { barStyle: BarStyle.STANDARD })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'terminal') {
           NavDestination() { HarmonyContainerTerminalPage({ containerName: entry.name }) }
             .title(this.label('containerActionTerminal'), { barStyle: BarStyle.STANDARD })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'logs' || name === 'inspect') {
           NavDestination() { this.textContent(name) }
             .title(this.pageTitle(name), { barStyle: BarStyle.STANDARD })
@@ -536,13 +541,16 @@ export struct HarmonyContainersPage {
             }).onHidden((): void => {
               if (name === 'logs') { this.logVisible = false; this.stopLogStream(); }
             })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'stats') {
           NavDestination() { this.statsContent() }
             .title(this.label('containerActionStats'), { barStyle: BarStyle.STANDARD })
             .menus(this.contentMenus(name)).onShown((): void => { this.loadContent(name); })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         } else if (name === 'rename' || name === 'upgrade' || name === 'commit') {
           NavDestination() { this.maintenanceForm(name, entry) }
             .title(this.pageTitle(name), { barStyle: BarStyle.STANDARD })
+            .systemTransition(this.splitLayout ? NavigationSystemTransitionType.CONTENT : NavigationSystemTransitionType.DEFAULT)
         }
       }, (entry: HarmonyContainerItem): string => entry.id)
     }
@@ -565,7 +573,7 @@ export struct HarmonyContainersPage {
       .onAreaChange((_old: Area, current: Area): void => {
         const measured = current.width;
         if (typeof measured === 'number') {
-          const split = !this.shellSidebar && measured >= 600;
+          const split = measured >= 600;
           if (split && !this.splitLayout) {
             this.splitLayout = split;
             this.autoSelectOnSplit();

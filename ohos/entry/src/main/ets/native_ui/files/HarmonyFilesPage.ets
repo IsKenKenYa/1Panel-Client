@@ -21,8 +21,6 @@ class HarmonyFileEntry {
 @Component
 export struct HarmonyFilesPage {
   initialPath: string = '/';
-  /** 主壳侧栏已占据左侧空间，此时页面自身不再分栏，避免两层导航栏重复挤压内容。 */
-  @Prop shellSidebar: boolean = false;
   /** 窗口宽度达到 600vp 时按官方分栏规范让目录与文件详情同屏显示。 */
   @State private splitLayout: boolean = false;
   private readonly paths: NavPathStack = new NavPathStack();
@@ -634,7 +632,7 @@ export struct HarmonyFilesPage {
     .onAreaChange((_old: Area, current: Area): void => {
       const measured = current.width;
       if (typeof measured === 'number') {
-        this.splitLayout = !this.shellSidebar && measured >= 600;
+        this.splitLayout = measured >= 600;
       }
     })
   }

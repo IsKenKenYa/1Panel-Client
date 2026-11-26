@@ -39,8 +39,6 @@ import { HarmonyRuntimesPage } from './websites/runtimes/HarmonyRuntimesPage';
 export struct HarmonyNativeDestination {
   route: string = '';
   tab: boolean = false;
-  /** 主壳侧栏已占据左侧空间，此时页面自身不再分栏。 */
-  shellSidebar: boolean = false;
   routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
   onBack: () => void = (): void => {};
 
@@ -50,16 +48,9 @@ export struct HarmonyNativeDestination {
       this.route === '/server-config' || this.route === '/server-detail') {
       HarmonyServersPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
     } else if (this.route === '/files') {
-      HarmonyFilesPage({
-        initialPath: this.routeArguments.get('path') as string ?? '/',
-        shellSidebar: this.shellSidebar,
-      })
+      HarmonyFilesPage({ initialPath: this.routeArguments.get('path') as string ?? '/' })
     } else if (this.route.startsWith('/container')) {
-      HarmonyContainersPage({
-        initialRoute: this.route,
-        routeArguments: this.routeArguments,
-        shellSidebar: this.shellSidebar,
-      })
+      HarmonyContainersPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route === '/orchestration' || this.route === '/compose-templates') {
       HarmonyOrchestrationPage({
         initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab,
