@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
@@ -36,7 +36,7 @@ void showUploadDialog(BuildContext context, FilesProvider provider) {
           onPressed: () async {
             Navigator.pop(dialogContext);
             try {
-              final result = await FilePicker.platform.pickFiles(
+              final result = await PlatformFileService().selectFiles(
                 allowMultiple: true,
                 withReadStream: kIsWeb,
               );

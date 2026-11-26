@@ -28,7 +28,7 @@ extension _FilesViewNavigation on _FilesViewState {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Material(
-          color: colorScheme.surfaceContainerLow,
+          color: colorScheme.surfaceContainerHigh,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(

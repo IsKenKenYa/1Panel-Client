@@ -1,4 +1,6 @@
 import 'package:onepanel_client/data/models/paged_query.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
@@ -6,6 +8,8 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
+import 'package:onepanel_client/core/network/onepanel_websocket_connector.dart';
+import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/services/transfer/one_panel_download_source.dart';
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
@@ -43,6 +47,7 @@ class FileTransferService {
   }
 
   Future<List<FileInfo>> searchUploadedFiles({
+    String path = '/',
     int page = 1,
     int pageSize = PagedQuery.searchPageSize,
     String? search,
@@ -50,7 +55,7 @@ class FileTransferService {
     final api = await _repository.getApi();
     final response = await api.searchUploadedFiles(
       FileSearch(
-        path: '',
+        path: path,
         page: page,
         pageSize: pageSize,
         search: search,
@@ -211,9 +216,102 @@ class FileTransferService {
   }
 
   /// Delete a file share.
-  Future<void> deleteShare(String shareId) async {
+  Future<void> deleteShare(String path) async {
     final api = await _repository.getApi();
-    await api.deleteShare({'id': shareId});
+    await api.deleteShare({'path': path});
+  }
+
+  Future<Map<String, dynamic>> createShare({
+    required String path,
+    required int expireMinutes,
+    required String password,
+  }) async {
+    final config = await _repository.getCurrentServer();
+    if (config == null) throw StateError('No server configured');
+    final response = await _repository.getApiForConfig(config).createShare({
+      'path': path,
+      'expireMinutes': expireMinutes,
+      'password': password,
+    });
+    final share = response.data!;
+    return {...share, 'link': _shareLink(config.url, share['code'] as String)};
+  }
+
+  Future<String> shareLink(String code) async {
+    final config = await _repository.getCurrentServer();
+    if (config == null) throw StateError('No server configured');
+    return _shareLink(config.url, code);
+  }
+
+  String _shareLink(String serverUrl, String code) {
+    final origin = Uri.parse(serverUrl).origin;
+    return Uri.parse(origin).replace(
+      pathSegments: ['s', code],
+      queryParameters: {'operateNode': 'local'},
+    ).toString();
+  }
+
+  Future<List<dynamic>> searchHistory(String path, {required int page}) async {
+    final api = await _repository.getApi();
+    final response = await api.searchHistory({
+      'path': path,
+      'scope': 'current',
+      'page': page,
+      'pageSize': PagedQuery.listPageSize,
+    });
+    return response.data ?? const [];
+  }
+
+  Future<String?> getHistoryContent(int id) async {
+    final api = await _repository.getApi();
+    return (await api.getHistoryContent({'id': id})).data;
+  }
+
+  Future<void> restoreHistory(int id) async {
+    final api = await _repository.getApi();
+    await api.restoreHistory({'id': id});
+  }
+
+  Future<void> deleteHistory(int id) async {
+    final api = await _repository.getApi();
+    await api.deleteHistory({'ids': [id]});
+  }
+
+  Future<List<String>> getWgetKeys() async {
+    final api = await _repository.getApi();
+    final response = await api.getWgetProcessKeys();
+    return response.data?.cast<String>() ?? const [];
+  }
+
+  Future<List<dynamic>> getWgetProgress({List<String>? keys}) async {
+    final requestedKeys = keys ?? await getWgetKeys();
+    if (requestedKeys.isEmpty) return const [];
+    final connector = OnePanelWebSocketConnector();
+    final response = Completer<List<dynamic>>();
+    try {
+      final socket = await connector.connect(
+        path: ApiConstants.buildApiPath('/files/wget/process'),
+        onData: (frame) {
+          final data = jsonDecode(frame as String);
+          if (!response.isCompleted) {
+            response.complete(data as List<dynamic>? ?? const []);
+          }
+        },
+        onError: (error, stackTrace) {
+          if (!response.isCompleted) response.completeError(error, stackTrace);
+        },
+        onDone: () {
+          if (!response.isCompleted) {
+            response.completeError(StateError('Download progress connection closed'));
+          }
+        },
+      );
+      if (socket == null) throw StateError('Download progress connection unavailable');
+      socket.add(jsonEncode({'type': 'wget', 'keys': requestedKeys}));
+      return await response.future.timeout(const Duration(seconds: 10));
+    } finally {
+      await connector.close();
+    }
   }
 
   /// Get wget download process status.

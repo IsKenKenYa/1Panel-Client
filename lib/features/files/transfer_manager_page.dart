@@ -8,6 +8,8 @@ import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
+import 'package:onepanel_client/core/platform/services/ohos_platform_channel.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
@@ -524,7 +526,9 @@ class _DownloadTaskTile extends StatelessWidget {
   // completed but post-processing (checksum, file move) failed. The file is
   // usable, so we display it as complete to avoid confusing the user.
   DownloadTaskStatus _getDisplayStatus(DownloadTask task) {
-    if (task.status == DownloadTaskStatus.failed && task.progress == 100) {
+    if (!PlatformCapabilities.current().isOhos &&
+        task.status == DownloadTaskStatus.failed &&
+        task.progress == 100) {
       return DownloadTaskStatus.complete;
     }
     return task.status;
@@ -544,12 +548,39 @@ class _DownloadTaskTile extends StatelessWidget {
     return decoded.substring(lastSlash + 1);
   }
 
+  Future<String?> _downloadedFilePath(BuildContext context) {
+    if (PlatformCapabilities.current().isOhos) {
+      return context
+          .read<TransferManagerProvider>()
+          .savedDownloadLocation(task.taskId);
+    }
+    final fileName = _resolveFileName();
+    return Future.value(
+      fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName',
+    );
+  }
+
   Future<void> _openDownloadedFile(BuildContext context) async {
     final l10n = context.l10n;
     final capabilities = PlatformCapabilities.current();
-    final fileName = _resolveFileName();
-    final filePath =
-        fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
+    final filePath = await _downloadedFilePath(context);
+    if (!context.mounted) return;
+    if (filePath == null) {
+      SnackBarUtils.showError(context, l10n.transferFileNotFound);
+      return;
+    }
+    if (capabilities.isOhos) {
+      final uri = Uri.parse(filePath);
+      final opened = await PlatformFileService().openSaveOutcome(SaveOutcome(
+        uri: filePath,
+        displayName: _resolveFileName(),
+        kind: uri.hasScheme ? SaveLocationKind.pickerUri : SaveLocationKind.other,
+      ));
+      if (!opened && context.mounted) {
+        SnackBarUtils.showError(context, l10n.transferOpenFileError);
+      }
+      return;
+    }
     final file = File(filePath);
     if (!await file.exists()) {
       if (context.mounted) {
@@ -621,14 +652,14 @@ class _DownloadTaskTile extends StatelessWidget {
 
   Future<void> _showMoreActions(BuildContext context) async {
     final l10n = context.l10n;
-    final fileName = _resolveFileName();
-    final filePath =
-        fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
+    final provider = context.read<TransferManagerProvider>();
+    final filePath = await _downloadedFilePath(context);
+    if (!context.mounted) return;
     final dirPath = task.savedDir;
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      builder: (context) {
+      builder: (sheetContext) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -637,7 +668,7 @@ class _DownloadTaskTile extends StatelessWidget {
                 leading: const Icon(Icons.open_in_new),
                 title: Text(l10n.transferOpenFile),
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   await _openDownloadedFile(context);
                 },
               ),
@@ -645,7 +676,7 @@ class _DownloadTaskTile extends StatelessWidget {
                 leading: const Icon(Icons.folder_open),
                 title: Text(l10n.transferOpenDownloadsFolder),
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   final ok = await FileSaveService().openDownloadsDirectory();
                   if (!context.mounted) return;
                   if (!ok) {
@@ -661,22 +692,23 @@ class _DownloadTaskTile extends StatelessWidget {
                   }
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.copy),
-                title: Text(l10n.transferCopyPath),
-                onTap: () async {
-                  Navigator.pop(context);
-                  _copyToClipboard(context, filePath);
-                },
-              ),
+              if (filePath != null)
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: Text(l10n.transferCopyPath),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _copyToClipboard(context, filePath);
+                  },
+                ),
               ListTile(
                 leading: const Icon(Icons.delete_outline),
                 title: Text(l10n.commonDelete),
                 textColor: Theme.of(context).colorScheme.error,
                 iconColor: Theme.of(context).colorScheme.error,
                 onTap: () async {
-                  Navigator.pop(context);
-                  await TransferManager().deleteDownloadTask(task.taskId);
+                  Navigator.pop(sheetContext);
+                  await provider.deleteTask(task.taskId);
                   onRefresh();
                 },
               ),

@@ -31,9 +31,7 @@ class _RecycleBinStatusPageState extends State<RecycleBinStatusPage> {
       final response = await api.getRecycleBinStatus();
       if (mounted) {
         setState(() {
-          _status = response.data is Map
-              ? Map<String, dynamic>.from(response.data as Map)
-              : const <String, dynamic>{};
+          _status = response.data?.toJson();
           _isLoading = false;
         });
       }

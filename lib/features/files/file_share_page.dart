@@ -35,9 +35,9 @@ class _FileSharePageState extends State<FileSharePage> {
     }
   }
 
-  Future<void> _deleteShare(String shareId) async {
+  Future<void> _deleteShare(String path) async {
     try {
-      await _service.deleteShare(shareId);
+      await _service.deleteShare(path);
       if (mounted) SnackBarUtils.showSuccess(context, context.l10n.commonDeleted);
       _loadShares();
     } catch (e) {
@@ -72,7 +72,7 @@ class _FileSharePageState extends State<FileSharePage> {
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
                               tooltip: context.l10n.commonDelete,
-                              onPressed: () => _deleteShare(share['id']?.toString() ?? ''),
+                              onPressed: () => _deleteShare(share['path'] as String),
                             ),
                           ),
                         );

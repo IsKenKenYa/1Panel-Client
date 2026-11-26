@@ -51,7 +51,9 @@ class FileRecycleService {
     final api = await _repository.getApi();
     for (final file in files) {
       final recyclePath = '${file.from}/${file.rName}';
-      await api.deleteFile(FileDelete(path: recyclePath, forceDelete: true));
+      await api.deleteFile(
+        FileDelete(path: recyclePath, isDir: file.isDir, forceDelete: true),
+      );
     }
   }
 }

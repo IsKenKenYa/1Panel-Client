@@ -1,4 +1,5 @@
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -24,7 +25,7 @@ class ContainerInlineSummaryCard extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-            color: scheme.surfaceContainerLow,
+            color: AppTheme.cardSurface(scheme),
             borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
           ),
           child: Column(

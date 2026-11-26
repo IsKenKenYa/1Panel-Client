@@ -154,7 +154,7 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
               task.status == DownloadTaskStatus.undefined ||
               // failed + progress<100 = genuinely incomplete
               (task.status == DownloadTaskStatus.failed &&
-                  task.progress != 100),
+                  (_useOhosDownloader || task.progress != 100)),
         )
         .toList(growable: false);
   }
@@ -170,9 +170,14 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
               // the download finished but post-processing (e.g. checksum, move)
               // failed — the file is usable, so treat as completed.
               (task.status == DownloadTaskStatus.failed &&
+                  !_useOhosDownloader &&
                   task.progress == 100),
         )
         .toList(growable: false);
+  }
+
+  Future<String?> savedDownloadLocation(String taskId) async {
+    return _ohosDownloadService?.saveDownloadedFile(taskId);
   }
 
   Future<void> pauseTask(String taskId) async {
