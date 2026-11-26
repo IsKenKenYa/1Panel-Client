@@ -3,7 +3,7 @@ import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions, MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
-import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp } from './HarmonyAppModels';
+import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp, prefetchAppIcons } from './HarmonyAppModels';
 import { HarmonyAppInstallPage } from './HarmonyAppInstallPage';
 import { HarmonyAppConfigPage } from './HarmonyAppConfigPage';
 import { HarmonyInstalledAppPage } from './HarmonyInstalledAppPage';
@@ -67,12 +67,21 @@ export struct HarmonyAppsPage {
         this.hasMore = data.length === 50;
       }
       this.page = nextPage;
+      await this.prefetchIcons();
       await this.openInitialDetail();
     } catch (error) {
       this.errorMessage = (error as Error).message;
     } finally {
       this.loading = false;
     }
+  }
+
+  /** 列表加载后批量预取图标，避免逐行请求时先行渲染的行停在默认图标。 */
+  private async prefetchIcons(): Promise<void> {
+    const keys = this.selectedTab === 0
+      ? this.installedApps.map((app: HarmonyInstalledApp): string => app.appKey)
+      : this.catalogApps.map((app: HarmonyCatalogApp): string => app.appKey);
+    await prefetchAppIcons(keys);
   }
 
   private async openInitialDetail(): Promise<void> {
