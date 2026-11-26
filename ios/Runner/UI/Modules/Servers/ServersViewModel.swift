@@ -1,3 +1,4 @@
+import Flutter
 import Foundation
 
 struct ServerModel: Identifiable, Hashable {
@@ -6,8 +7,8 @@ struct ServerModel: Identifiable, Hashable {
     let name: String
     let url: String
     let isCurrent: Bool
-    let cpu: Double
-    let memory: Double
+    let cpu: Double?
+    let memory: Double?
     let tokenValidity: Int
     let allowInsecureTls: Bool
 
@@ -19,8 +20,8 @@ struct ServerModel: Identifiable, Hashable {
         name: String,
         url: String,
         isCurrent: Bool,
-        cpu: Double,
-        memory: Double,
+        cpu: Double?,
+        memory: Double?,
         tokenValidity: Int = 0,
         allowInsecureTls: Bool = false
     ) {
@@ -137,6 +138,10 @@ class ServersViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self?.isLoading = false
                 guard let dictArray = result as? [[String: Any]] else {
+                    // 通道失败时保留原始错误，界面显示失败占位并提供重试。
+                    self?.errorMessage = (result as? FlutterError)?.message
+                        ?? TranslationsManager.shared.get("commonLoadFailedTitle",
+                                                           fallback: "Failed to load")
                     completion?()
                     return
                 }
@@ -146,8 +151,9 @@ class ServersViewModel: ObservableObject {
                           let name = dict["name"] as? String,
                           let url = dict["url"] as? String else { return nil }
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
-                    let cpu = dict["cpu"] as? Double ?? 0
-                    let memory = dict["memory"] as? Double ?? 0
+                    // 指标可能缺失：保留 nil，让列表显示占位而不是 0%。
+                    let cpu = dict["cpu"] as? Double
+                    let memory = dict["memory"] as? Double
                     return ServerModel(
                         originalId: originalId, revision: revision,
                         name: name, url: url, isCurrent: isCurrent,

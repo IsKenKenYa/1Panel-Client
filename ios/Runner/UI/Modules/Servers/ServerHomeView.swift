@@ -69,17 +69,20 @@ struct ServerHomeView: View {
                 ResourceGaugeRow(
                     title: translations.get("dashboardCpuUsage", fallback: "CPU"),
                     value: viewModel.metrics.cpu,
-                    icon: "cpu"
+                    icon: "cpu",
+                    baseColor: .blue
                 )
                 ResourceGaugeRow(
                     title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                     value: viewModel.metrics.memory,
-                    icon: "memorychip"
+                    icon: "memorychip",
+                    baseColor: .purple
                 )
                 ResourceGaugeRow(
                     title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                     value: viewModel.metrics.disk,
-                    icon: "internaldrive"
+                    icon: "internaldrive",
+                    baseColor: .teal
                 )
             }
 
@@ -150,18 +153,16 @@ struct DeviceSnapshotData {
     let userCount: Int
 }
 
-/// 资源占用行：数值 + 阈值色进度条（60% 橙色、85% 红色）。
+/// 资源占用行：数值 + 阈值色进度条。
 struct ResourceGaugeRow: View {
     let title: String
     let value: Double
     let icon: String
+    /// 未进入提示与危险区间时的颜色。
+    var baseColor: Color = .blue
 
     private var gaugeColor: Color {
-        switch value {
-        case 85...: return .red
-        case 60..<85: return .orange
-        default: return .green
-        }
+        GaugePalette.color(for: value, base: baseColor)
     }
 
     var body: some View {

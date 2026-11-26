@@ -32,17 +32,20 @@ struct MonitoringView: View {
                         ResourceGaugeRow(
                             title: translations.get("dashboardCpuUsage", fallback: "CPU"),
                             value: viewModel.metrics.cpu,
-                            icon: "cpu"
+                            icon: "cpu",
+                            baseColor: .blue
                         )
                         ResourceGaugeRow(
                             title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                             value: viewModel.metrics.memory,
-                            icon: "memorychip"
+                            icon: "memorychip",
+                            baseColor: .purple
                         )
                         ResourceGaugeRow(
                             title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                             value: viewModel.metrics.disk,
-                            icon: "internaldrive"
+                            icon: "internaldrive",
+                            baseColor: .teal
                         )
                     }
                     Section(translations.get("monitorLoadAverageTitle", fallback: "Load Average")) {

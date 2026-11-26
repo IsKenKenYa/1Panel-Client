@@ -18,6 +18,10 @@ struct ServersView: View {
         Group {
             if viewModel.isLoading && viewModel.servers.isEmpty {
                 LoadingView()
+            } else if let error = viewModel.errorMessage, viewModel.servers.isEmpty {
+                ErrorView(message: error) {
+                    viewModel.fetchServers()
+                }
             } else if viewModel.servers.isEmpty {
                 emptyState
             } else {
@@ -102,29 +106,14 @@ struct ServersView: View {
 
     @ViewBuilder
     private var emptyState: some View {
-        let title = translations.get("serverListEmptyTitle", fallback: "No servers found")
-        let description = translations.get("serverListEmptyDesc", fallback: "Add a 1Panel server to get started.")
-        if #available(iOS 17.0, *) {
-            ContentUnavailableView {
-                Label(title, systemImage: "server.rack")
-            } description: {
-                Text(description)
-            } actions: {
-                if #available(iOS 26.0, *) {
-                    addServerButton.buttonStyle(.glassProminent)
-                } else {
-                    addServerButton.buttonStyle(.borderedProminent)
-                }
-            }
-        } else {
-            VStack(spacing: 12) {
-                Label(title, systemImage: "server.rack").font(.headline)
-                Text(description)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                addServerButton.buttonStyle(.borderedProminent)
-            }
-            .padding()
+        EmptyStateView(
+            icon: "server.rack",
+            message: translations.get("serverListEmptyTitle", fallback: "No servers found"),
+            description: translations.get("serverListEmptyDesc",
+                                          fallback: "Add a 1Panel server to get started.")
+        ) {
+            addServerButton
+                .prominentActionButton()
         }
     }
 
@@ -225,14 +214,7 @@ private struct ServerRow: View {
                 Text(server.url)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                HStack(spacing: 16) {
-                    Label(String(format: "%.1f%%", server.cpu), systemImage: "cpu")
-                        .font(.caption)
-                        .foregroundStyle(.blue)
-                    Label(String(format: "%.1f%%", server.memory), systemImage: "memorychip")
-                        .font(.caption)
-                        .foregroundStyle(.purple)
-                }
+                metrics
             }
             Image(systemName: "chevron.forward")
                 .font(.footnote.weight(.semibold))
@@ -242,5 +224,24 @@ private struct ServerRow: View {
         .foregroundStyle(.primary)
         .padding(.vertical, 4)
         .contentShape(Rectangle())
+    }
+
+    /// 指标缺失时显示占位文案，不再把「没有返回值」渲染成 0%。
+    @ViewBuilder
+    private var metrics: some View {
+        if let cpu = server.cpu, let memory = server.memory {
+            HStack(spacing: 16) {
+                Label(String(format: "%.1f%%", cpu), systemImage: "cpu")
+                    .font(.caption)
+                    .foregroundStyle(GaugePalette.color(for: cpu, base: .blue))
+                Label(String(format: "%.1f%%", memory), systemImage: "memorychip")
+                    .font(.caption)
+                    .foregroundStyle(GaugePalette.color(for: memory, base: .purple))
+            }
+        } else {
+            Text(translations.get("serverMetricsUnavailable", fallback: "Metrics unavailable"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
     }
 }

@@ -30,7 +30,9 @@ class SettingsViewModel: ObservableObject {
     @Published var selectedTheme: String = "system"
     @Published var appLockEnabled: Bool = false
     @Published var isClearingCache: Bool = false
+    /// 缓存清理结果：成功为空正文的提示，失败保留原始错误。
     @Published var cacheClearMessage: String?
+    @Published var cacheClearSucceeded = false
 
     let appVersion: String
     let buildNumber: String
@@ -85,17 +87,26 @@ class SettingsViewModel: ObservableObject {
         guard !isClearingCache else { return }
         isClearingCache = true
         cacheClearMessage = nil
+        cacheClearSucceeded = false
         ChannelManager.shared.invokeDataMethod("clearCache") { [weak self] result in
             DispatchQueue.main.async {
-                self?.isClearingCache = false
+                guard let self else { return }
+                self.isClearingCache = false
                 if let dict = result as? [String: Any],
                    let success = dict["success"] as? Bool, !success {
-                    self?.cacheClearMessage = dict["error"] as? String ?? "Failed to clear cache"
+                    self.cacheClearMessage = dict["error"] as? String
+                        ?? TranslationsManager.shared.get("commonOperationFailed",
+                                                           fallback: "Operation failed")
                 } else {
-                    self?.cacheClearMessage = "✓ Cache cleared"
+                    self.cacheClearSucceeded = true
+                    self.cacheClearMessage = TranslationsManager.shared.get(
+                        "settingsCacheCleared",
+                        fallback: "Cache cleared"
+                    )
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    self?.cacheClearMessage = nil
+                    self.cacheClearMessage = nil
+                    self.cacheClearSucceeded = false
                 }
             }
         }

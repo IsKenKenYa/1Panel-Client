@@ -83,9 +83,15 @@ struct SettingsView: View {
                     }
                 }
                 if let msg = viewModel.cacheClearMessage {
-                    Text(msg)
-                        .font(.footnote)
-                        .foregroundStyle(msg.hasPrefix("✓") ? Color.green : Color.red)
+                    Label {
+                        Text(msg)
+                    } icon: {
+                        Image(systemName: viewModel.cacheClearSucceeded
+                              ? "checkmark.circle"
+                              : "exclamationmark.circle")
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(viewModel.cacheClearSucceeded ? Color.secondary : Color.red)
                 }
             }
 

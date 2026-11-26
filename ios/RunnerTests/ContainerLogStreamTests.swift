@@ -11,17 +11,17 @@ import AppleSharedUI
 /// 推送普通帧 `data: <base64>` 与 `event: error` 明文；快照走生产
 /// `getContainerLogs` 通道。没有回调替身、空 stop、人工成功事件或手写协议解析。
 ///
-/// 测试会临时把当前服务器切到本地服务：`setUp` 先记录原有服务器列表、
-/// 当前选中项与凭据，`tearDown` 恢复原列表与选择并删除本次新增的条目；
-/// 不删除用户原有数据。
+/// 测试隔离：`setUp` 先经 `useTestStorageNamespace` 把配置读写切到独立命名
+/// 空间并重置该空间，`tearDown` 只切回用户命名空间，不加 `reset`：切回时
+/// 清空会删除用户真实条目。
 @MainActor
 final class ContainerLogStreamTests: XCTestCase {
-    private var baselineServers: [[String: Any]] = []
-    private var baselineCurrentID: String?
+    /// 本次运行独占的测试命名空间；随机后缀避免并行运行互相干扰。
+    private let namespace = "test_b73_\(UUID().uuidString)_"
 
     override func setUp() async throws {
         try await super.setUp()
-        try await captureServerBaseline()
+        try await useNamespace(reset: true)
         let seeded = try await ChannelManager.shared.invokeDataMethodAsync(
             "seedDebugConfig",
             arguments: [
@@ -36,57 +36,33 @@ final class ContainerLogStreamTests: XCTestCase {
     }
 
     override func tearDown() async throws {
-        _ = try? await ChannelManager.shared.stopContainerLogStream(handle: 0)
-        try await restoreServerBaseline()
+        _ = try? await ChannelManager.shared.invokeDataMethodAsync(
+            "stopContainerLogStream",
+            arguments: ["requestID": 0]
+        )
+        try await useNamespace(reset: false, namespace: "")
         try await super.tearDown()
     }
 
-    /// 记录测试开始前的服务器列表与当前选中项。
-    private func captureServerBaseline() async throws {
-        let raw = try await ChannelManager.shared.invokeDataMethodAsync("getServers")
-        baselineServers = (raw as? [[String: Any]]) ?? []
-        let selected = baselineServers
-            .first { ($0["isCurrent"] as? Bool) == true }?["id"] as? String
-        if let selected {
-            baselineCurrentID = selected
-        } else {
-            baselineCurrentID = try await currentServerID()
+    /// 切换配置存储命名空间；`reset` 只清空目标命名空间内的条目。
+    private func useNamespace(
+        reset: Bool,
+        namespace: String? = nil
+    ) async throws {
+        let target = namespace ?? self.namespace
+        let raw = try await ChannelManager.shared.invokeDataMethodAsync(
+            "useTestStorageNamespace",
+            arguments: ["namespace": target, "reset": reset]
+        )
+        let payload = raw as? [String: Any]
+        XCTAssertEqual(payload?["success"] as? Bool, true,
+                       "useTestStorageNamespace failed: \(payload ?? [:])")
+        // 配置存储切换后重新读取服务器目录，确认测试空间确实是空的。
+        if reset && !target.isEmpty {
+            let servers = try await ChannelManager.shared.invokeDataMethodAsync("getServers")
+            XCTAssertEqual((servers as? [[String: Any]])?.count, 0,
+                           "测试命名空间必须为空，不能复用用户配置")
         }
-    }
-
-    private func currentServerID() async throws -> String? {
-        let raw = try await ChannelManager.shared.invokeDataMethodAsync("getCurrentServer")
-        return (raw as? [String: Any])?["id"] as? String
-    }
-
-    /// 恢复原服务器列表与当前选择，并删除本次新增的本地服务条目。
-    ///
-    /// 原有条目只做存在性核对与当前选择恢复，不覆盖、不删除；
-    /// 本次新增的 `B73 Real Stream` 条目会被移除，避免残留本地地址。
-    private func restoreServerBaseline() async throws {
-        let raw = try? await ChannelManager.shared.invokeDataMethodAsync("getServers")
-        let current = (raw as? [[String: Any]]) ?? []
-        let baselineIDs = Set(baselineServers.compactMap { $0["id"] as? String })
-        for server in current {
-            guard let id = server["id"] as? String, !baselineIDs.contains(id) else {
-                continue
-            }
-            _ = try? await ChannelManager.shared.invokeDataMethodAsync(
-                "deleteServer",
-                arguments: ["id": id]
-            )
-        }
-        if let baselineCurrentID {
-            _ = try? await ChannelManager.shared.invokeDataMethodAsync(
-                "connectServer",
-                arguments: ["id": baselineCurrentID]
-            )
-        }
-        // 核对原有条目仍在，未被测试清理逻辑波及。
-        let after = try? await ChannelManager.shared.invokeDataMethodAsync("getServers")
-        let afterIDs = Set(((after as? [[String: Any]]) ?? []).compactMap { $0["id"] as? String })
-        XCTAssertTrue(baselineIDs.isSubset(of: afterIDs),
-                      "测试不得删除原有服务器条目")
     }
 
     private func waitFor(

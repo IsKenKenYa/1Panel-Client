@@ -181,19 +181,43 @@ class ChannelManager {
     }
 
     /// 调试走查种子：把 `ONEPANEL_SEED_*` 环境变量转发给 Dart 侧写入配置。
-    /// Dart 侧仅在调试构建处理该调用。
-    func seedDebugConfigIfNeeded() {
+    ///
+    /// 只在 Dart 通道可应答后写入，并在写入完成后再放行界面读取配置，
+    /// 避免日志页首帧早于种子完成而落到「加载失败」。
+    /// 可选 `ONEPANEL_SEED_NAMESPACE` 把写入切到独立存储命名空间，
+    /// 让自动化测试完全不触碰用户真实配置。
+    func seedDebugConfigIfNeeded(completion: (() -> Void)? = nil) {
         let env = ProcessInfo.processInfo.environment
         guard let url = env["ONEPANEL_SEED_SERVER_URL"], !url.isEmpty,
               let apiKey = env["ONEPANEL_SEED_API_KEY"], !apiKey.isEmpty else {
+            completion?()
             return
         }
         var args: [String: Any] = ["url": url, "apiKey": apiKey]
         if let name = env["ONEPANEL_SEED_SERVER_NAME"], !name.isEmpty {
             args["name"] = name
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.invokeDataMethod("seedDebugConfig", arguments: args) { _ in }
+        let namespace = env["ONEPANEL_SEED_NAMESPACE"] ?? ""
+
+        // 先探测通道就绪（getServers 是只读调用），再按顺序切换命名空间与写入。
+        invokeDataMethod("getServers", arguments: nil) { [weak self] _ in
+            guard let self else { return }
+            let proceed = { [weak self] in
+                guard let self else { return }
+                self.invokeDataMethod("seedDebugConfig", arguments: args) { _ in
+                    completion?()
+                }
+            }
+            guard !namespace.isEmpty else {
+                proceed()
+                return
+            }
+            self.invokeDataMethod(
+                "useTestStorageNamespace",
+                arguments: ["namespace": namespace, "reset": true]
+            ) { _ in
+                proceed()
+            }
         }
     }
 }
