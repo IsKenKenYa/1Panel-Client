@@ -28,7 +28,7 @@
 | updateRedisConf | `{dbType: string, database: string, timeout: string, maxclients: string, maxmemory: string}` | updateRedisConf | POST /databases/redis/conf/update |
 | updateRedisPersistence | `{database: string, type: 'aof'\|'rbd', appendonly?: string, appendfsync?: string, save?: string, dbType: string}` | updateRedisPersistenceConf | POST /databases/redis/persistence/update |
 | changeRedisPassword | `{database: string, password: string}`（password 底层 base64 编码） | changeRedisPassword | POST /databases/redis/password |
-| updateDatabaseAccess | `{id: int, from: string, type: string, database: string, value: '%'|'localhost'}` | updateMysqlAccess | POST /databases/change/access |
+| updateDatabaseAccess | `{id?: int, from: string, type: string, database: string, value: '%'|'localhost'}` | updateMysqlAccess | POST /databases/change/access |
 | updateDatabaseUserPassword | `{database: string, username: string, host: string, password: string}`（password 底层 base64） | updateDatabaseUserPassword | POST /databases/users/password |
 | createDatabaseUser | `{database: string, username: string, host: string, password: string, description?: string}`（password base64） | createDatabaseUser | POST /databases/users |
 | deleteDatabaseUser | `{database: string, username: string, host: string}` | deleteDatabaseUser | POST /databases/users/del |
