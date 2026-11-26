@@ -234,7 +234,7 @@ export struct HarmonySettingsPage {
             }.borderRadius(16).clip(true)
           }.width('100%').height('100%')
             .constraintSize({ maxWidth: 840 })
-            .padding({ left: 16, right: 16, bottom: 24 }).contentStartOffset(72)
+            .padding({ left: 16, right: 16, top: 12, bottom: 24 })
             .scrollBar(BarState.Auto)
         }.width('100%').height('100%').justifyContent(FlexAlign.Center)
       }

@@ -430,9 +430,18 @@ export struct HarmonyAIPage {
     ];
     if (this.selectedTab === 0) {
       actions.push({ value: this.text('aiModelCreate'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.plus')), action: (): void => { this.formKind = 'ollama'; this.nameText = ''; this.push('ai-form'); } });
-      actions.push({ value: this.text('aiModelSync'), action: (): void => { this.mutate('syncOllamaModelsNative', new Map<string, Object | null>()); } });
     } else if (this.selectedTab === 2) {
       actions.push({ value: this.text('modelDownloaderSettingsAction'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.gearshape')), action: (): void => { this.openModelSettings(); } });
+    }
+    return actions;
+  }
+
+  /** 侧栏栏宽有限，标题栏只放图标动作，同级文字动作经列表侧「更多」进入。 */
+  private secondaryActions(): MenuElement[] {
+    const actions: MenuElement[] = [];
+    if (this.selectedTab === 0) {
+      actions.push({ value: this.text('aiModelSync'), action: (): void => { this.mutate('syncOllamaModelsNative', new Map<string, Object | null>()); } });
+    } else if (this.selectedTab === 2) {
       actions.push({ value: this.text('modelDownloaderFeaturedSyncAction'), action: (): void => { this.mutate('syncModelDownloaderFeatured', new Map<string, Object | null>()); } });
     } else if (this.selectedTab === 3) {
       actions.push({ value: this.text('aiMcpBindDomain'), action: (): void => { this.bindDomain(); } });
@@ -490,6 +499,15 @@ export struct HarmonyAIPage {
             .layoutWeight(1).height(48).onChange((content: string): void => { this.searchText = content; })
           Button() { SymbolGlyph($r('sys.symbol.magnifyingglass')).fontSize(20) }.width(48).height(48)
             .accessibilityText(this.text('commonSearch')).onClick((): void => { this.search(); })
+          if (this.splitLayout && this.secondaryActions().length > 0) {
+            Button({ type: ButtonType.Circle, buttonStyle: ButtonStyleMode.TEXTUAL }) {
+              SymbolGlyph($r('sys.symbol.more')).fontSize(22)
+                .fontColor([$r('sys.color.ohos_id_color_text_primary')])
+            }
+            .width(48).height(48)
+            .accessibilityText(this.text('commonMore'))
+            .bindMenu(this.secondaryActions(), { systemMaterial: menuMaterial })
+          }
         }
       }
       if (this.selectedTab === 2) {

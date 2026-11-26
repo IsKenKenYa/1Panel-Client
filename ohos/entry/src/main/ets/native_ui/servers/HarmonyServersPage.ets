@@ -583,8 +583,7 @@ export struct HarmonyServersPage {
             ListItem() { this.serverCard(server) }
           }, (server: HarmonyServerRecord): string => server.serverId)
         }
-        .padding({ left: 16, right: 16, bottom: 24 })
-        .contentStartOffset(76)
+        .padding({ left: 16, right: 16, top: 12, bottom: 24 })
         .layoutWeight(1)
         .width('100%')
       }

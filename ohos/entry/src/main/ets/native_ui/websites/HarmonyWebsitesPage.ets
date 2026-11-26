@@ -252,6 +252,7 @@ export struct HarmonyWebsitesPage {
       { value: this.text('operationsRuntimesTitle'), action: (): void => { this.openNative('/runtimes'); } },
       { value: this.text('openrestyPageTitle'), action: (): void => { this.push('openresty'); } },
       { value: this.text('securityGatewayPageTitle'), action: (): void => { this.push('gateway'); } },
+      { value: this.text('websitesSelectionEnable'), action: (): void => { this.selecting = true; this.selectedIds = []; } },
     ];
   }
 
@@ -317,24 +318,12 @@ export struct HarmonyWebsitesPage {
   @Builder
   private listBody() {
     Column({ space: 12 }) {
-      Search({ value: this.query, placeholder: this.text('commonSearch') })
-        .height(48)
-        .onChange((content: string): void => { this.query = content; })
-        .onSubmit((): void => { this.pageNumber = 1; this.load(); })
       Row({ space: 8 }) {
-        Select(this.typeOptions()).selected(this.selectedType)
-          .value(this.typeOptions()[this.selectedType].value)
-          .height(48).constraintSize({ minWidth: 132 })
-          .font({ size: 14 })
-          .onSelect((index: number): void => { this.selectedType = index; this.pageNumber = 1; this.load(); })
-        Select(this.groupOptions()).selected(this.selectedGroup)
-          .value(this.groupOptions()[this.selectedGroup].value)
-          .height(48).constraintSize({ minWidth: 132 })
-          .font({ size: 14 })
-          .onSelect((index: number): void => { this.selectedGroup = index; this.pageNumber = 1; this.load(); })
-        Button(this.text(this.selecting ? 'commonCancel' : 'websitesSelectionEnable'))
-          .height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-          .onClick((): void => { this.selecting = !this.selecting; this.selectedIds = []; })
+        Search({ value: this.query, placeholder: this.text('commonSearch') })
+          .layoutWeight(1)
+          .height(48)
+          .onChange((content: string): void => { this.query = content; })
+          .onSubmit((): void => { this.pageNumber = 1; this.load(); })
         if (this.splitLayout) {
           Button({ type: ButtonType.Circle, buttonStyle: ButtonStyleMode.TEXTUAL }) {
             SymbolGlyph($r('sys.symbol.more')).fontSize(22)
@@ -345,6 +334,22 @@ export struct HarmonyWebsitesPage {
           .bindMenu(this.secondaryActions(), { systemMaterial: menuMaterial })
         }
       }.width('100%')
+      if (this.selecting) {
+        Button(this.text('commonCancel'))
+          .width('100%').height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
+          .onClick((): void => { this.selecting = false; this.selectedIds = []; })
+      } else {
+        Select(this.typeOptions()).selected(this.selectedType)
+          .value(this.typeOptions()[this.selectedType].value)
+          .width('100%').height(48)
+          .font({ size: 14 })
+          .onSelect((index: number): void => { this.selectedType = index; this.pageNumber = 1; this.load(); })
+        Select(this.groupOptions()).selected(this.selectedGroup)
+          .value(this.groupOptions()[this.selectedGroup].value)
+          .width('100%').height(48)
+          .font({ size: 14 })
+          .onSelect((index: number): void => { this.selectedGroup = index; this.pageNumber = 1; this.load(); })
+      }
       if (this.selectedIds.length > 0) {
         Row({ space: 8 }) {
           Text(`${this.selectedIds.length}`).fontSize(16)

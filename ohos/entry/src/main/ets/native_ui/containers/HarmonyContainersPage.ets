@@ -380,8 +380,7 @@ export struct HarmonyContainersPage {
         }, (entry: HarmonyContainerItem): string => entry.id)
       }
       .width('100%').height('100%')
-      .contentStartOffset(76)
-      .padding({ left: 16, right: 16, bottom: 16 })
+      .padding({ left: 16, right: 16, top: 12, bottom: 16 })
     }.layoutWeight(1).width('100%').height('100%').onRefreshing((): void => { this.load(); })
   }
 
