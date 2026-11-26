@@ -1,4 +1,5 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
+import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
 import { HarmonyContainerFormPage } from './HarmonyContainerFormPage';
 import { HarmonyContainerFilesPage } from './HarmonyContainerFilesPage';
@@ -110,6 +111,16 @@ export struct HarmonyContainersPage {
     this.renameText = first.name;
     this.upgradeImage = first.image;
     this.push('detail');
+  }
+
+  private updateSplitLayout(mode: NavigationMode): void {
+    const split = mode === NavigationMode.Split;
+    if (split && !this.splitLayout) {
+      this.splitLayout = split;
+      this.autoSelectOnSplit();
+      return;
+    }
+    this.splitLayout = split;
   }
 
   private openInitialRoute(): void {
@@ -318,6 +329,14 @@ export struct HarmonyContainersPage {
     .focusable(true)
     .focusBox({ margin: LengthMetrics.vp(2) })
     .hoverEffect(HoverEffect.Highlight)
+    .onKeyEvent((event?: KeyEvent): boolean => {
+      if (event !== undefined && event.type === KeyType.Down &&
+        (event.keyCode === KeyCode.KEYCODE_ENTER || event.keyCode === KeyCode.KEYCODE_SPACE)) {
+        action();
+        return true;
+      }
+      return false;
+    })
   }
 
   @Builder
@@ -566,21 +585,12 @@ export struct HarmonyContainersPage {
       })
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.rootMenus())
       .navDestination(this.destination)
-      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .mode(NavigationMode.Auto)
       .navBarWidth(240)
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary')).width('100%').height('100%')
-      .onAreaChange((_old: Area, current: Area): void => {
-        const measured = current.width;
-        if (typeof measured === 'number') {
-          const split = measured >= 600;
-          if (split && !this.splitLayout) {
-            this.splitLayout = split;
-            this.autoSelectOnSplit();
-            return;
-          }
-          this.splitLayout = split;
-        }
+      .onNavigationModeChange((mode: NavigationMode): void => {
+        this.updateSplitLayout(mode);
       })
   }
 }

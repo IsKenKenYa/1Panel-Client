@@ -98,6 +98,16 @@ export struct HarmonyServersPage {
     this.openDetails(first);
   }
 
+  private updateSplitLayout(mode: NavigationMode): void {
+    const split = mode === NavigationMode.Split;
+    if (split && !this.splitLayout) {
+      this.splitLayout = split;
+      this.autoOpenOnSplit();
+      return;
+    }
+    this.splitLayout = split;
+  }
+
   private async loadServers(): Promise<void> {
     this.listLoading = true;
     this.listError = '';
@@ -832,22 +842,13 @@ export struct HarmonyServersPage {
       .hideBackButton(true)
       .menus(this.navigationMenus())
       .navDestination(this.destination)
-      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .mode(NavigationMode.Auto)
       .navBarWidth(240)
       .width('100%')
       .height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
-      .onAreaChange((_old: Area, current: Area): void => {
-        const measured = current.width;
-        if (typeof measured === 'number') {
-          const split = measured >= 600;
-          if (split && !this.splitLayout) {
-            this.splitLayout = split;
-            this.autoOpenOnSplit();
-            return;
-          }
-          this.splitLayout = split;
-        }
+      .onNavigationModeChange((mode: NavigationMode): void => {
+        this.updateSplitLayout(mode);
       })
   }
 }

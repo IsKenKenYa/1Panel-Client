@@ -1,4 +1,5 @@
 import { LengthMetrics } from '@kit.ArkUI';
+import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
 import { HarmonyFileContentPage } from './HarmonyFileContentPage';
 
@@ -48,6 +49,10 @@ export struct HarmonyFilesPage {
 
   private text(key: string): string {
     return HarmonyNativeBridge.instance.text(key);
+  }
+
+  private updateSplitLayout(mode: NavigationMode): void {
+    this.splitLayout = mode === NavigationMode.Split;
   }
 
   private async loadDirectory(requestedPath: string, append: boolean = false): Promise<void> {
@@ -495,6 +500,14 @@ export struct HarmonyFilesPage {
     .focusable(true)
     .focusBox({ margin: LengthMetrics.vp(2) })
     .hoverEffect(HoverEffect.Highlight)
+    .onKeyEvent((event?: KeyEvent): boolean => {
+      if (event !== undefined && event.type === KeyType.Down &&
+        (event.keyCode === KeyCode.KEYCODE_ENTER || event.keyCode === KeyCode.KEYCODE_SPACE)) {
+        this.openEntry(entry);
+        return true;
+      }
+      return false;
+    })
   }
 
   @Builder
@@ -624,16 +637,13 @@ export struct HarmonyFilesPage {
     }
     .hideTitleBar(true)
     .navDestination(this.destination)
-    .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+    .mode(NavigationMode.Auto)
     .navBarWidth(240)
     .width('100%')
     .height('100%')
     .backgroundColor($r('sys.color.background_secondary'))
-    .onAreaChange((_old: Area, current: Area): void => {
-      const measured = current.width;
-      if (typeof measured === 'number') {
-        this.splitLayout = measured >= 600;
-      }
+    .onNavigationModeChange((mode: NavigationMode): void => {
+      this.updateSplitLayout(mode);
     })
   }
 }

@@ -1,6 +1,7 @@
 import { LengthMetrics, SymbolGlyphModifier, uiMaterial, window } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { Available } from '@kit.BasicServicesKit';
+import { Available, deviceInfo } from '@kit.BasicServicesKit';
+import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge } from './HarmonyNativeBridge';
 import { HarmonyNativeDestination } from './HarmonyNativeDestination';
 import { HarmonyServersPage } from './servers/HarmonyServersPage';
@@ -15,7 +16,7 @@ export struct HarmonyNativeShell {
   @State private windowPadding: Padding = { top: 0, left: 0, right: 0 };
   @State private bottomInset: number = 0;
   @State private showingDestination: boolean = false;
-  /** 窗口宽度达到 840vp 时按官方多设备规范切换为侧边导航。 */
+  /** 平板和 2in1 窗口在 md 断点、其余设备在 lg 断点切换为侧边导航。 */
   @State private wideLayout: boolean = false;
   /** 侧栏当前选中模块；宽屏列出全部模块，与底部页签的两槽位模型相互独立。 */
   @State private selectedModule: string = 'servers';
@@ -49,7 +50,9 @@ export struct HarmonyNativeShell {
     (event: window.AvoidAreaOptions): void => {
       const mainWindow = this.mainWindow;
       if (mainWindow !== null && (event.type === window.AvoidAreaType.TYPE_SYSTEM ||
-        event.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)) {
+        event.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR ||
+        event.type === window.AvoidAreaType.TYPE_FLOAT_NAVIGATION ||
+        event.type === window.AvoidAreaType.TYPE_CUTOUT)) {
         this.updateWindowPadding(mainWindow);
       }
     };
@@ -97,6 +100,7 @@ export struct HarmonyNativeShell {
         if (!this.active) {
           return;
         }
+        await mainWindow.setFloatNavigationAvoidAreaEnabled(true);
         this.updateWindowPadding(mainWindow);
         mainWindow.on('avoidAreaChange', this.avoidAreaChanged);
         mainWindow.on('windowSizeChange', this.windowSizeChanged);
@@ -111,16 +115,24 @@ export struct HarmonyNativeShell {
   private updateWindowPadding(mainWindow: window.Window): void {
     const systemArea = mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
     const navigationArea = mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+    const floatNavigationArea = mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_FLOAT_NAVIGATION);
+    const cutoutArea = mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_CUTOUT);
     const context = this.getUIContext();
     this.windowPadding = {
-      top: context.px2vp(Math.max(systemArea.topRect.height, navigationArea.topRect.height)),
-      left: context.px2vp(Math.max(systemArea.leftRect.width, navigationArea.leftRect.width)),
-      right: context.px2vp(Math.max(systemArea.rightRect.width, navigationArea.rightRect.width)),
+      top: context.px2vp(Math.max(systemArea.topRect.height, navigationArea.topRect.height,
+        floatNavigationArea.topRect.height, cutoutArea.topRect.height)),
+      left: context.px2vp(Math.max(systemArea.leftRect.width, navigationArea.leftRect.width,
+        floatNavigationArea.leftRect.width, cutoutArea.leftRect.width)),
+      right: context.px2vp(Math.max(systemArea.rightRect.width, navigationArea.rightRect.width,
+        floatNavigationArea.rightRect.width, cutoutArea.rightRect.width)),
     };
-    this.bottomInset = context.px2vp(Math.max(systemArea.bottomRect.height, navigationArea.bottomRect.height));
-    // 官方多设备规范：窗口宽度达到 840vp 时底部页签切换为侧边导航。
-    const rect = mainWindow.getWindowProperties().windowRect;
-    this.wideLayout = context.px2vp(rect.width) >= 840;
+    this.bottomInset = context.px2vp(Math.max(systemArea.bottomRect.height, navigationArea.bottomRect.height,
+      floatNavigationArea.bottomRect.height, cutoutArea.bottomRect.height));
+    const widthBreakpoint = context.getWindowWidthBreakpoint();
+    const tabletOrDesktop = deviceInfo.deviceType === 'tablet' || deviceInfo.deviceType === '2in1';
+    this.wideLayout = widthBreakpoint === WidthBreakpoint.WIDTH_LG ||
+      widthBreakpoint === WidthBreakpoint.WIDTH_XL ||
+      (tabletOrDesktop && widthBreakpoint === WidthBreakpoint.WIDTH_MD);
   }
 
   private colorMode(): ThemeColorMode {
@@ -272,6 +284,14 @@ export struct HarmonyNativeShell {
     .focusBox({ margin: LengthMetrics.vp(2) })
     .hoverEffect(HoverEffect.Highlight)
     .onClick((): void => { this.selectModule(module); })
+    .onKeyEvent((event?: KeyEvent): boolean => {
+      if (event !== undefined && event.type === KeyType.Down &&
+        (event.keyCode === KeyCode.KEYCODE_ENTER || event.keyCode === KeyCode.KEYCODE_SPACE)) {
+        this.selectModule(module);
+        return true;
+      }
+      return false;
+    })
     .accessibilityRole(AccessibilityRoleType.NAVIGATION_BAR)
     .accessibilityText(this.sidebarLabel(module))
   }
@@ -404,7 +424,7 @@ export struct HarmonyNativeShell {
         top: this.windowPadding.top,
         left: this.windowPadding.left,
         right: this.windowPadding.right,
-        bottom: this.showingDestination ? this.bottomInset : 0,
+        bottom: this.wideLayout || this.showingDestination ? this.bottomInset : 0,
       })
       .backgroundColor($r('sys.color.background_secondary'))
       .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])

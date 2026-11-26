@@ -1,3 +1,5 @@
+import { LengthMetrics } from '@kit.ArkUI';
+import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
 
 interface HarmonySettingsEntry {
@@ -144,6 +146,17 @@ export struct HarmonySettingsPage {
     .backgroundColor($r('sys.color.comp_background_primary'))
     .accessibilityText(`${this.text(titleKey)} ${detail}`)
     .onClick((): void => { this.openDestination(route); })
+    .onKeyEvent((event?: KeyEvent): boolean => {
+      if (event !== undefined && event.type === KeyType.Down &&
+        (event.keyCode === KeyCode.KEYCODE_ENTER || event.keyCode === KeyCode.KEYCODE_SPACE)) {
+        this.openDestination(route);
+        return true;
+      }
+      return false;
+    })
+    .focusable(true)
+    .focusOnTouch(true)
+    .focusBox({ margin: LengthMetrics.vp(2) })
     .hoverEffect(HoverEffect.Highlight)
   }
 
@@ -157,57 +170,72 @@ export struct HarmonySettingsPage {
           Button(this.text('commonRetry')).height(48).onClick((): void => { this.loadSettings(); })
         }.padding(24)
       } else {
-        List({ space: 16 }) {
-          ListItemGroup({ header: this.appearanceHeader }) {
-            this.destinationRow('settingsTheme', '/settings/theme', $r('sys.symbol.paintbrush'), this.themeLabel())
-            ListItem() {
-              Row({ space: 12 }) {
-                SymbolGlyph($r('sys.symbol.slider_horizontal_2')).fontSize(24)
-                  .fontColor([$r('sys.color.icon_primary')])
-                Text(this.text('settingsUIRenderMode')).fontSize(16)
-                  .fontColor($r('sys.color.font_primary')).layoutWeight(1)
-                Select(this.renderModeOptions())
-                  .selected(this.renderModeIds.indexOf(this.selectedRenderMode))
-                  .value(this.renderModeOptions()[this.renderModeIds.indexOf(this.selectedRenderMode)].value)
-                  .font({ size: 14 }).fontColor($r('sys.color.font_secondary')).height(48)
-                  .backgroundColor(Color.Transparent)
-                  .enabled(!this.isSaving).id('harmony.settings.renderMode')
-                  .accessibilityText(this.text('settingsUIRenderMode'))
-                  .onSelect((index: number): void => { this.saveRenderMode(index); })
-              }.width('100%').constraintSize({ minHeight: 56 })
-                .padding({ left: 16, right: 12, top: 4, bottom: 4 })
-            }.backgroundColor($r('sys.color.comp_background_primary'))
-            this.destinationRow('settingsLanguage', '/settings/language', $r('sys.symbol.translate'), this.languageLabel())
-          }.borderRadius(16).clip(true)
-          ListItemGroup({ header: this.securityHeader }) {
-            ForEach(this.securityEntries, (entry: HarmonySettingsEntry): void => {
-              this.destinationRow(entry.titleKey, entry.route, entry.icon)
-            }, (entry: HarmonySettingsEntry): string => entry.route)
-          }.borderRadius(16).clip(true)
-          ListItemGroup({ header: this.connectionsHeader }) {
-            this.destinationRow('settingsServerManagement', '/server', $r('sys.symbol.externaldrive'))
-            if (this.hasPanelSettings) {
-              this.destinationRow('systemSettingsPanelSection', '/system-settings',
-                $r('sys.symbol.gearshape'), this.currentServerName)
-            }
-          }.borderRadius(16).clip(true)
-          ListItemGroup({ header: this.helpHeader }) {
-            ForEach(this.helpEntries, (entry: HarmonySettingsEntry): void => {
-              this.destinationRow(entry.titleKey, entry.route, entry.icon)
-            }, (entry: HarmonySettingsEntry): string => entry.route)
-            ListItem() {
-              Row({ space: 12 }) {
-                SymbolGlyph($r('sys.symbol.questionmark_circle')).fontSize(24)
-                  .fontColor([$r('sys.color.icon_primary')])
-                Text(this.text('settingsResetOnboarding')).fontSize(16)
-                  .fontColor($r('sys.color.font_primary')).layoutWeight(1)
-              }.width('100%').constraintSize({ minHeight: 56 }).padding(16)
-            }.backgroundColor($r('sys.color.comp_background_primary'))
-              .onClick((): void => { this.resetOnboarding(); })
-          }.borderRadius(16).clip(true)
-        }.width('100%').height('100%')
-          .padding({ left: 16, right: 16, bottom: 24 }).contentStartOffset(72)
-          .scrollBar(BarState.Auto)
+        Row() {
+          List({ space: 16 }) {
+            ListItemGroup({ header: this.appearanceHeader }) {
+              this.destinationRow('settingsTheme', '/settings/theme', $r('sys.symbol.paintbrush'), this.themeLabel())
+              ListItem() {
+                Row({ space: 12 }) {
+                  SymbolGlyph($r('sys.symbol.slider_horizontal_2')).fontSize(24)
+                    .fontColor([$r('sys.color.icon_primary')])
+                  Text(this.text('settingsUIRenderMode')).fontSize(16)
+                    .fontColor($r('sys.color.font_primary')).layoutWeight(1)
+                  Select(this.renderModeOptions())
+                    .selected(this.renderModeIds.indexOf(this.selectedRenderMode))
+                    .value(this.renderModeOptions()[this.renderModeIds.indexOf(this.selectedRenderMode)].value)
+                    .font({ size: 14 }).fontColor($r('sys.color.font_secondary')).height(48)
+                    .backgroundColor(Color.Transparent)
+                    .enabled(!this.isSaving).id('harmony.settings.renderMode')
+                    .accessibilityText(this.text('settingsUIRenderMode'))
+                    .onSelect((index: number): void => { this.saveRenderMode(index); })
+                }.width('100%').constraintSize({ minHeight: 56 })
+                  .padding({ left: 16, right: 12, top: 4, bottom: 4 })
+              }.backgroundColor($r('sys.color.comp_background_primary'))
+              this.destinationRow('settingsLanguage', '/settings/language', $r('sys.symbol.translate'), this.languageLabel())
+            }.borderRadius(16).clip(true)
+            ListItemGroup({ header: this.securityHeader }) {
+              ForEach(this.securityEntries, (entry: HarmonySettingsEntry): void => {
+                this.destinationRow(entry.titleKey, entry.route, entry.icon)
+              }, (entry: HarmonySettingsEntry): string => entry.route)
+            }.borderRadius(16).clip(true)
+            ListItemGroup({ header: this.connectionsHeader }) {
+              this.destinationRow('settingsServerManagement', '/server', $r('sys.symbol.externaldrive'))
+              if (this.hasPanelSettings) {
+                this.destinationRow('systemSettingsPanelSection', '/system-settings',
+                  $r('sys.symbol.gearshape'), this.currentServerName)
+              }
+            }.borderRadius(16).clip(true)
+            ListItemGroup({ header: this.helpHeader }) {
+              ForEach(this.helpEntries, (entry: HarmonySettingsEntry): void => {
+                this.destinationRow(entry.titleKey, entry.route, entry.icon)
+              }, (entry: HarmonySettingsEntry): string => entry.route)
+              ListItem() {
+                Row({ space: 12 }) {
+                  SymbolGlyph($r('sys.symbol.questionmark_circle')).fontSize(24)
+                    .fontColor([$r('sys.color.icon_primary')])
+                  Text(this.text('settingsResetOnboarding')).fontSize(16)
+                    .fontColor($r('sys.color.font_primary')).layoutWeight(1)
+                }.width('100%').constraintSize({ minHeight: 56 }).padding(16)
+              }.backgroundColor($r('sys.color.comp_background_primary'))
+                .onClick((): void => { this.resetOnboarding(); })
+                .onKeyEvent((event?: KeyEvent): boolean => {
+                  if (event !== undefined && event.type === KeyType.Down &&
+                    (event.keyCode === KeyCode.KEYCODE_ENTER || event.keyCode === KeyCode.KEYCODE_SPACE)) {
+                    this.resetOnboarding();
+                    return true;
+                  }
+                  return false;
+                })
+                .focusable(true)
+                .focusOnTouch(true)
+                .focusBox({ margin: LengthMetrics.vp(2) })
+                .hoverEffect(HoverEffect.Highlight)
+            }.borderRadius(16).clip(true)
+          }.width('100%').height('100%')
+            .constraintSize({ maxWidth: 840 })
+            .padding({ left: 16, right: 16, bottom: 24 }).contentStartOffset(72)
+            .scrollBar(BarState.Auto)
+        }.width('100%').height('100%').justifyContent(FlexAlign.Center)
       }
     }
     .title(this.text('settingsPageTitle'), {
