@@ -9,8 +9,6 @@ import { automationText, automationString, automationWrite, automationMoreSymbol
 export struct HarmonyCronjobsPage {
   @Prop initialRoute: string = '/cronjobs';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private jobs: Map<string, Object | null>[] = [];
   @State private records: Map<string, Object | null>[] = [];
   @State private selectedJob: Map<string, Object | null> = new Map<string, Object | null>();

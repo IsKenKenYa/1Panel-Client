@@ -9,8 +9,6 @@ import { automationText, automationString, automationWrite } from './HarmonyAuto
 export struct HarmonyBackupsPage {
   @Prop initialRoute: string = '/backups';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private accounts: Map<string, Object | null>[] = [];
   @State private records: Map<string, Object | null>[] = [];
   @State private selectedAccount: Map<string, Object | null> = new Map<string, Object | null>();

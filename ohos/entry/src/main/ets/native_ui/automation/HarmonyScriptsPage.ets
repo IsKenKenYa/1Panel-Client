@@ -6,8 +6,6 @@ import { automationText, automationString, automationWrite, automationMoreSymbol
 
 @Component
 export struct HarmonyScriptsPage {
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private scripts: Map<string, Object | null>[] = [];
   @State private groups: Map<string, Object | null>[] = [];
   @State private selectedScript: Map<string, Object | null> = new Map<string, Object | null>();

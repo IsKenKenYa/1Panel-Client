@@ -34,8 +34,6 @@ class HarmonyComposeTemplate {
 export struct HarmonyOrchestrationPage {
   @Prop initialRoute: string = '/orchestration';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private projects: HarmonyComposeProject[] = [];
   @State private templates: HarmonyComposeTemplate[] = [];
   @State private selected: HarmonyComposeProject[] = [];

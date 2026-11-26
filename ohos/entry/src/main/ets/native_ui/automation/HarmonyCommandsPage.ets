@@ -8,8 +8,6 @@ import { automationText, automationString, automationWrite, automationMoreSymbol
 @Component
 export struct HarmonyCommandsPage {
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private commands: Map<string, Object | null>[] = [];
   @State private groups: Map<string, Object | null>[] = [];
   @State private selectedIds: number[] = [];

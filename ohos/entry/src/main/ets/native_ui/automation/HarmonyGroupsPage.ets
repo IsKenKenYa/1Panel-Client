@@ -7,8 +7,6 @@ import { automationText, automationString, automationWrite, automationMoreSymbol
 @Component
 export struct HarmonyGroupsPage {
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private groupType: string = 'command';
   @State private scope: string = 'core';
   @State private groups: Map<string, Object | null>[] = [];
