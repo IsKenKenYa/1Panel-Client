@@ -1,5 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyHostFailure, HarmonyHostLinkRow, HarmonyHostValueRow, hostString, hostText } from './HarmonyHostWidgets';
 
 interface FirewallSection {
@@ -52,17 +53,8 @@ export struct HarmonyHostFirewallV2Page {
     }
   }
 
-  @Builder
-  private titleBar() {
-    Row({ space: 8 }) {
-      Button() {
-        SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(20)
-      }
-      .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-      .accessibilityText(hostText('commonBack')).onClick(this.onBack)
-      Text(hostText(this.section()?.key ?? 'firewallV2Title')).fontSize(20)
-        .fontWeight(FontWeight.Medium).layoutWeight(1)
-    }.width('100%')
+  private title(): string {
+    return hostText(this.section()?.key ?? 'firewallV2Title');
   }
 
   private menus(): NavigationMenuItem[] {
@@ -72,6 +64,10 @@ export struct HarmonyHostFirewallV2Page {
       symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_clockwise')),
       action: (): void => { this.load(); },
     }];
+  }
+
+  private rootMenus(): NavigationMenuItem[] {
+    return this.menus();
   }
 
   private scalarKeys(): string[] {
@@ -143,10 +139,9 @@ export struct HarmonyHostFirewallV2Page {
 
   build() {
     Navigation(this.paths) { this.body() }
-      .title(this.titleBar, { barStyle: BarStyle.STANDARD })
+      .title(this.title(), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
-      .hideBackButton(true)
-      .menus(this.menus())
+      .menus(this.rootMenus())
       .mode(NavigationMode.Stack)
       .width('100%').height('100%')
   }

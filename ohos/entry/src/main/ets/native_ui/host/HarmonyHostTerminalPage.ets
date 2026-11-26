@@ -1,5 +1,6 @@
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../HarmonyModuleTitle';
 import { HarmonyHostFailure, HarmonyHostLinkRow, hostString, hostText } from './HarmonyHostWidgets';
 
 @Available({ minApiVersion: '26.0.0' })
@@ -113,16 +114,6 @@ export struct HarmonyHostTerminalPage {
   }
 
   @Builder
-  private titleBar() {
-    Row({ space: 8 }) {
-      Button() { SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(20) }
-        .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(hostText('commonBack')).onClick(this.onBack)
-      Text(hostText('serverModuleTerminal')).fontSize(20).fontWeight(FontWeight.Medium).layoutWeight(1)
-    }.width('100%')
-  }
-
-  @Builder
   private targetList() {
     List({ space: 8 }) {
       ListItem() {
@@ -179,9 +170,8 @@ export struct HarmonyHostTerminalPage {
 
   build() {
     Navigation(this.paths) { this.targetList() }
-      .title(this.titleBar, { barStyle: BarStyle.STANDARD })
+      .title(hostText('serverModuleTerminal'), moduleTitleOptions)
       .titleMode(NavigationTitleMode.Mini)
-      .hideBackButton(true)
       .navDestination(this.destination)
       .mode(NavigationMode.Stack)
       .width('100%').height('100%')
