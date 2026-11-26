@@ -125,6 +125,9 @@ void _checkSplitPlaceholder(
     if (!block.contains('.splitPlaceholder(')) {
       failures.add('$path:${index + 1} 分栏模式缺少 .splitPlaceholder(');
     }
+    if (!block.contains('.navBarWidthRange(') || !block.contains('.minContentWidth(')) {
+      failures.add('$path:${index + 1} 分栏模式缺少 .navBarWidthRange( 或 .minContentWidth(');
+    }
     return;
   }
 }

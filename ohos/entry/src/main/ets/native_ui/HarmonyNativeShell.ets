@@ -3,6 +3,7 @@ import { common } from '@kit.AbilityKit';
 import { Available, deviceInfo } from '@kit.BasicServicesKit';
 import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge } from './HarmonyNativeBridge';
+import { MODULE_NAV_BAR_WIDTH } from './HarmonyModuleTitle';
 import { HarmonyNativeDestination } from './HarmonyNativeDestination';
 import { HarmonyServersPage } from './servers/HarmonyServersPage';
 import { HarmonySettingsPage } from './settings/HarmonySettingsPage';
@@ -332,7 +333,7 @@ export struct HarmonyNativeShell {
           Column() {
             this.sidebarContent()
           }
-          .width(240)
+          .width(MODULE_NAV_BAR_WIDTH)
           .height('100%')
           .backgroundColor($r('sys.color.background_secondary'))
           .border({ width: { right: 0.5 }, color: $r('sys.color.comp_divider') })
