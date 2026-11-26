@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_route_constants.dart';
+import 'package:onepanel_client/core/channel/harmony_entry_presentation.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -16,7 +20,22 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _controller = PageController();
   final OnboardingService _service = OnboardingService();
+  HarmonyEntryPresentation? _entry;
   int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _entry = context.read<HarmonyEntryPresentation?>();
+    unawaited(_entry?.show(this, 'onboarding', onAction: (action) async {
+      if (!mounted) return;
+      if (action == 'skip') {
+        await _complete(AppRoutes.home);
+      } else if (action == 'start') {
+        await _complete(AppRoutes.serverConfig);
+      }
+    }));
+  }
 
   Future<void> _complete(String nextRoute) async {
     await _service.completeOnboarding();
@@ -31,6 +50,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   void dispose() {
+    unawaited(_entry?.dismiss(this));
     _controller.dispose();
     super.dispose();
   }

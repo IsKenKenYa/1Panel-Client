@@ -114,9 +114,17 @@ class SettingsService {
     await apiClient.rollbackSnapshot(api.SnapshotRollback(id: id));
   }
 
-  Future<void> importSnapshot(String path) async {
+  Future<void> importSnapshot({
+    required int backupAccountID,
+    required List<String> names,
+    String? description,
+  }) async {
     final apiClient = await _getApi();
-    await apiClient.importSnapshot(api.SnapshotImport(path: path));
+    await apiClient.importSnapshot(api.SnapshotImport(
+      backupAccountID: backupAccountID,
+      names: names,
+      description: description,
+    ));
   }
 
   Future<void> updateSnapshotDescription(int id, String description) async {
@@ -126,10 +134,25 @@ class SettingsService {
   }
 
   Future<void> updateProxySettings({String? proxyUrl, int? proxyPort}) async {
+    await saveProxySettings(proxyUrl: proxyUrl, proxyPort: proxyPort);
+  }
+
+  Future<void> saveProxySettings({
+    String? proxyUrl,
+    int? proxyPort,
+    String? proxyType,
+    String? proxyUser,
+    String? proxyPasswd,
+    String? proxyPasswdKeep,
+  }) async {
     final apiClient = await _getApi();
     await apiClient.updateProxySettings(api.ProxyUpdate(
       proxyUrl: proxyUrl,
       proxyPort: proxyPort,
+      proxyType: proxyType,
+      proxyUser: proxyUser,
+      proxyPasswd: proxyPasswd,
+      proxyPasswdKeep: proxyPasswdKeep,
     ));
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/features/backups/services/backup_account_service.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
@@ -294,44 +296,112 @@ class _SnapshotPageState extends State<SnapshotPage> {
   }
 
   void _showImportSnapshotDialog(BuildContext context, AppLocalizations l10n) {
-    final controller = TextEditingController();
     final provider = context.read<SettingsProvider>();
-    showDialog(
+    final accounts = _backupAccounts ?? const <Map<String, dynamic>>[];
+    final backupService = BackupAccountService();
+    final names = <String>{};
+    int? accountId;
+    String description = '';
+    Future<List<String>>? files;
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.snapshotImportTitle),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.snapshotImportPath,
-            hintText: l10n.snapshotImportPathHint,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: Text(l10n.snapshotImportTitle),
+          content: ConstrainedBox(
+            constraints: AdaptiveLayoutSpec.of(dialogContext).dialogConstraints,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (accounts.isEmpty)
+                    Text(l10n.snapshotNoBackupAccountHint)
+                  else ...[
+                    DropdownButtonFormField<int>(
+                      initialValue: accountId,
+                      decoration: InputDecoration(labelText: l10n.snapshotBackupAccountLabel),
+                      items: [
+                        for (final account in accounts)
+                          DropdownMenuItem<int>(
+                            value: account['id'] as int,
+                            child: Text('${account['name']} (${account['type']})'),
+                          ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setDialogState(() {
+                          accountId = value;
+                          names.clear();
+                          files = backupService.listFiles(value);
+                        });
+                      },
+                    ),
+                    FutureBuilder<List<String>>(
+                      future: files,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const LinearProgressIndicator();
+                        }
+                        if (snapshot.hasError) return Text(l10n.commonLoadFailedTitle);
+                        if (files != null && snapshot.data?.isEmpty == true) {
+                          return Text(l10n.commonEmpty);
+                        }
+                        return Column(
+                          children: [
+                            for (final name in snapshot.data ?? const <String>[])
+                              CheckboxListTile(
+                                title: Text(name),
+                                value: names.contains(name),
+                                onChanged: (checked) => setDialogState(() {
+                                  if (checked == true) {
+                                    names.add(name);
+                                  } else {
+                                    names.remove(name);
+                                  }
+                                }),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                    TextField(
+                      maxLength: 256,
+                      decoration: InputDecoration(labelText: l10n.snapshotDescLabel),
+                      onChanged: (value) => description = value,
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: accountId == null || names.isEmpty
+                  ? null
+                  : () async {
+                      final selected = accountId!;
+                      final selectedNames = names.toList(growable: false);
+                      Navigator.pop(dialogContext);
+                      final success = await provider.importSnapshot(
+                        backupAccountID: selected,
+                        names: selectedNames,
+                        description: description.trim().isEmpty ? null : description.trim(),
+                      );
+                      if (!context.mounted) return;
+                      if (success) {
+                        SnackBarUtils.showSuccess(context, l10n.snapshotImportSuccess);
+                      } else {
+                        SnackBarUtils.showError(context, l10n.snapshotImportFailed);
+                      }
+                    },
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              if (controller.text.isEmpty) return;
-              try {
-                final success = await provider.importSnapshot(controller.text);
-                if (context.mounted) {
-                  SnackBarUtils.showSuccess(context, success
-                            ? l10n.snapshotImportSuccess
-                            : l10n.snapshotImportFailed);
-                }
-              } catch (e, stackTrace) {
-                if (context.mounted) {
-                  SnackBarUtils.showErrorWithDebugDetails(context, l10n.snapshotImportErrorTitle, error: e, stackTrace: stackTrace);
-                }
-              }
-            },
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
       ),
     );
   }

@@ -483,9 +483,17 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
-  Future<bool> importSnapshot(String path) async {
+  Future<bool> importSnapshot({
+    required int backupAccountID,
+    required List<String> names,
+    String? description,
+  }) async {
     try {
-      await _service.importSnapshot(path);
+      await _service.importSnapshot(
+        backupAccountID: backupAccountID,
+        names: names,
+        description: description,
+      );
       await loadSnapshots();
       return true;
     } catch (e, stackTrace) {

@@ -16,6 +16,15 @@ class AppLockGate extends StatelessWidget {
   final Widget child;
   final ValueChanged<bool>? onVisibilityChanged;
 
+  static bool requiresUnlock(AppLockController? controller, String? target) {
+    if (controller == null) return false;
+    return controller.requiresResumeUnlock ||
+        (target == AppRoutes.settingsAppLock &&
+            controller.isEnabled &&
+            !controller.isSessionUnlocked) ||
+        (target != null && controller.shouldRequireUnlockForModuleId(target));
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<AppLockController?>();
@@ -23,12 +32,7 @@ class AppLockGate extends StatelessWidget {
       onVisibilityChanged?.call(true);
       return child;
     }
-    final name = target;
-    final locked = controller.requiresResumeUnlock ||
-        (name == AppRoutes.settingsAppLock &&
-            controller.isEnabled &&
-            !controller.isSessionUnlocked) ||
-        (name != null && controller.shouldRequireUnlockForModuleId(name));
+    final locked = requiresUnlock(controller, target);
     onVisibilityChanged?.call(!locked);
     return Stack(
       fit: StackFit.expand,
