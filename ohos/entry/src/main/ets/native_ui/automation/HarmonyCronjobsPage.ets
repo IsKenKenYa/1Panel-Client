@@ -1,5 +1,6 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyCronjobForm } from './HarmonyCronjobForm';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
 
@@ -190,6 +191,14 @@ export struct HarmonyCronjobsPage {
                   .accessibilityText(automationText('commonMore')).bindMenu(this.jobMenu(job))
               }.padding({ top: 8, bottom: 8, right: 8 }).constraintSize({ minHeight: 80 })
               .width('100%').borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+                event,
+                (): void => { this.detail(job); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
             }
           }, (job: Map<string, Object | null>): string => `${job.get('id')}`)
         }.layoutWeight(1).width('100%')
@@ -228,6 +237,14 @@ export struct HarmonyCronjobsPage {
             }.padding(16).constraintSize({ minHeight: 72 }).width('100%').alignItems(HorizontalAlign.Start)
             .borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
             .onClick((): void => { this.openLog(record); })
+            .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+              event,
+              (): void => { this.openLog(record); },
+            ))
+            .focusable(true)
+            .focusOnTouch(true)
+            .focusBox({ margin: LengthMetrics.vp(2) })
+            .hoverEffect(HoverEffect.Highlight)
           }
         }, (record: Map<string, Object | null>): string => `${record.get('id')}`)
       }.layoutWeight(1).width('100%')

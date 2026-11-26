@@ -1,5 +1,6 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
 
 @Component
@@ -146,6 +147,14 @@ export struct HarmonyGroupsPage {
               .padding({ left: 16, right: 8, top: 8, bottom: 8 }).constraintSize({ minHeight: 64 })
               .width('100%').borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
               .onClick((): void => { this.edit(group); })
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+                event,
+                (): void => { this.edit(group); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
             }
           }, (group: Map<string, Object | null>): string => `${group.get('id')}`)
         }.layoutWeight(1).width('100%')

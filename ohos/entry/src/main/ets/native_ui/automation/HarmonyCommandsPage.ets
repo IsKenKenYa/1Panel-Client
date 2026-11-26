@@ -1,6 +1,7 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol, automationCopySymbol } from './HarmonyAutomationUI';
 
 @Component
@@ -227,6 +228,14 @@ export struct HarmonyCommandsPage {
     .width('100%')
     .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
     .borderRadius(16)
+    .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+      event,
+      (): void => { this.edit(record); },
+    ))
+    .focusable(true)
+    .focusOnTouch(true)
+    .focusBox({ margin: LengthMetrics.vp(2) })
+    .hoverEffect(HoverEffect.Highlight)
   }
 
   @Builder

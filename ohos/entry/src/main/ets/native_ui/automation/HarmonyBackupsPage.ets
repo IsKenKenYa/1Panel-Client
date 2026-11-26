@@ -1,5 +1,6 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyBackupAccountForm } from './HarmonyBackupAccountForm';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite } from './HarmonyAutomationUI';
 
@@ -264,6 +265,14 @@ export struct HarmonyBackupsPage {
             }.padding({ left: 16, right: 8, top: 8, bottom: 8 }).constraintSize({ minHeight: 64 })
               .width('100%').borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
               .onClick((): void => { this.openAccount(account); })
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+                event,
+                (): void => { this.openAccount(account); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
           }
         }, (account: Map<string, Object | null>): string => `${account.get('id')}`)
       }.layoutWeight(1).width('100%')
@@ -300,6 +309,14 @@ export struct HarmonyBackupsPage {
             }.padding(16).constraintSize({ minHeight: 64 }).width('100%')
               .borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
               .onClick((): void => { this.openRecord(record); })
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+                event,
+                (): void => { this.openRecord(record); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
           }
         }, (record: Map<string, Object | null>): string => `${record.get('id')}`)
       }.layoutWeight(1).width('100%')
