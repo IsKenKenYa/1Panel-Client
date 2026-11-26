@@ -62,47 +62,6 @@ void main() {
       expect(calls.single.arguments['fileName'], 'logs.txt');
     });
 
-    test(
-      'falls back to app export directory when every OHOS save channel fails',
-      () async {
-        final tempDir = await Directory.systemTemp.createTemp(
-          'onepanel_platform_file_service_test_',
-        );
-        addTearDown(() async {
-          if (await tempDir.exists()) {
-            await tempDir.delete(recursive: true);
-          }
-        });
-
-        // The mock throws on every call. The new flow tries the picker
-        // first, then the public download channel, then the Dart-side
-        // fallback. The test verifies the final fallback path is used
-        // and the file is written.
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(channel, (call) async {
-          throw PlatformException(code: 'native_save_failed');
-        });
-
-        final service = PlatformFileService(
-          capabilities: PlatformCapabilities.resolveForTest(
-            isWeb: false,
-            targetPlatform: TargetPlatform.android,
-            operatingSystem: 'ohos',
-          ),
-          ohosChannel: const OhosPlatformChannel(channel: channel),
-          fallbackDirectoryResolver: () async => tempDir,
-        );
-
-        final path = await service.saveBytes(
-          fileName: 'a/b:logs.txt',
-          bytes: Uint8List.fromList(<int>[4, 5, 6]),
-        );
-
-        expect(path, endsWith('a_b_logs.txt'));
-        expect(await File(path).readAsBytes(), <int>[4, 5, 6]);
-      },
-    );
-
     test('openFile throws FileSystemException when file does not exist',
         () async {
       final service = PlatformFileService(

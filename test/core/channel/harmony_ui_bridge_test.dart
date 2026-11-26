@@ -7,13 +7,33 @@ import 'package:onepanel_client/core/channel/harmony_ui_bridge.dart';
 import 'package:onepanel_client/features/containers/containers_page.dart';
 import 'package:onepanel_client/features/files/files_page.dart';
 import 'package:onepanel_client/features/security/app_lock_gate.dart';
+import 'package:onepanel_client/features/security/app_lock_controller.dart';
 
 void main() {
+  testWidgets('切换未受保护的原生标签持续允许显示', (tester) async {
+    final controller = AppLockController();
+    addTearDown(controller.dispose);
+    final bridge = HarmonyUIBridge(
+      navigatorKey: GlobalKey<NavigatorState>(),
+      refreshSettings: () async {},
+      requiresUnlock: (module) => AppLockGate.requiresUnlock(controller, module),
+    );
+    addTearDown(bridge.dispose);
+    bridge.setGateVisible(true);
+
+    for (final module in ['files', 'containers', 'settings', 'servers']) {
+      expect(bridge.setActiveModule(module), isTrue);
+      expect(bridge.activeModule, module);
+    }
+    await tester.pump();
+  });
+
   testWidgets('原生页面仅覆盖主根页，Flutter 功能页面返回后恢复', (tester) async {
     final navigator = GlobalKey<NavigatorState>();
     final bridge = HarmonyUIBridge(
       navigatorKey: navigator,
       refreshSettings: () async {},
+      requiresUnlock: (module) => AppLockGate.requiresUnlock(null, module),
     );
     addTearDown(bridge.dispose);
 
@@ -73,6 +93,7 @@ void main() {
     final bridge = HarmonyUIBridge(
       navigatorKey: navigator,
       refreshSettings: () async {},
+      requiresUnlock: (module) => AppLockGate.requiresUnlock(null, module),
     );
     addTearDown(bridge.dispose);
 

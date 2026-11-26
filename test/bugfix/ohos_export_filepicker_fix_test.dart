@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
@@ -65,7 +63,7 @@ void main() {
       },
     );
 
-    test('picker cancel returns a cancelled outcome, not an error', () async {
+    test('picker cancellation returns a cancelled outcome', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         'app_use_file_picker_for_file_operations': true,
       });
@@ -108,9 +106,8 @@ void main() {
         calls.add(call);
         if (call.method == 'saveBytesToPublicDownload') {
           return <String, Object?>{
-            'uri':
-                '/data/storage/el2/base/files/exports/logs/logs_20260603.txt',
-            'displayName': 'logs_20260603.txt',
+            'uri': '/data/storage/el2/base/files/Download/logs/logs_20260603.txt',
+            'displayName': 'logs/logs_20260603.txt',
             'kind': 'publicDownloadDir',
             'category': 'logs',
           };
@@ -137,7 +134,10 @@ void main() {
       expect(calls.single.method, 'saveBytesToPublicDownload');
       expect(calls.single.arguments['category'], 'logs');
       expect(outcome.kind, SaveLocationKind.publicDownloadDir);
-      expect(outcome.uri, contains('/exports/logs/'));
+      expect(
+        outcome.uri,
+        '/data/storage/el2/base/files/Download/logs/logs_20260603.txt',
+      );
     });
 
     test('image MIME routes to image_video picker kind', () async {
@@ -215,26 +215,15 @@ void main() {
     });
 
     test(
-      'native picker failure surfaces private fallback (no silent success)',
+      'native picker failure reports the platform error',
       () async {
         SharedPreferences.setMockInitialValues(<String, Object>{
           'app_use_file_picker_for_file_operations': true,
         });
 
-        final tempDir = await Directory.systemTemp.createTemp(
-          'onepanel_picker_fallback_test_',
-        );
-        addTearDown(() async {
-          if (await tempDir.exists()) {
-            await tempDir.delete(recursive: true);
-          }
-        });
-
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(channel, (call) async {
-          // OHOS picker throws — used to silently fall back to private dir
-          // without telling the user. The new behavior still falls back,
-          // but flags `privateFallbackUsed` so the UI can warn.
+          expect(call.method, 'pickAndSaveBytesByKind');
           throw PlatformException(code: 'ohos_platform_error');
         });
 
@@ -245,18 +234,20 @@ void main() {
             operatingSystem: 'ohos',
           ),
           ohosChannel: const OhosPlatformChannel(channel: channel),
-          fallbackDirectoryResolver: () async => tempDir,
         );
 
-        final outcome = await service.saveBytesStructured(
-          fileName: 'logs.txt',
-          bytes: Uint8List.fromList(<int>[1, 2, 3]),
-          mimeType: 'text/plain',
+        await expectLater(
+          service.saveBytesStructured(
+            fileName: 'logs.txt',
+            bytes: Uint8List.fromList(<int>[1, 2, 3]),
+            mimeType: 'text/plain',
+          ),
+          throwsA(isA<PlatformException>().having(
+            (error) => error.code,
+            'code',
+            'ohos_platform_error',
+          )),
         );
-
-        expect(outcome.privateFallbackUsed, isTrue);
-        expect(outcome.kind, SaveLocationKind.privateFallback);
-        expect(outcome.uri, isNotEmpty);
       },
     );
 
@@ -276,7 +267,7 @@ void main() {
       expect(value, isFalse);
     });
 
-    test('picker URI is opened through openUri (not openPath)', () async {
+    test('picker URI is opened through openUri', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
 
       final calls = <MethodCall>[];
@@ -310,7 +301,7 @@ void main() {
           'content://com.example/documents/abc/logs.txt');
     });
 
-    test('filesystem path fallback uses openPath not openUri', () async {
+    test('download directory path is opened through openPath', () async {
       final calls = <MethodCall>[];
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
@@ -329,7 +320,7 @@ void main() {
       );
 
       final outcome = SaveOutcome(
-        uri: '/data/storage/el2/base/files/exports/logs/logs.txt',
+        uri: '/data/storage/el2/base/files/Download/logs/logs.txt',
         displayName: 'logs.txt',
         kind: SaveLocationKind.publicDownloadDir,
       );

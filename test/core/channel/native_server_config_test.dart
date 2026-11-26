@@ -118,6 +118,42 @@ void main() {
     expect(kept.allowInsecureTls, config.allowInsecureTls);
   });
 
+  test('1Panel 旧凭据缺失时留空密钥不能保存', () {
+    final saved = ApiConfig(
+      id: 'panel',
+      revision: 'opened',
+      name: 'Panel',
+      url: 'https://panel.example.com',
+      apiKey: '',
+    );
+    expect(
+      () => readNativeServerConfig(
+        {
+          'panelType': '1panel',
+          'revision': saved.revision,
+          'name': saved.name,
+          'url': saved.url,
+          'apiKey': '',
+        },
+        id: saved.id,
+        existing: saved,
+      ),
+      throwsArgumentError,
+    );
+    final typed = readNativeServerConfig(
+      {
+        'panelType': '1panel',
+        'revision': saved.revision,
+        'name': saved.name,
+        'url': saved.url,
+        'apiKey': 'retyped',
+      },
+      id: saved.id,
+      existing: saved,
+    );
+    expect(typed.apiKey, 'retyped');
+  });
+
   test('有效期超出范围或类型错误时拒绝保存', () {
     expect(
       () => readNativeServerConfig(

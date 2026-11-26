@@ -114,7 +114,7 @@ void main() {
     await preferences.reload();
     await Future.wait([settings.load(), appearance.load()]);
     expect(settings.locale, isNull);
-    expect(appearance.seedColor, AppDesignTokens.brand);
+    expect(appearance.seedColor, AppDesignTokens.seedColor);
     expect(settings.uiRenderMode, UIRenderMode.liquidGlass);
     expect(UIRenderPolicy.liquidGlassEnabled, bootGlass);
     expect(await service.loadUseFilePickerForFileOperations(), isFalse);

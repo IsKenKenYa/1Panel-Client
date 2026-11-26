@@ -100,8 +100,10 @@ void main() {
     expect(localAuth, contains("case 'getAvailableBiometrics'"));
     expect(localAuth, contains("case 'isDeviceSupported'"));
     expect(localAuth, contains("case 'stopAuthentication'"));
-    expect(localAuth, contains('result.success(false);'));
-    expect(localAuth, contains('result.success([]);'));
+    expect(localAuth, contains('userAuth.getAvailableStatus('));
+    expect(localAuth, contains('result.success(this.getBiometrics());'));
+    expect(localAuth, contains('userAuth.getUserAuthInstance('));
+    expect(localAuth, contains('userAuth.UserAuthResultCode.SUCCESS'));
 
     expect(platformBridge, contains("case 'getRuntimeInfo'"));
     expect(platformBridge, contains("case 'saveBytes'"));

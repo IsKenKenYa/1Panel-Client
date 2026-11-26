@@ -278,7 +278,20 @@ void main() {
       expect(result['error'], contains('password'));
     });
 
-    test('updateDatabaseAccess 缺 id 快速失败', () async {
+    test('updateDatabaseAccess 缺少 type 时报告必填字段', () async {
+      final result = await NativeChannelDatabaseDeepHandlers.updateDatabaseAccess(
+        <String, dynamic>{
+          'from': 'local',
+          'database': 'db1',
+          'value': '%',
+        },
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], 'from, type, database and value are required');
+    });
+
+    test('updateDatabaseAccess 的根用户请求省略 id 后继续检查连接配置', () async {
       final result = await NativeChannelDatabaseDeepHandlers.updateDatabaseAccess(
         <String, dynamic>{
           'from': 'local',
@@ -289,7 +302,7 @@ void main() {
       );
 
       expect(result['success'], isFalse);
-      expect(result['error'], contains('id is required'));
+      expect(result['error'], contains('No API config available'));
     });
 
     test('grantDatabaseUser 缺 db 快速失败', () async {
