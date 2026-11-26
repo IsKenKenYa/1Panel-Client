@@ -17,6 +17,8 @@ export struct HarmonyNativeShell {
   @State private showingDestination: boolean = false;
   /** 窗口宽度达到 840vp 时按官方多设备规范切换为侧边导航。 */
   @State private wideLayout: boolean = false;
+  /** 侧栏当前选中模块；宽屏列出全部模块，与底部页签的两槽位模型相互独立。 */
+  @State private selectedModule: string = 'servers';
   @StorageLink('harmonyNativeRefresh') @Watch('refreshPresentation') private presentationRevision: number = 0;
   @StorageLink('harmonyThemeMode') private themeMode: string = 'system';
   @StorageLink('harmonyRootRoute') private rootRoute: string = '';
@@ -133,8 +135,45 @@ export struct HarmonyNativeShell {
 
   private async selectTab(index: number): Promise<void> {
     const module = ['servers', ...this.pinnedModules, 'settings'][index];
+    this.selectedModule = module;
     await this.bridge.setActiveModule(module);
     this.selectedTab = index;
+  }
+
+  /** 宽屏侧栏切换模块；底部页签的置顶槽位对应关系保持不变。 */
+  private async selectModule(module: string): Promise<void> {
+    this.selectedModule = module;
+    await this.bridge.setActiveModule(module);
+  }
+
+  /**
+   * 宽屏内容区按模块一分支构造页面。每个模块各自持有独立分支，
+   * 切换时旧分支销毁、新分支重建，页面实例与它的 route 参数一起更新。
+   */
+  @Builder
+  private sidebarPage() {
+    if (this.selectedModule === 'servers') {
+      HarmonyServersPage({
+        initialRoute: this.rootRoute === '/server-config' ? this.rootRoute : '/server',
+        shellSidebar: true,
+      })
+    } else if (this.selectedModule === 'files') {
+      HarmonyNativeDestination({ route: '/files', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'containers') {
+      HarmonyNativeDestination({ route: '/containers', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'apps') {
+      HarmonyNativeDestination({ route: '/apps', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'websites') {
+      HarmonyNativeDestination({ route: '/websites', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'ai') {
+      HarmonyNativeDestination({ route: '/ai', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'vm') {
+      HarmonyNativeDestination({ route: '/vm', tab: true, shellSidebar: true })
+    } else if (this.selectedModule === 'verification') {
+      HarmonyNativeDestination({ route: '/security-verification', tab: true, shellSidebar: true })
+    } else {
+      HarmonySettingsPage()
+    }
   }
 
   private pinnedModulesChanged(): void {
@@ -186,25 +225,15 @@ export struct HarmonyNativeShell {
       .padding({ bottom: 72 + this.bottomInset })
   }
 
-  @Builder
-  private tabContent() {
-    if (this.selectedTab === 0) {
-      HarmonyServersPage({ initialRoute: this.rootRoute === '/server-config' ? this.rootRoute : '/server' })
-        .padding({ bottom: this.wideLayout ? 0 : 72 + this.bottomInset })
-    } else if (this.selectedTab === 1) {
-      this.pinnedPage(this.pinnedModules[0])
-    } else if (this.selectedTab === 2) {
-      this.pinnedPage(this.pinnedModules[1])
-    } else {
-      HarmonySettingsPage()
-        .padding({ bottom: this.wideLayout ? 0 : 72 + this.bottomInset })
-    }
+  /** 宽屏侧栏按官方多设备规范列出全部模块，与底部页签的两槽位置顶模型相互独立。 */
+  private sidebarModules(): string[] {
+    return ['servers', 'files', 'containers', 'apps', 'websites', 'ai', 'vm', 'verification', 'settings'];
   }
 
-  private sidebarSymbol(index: number): Resource {
-    if (index === 0) return $r('sys.symbol.externaldrive');
-    if (index === 3) return $r('sys.symbol.gearshape');
-    return this.tabSymbolResource(this.pinnedModules[index - 1]);
+  private sidebarSymbol(module: string): Resource {
+    if (module === 'servers') return $r('sys.symbol.externaldrive');
+    if (module === 'settings') return $r('sys.symbol.gearshape');
+    return this.tabSymbolResource(module);
   }
 
   private tabSymbolResource(module: string): Resource {
@@ -219,46 +248,48 @@ export struct HarmonyNativeShell {
     }
   }
 
-  private sidebarLabel(index: number): string {
-    if (index === 0) return HarmonyNativeBridge.instance.text('serverPageTitle');
-    if (index === 3) return HarmonyNativeBridge.instance.text('settingsPageTitle');
-    return this.bridge.text(this.titleKey(this.pinnedModules[index - 1]));
+  private sidebarLabel(module: string): string {
+    if (module === 'servers') return HarmonyNativeBridge.instance.text('serverPageTitle');
+    if (module === 'settings') return HarmonyNativeBridge.instance.text('settingsPageTitle');
+    return this.bridge.text(this.titleKey(module));
   }
 
   @Builder
-  private sidebarRow(index: number) {
+  private sidebarRow(module: string) {
     Row({ space: 12 }) {
-      SymbolGlyph(this.sidebarSymbol(index))
+      SymbolGlyph(this.sidebarSymbol(module))
         .fontSize(24)
-        .fontColor([this.selectedTab === index ? $r('sys.color.font_emphasize') : $r('sys.color.icon_primary')])
-      Text(this.sidebarLabel(index)).fontSize(16).layoutWeight(1).maxLines(1)
+        .fontColor([this.selectedModule === module ? $r('sys.color.font_emphasize') : $r('sys.color.icon_primary')])
+      Text(this.sidebarLabel(module)).fontSize(16).layoutWeight(1).maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
-        .fontColor(this.selectedTab === index ? $r('sys.color.font_emphasize') : $r('sys.color.font_primary'))
+        .fontColor(this.selectedModule === module ? $r('sys.color.font_emphasize') : $r('sys.color.font_primary'))
         .accessibilityLevel('no')
     }
     .width('100%')
     .height(56)
     .padding({ left: 16, right: 16 })
     .borderRadius(16)
-    .backgroundColor(this.selectedTab === index ? $r('sys.color.comp_background_primary') : Color.Transparent)
+    .backgroundColor(this.selectedModule === module ? $r('sys.color.comp_background_primary') : Color.Transparent)
     .focusable(true)
     .focusOnTouch(true)
     .focusBox({ margin: LengthMetrics.vp(2) })
     .hoverEffect(HoverEffect.Highlight)
-    .onClick((): void => { this.selectTab(index); })
+    .onClick((): void => { this.selectModule(module); })
     .accessibilityRole(AccessibilityRoleType.NAVIGATION_BAR)
-    .accessibilityText(this.sidebarLabel(index))
+    .accessibilityText(this.sidebarLabel(module))
   }
 
   @Builder
   private sidebarContent() {
-    Column({ space: 4 }) {
-      ForEach([0, 1, 2, 3], (index: number): void => {
-        this.sidebarRow(index)
-      }, (index: number): string => `${index}`)
+    List({ space: 4 }) {
+      ForEach(this.sidebarModules(), (module: string): void => {
+        ListItem() { this.sidebarRow(module) }
+      }, (module: string): string => module)
     }
     .width('100%')
-    .padding({ left: 8, right: 8, top: 8 })
+    .height('100%')
+    .padding({ left: 8, right: 8, top: 8, bottom: 16 })
+    .scrollBar(BarState.Auto)
   }
 
   @Builder
@@ -284,12 +315,12 @@ export struct HarmonyNativeShell {
           Column() {
             this.sidebarContent()
           }
-          .width(220)
+          .width(240)
           .height('100%')
           .backgroundColor($r('sys.color.background_secondary'))
           .border({ width: { right: 0.5 }, color: $r('sys.color.comp_divider') })
           Column() {
-            this.tabContent()
+            this.sidebarPage()
           }
           .layoutWeight(1)
           .height('100%')

@@ -34,6 +34,8 @@ class HarmonyServerRecord {
 export struct HarmonyServersPage {
   @Prop initialRoute: string = '/server';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
+  /** 主壳侧栏已占据左侧空间，此时页面自身不再分栏，避免两层导航栏重复挤压内容。 */
+  @Prop shellSidebar: boolean = false;
   onBack?: () => void;
   /** 窗口宽度达到 600vp 时按官方分栏规范让列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;
@@ -822,13 +824,14 @@ export struct HarmonyServersPage {
       .menus(this.navigationMenus())
       .navDestination(this.destination)
       .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
       .width('100%')
       .height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
       .onAreaChange((_old: Area, current: Area): void => {
         const measured = current.width;
         if (typeof measured === 'number') {
-          this.splitLayout = measured >= 600;
+          this.splitLayout = !this.shellSidebar && measured >= 600;
         }
       })
   }

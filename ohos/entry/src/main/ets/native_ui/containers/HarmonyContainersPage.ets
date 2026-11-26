@@ -25,6 +25,8 @@ export class HarmonyContainerItem {
 export struct HarmonyContainersPage {
   @Prop initialRoute: string = '/containers';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
+  /** 主壳侧栏已占据左侧空间，此时页面自身不再分栏，避免两层导航栏重复挤压内容。 */
+  @Prop shellSidebar: boolean = false;
   @State private containers: HarmonyContainerItem[] = [];
   /** 窗口宽度达到 600vp 时按官方分栏规范让列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;
@@ -557,12 +559,13 @@ export struct HarmonyContainersPage {
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.rootMenus())
       .navDestination(this.destination)
       .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary')).width('100%').height('100%')
       .onAreaChange((_old: Area, current: Area): void => {
         const measured = current.width;
         if (typeof measured === 'number') {
-          const split = measured >= 600;
+          const split = !this.shellSidebar && measured >= 600;
           if (split && !this.splitLayout) {
             this.splitLayout = split;
             this.autoSelectOnSplit();
