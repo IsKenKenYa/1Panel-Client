@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge, sheetMaterial } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 @Component
 export struct HarmonyStoragePage {
@@ -176,6 +178,14 @@ export struct HarmonyStoragePage {
                 }.padding(16).width('100%').constraintSize({ minHeight: 64 })
               }.backgroundColor($r('sys.color.comp_background_primary'))
                 .onClick((): void => { this.folderDraft = this.folder; this.folderSheet = true; })
+                .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(event, (): void => {
+                  this.folderDraft = this.folder;
+                  this.folderSheet = true;
+                }))
+                .focusable(true)
+                .focusOnTouch(true)
+                .focusBox({ margin: LengthMetrics.vp(2) })
+                .hoverEffect(HoverEffect.Highlight)
             }
           }.borderRadius(16).clip(true)
         }.padding({ left: 16, right: 16, top: 16, bottom: 24 }).width('100%').height('100%')

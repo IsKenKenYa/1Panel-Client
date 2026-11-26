@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 interface HarmonyAboutField {
   labelKey: string;
@@ -121,6 +123,14 @@ export struct HarmonyAboutPage {
       .id(`harmony.about.link.${linkId}`)
       .accessibilityText(`${this.text(titleKey)} ${subtitle}`)
       .onClick((): void => { this.openLink(linkId); })
+      .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+        event,
+        (): void => { this.openLink(linkId); },
+      ))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
   }
 
   build() {

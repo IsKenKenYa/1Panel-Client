@@ -1,5 +1,6 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 @Component
 export struct HarmonyLegalPage {
@@ -132,6 +133,14 @@ export struct HarmonyLegalPage {
           }.backgroundColor($r('sys.color.comp_background_primary'))
             .id(`harmony.legal.${document.get('id') as string}`)
             .onClick((): void => { this.openDocument(document.get('id') as string); })
+            .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+              event,
+              (): void => { this.openDocument(document.get('id') as string); },
+            ))
+            .focusable(true)
+            .focusOnTouch(true)
+            .focusBox({ margin: LengthMetrics.vp(2) })
+            .hoverEffect(HoverEffect.Highlight)
         }, (document: Map<string, string>): string => document.get('id') as string)
         ListItem() {
           Row({ space: 12 }) {
@@ -141,6 +150,14 @@ export struct HarmonyLegalPage {
           }.constraintSize({ minHeight: 56 }).width('100%').padding(16)
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id('harmony.legal.packages').onClick((): void => { this.loadPackages(); })
+          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+            event,
+            (): void => { this.loadPackages(); },
+          ))
+          .focusable(true)
+          .focusOnTouch(true)
+          .focusBox({ margin: LengthMetrics.vp(2) })
+          .hoverEffect(HoverEffect.Highlight)
       }.borderRadius(16).clip(true)
       ListItemGroup() {
         ListItem() {
@@ -155,6 +172,14 @@ export struct HarmonyLegalPage {
           }.constraintSize({ minHeight: 64 }).width('100%').padding(16)
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id('harmony.legal.sdk').onClick((): void => { this.openSdkDisclosure(); })
+          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+            event,
+            (): void => { this.openSdkDisclosure(); },
+          ))
+          .focusable(true)
+          .focusOnTouch(true)
+          .focusBox({ margin: LengthMetrics.vp(2) })
+          .hoverEffect(HoverEffect.Highlight)
       }.borderRadius(16).clip(true)
     }.width('100%').height('100%').padding({ left: 16, right: 16, top: 8, bottom: 24 })
       .scrollBar(BarState.Auto)
@@ -178,6 +203,14 @@ export struct HarmonyLegalPage {
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id(`harmony.legal.package.${packageName}`)
           .onClick((): void => { this.loadLicense(packageName); })
+          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+            event,
+            (): void => { this.loadLicense(packageName); },
+          ))
+          .focusable(true)
+          .focusOnTouch(true)
+          .focusBox({ margin: LengthMetrics.vp(2) })
+          .hoverEffect(HoverEffect.Highlight)
       }, (packageName: string): string => packageName)
     }.width('100%').height('100%').padding({ left: 16, right: 16, top: 8, bottom: 24 })
       .divider({ strokeWidth: 0.5, color: $r('sys.color.comp_divider'), startMargin: 16, endMargin: 16 })

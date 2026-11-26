@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 @Component
 export struct HarmonyThemePage {
@@ -89,6 +91,14 @@ export struct HarmonyThemePage {
                   .padding({ left: 16, right: 16, top: 8, bottom: 8 })
               }.backgroundColor($r('sys.color.comp_background_primary'))
                 .onClick((): void => { if (!this.isSaving) this.save('themeMode', mode); })
+                .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+                  event,
+                  (): void => { if (!this.isSaving) this.save('themeMode', mode); },
+                ))
+                .focusable(true)
+                .focusOnTouch(true)
+                .focusBox({ margin: LengthMetrics.vp(2) })
+                .hoverEffect(HoverEffect.Highlight)
             }, (mode: string): string => mode)
           }.borderRadius(16).clip(true)
           if (this.dynamicColorAvailable) {

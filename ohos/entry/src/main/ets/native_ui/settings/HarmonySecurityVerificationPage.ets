@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 @Component
 export struct HarmonySecurityVerificationPage {
@@ -72,6 +74,14 @@ export struct HarmonySecurityVerificationPage {
               .enabled(!this.isOpening)
               .accessibilityText(this.text('settingsPanelAccountSecurity'))
               .onClick((): void => { this.openEntrance(); })
+              .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+                event,
+                (): void => { this.openEntrance(); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
           }.borderRadius(16).clip(true)
         }.width('100%').height('100%').padding({ left: 16, right: 16, top: 16, bottom: 24 })
       }

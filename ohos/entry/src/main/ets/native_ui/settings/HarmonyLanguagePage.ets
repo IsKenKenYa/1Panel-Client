@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
 
 @Component
 export struct HarmonyLanguagePage {
@@ -64,6 +66,14 @@ export struct HarmonyLanguagePage {
               }.constraintSize({ minHeight: 56 }).width('100%').padding(16)
             }.backgroundColor($r('sys.color.comp_background_primary'))
               .onClick((): void => { if (!this.isSaving) this.save(language); })
+              .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+                event,
+                (): void => { if (!this.isSaving) this.save(language); },
+              ))
+              .focusable(true)
+              .focusOnTouch(true)
+              .focusBox({ margin: LengthMetrics.vp(2) })
+              .hoverEffect(HoverEffect.Highlight)
           }, (language: string): string => language)
         }.borderRadius(16).clip(true)
       }.padding(16).width('100%').height('100%')
