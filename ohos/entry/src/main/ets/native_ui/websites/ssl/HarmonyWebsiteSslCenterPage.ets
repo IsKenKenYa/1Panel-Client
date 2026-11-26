@@ -1,6 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { moduleTitleOptions } from '../../HarmonyModuleTitle';
 import { HarmonyWebsiteCertificateForm } from './HarmonyWebsiteCertificateForm';
 import { HarmonyWebsiteHttpsPage } from './HarmonyWebsiteHttpsPage';
 import { HarmonyWebsiteSslAccountsPage } from './HarmonyWebsiteSslAccountsPage';
@@ -346,15 +347,9 @@ export struct HarmonyWebsiteSslCenterPage {
     return this.text('websitesSslCreateAction');
   }
 
-  @Builder
-  private rootTitleBar() {
-    Row({ space: 8 }) {
-      Button() { SymbolGlyph($r('sys.symbol.chevron_left')).fontSize(22) }
-        .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(this.text('commonBack')).onClick(this.onBack)
-      Text(this.rootTitle()).fontSize(20).fontWeight(FontWeight.Medium)
-        .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis }).layoutWeight(1)
-    }.width('100%')
+  private rootMenus(): NavigationMenuItem[] {
+    return this.initialRoute === '/website-certificate-detail' ? this.certificateMenus() :
+      this.opensWebsiteHttps() ? [] : this.centerMenus();
   }
 
   build() {
@@ -369,10 +364,9 @@ export struct HarmonyWebsiteSslCenterPage {
         this.centerContent()
       }
     }
-    .title(this.rootTitleBar, { barStyle: BarStyle.STANDARD })
-    .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
-    .menus(this.initialRoute === '/website-certificate-detail' ? this.certificateMenus() :
-      this.opensWebsiteHttps() ? [] : this.centerMenus())
+    .title(this.rootTitle(), moduleTitleOptions)
+    .titleMode(NavigationTitleMode.Mini)
+    .menus(this.rootMenus())
     .navDestination(this.destination).mode(NavigationMode.Stack)
     .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))
     .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
