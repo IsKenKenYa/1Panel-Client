@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '../../data/models/app_models.dart';
 import '../../features/apps/app_service.dart';
 import '../network/api_client_manager.dart';
+import '../services/cache/app_icon_cache.dart';
+import '../services/logger/logger_service.dart';
 
 class NativeChannelApps {
   static Future<dynamic> dispatch(String method, dynamic arguments) async {
@@ -31,13 +34,44 @@ class NativeChannelApps {
         );
         final info = await service.installApp(request);
         return {'success': true, 'appId': info.id};
+      case 'getHarmonyAppIcons':
+        final keys = args['appKeys'] as List? ?? const <dynamic>[];
+        final icons = <String, String>{};
+        // 逐项串行取回，命中磁盘缓存时不再请求面板；失败的键不出现在结果里，
+        // 由原生侧保持默认图标。
+        for (final key in keys.whereType<String>()) {
+          if (key.isEmpty) continue;
+          final cached = await AppIconCache.read(key);
+          if (cached != null) {
+            icons[key] = cached;
+            continue;
+          }
+          try {
+            final response = await service.getAppIcon(key);
+            final type = response.headers.value('content-type')?.split(';').first;
+            final bytes = response.data;
+            if (type == null || !type.startsWith('image/') || bytes == null || bytes.isEmpty) {
+              continue;
+            }
+            await AppIconCache.write(key, Uint8List.fromList(bytes));
+            icons[key] = 'data:$type;base64,${base64Encode(bytes)}';
+          } catch (error) {
+            appLogger.wWithPackage('app-icon', '取回应用图标失败 $key: $error');
+          }
+        }
+        return icons;
       case 'getHarmonyAppIcon':
-        final response = await service.getAppIcon(args['appKey'] as String);
+        final appKey = args['appKey'] as String? ?? '';
+        if (appKey.isEmpty) return null;
+        final cached = await AppIconCache.read(appKey);
+        if (cached != null) return cached;
+        final response = await service.getAppIcon(appKey);
         final type = response.headers.value('content-type')?.split(';').first;
         final bytes = response.data;
         if (type == null || !type.startsWith('image/') || bytes == null || bytes.isEmpty) {
           return null;
         }
+        await AppIconCache.write(appKey, Uint8List.fromList(bytes));
         return 'data:$type;base64,${base64Encode(bytes)}';
       case 'upgradeHarmonyApp':
         await service.operateInstalledApp(AppInstalledOperateRequest(

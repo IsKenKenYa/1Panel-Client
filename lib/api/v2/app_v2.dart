@@ -268,11 +268,17 @@ class AppV2Api {
     return AppDetailSimple.fromJson(data['data'] as Map<String, dynamic>);
   }
 
-  /// 获取应用图标
+  /// 获取应用图标。
+  ///
+  /// 面板对远程图标返回 302 跳转到图标 CDN，跟随跳转后需要等 CDN 响应，
+  /// 因此这里单独放宽接收超时，与普通接口的 8 秒区分。
   Future<Response<List<int>>> getAppIcon(String appKey) async {
     return _client.get<List<int>>(
       ApiConstants.buildApiPath('/apps/icon/$appKey'),
-      options: Options(responseType: ResponseType.bytes),
+      options: Options(
+        responseType: ResponseType.bytes,
+        receiveTimeout: const Duration(seconds: 30),
+      ),
     );
   }
 

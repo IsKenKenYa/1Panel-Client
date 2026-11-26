@@ -3,6 +3,7 @@ import '../../features/settings/widgets/system_settings_tiles.dart';
 import '../../features/shell/models/client_module.dart';
 import '../services/app_preferences_service.dart';
 import '../services/app_settings_controller.dart';
+import '../services/cache/app_icon_cache.dart';
 import '../services/cache/file_preview_cache_manager.dart';
 
 class NativeChannelHarmonyPrivacy {
@@ -120,6 +121,7 @@ class NativeChannelHarmonyPrivacy {
         await preferences.saveFileSaveSubDirectoryName(folder);
       case 'clear':
         await FilePreviewCacheManager().clearAllCache();
+        await AppIconCache.clear();
       default:
         throw ArgumentError.value(args['key'], 'key');
     }

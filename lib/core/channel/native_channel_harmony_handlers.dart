@@ -80,6 +80,7 @@ class NativeChannelHarmonyHandlers {
       case 'installHarmonyApp':
       case 'uninstallHarmonyApp':
       case 'getHarmonyAppIcon':
+      case 'getHarmonyAppIcons':
         return NativeChannelApps.dispatch(method, arguments);
       case 'searchNativeWebsites':
       case 'getNativeWebsiteDetail':
