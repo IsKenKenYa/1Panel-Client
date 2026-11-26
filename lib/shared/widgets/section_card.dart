@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 
 /// 位于卡片上方的分区标题。
 class SectionTitle extends StatelessWidget {
@@ -26,7 +27,7 @@ class SectionTitle extends StatelessWidget {
 /// 统一的「内容分组」标准组件（M3 Expressive 轨道）。
 ///
 /// 结构遵循 M3E 数据分区：标题与辅助说明位于卡片外侧，卡片只承载内容；
-/// 卡片使用 `surfaceContainerLow` 底色与描边，圆角沿用全局 `radiusLg`。
+/// 卡片使用共享的卡片底色与描边，圆角沿用全局 `radiusLg`。
 /// 全仓所有"标题 + 描述 + 内容"的分组必须复用本组件，禁止页面私有变体。
 ///
 /// 若分组内容是一组可点击入口（icon + title + chevron 列表），
@@ -121,7 +122,7 @@ class SectionCard extends StatelessWidget {
         Card(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.zero,
-          color: scheme.surfaceContainerLow,
+          color: AppTheme.cardSurface(scheme),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[

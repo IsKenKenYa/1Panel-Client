@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/i18n/l10n_x.dart';
 import '../../core/theme/app_design_tokens.dart';
+import '../../core/theme/app_theme.dart';
 import '../../data/models/monitoring_models.dart';
 import 'app_card.dart';
 
@@ -174,7 +175,7 @@ class MetricOverviewTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
         decoration: BoxDecoration(
-          color: scheme.surfaceContainerLow,
+          color: AppTheme.cardSurface(scheme),
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
           border: Border.all(color: scheme.outlineVariant),
         ),

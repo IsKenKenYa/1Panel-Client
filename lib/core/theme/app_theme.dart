@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'app_design_tokens.dart';
 
+/// 共享主题（M3 / M3 Expressive 轨道）。
+///
+/// 强调色跟随系统动态色或用户选色；表面层级固定走 M3 的中性容器角色，
+/// 使页面为灰底、内容卡与浮层逐级抬升。客户端工具不设品牌色，
+/// 默认种子取低彩度中性色。
 class AppTheme {
   const AppTheme._();
 
@@ -17,13 +22,14 @@ class AppTheme {
     Color? seedColor,
     VisualDensity visualDensity = VisualDensity.standard,
   }) {
-    final scheme = _resolveScheme(
-      brightness: Brightness.light,
-      dynamicScheme: dynamicScheme,
-      seedColor: seedColor,
+    return _buildTheme(
+      _resolveScheme(
+        brightness: Brightness.light,
+        dynamicScheme: dynamicScheme,
+        seedColor: seedColor,
+      ),
+      visualDensity,
     );
-
-    return _buildTheme(scheme, visualDensity);
   }
 
   static ThemeData getDarkTheme({
@@ -31,31 +37,57 @@ class AppTheme {
     Color? seedColor,
     VisualDensity visualDensity = VisualDensity.standard,
   }) {
-    final scheme = _resolveScheme(
-      brightness: Brightness.dark,
-      dynamicScheme: dynamicScheme,
-      seedColor: seedColor,
+    return _buildTheme(
+      _resolveScheme(
+        brightness: Brightness.dark,
+        dynamicScheme: dynamicScheme,
+        seedColor: seedColor,
+      ),
+      visualDensity,
     );
-
-    return _buildTheme(scheme, visualDensity);
   }
+
+  /// 内容卡与分组卡片的底色。
+  ///
+  /// 浅色取最亮的容器层（tone 100），在灰色页面上读作白卡；
+  /// 深色沿 M3 的抬升方向取 surfaceContainer（tone 12）。
+  static Color cardSurface(ColorScheme scheme) =>
+      scheme.brightness == Brightness.dark
+          ? scheme.surfaceContainer
+          : scheme.surfaceContainerLowest;
+
+  /// 顶栏、底栏、侧栏与抽屉的底色，与页面同级。
+  static Color chromeSurface(ColorScheme scheme) => scheme.surface;
+
+  /// 对话框、菜单与底部面板的底色，浮在内容之上。
+  static Color floatSurface(ColorScheme scheme) =>
+      scheme.brightness == Brightness.dark
+          ? scheme.surfaceContainerHigh
+          : scheme.surfaceContainerLowest;
+
+  /// 输入框与进度轨道的填充底色。
+  static Color fieldSurface(ColorScheme scheme) =>
+      scheme.surfaceContainerHighest;
 
   static ColorScheme _resolveScheme({
     required Brightness brightness,
     ColorScheme? dynamicScheme,
     Color? seedColor,
   }) {
-    if (dynamicScheme != null) {
-      return dynamicScheme;
-    }
-
+    // 系统动态色由用户选定，保留其彩度；回退到内置种子时用 neutral 变体，
+    // 使强调色停留在近灰阶。两者都重新生成，旧版构造里 surfaceContainer*
+    // 会全部回退到 surface，重生成后全套角色才可用。
+    final source = dynamicScheme?.primary ?? seedColor;
     return ColorScheme.fromSeed(
-      seedColor: seedColor ?? AppDesignTokens.brand,
-      brightness: brightness,
+      seedColor: source ?? AppDesignTokens.seedColor,
+      brightness: dynamicScheme?.brightness ?? brightness,
+      dynamicSchemeVariant: source == null
+          ? DynamicSchemeVariant.neutral
+          : DynamicSchemeVariant.tonalSpot,
     );
   }
 
-  static ThemeData _buildTheme(ColorScheme scheme, VisualDensity density) {
+  static ThemeData _buildTheme(ColorScheme incoming, VisualDensity density) {
     final isDesktop = defaultTargetPlatform == TargetPlatform.macOS ||
         defaultTargetPlatform == TargetPlatform.windows ||
         defaultTargetPlatform == TargetPlatform.linux;
@@ -63,6 +95,16 @@ class AppTheme {
     final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
     final compact = density == VisualDensity.compact;
     final buttonSize = Size(0, compact ? 44 : kMinInteractiveDimension);
+
+    // 浅色页面取 surfaceContainer（tone 94），卡片与浮层抬到 tone 100；
+    // 深色页面保持 surface（tone 6），容器沿 M3 原生方向变亮。
+    final scheme = incoming.brightness == Brightness.dark
+        ? incoming
+        : incoming.copyWith(surface: incoming.surfaceContainer);
+    final cardColor = cardSurface(scheme);
+    final chromeColor = chromeSurface(scheme);
+    final floatColor = floatSurface(scheme);
+    final fieldColor = fieldSurface(scheme);
 
     return ThemeData(
       useMaterial3: true,
@@ -74,11 +116,10 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: 0,
-        backgroundColor: scheme.surface,
+        backgroundColor: chromeColor,
         foregroundColor: scheme.onSurface,
       ),
-      // M3 Expressive：卡片走 surfaceContainerLow 底色 + 低层级描边，
-      // 与页面 surface 形成一层可辨识的抬升，而不是靠阴影区分。
+      // M3E 卡片：内容卡走最亮容器层 + 低层级描边，与灰色页面区分层级。
       cardTheme: CardThemeData(
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -90,22 +131,20 @@ class AppTheme {
                 : scheme.outlineVariant.withValues(alpha: 0.6),
           ),
         ),
-        color: isMacOS
-            ? scheme.surfaceContainerLow.withValues(alpha: 0.9)
-            : scheme.surfaceContainerLow,
+        color: isMacOS ? cardColor.withValues(alpha: 0.9) : cardColor,
       ),
       navigationBarTheme: NavigationBarThemeData(
         elevation: isDesktop ? 0 : 1,
-        indicatorColor: scheme.primaryContainer,
-        backgroundColor: scheme.surface,
+        indicatorColor: scheme.secondaryContainer,
+        backgroundColor: chromeColor,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: scheme.surface,
-        indicatorColor: scheme.primaryContainer,
+        backgroundColor: chromeColor,
+        indicatorColor: scheme.secondaryContainer,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        fillColor: fieldColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         ),
@@ -128,9 +167,9 @@ class AppTheme {
           minimumSize: buttonSize,
         ),
       ),
-      // M3 Expressive：弹层统一大圆角（28dp）与低层级表面色。
+      // M3 Expressive：弹层统一大圆角（28dp）与浮层底色。
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: scheme.surfaceContainerLow,
+        backgroundColor: floatColor,
         surfaceTintColor: Colors.transparent,
         elevation: isDesktop ? 0 : 1,
         shape: const RoundedRectangleBorder(
@@ -153,20 +192,20 @@ class AppTheme {
         radius: const Radius.circular(AppDesignTokens.radiusMd),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: scheme.surfaceContainerLow,
+        backgroundColor: floatColor,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
         ),
       ),
-      // M3E filter chip：完整胶囊外形，选中态填充主色。
+      // M3E filter chip：完整胶囊外形，选中态填充次级容器色与配对前景色。
       chipTheme: ChipThemeData(
         shape: const StadiumBorder(),
         side: BorderSide(color: scheme.outlineVariant),
-        backgroundColor: scheme.surfaceContainerHighest,
-        selectedColor: scheme.primary,
-        secondarySelectedColor: scheme.primary,
-        checkmarkColor: scheme.onPrimary,
+        backgroundColor: scheme.surfaceContainerLow,
+        selectedColor: scheme.secondaryContainer,
+        secondarySelectedColor: scheme.secondaryContainer,
+        checkmarkColor: scheme.onSecondaryContainer,
         labelStyle: TextStyle(
           fontSize: 13,
           color: WidgetStateColor.resolveWith((states) {
@@ -174,7 +213,7 @@ class AppTheme {
               return scheme.onSurface.withValues(alpha: 0.38);
             }
             return states.contains(WidgetState.selected)
-                ? scheme.onPrimary
+                ? scheme.onSecondaryContainer
                 : scheme.onSurface;
           }),
         ),
@@ -197,8 +236,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         ),
       ),
-      // TabBar：胶囊形主色指示器（M3E rounded indicator）。
-      // M3 Expressive：等宽胶囊指示器 + 选中态主色、未选中次级色。
+      // TabBar：等宽胶囊指示器，选中态主色填充配 onPrimary 文案。
       tabBarTheme: TabBarThemeData(
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
@@ -215,9 +253,8 @@ class AppTheme {
         splashBorderRadius:
             BorderRadius.circular(AppDesignTokens.radiusSm),
       ),
-      // 菜单/弹出层统一 16dp 圆角。
       popupMenuTheme: PopupMenuThemeData(
-        color: scheme.surfaceContainerLow,
+        color: floatColor,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
@@ -225,8 +262,7 @@ class AppTheme {
       ),
       menuTheme: MenuThemeData(
         style: MenuStyle(
-          backgroundColor: WidgetStatePropertyAll(
-              scheme.surfaceContainerLow),
+          backgroundColor: WidgetStatePropertyAll(floatColor),
           surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
@@ -250,8 +286,8 @@ class AppTheme {
       // 进度指示统一圆头与主色。
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: scheme.primary,
-        linearTrackColor: scheme.surfaceContainerHighest,
-        circularTrackColor: scheme.surfaceContainerHighest,
+        linearTrackColor: fieldColor,
+        circularTrackColor: fieldColor,
       ),
       // 分段按钮：M3E selected 层级增强。
       segmentedButtonTheme: SegmentedButtonThemeData(
@@ -264,11 +300,10 @@ class AppTheme {
               )),
         ),
       ),
-      // 下拉菜单（DropdownButtonFormField 用）统一圆角。
+      // 下拉菜单（DropdownButtonFormField 用）统一圆角与浮层底色。
       dropdownMenuTheme: DropdownMenuThemeData(
         menuStyle: MenuStyle(
-          backgroundColor:
-              WidgetStatePropertyAll(scheme.surfaceContainerLow),
+          backgroundColor: WidgetStatePropertyAll(floatColor),
           surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(

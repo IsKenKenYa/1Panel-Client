@@ -92,7 +92,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         unselectedIconColor: scheme.onSurfaceVariant,
         selectedLabelColor: scheme.onSurface,
         unselectedLabelColor: scheme.onSurfaceVariant,
-        indicatorColor: scheme.primaryContainer,
+        indicatorColor: scheme.secondaryContainer,
         settings: barSettings,
         quality: quality,
         backgroundQuality: quality,
@@ -124,7 +124,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       height: overGlass ? _glassBarHeight : null,
       backgroundColor: overGlass ? Colors.transparent : null,
       elevation: overGlass ? 0 : null,
-      indicatorColor: overGlass ? scheme.primaryContainer : null,
+      indicatorColor: overGlass ? scheme.secondaryContainer : null,
       labelTextStyle: overGlass
           ? WidgetStateProperty.resolveWith((states) {
               final color = switch (states) {

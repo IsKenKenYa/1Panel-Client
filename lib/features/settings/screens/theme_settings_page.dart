@@ -11,7 +11,7 @@ class ThemeSettingsPage extends StatelessWidget {
   const ThemeSettingsPage({super.key});
 
   static const List<Color> _presetColors = [
-    AppDesignTokens.brand,
+    AppDesignTokens.seedColor,
     Colors.blue,
     Colors.lightBlue,
     Colors.cyan,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 
 /// 共享信息卡片（M3 Expressive 轨道），支持鼠标、键盘和触控操作。
 ///
-/// 圆角沿用全局 `radiusLg`，底色 `surfaceContainerLow`，悬停时描边转主色
+/// 圆角沿用全局 `radiusLg`，底色取共享卡片角色，悬停时描边转主色
 /// 并抬升一级阴影；标题使用 `titleMedium/w600`，副标题与正文降为次级色。
 class AppCard extends StatefulWidget {
   final String title;
@@ -50,7 +51,7 @@ class _AppCardState extends State<AppCard> {
     );
 
     return Card(
-      color: widget.backgroundColor ?? colorScheme.surfaceContainerLow,
+      color: widget.backgroundColor ?? AppTheme.cardSurface(colorScheme),
       margin: EdgeInsets.zero,
       elevation: hovered ? 3 : 0,
       shape: shape,

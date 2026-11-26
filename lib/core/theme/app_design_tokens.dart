@@ -42,7 +42,10 @@ class AppDesignTokens {
   static const Curve motionEmphasized = Curves.easeInOutCubicEmphasized;
   static const Curve motionStandard = Easing.standard;
 
-  static const Color brand = Color(0xFF0C9B4B);
+  /// 默认种子色：中性灰。客户端工具不设定品牌色，取不到系统动态色
+  /// 且用户未选色时，以中性配色生成全套色彩角色。
+  static const Color seedColor = Color(0xFF757575);
+
   static const Color success = Color(0xFF16A34A);
   static const Color warning = Color(0xFFF59E0B);
   static const Color danger = Color(0xFFDC2626);

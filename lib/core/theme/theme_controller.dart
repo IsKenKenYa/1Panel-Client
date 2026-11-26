@@ -11,7 +11,7 @@ class ThemeController extends ChangeNotifier with SafeChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.system;
   bool _useDynamicColor = true;
-  Color _seedColor = AppDesignTokens.brand;
+  Color _seedColor = AppDesignTokens.seedColor;
   bool _loaded = false;
 
   ThemeMode get themeMode => _themeMode;
@@ -24,7 +24,7 @@ class ThemeController extends ChangeNotifier with SafeChangeNotifier {
         await _preferencesService.loadAppearance();
     _themeMode = mode;
     _useDynamicColor = dynamicColor;
-    _seedColor = seedColor ?? AppDesignTokens.brand;
+    _seedColor = seedColor ?? AppDesignTokens.seedColor;
     _loaded = true;
     notifyListeners();
   }
@@ -48,6 +48,6 @@ class ThemeController extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> resetSeedColor() async {
-    await updateSeedColor(AppDesignTokens.brand);
+    await updateSeedColor(AppDesignTokens.seedColor);
   }
 }
