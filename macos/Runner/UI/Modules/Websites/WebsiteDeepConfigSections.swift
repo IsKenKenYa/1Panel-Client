@@ -106,9 +106,7 @@ struct WebsiteProxyCacheSection: View {
             Text(translations.get("websitesCacheClearMessage",
                                   fallback: "Cached responses for this website will be removed from the panel server."))
         }
-        .overlay(alignment: .bottom) {
-            statusNotice
-        }
+        .operationNotice(statusMessage)
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(
@@ -138,18 +136,6 @@ struct WebsiteProxyCacheSection: View {
             }
         }
         .disabled(isLoading || isSaving)
-    }
-
-    @ViewBuilder
-    private var statusNotice: some View {
-        if let statusMessage {
-            Text(statusMessage)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(.thinMaterial, in: Capsule())
-                .padding(20)
-        }
     }
 
     private func load() async {
@@ -182,8 +168,10 @@ struct WebsiteProxyCacheSection: View {
             )
             let payload = raw as? [String: Any] ?? [:]
             if payload["success"] as? Bool == true {
-                statusMessage = translations.get("websitesCacheClearSuccess",
-                                                 fallback: "Proxy cache cleared")
+                $statusMessage.showOperationNotice(
+                    translations.get("websitesCacheClearSuccess",
+                                     fallback: "Proxy cache cleared")
+                )
             } else {
                 errorMessage = payload["error"] as? String
                     ?? translations.get("commonOperationFailed", fallback: "Operation failed")
@@ -222,8 +210,10 @@ struct WebsiteProxyCacheSection: View {
             )
             let payload = raw as? [String: Any] ?? [:]
             if payload["success"] as? Bool == true {
-                statusMessage = translations.get("commonOperationSuccess",
-                                                 fallback: "Operation succeeded")
+                $statusMessage.showOperationNotice(
+                    translations.get("commonOperationSuccess",
+                                     fallback: "Operation succeeded")
+                )
             } else {
                 errorMessage = payload["error"] as? String
                     ?? translations.get("commonOperationFailed", fallback: "Operation failed")
@@ -289,9 +279,7 @@ struct WebsiteRealIPSection: View {
             }
         }
         .formStyle(.grouped)
-        .overlay(alignment: .bottom) {
-            statusNotice
-        }
+        .operationNotice(statusMessage)
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(
@@ -321,18 +309,6 @@ struct WebsiteRealIPSection: View {
             }
         }
         .disabled(isLoading || isSaving)
-    }
-
-    @ViewBuilder
-    private var statusNotice: some View {
-        if let statusMessage {
-            Text(statusMessage)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(.thinMaterial, in: Capsule())
-                .padding(20)
-        }
     }
 
     private func load() async {
@@ -381,8 +357,10 @@ struct WebsiteRealIPSection: View {
             )
             let payload = raw as? [String: Any] ?? [:]
             if payload["success"] as? Bool == true {
-                statusMessage = translations.get("commonOperationSuccess",
-                                                 fallback: "Operation succeeded")
+                $statusMessage.showOperationNotice(
+                    translations.get("commonOperationSuccess",
+                                     fallback: "Operation succeeded")
+                )
             } else {
                 errorMessage = payload["error"] as? String
                     ?? translations.get("commonOperationFailed", fallback: "Operation failed")
@@ -443,9 +421,7 @@ struct WebsiteStreamSection: View {
             }
         }
         .formStyle(.grouped)
-        .overlay(alignment: .bottom) {
-            statusNotice
-        }
+        .operationNotice(statusMessage)
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(
@@ -475,18 +451,6 @@ struct WebsiteStreamSection: View {
             }
         }
         .disabled(isLoading || isSaving)
-    }
-
-    @ViewBuilder
-    private var statusNotice: some View {
-        if let statusMessage {
-            Text(statusMessage)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(.thinMaterial, in: Capsule())
-                .padding(20)
-        }
     }
 
     private func load() async {
@@ -538,8 +502,10 @@ struct WebsiteStreamSection: View {
             )
             let payload = raw as? [String: Any] ?? [:]
             if payload["success"] as? Bool == true {
-                statusMessage = translations.get("commonOperationSuccess",
-                                                 fallback: "Operation succeeded")
+                $statusMessage.showOperationNotice(
+                    translations.get("commonOperationSuccess",
+                                     fallback: "Operation succeeded")
+                )
             } else {
                 errorMessage = payload["error"] as? String
                     ?? translations.get("commonOperationFailed", fallback: "Operation failed")

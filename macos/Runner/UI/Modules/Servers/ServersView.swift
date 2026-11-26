@@ -14,11 +14,26 @@ struct ServersView: View {
         Group {
             if viewModel.isLoading && viewModel.servers.isEmpty {
                 LoadingView()
+            } else if let error = viewModel.errorMessage, viewModel.servers.isEmpty {
+                ErrorView(message: error) {
+                    viewModel.fetchServers()
+                }
             } else if viewModel.servers.isEmpty {
                 EmptyStateView(
                     icon: "server.rack",
-                    message: translations.get("serverListEmptyTitle", fallback: "No servers found")
-                )
+                    message: translations.get("serverListEmptyTitle", fallback: "No servers found"),
+                    description: translations.get("serverListEmptyDesc",
+                                                  fallback: "Add a 1Panel server to get started.")
+                ) {
+                    Button {
+                        editorTarget = ServerEditorTarget(server: nil)
+                    } label: {
+                        Label(translations.get("addServer", fallback: "Add Server"),
+                              systemImage: "plus")
+                    }
+                    .controlSize(.large)
+                    .prominentActionButton()
+                }
             } else {
                 List {
                     ForEach(viewModel.servers) { server in
@@ -66,8 +81,9 @@ struct ServersView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
+        // 列表为空时错误由失败占位呈现，弹窗只负责已有列表上的操作失败。
         .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
-            get: { viewModel.errorMessage != nil },
+            get: { viewModel.errorMessage != nil && !viewModel.servers.isEmpty },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
             Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
@@ -76,6 +92,26 @@ struct ServersView: View {
         }
         .onAppear {
             viewModel.fetchServers()
+        }
+    }
+
+    /// 资源占用只在有数值时显示；缺失时给出占位文案。
+    ///
+    /// 列表按可达性着色：当前连接用主色强调，其余服务器用次要色，
+    /// 进入提示与危险区间后由 `GaugePalette` 统一改为橙与红。
+    @ViewBuilder
+    private func metrics(_ server: ServerModel) -> some View {
+        if let cpu = server.cpu, let memory = server.memory {
+            HStack(spacing: 14) {
+                Label(String(format: "%.1f%%", cpu), systemImage: "cpu")
+                Label(String(format: "%.1f%%", memory), systemImage: "memorychip")
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+        } else {
+            Text(translations.get("serverMetricsUnavailable", fallback: "Metrics unavailable"))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -91,12 +127,10 @@ struct ServersView: View {
                     Text(server.name)
                         .font(.subheadline.weight(server.isCurrent ? .semibold : .regular))
                     if server.isCurrent {
-                        Text(translations.get("serverOnline", fallback: "Connected"))
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.green.opacity(0.14), in: Capsule())
-                            .foregroundStyle(.green)
+                        StatusBadge(
+                            text: translations.get("serverOnline", fallback: "Connected"),
+                            color: .green
+                        )
                     }
                 }
                 Text(server.url)
@@ -104,6 +138,7 @@ struct ServersView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .truncationMode(.middle)
+                metrics(server)
             }
             Spacer(minLength: 12)
             RowActionsMenu {
@@ -276,7 +311,7 @@ struct AddServerSheet: View {
                     : translations.get("commonAdd", fallback: "Add"), action: submit)
                 .keyboardShortcut(.defaultAction)
                 .disabled(!canSubmit || submission.isSubmitting)
-                .buttonStyle(.borderedProminent)
+                .prominentActionButton()
             }
         }
         .padding(24)

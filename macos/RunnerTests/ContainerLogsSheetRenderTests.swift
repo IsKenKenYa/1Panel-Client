@@ -15,8 +15,17 @@ final class ContainerLogsSheetRenderTests: XCTestCase {
     private var window: NSWindow!
     private var session: ContainerLogsSession?
 
+    /// 本次运行独占的测试命名空间；与用户真实配置互不可见。
+    private let namespace = "test_b73_sheet_\(UUID().uuidString)_"
+
     override func setUp() async throws {
         try await super.setUp()
+        let switched = try await ChannelManager.shared.invokeDataMethodAsync(
+            "useTestStorageNamespace",
+            arguments: ["namespace": namespace, "reset": true]
+        )
+        XCTAssertEqual((switched as? [String: Any])?["success"] as? Bool, true,
+                       "切换测试存储命名空间失败")
         let seeded = try await ChannelManager.shared.invokeDataMethodAsync(
             "seedDebugConfig",
             arguments: [
@@ -35,6 +44,14 @@ final class ContainerLogsSheetRenderTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        _ = try? await ChannelManager.shared.invokeDataMethodAsync(
+            "useTestStorageNamespace",
+            arguments: ["namespace": namespace, "reset": true]
+        )
+        _ = try? await ChannelManager.shared.invokeDataMethodAsync(
+            "useTestStorageNamespace",
+            arguments: ["namespace": "", "reset": false]
+        )
         window?.contentViewController = nil
         window?.orderOut(nil)
         window = nil

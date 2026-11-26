@@ -1,3 +1,4 @@
+import FlutterMacOS
 import Foundation
 
 struct ServerModel: Identifiable {
@@ -6,8 +7,8 @@ struct ServerModel: Identifiable {
     let name: String
     let url: String
     let isCurrent: Bool
-    let cpu: Double
-    let memory: Double
+    let cpu: Double?
+    let memory: Double?
     let tokenValidity: Int
     let allowInsecureTls: Bool
 
@@ -26,15 +27,23 @@ class ServersViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("getServers") { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
-                guard let dictArray = result as? [[String: Any]] else { return }
+                guard let dictArray = result as? [[String: Any]] else {
+                    // 通道返回的不是服务器数组：把原始错误留在模型里，
+                    // 列表据此显示失败占位，不再渲染成「没有服务器」。
+                    self?.errorMessage = (result as? FlutterError)?.message
+                        ?? TranslationsManager.shared.get("commonLoadFailedTitle",
+                                                           fallback: "Failed to load")
+                    return
+                }
                 self?.servers = dictArray.compactMap { dict in
                     guard let originalId = dict["id"] as? String,
                           let revision = dict["revision"] as? String,
                           let name = dict["name"] as? String,
                           let url = dict["url"] as? String else { return nil }
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
-                    let cpu = dict["cpu"] as? Double ?? 0
-                    let memory = dict["memory"] as? Double ?? 0
+                    // 指标可能缺失：保留 nil，让列表显示占位而不是 0%。
+                    let cpu = dict["cpu"] as? Double
+                    let memory = dict["memory"] as? Double
                     let tokenValidity = dict["tokenValidity"] as? Int ?? 0
                     let allowInsecureTls = dict["allowInsecureTls"] as? Bool ?? false
                     return ServerModel(

@@ -263,7 +263,7 @@ struct SettingsView: View {
                 icon: "chevron.left.forwardslash.chevron.right",
                 iconColor: .primary,
                 title: "GitHub",
-                subtitle: "1Panel-dev/1Panel-Client"
+                subtitle: "IsKenKenYa/1Panel-Client"
             ) {
                 viewModel.openGitHub()
             }
@@ -288,13 +288,15 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             content()
         }
+        // 分组卡片用系统容器色与分隔线，随深色模式与强调色自动变化；
+        // 玻璃与窗台材质只出现在工具栏和侧栏，内容层保持不透明。
         .background(
             Color(nsColor: .controlBackgroundColor),
             in: RoundedRectangle(cornerRadius: 10, style: .continuous)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
+                .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
         )
     }
 
@@ -403,8 +405,8 @@ struct SettingsAboutSheet: View {
                     // Hero
                     VStack(spacing: 10) {
                         Image(systemName: "server.rack")
-                            .font(.system(size: 48))
-                            .foregroundColor(.accentColor)
+                            .font(.largeTitle)
+                            .foregroundStyle(.tint)
                         Text("KenPanel")
                             .font(.title.bold())
                         Text("v\(viewModel.appVersion) (\(viewModel.buildNumber))")
@@ -470,6 +472,10 @@ struct SettingsAboutSheet: View {
         .background(
             Color(nsColor: .controlBackgroundColor),
             in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
         )
     }
 

@@ -24,11 +24,6 @@ struct WebsiteRewriteSection: View {
                     .padding(8)
             }
             HStack {
-                if let statusMessage {
-                    Text(statusMessage)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
                 Spacer()
                 if isSaving {
                     ProgressView().controlSize(.small)
@@ -43,6 +38,7 @@ struct WebsiteRewriteSection: View {
             }
             .padding(12)
         }
+        .operationNotice(statusMessage)
         .alert(
             translations.get("commonError", fallback: "Error"),
             isPresented: Binding(

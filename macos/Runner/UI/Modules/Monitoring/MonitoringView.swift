@@ -24,21 +24,21 @@ struct MonitoringView: View {
                                     value: viewModel.metrics.cpu / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.cpu),
                                     icon: "cpu",
-                                    color: gaugeColor(viewModel.metrics.cpu)
+                                    baseColor: .blue
                                 )
                                 ResourceRow(
                                     title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                                     value: viewModel.metrics.memory / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.memory),
                                     icon: "memorychip",
-                                    color: gaugeColor(viewModel.metrics.memory)
+                                    baseColor: .purple
                                 )
                                 ResourceRow(
                                     title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                                     value: viewModel.metrics.disk / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.disk),
                                     icon: "internaldrive",
-                                    color: gaugeColor(viewModel.metrics.disk)
+                                    baseColor: .teal
                                 )
                             }
                             .padding(.vertical, 8)
@@ -66,15 +66,15 @@ struct MonitoringView: View {
         .navigationTitle(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                HStack(spacing: 4) {
-                    if viewModel.isLoading {
-                        ProgressView().scaleEffect(0.6)
-                    }
-                    Button { viewModel.fetchMonitoring() } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                    .help(translations.get("commonRefresh", fallback: "Refresh"))
+                if viewModel.isLoading {
+                    ProgressView().controlSize(.small)
                 }
+            }
+            ToolbarItem(placement: .automatic) {
+                Button { viewModel.fetchMonitoring() } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help(translations.get("commonRefresh", fallback: "Refresh"))
             }
         }
         .onAppear {
@@ -82,14 +82,6 @@ struct MonitoringView: View {
         }
         .onDisappear {
             viewModel.stopAutoRefresh()
-        }
-    }
-
-    private func gaugeColor(_ percent: Double) -> Color {
-        switch percent {
-        case ..<60: return .green
-        case ..<80: return .orange
-        default: return .red
         }
     }
 }

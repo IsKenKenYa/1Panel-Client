@@ -62,16 +62,7 @@ struct FileContentView: View {
                 .help(translations.get("commonSave", fallback: "Save"))
             }
         }
-        .overlay(alignment: .bottom) {
-            if let statusText {
-                Text(statusText)
-                    .font(.caption)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.thinMaterial, in: Capsule())
-                    .padding(20)
-            }
-        }
+        .operationNotice(statusText)
         .onAppear {
             if originalContent.isEmpty && content.isEmpty {
                 load()

@@ -42,16 +42,7 @@ struct BackupAccountsSectionView: View {
                 .listStyle(.inset)
             }
         }
-        .overlay(alignment: .bottom) {
-            if let statusMessage {
-                Text(statusMessage)
-                    .font(.caption)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 10)
-            }
-        }
+        .operationNotice(statusMessage)
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
                 Button {

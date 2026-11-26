@@ -45,7 +45,8 @@ struct MainShellView: View {
     private var splitView: some View {
         NavigationSplitView {
             SidebarView(selectedModule: $navigation.selectedModule)
-                .navigationTitle(translations.get("appName", fallback: "Open1Panel"))
+                // 翻译尚未加载时也要显示品牌名；appName 的语言文件值同为 KenPanel。
+                .navigationTitle(translations.get("appName", fallback: "KenPanel"))
                 .navigationSplitViewColumnWidth(min: 180, ideal: 216, max: 300)
         } detail: {
             detailContent

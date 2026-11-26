@@ -190,16 +190,7 @@ struct WebsiteAuthSection: View {
         } message: {
             Text(errorMessage ?? "")
         }
-        .overlay(alignment: .bottom) {
-            if let statusMessage {
-                Text(statusMessage)
-                    .font(.caption)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.thinMaterial, in: Capsule())
-                    .padding(20)
-            }
-        }
+        .operationNotice(statusMessage)
         .task {
             await load()
         }

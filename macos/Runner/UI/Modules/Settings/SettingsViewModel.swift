@@ -127,13 +127,13 @@ class SettingsViewModel: ObservableObject {
     // ── 应用操作 ──────────────────────────────────────────────────────────────
 
     func openGitHub() {
-        if let url = URL(string: "https://github.com/1Panel-dev/1Panel-Client") {
+        if let url = URL(string: "https://github.com/IsKenKenYa/1Panel-Client") {
             NSWorkspace.shared.open(url)
         }
     }
 
     func openIssues() {
-        if let url = URL(string: "https://github.com/1Panel-dev/1Panel-Client/issues") {
+        if let url = URL(string: "https://github.com/IsKenKenYa/1Panel-Client/issues") {
             NSWorkspace.shared.open(url)
         }
     }

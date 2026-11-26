@@ -35,21 +35,21 @@ struct DashboardView: View {
                                     value: viewModel.metrics.cpuUsage / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.cpuUsage),
                                     icon: "cpu",
-                                    color: gaugeColor(viewModel.metrics.cpuUsage)
+                                    baseColor: .blue
                                 )
                                 ResourceRow(
                                     title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                                     value: viewModel.metrics.memoryUsage / 100,
                                     label: viewModel.metrics.memoryUsageText,
                                     icon: "memorychip",
-                                    color: gaugeColor(viewModel.metrics.memoryUsage)
+                                    baseColor: .purple
                                 )
                                 ResourceRow(
                                     title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                                     value: viewModel.metrics.diskUsage / 100,
                                     label: viewModel.metrics.diskUsageText,
                                     icon: "internaldrive",
-                                    color: gaugeColor(viewModel.metrics.diskUsage)
+                                    baseColor: .teal
                                 )
                             }
                             .padding(.vertical, 8)
@@ -84,14 +84,6 @@ struct DashboardView: View {
             viewModel.fetchDashboardData()
         }
     }
-
-    private func gaugeColor(_ percent: Double) -> Color {
-        switch percent {
-        case ..<60: return .green
-        case ..<80: return .orange
-        default: return .red
-        }
-    }
 }
 
 // ── Reusable sub-views ────────────────────────────────────────────────────────
@@ -118,19 +110,24 @@ struct ResourceRow: View {
     let value: Double   // 0…1
     let label: String
     let icon: String
-    let color: Color
+    /// 未进入提示与危险区间时的颜色。
+    var baseColor: Color = .blue
+
+    private var tint: Color {
+        GaugePalette.color(for: value * 100, base: baseColor)
+    }
 
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .frame(width: 20)
-                .foregroundColor(color)
+                .foregroundStyle(tint)
             Text(title)
                 .frame(width: 60, alignment: .leading)
                 .font(.subheadline)
             ProgressView(value: max(0, min(1, value)))
                 .progressViewStyle(.linear)
-                .tint(color)
+                .tint(tint)
             Text(label)
                 .font(.caption)
                 .foregroundColor(.secondary)
