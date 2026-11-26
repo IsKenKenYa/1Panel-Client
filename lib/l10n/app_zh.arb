@@ -26,6 +26,7 @@
   "commonNo": "否",
   "commonComingSoon": "即将支持",
   "commonEmpty": "暂无数据",
+  "commonSplitPlaceholderHint": "在左侧列表中选择一项，详情显示在这里",
   "commonLoadFailedTitle": "加载失败",
   "websitesPageTitle": "网站管理",
   "websitesStatsTitle": "网站统计",

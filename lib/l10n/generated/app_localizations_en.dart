@@ -87,6 +87,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonEmpty => 'No data';
 
   @override
+  String get commonSplitPlaceholderHint =>
+      'Select an item on the left to see its details here';
+
+  @override
   String get commonLoadFailedTitle => 'Failed to load';
 
   @override

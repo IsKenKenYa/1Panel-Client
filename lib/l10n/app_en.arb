@@ -26,6 +26,7 @@
   "commonNo": "No",
   "commonComingSoon": "Coming soon",
   "commonEmpty": "No data",
+  "commonSplitPlaceholderHint": "Select an item on the left to see its details here",
   "commonLoadFailedTitle": "Failed to load",
   "websitesPageTitle": "Websites",
   "websitesStatsTitle": "Statistics",

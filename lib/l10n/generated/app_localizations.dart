@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'No data'**
   String get commonEmpty;
 
+  /// No description provided for @commonSplitPlaceholderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an item on the left to see its details here'**
+  String get commonSplitPlaceholderHint;
+
   /// No description provided for @commonLoadFailedTitle.
   ///
   /// In en, this message translates to:

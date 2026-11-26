@@ -41,5 +41,17 @@ void main() {
 
       expect(result, isA<Map<dynamic, dynamic>>());
     });
+
+    test('split placeholder hint exists in both locales', () async {
+      SharedPreferences.setMockInitialValues({'app_locale': 'zh'});
+      final zh = await NativeChannelReadHandlers.getTranslations();
+      expect((zh as Map<dynamic, dynamic>)['commonSplitPlaceholderHint'],
+          '在左侧列表中选择一项，详情显示在这里');
+
+      SharedPreferences.setMockInitialValues({'app_locale': 'en'});
+      final en = await NativeChannelReadHandlers.getTranslations();
+      expect((en as Map<dynamic, dynamic>)['commonSplitPlaceholderHint'],
+          'Select an item on the left to see its details here');
+    });
   });
 }

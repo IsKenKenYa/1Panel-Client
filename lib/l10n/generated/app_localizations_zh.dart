@@ -87,6 +87,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonEmpty => '暂无数据';
 
   @override
+  String get commonSplitPlaceholderHint => '在左侧列表中选择一项，详情显示在这里';
+
+  @override
   String get commonLoadFailedTitle => '加载失败';
 
   @override
