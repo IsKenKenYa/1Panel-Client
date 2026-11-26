@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge, sheetMaterial } from '../../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial, sheetMaterial } from '../../HarmonyNativeBridge';
 
 @Component
 export struct HarmonyWebsiteRulesPage {
@@ -402,7 +402,8 @@ export struct HarmonyWebsiteRulesPage {
                 }.layoutWeight(1).alignItems(HorizontalAlign.Start)
                 Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(22) }
                   .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                  .accessibilityText(this.text('commonMore')).bindMenu(this.menu(item))
+                  .accessibilityText(this.text('commonMore'))
+                  .bindMenu(this.menu(item), { systemMaterial: menuMaterial })
               }.padding(16).width('100%').constraintSize({ minHeight: 72 })
                 .backgroundColor($r('sys.color.comp_background_primary')).borderRadius(16)
                 .onClick((): void => { this.openForm(item); })

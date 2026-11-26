@@ -1,5 +1,5 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { HarmonyWebsiteForm } from './HarmonyWebsiteForm';
 import { HarmonyWebsiteDomains } from './HarmonyWebsiteDomains';
 import { HarmonyWebsiteConfigPage } from './config/HarmonyWebsiteConfigPage';
@@ -295,7 +295,8 @@ export struct HarmonyWebsitesPage {
       }.layoutWeight(1).alignItems(HorizontalAlign.Start)
       Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(22) }
         .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-        .accessibilityText(this.text('commonMore')).bindMenu(this.rowMenu(website))
+        .accessibilityText(this.text('commonMore'))
+        .bindMenu(this.rowMenu(website), { systemMaterial: menuMaterial })
     }
     .padding({ left: 16, right: 8 })
     .width('100%')
@@ -330,7 +331,7 @@ export struct HarmonyWebsitesPage {
           Button(this.text('websitesActionStop')).height(48).buttonStyle(ButtonStyleMode.NORMAL)
             .onClick((): void => { this.confirmOperation(this.selectedIds, 'stop', this.text('websitesActionStop')); })
           Button(this.text('websitesSetGroupAction')).height(48).buttonStyle(ButtonStyleMode.NORMAL)
-            .bindMenu(this.groupMenu())
+            .bindMenu(this.groupMenu(), { systemMaterial: menuMaterial })
           Button(this.text('commonDelete')).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
             .onClick((): void => { this.confirmOperation(this.selectedIds, 'delete', this.text('commonDelete')); })
         }.width('100%')

@@ -1,5 +1,5 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
-import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../../HarmonyNativeBridge';
 import { handleActivationKey } from '../../HarmonyInteractionUtils';
 
 interface HarmonyWebsiteTemplateVariable {
@@ -383,7 +383,8 @@ export struct HarmonyWebsiteTemplatesPage {
                 } else {
                   Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(22) }
                     .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                    .accessibilityText(this.text('commonMore')).bindMenu(this.templateMenu(item))
+                    .accessibilityText(this.text('commonMore'))
+                    .bindMenu(this.templateMenu(item), { systemMaterial: menuMaterial })
                 }
               }.padding(16).width('100%').constraintSize({ minHeight: 72 })
                 .backgroundColor($r('sys.color.comp_background_primary')).borderRadius(16)

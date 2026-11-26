@@ -1,6 +1,6 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { util } from '@kit.ArkTS';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeArguments, computeWrite } from './HarmonyComputeControls';
 import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
@@ -459,7 +459,7 @@ export struct HarmonyAIPage {
       }.layoutWeight(1).alignItems(HorizontalAlign.Start)
       if (actions.length > 0) Button() { SymbolGlyph($r('sys.symbol.more')).fontSize(22) }
         .height(48).width(48).buttonStyle(ButtonStyleMode.TEXTUAL).accessibilityText(this.text('commonMore'))
-        .bindMenu(this.actionMenu(record, actions))
+        .bindMenu(this.actionMenu(record, actions), { systemMaterial: menuMaterial })
     }.padding({ left: 16, right: 8, top: 8, bottom: 8 }).constraintSize({ minHeight: 68 }).width('100%')
       .backgroundColor($r('sys.color.ohos_id_color_list_card_bg')).borderRadius(16)
       .onClick((): void => { this.activateRow(record); })
@@ -695,7 +695,8 @@ export struct HarmonyAIPage {
       } else {
         Button() { SymbolGlyph($r('sys.symbol.more')).fontSize(22) }
           .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL).enabled(!this.loading)
-          .accessibilityText(this.text('commonMore')).bindMenu(this.extensionMenu(plugins, item))
+          .accessibilityText(this.text('commonMore'))
+          .bindMenu(this.extensionMenu(plugins, item), { systemMaterial: menuMaterial })
       }
     }.padding({ left: 16, right: 8, top: 8, bottom: 8 }).width('100%').constraintSize({ minHeight: 60 })
       .backgroundColor($r('sys.color.ohos_id_color_list_card_bg')).borderRadius(16)

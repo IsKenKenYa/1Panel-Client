@@ -1,5 +1,5 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
 
@@ -142,7 +142,8 @@ export struct HarmonyGroupsPage {
                 }.layoutWeight(1).alignItems(HorizontalAlign.Start)
                 Button() { SymbolGlyph(automationMoreSymbol).fontSize(24) }
                   .height(48).width(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                  .accessibilityText(automationText('commonMore')).bindMenu(this.groupMenu(group))
+                  .accessibilityText(automationText('commonMore'))
+                  .bindMenu(this.groupMenu(group), { systemMaterial: menuMaterial })
               }
               .padding({ left: 16, right: 8, top: 8, bottom: 8 }).constraintSize({ minHeight: 64 })
               .width('100%').borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))

@@ -1,6 +1,6 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { HarmonyFileContentPage } from './HarmonyFileContentPage';
 
 class HarmonyFileEntry {
@@ -454,7 +454,7 @@ export struct HarmonyFilesPage {
         .buttonStyle(ButtonStyleMode.TEXTUAL)
         .enabled(!this.missingServer)
         .accessibilityText(this.text('commonMore'))
-        .bindMenu(this.directoryActions())
+        .bindMenu(this.directoryActions(), { systemMaterial: menuMaterial })
     }
     .width('100%')
     .padding({ left: 8, right: 12, top: 4, bottom: 4 })
@@ -490,7 +490,7 @@ export struct HarmonyFilesPage {
         .height(48)
         .buttonStyle(ButtonStyleMode.TEXTUAL)
         .accessibilityText(this.text('commonMore') + ' · ' + entry.name)
-        .bindMenu(this.entryActions(entry))
+        .bindMenu(this.entryActions(entry), { systemMaterial: menuMaterial })
     }
     .width('100%')
     .constraintSize({ minHeight: 64 })

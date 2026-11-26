@@ -527,7 +527,7 @@ export struct HarmonyServersPage {
       .buttonStyle(ButtonStyleMode.TEXTUAL)
       .accessibilityText(this.bridge.text('commonMore'))
       .enabled(!this.processing)
-      .bindMenu((): void => { this.serverActions(server); })
+      .bindMenu((): void => { this.serverActions(server); }, { systemMaterial: menuMaterial })
     }
     .id(`harmony-server-row-${server.serverId}`)
     .width('100%')

@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { HarmonyDatabaseItem, harmonyDatabaseText } from './HarmonyDatabaseModels';
 
 @Component
@@ -234,7 +234,7 @@ export struct HarmonyDatabaseUsers {
             Button() { SymbolGlyph($r('sys.symbol.more')).fontSize(22) }
               .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
               .accessibilityText(harmonyDatabaseText('commonMore'))
-              .bindMenu(this.userMenu(user))
+              .bindMenu(this.userMenu(user), { systemMaterial: menuMaterial })
           }
           .width('100%').padding(16).borderRadius(16)
           .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))

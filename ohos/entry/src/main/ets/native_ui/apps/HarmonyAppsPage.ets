@@ -1,6 +1,6 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
-import { HarmonyNativeBridge, titleBarMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial, titleBarMaterial } from '../HarmonyNativeBridge';
 import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp } from './HarmonyAppModels';
 import { HarmonyAppInstallPage } from './HarmonyAppInstallPage';
 import { HarmonyAppConfigPage } from './HarmonyAppConfigPage';
@@ -295,7 +295,7 @@ export struct HarmonyAppsPage {
           }
           .width(48).height(48)
           .accessibilityText(this.text('commonMore'))
-          .bindMenu(this.listActions())
+          .bindMenu(this.listActions(), { systemMaterial: menuMaterial })
         }
       }
       .width('100%')

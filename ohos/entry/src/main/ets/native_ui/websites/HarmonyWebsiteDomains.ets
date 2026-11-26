@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge, sheetMaterial } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial, sheetMaterial } from '../HarmonyNativeBridge';
 
 class HarmonyWebsiteDomainRecord {
   readonly domainId: number;
@@ -217,7 +217,8 @@ export struct HarmonyWebsiteDomains {
                 Button() {
                   SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(22)
                 }.width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                  .accessibilityText(this.text('commonMore')).bindMenu(this.domainMenu(domain))
+                  .accessibilityText(this.text('commonMore'))
+                  .bindMenu(this.domainMenu(domain), { systemMaterial: menuMaterial })
               }
               .padding(16)
               .width('100%')

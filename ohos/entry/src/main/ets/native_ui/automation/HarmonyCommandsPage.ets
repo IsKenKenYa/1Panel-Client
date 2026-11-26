@@ -1,6 +1,6 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { pasteboard } from '@kit.BasicServicesKit';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol, automationCopySymbol } from './HarmonyAutomationUI';
 
@@ -222,7 +222,7 @@ export struct HarmonyCommandsPage {
       Button() { SymbolGlyph(automationMoreSymbol).fontSize(24) }
         .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
         .accessibilityText(automationText('commonMore'))
-        .bindMenu(this.commandMenu(record))
+        .bindMenu(this.commandMenu(record), { systemMaterial: menuMaterial })
     }
     .constraintSize({ minHeight: 72 }).padding({ top: 8, bottom: 8, right: 8 })
     .width('100%')

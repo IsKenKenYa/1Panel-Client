@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../../HarmonyNativeBridge';
 
 interface HarmonyRuntimeDetailField {
   key: string;
@@ -286,7 +286,8 @@ export struct HarmonyRuntimeDetail {
                 .maxLines(2).textOverflow({ overflow: TextOverflow.Ellipsis })
               Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(21) }
                 .height(48).width(48).buttonStyle(ButtonStyleMode.TEXTUAL).enabled(!this.operating)
-                .accessibilityText(this.text('commonMore')).bindMenu(this.menu())
+                .accessibilityText(this.text('commonMore'))
+                .bindMenu(this.menu(), { systemMaterial: menuMaterial })
             }.width('100%')
             this.overview()
             this.configuration()

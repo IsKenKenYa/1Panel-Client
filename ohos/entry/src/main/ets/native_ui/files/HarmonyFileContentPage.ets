@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 
 let nextFilePreviewSession: number = 0;
 
@@ -186,7 +186,7 @@ export struct HarmonyFileContentPage {
               .enabled(!this.saving)
               .buttonStyle(ButtonStyleMode.TEXTUAL)
               .accessibilityText(this.text('filesEditorEncoding'))
-              .bindMenu(this.encodingMenu())
+              .bindMenu(this.encodingMenu(), { systemMaterial: menuMaterial })
             Blank()
             Button(this.text('filesEditorSave'))
               .height(48)

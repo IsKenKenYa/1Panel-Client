@@ -1,5 +1,5 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyCronjobForm } from './HarmonyCronjobForm';
 import { HarmonyAutomationTitle, automationText, automationString, automationWrite, automationMoreSymbol, automationEditSymbol } from './HarmonyAutomationUI';
@@ -188,7 +188,8 @@ export struct HarmonyCronjobsPage {
                 }.alignItems(HorizontalAlign.Start).layoutWeight(1).onClick((): void => { this.detail(job); })
                 Button() { SymbolGlyph(automationMoreSymbol).fontSize(24) }
                   .height(48).width(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                  .accessibilityText(automationText('commonMore')).bindMenu(this.jobMenu(job))
+                  .accessibilityText(automationText('commonMore'))
+                  .bindMenu(this.jobMenu(job), { systemMaterial: menuMaterial })
               }.padding({ top: 8, bottom: 8, right: 8 }).constraintSize({ minHeight: 80 })
               .width('100%').borderRadius(16).backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
               .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(

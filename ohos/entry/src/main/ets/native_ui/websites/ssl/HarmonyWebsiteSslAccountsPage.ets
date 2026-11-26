@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge, sheetMaterial } from '../../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial, sheetMaterial } from '../../HarmonyNativeBridge';
 import { HarmonySslSelectField, HarmonySslTextField, HarmonySslToggleField } from './HarmonyWebsiteSslFields';
 
 @Component
@@ -387,7 +387,8 @@ export struct HarmonyWebsiteSslAccountsPage {
                     .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis })
                   Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(20) }
                     .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
-                    .accessibilityText(this.text('commonMore')).bindMenu(this.menu(item))
+                    .accessibilityText(this.text('commonMore'))
+                    .bindMenu(this.menu(item), { systemMaterial: menuMaterial })
                 }.padding({ left: 16, right: 8 }).width('100%').constraintSize({ minHeight: 56 })
               }
             }, (item: Map<string, Object | null>): string => String(item.get('id')))

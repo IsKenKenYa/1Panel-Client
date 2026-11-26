@@ -1,5 +1,5 @@
 import { pasteboard } from '@kit.BasicServicesKit';
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 
 @Component
 export struct HarmonyFileSecondaryPage {
@@ -319,9 +319,11 @@ export struct HarmonyFileSecondaryPage {
         .enabled(!this.busy && /^[0-7]{3,4}$/.test(this.mode))
         .onClick((): void => { this.operate('change-mode', null); })
       Button(this.owner.length === 0 ? this.text('filesPermissionUserHint') : this.owner)
-        .height(48).buttonStyle(ButtonStyleMode.TEXTUAL).bindMenu(this.userOptions())
+        .height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
+        .bindMenu(this.userOptions(), { systemMaterial: menuMaterial })
       Button(this.group.length === 0 ? this.text('filesPermissionGroupHint') : this.group)
-        .height(48).buttonStyle(ButtonStyleMode.TEXTUAL).bindMenu(this.groups())
+        .height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
+        .bindMenu(this.groups(), { systemMaterial: menuMaterial })
       Button(this.text('filesPermissionChangeOwner')).height(48)
         .enabled(!this.busy && this.owner.length > 0 && this.group.length > 0)
         .onClick((): void => { this.operate('change-owner', null); })
@@ -365,7 +367,7 @@ export struct HarmonyFileSecondaryPage {
         Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(22) }
           .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL)
           .accessibilityText(this.text('commonMore') + ' · ' + this.name(item))
-          .bindMenu(this.actions(item))
+          .bindMenu(this.actions(item), { systemMaterial: menuMaterial })
       }
     }
     .width('100%')

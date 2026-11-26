@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../../HarmonyNativeBridge';
 
 interface HarmonyPhpSupervisorField {
   fieldKey: string;
@@ -200,7 +200,8 @@ export struct HarmonyPhpSupervisor {
       if (this.processMenu(item).length > 0) {
         Button() { SymbolGlyph($r('sys.symbol.ellipsis_circle')).fontSize(21) }
           .width(48).height(48).buttonStyle(ButtonStyleMode.TEXTUAL).enabled(!this.operating)
-          .accessibilityText(this.text('commonMore')).bindMenu(this.processMenu(item))
+          .accessibilityText(this.text('commonMore'))
+          .bindMenu(this.processMenu(item), { systemMaterial: menuMaterial })
       }
     }.width('100%').padding(16).backgroundColor($r('sys.color.comp_background_primary')).borderRadius(16)
   }

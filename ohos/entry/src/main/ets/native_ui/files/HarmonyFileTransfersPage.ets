@@ -1,4 +1,4 @@
-import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 
 @Observed
 class HarmonyFileTransfer {
@@ -136,7 +136,7 @@ struct HarmonyFileTransferRow {
         .height(48)
         .buttonStyle(ButtonStyleMode.TEXTUAL)
         .accessibilityText(`${this.text('commonMore')} · ${this.task.fileName}`)
-        .bindMenu(this.actions())
+        .bindMenu(this.actions(), { systemMaterial: menuMaterial })
       }
     }
     .padding({ left: 16, right: 8, top: 12, bottom: 12 })
