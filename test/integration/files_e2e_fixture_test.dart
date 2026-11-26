@@ -48,9 +48,9 @@ Future<void> main() async {
         // 幂等清理：无论测试走到哪一步失败，都尝试删除改名前后文件与目录。
         Future<void> cleanup() async {
           for (final delete in <FileDelete>[
-            FileDelete(path: renamedPath, isDir: false),
-            FileDelete(path: filePath, isDir: false),
-            FileDelete(path: dirPath, isDir: true),
+            FileDelete(path: renamedPath, isDir: false, forceDelete: true),
+            FileDelete(path: filePath, isDir: false, forceDelete: true),
+            FileDelete(path: dirPath, isDir: true, forceDelete: true),
           ]) {
             try {
               await fileApi.deleteFile(delete);
@@ -106,6 +106,12 @@ Future<void> main() async {
           final secondRead = await fileApi.getFileContent(filePath);
           expect(secondRead.statusCode, 200);
           expect(secondRead.data, equals(content));
+          final editor = await fileApi.readFile(FileRead(path: filePath));
+          expect(editor.data, content);
+          final preview = await fileApi.previewFile(
+            FilePreviewRequest(path: filePath),
+          );
+          expect(preview.data, content);
 
           // 7. 重命名文件
           final renameResponse = await fileApi.renameFile(
@@ -124,12 +130,14 @@ Future<void> main() async {
           expect(names, isNot(contains(fileName)));
 
           // 9. 删除改名后的文件与目录
-          final deleteFileResponse = await fileApi
-              .deleteFile(FileDelete(path: renamedPath, isDir: false));
+          final deleteFileResponse = await fileApi.deleteFile(
+            FileDelete(path: renamedPath, isDir: false, forceDelete: true),
+          );
           expect(deleteFileResponse.statusCode, 200);
 
-          final deleteDirResponse =
-              await fileApi.deleteFile(FileDelete(path: dirPath, isDir: true));
+          final deleteDirResponse = await fileApi.deleteFile(
+            FileDelete(path: dirPath, isDir: true, forceDelete: true),
+          );
           expect(deleteDirResponse.statusCode, 200);
         } finally {
           await cleanup();

@@ -30,6 +30,8 @@ class ContainerLogSseServer {
   String? _snapshotBody;
 
   Future<void> start() async {
+    // iOS 模拟器与宿主共享回环网络（已用模拟器内 curl 实测可达），
+    // 只绑定回环，不对外暴露测试服务。
     final server = await HttpServer.bind(
       InternetAddress.loopbackIPv4,
       port,

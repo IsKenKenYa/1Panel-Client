@@ -18,7 +18,10 @@ void main() {
     late ContentType contentType;
     late bool holdResponse;
     Completer<void>? releaseResponse;
+    /// 服务端完成本次 send（正常关闭或写失败都会触发），只证明服务端侧结束。
     Completer<void>? responseClosed;
+    /// 服务端观察到客户端主动断开（写入失败），只在该路径触发。
+    Completer<void>? clientDisconnected;
     Completer<void>? requestReceived;
 
     setUp(() async {
@@ -30,6 +33,7 @@ void main() {
       holdResponse = false;
       releaseResponse = null;
       responseClosed = null;
+      clientDisconnected = null;
       requestReceived = null;
 
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -49,7 +53,28 @@ void main() {
         if (holdResponse) {
           await request.response.flush();
           final release = releaseResponse;
-          if (release != null) await release.future;
+          if (release != null) {
+            // 等待期间周期性回写：写入失败即客户端已断开。
+            final stop = Completer<void>();
+            final ticker = Timer.periodic(const Duration(milliseconds: 100), (_) async {
+              if (stop.isCompleted) return;
+              try {
+                request.response.write(': ping\n\n');
+                await request.response.flush();
+              } catch (_) {
+                if (!stop.isCompleted) stop.complete();
+                final disconnect = clientDisconnected;
+                if (disconnect != null && !disconnect.isCompleted) {
+                  disconnect.complete();
+                }
+              }
+            });
+            await Future.any([
+              release.future,
+              stop.future,
+            ]);
+            ticker.cancel();
+          }
         }
         try {
           await request.response.close();
@@ -168,7 +193,7 @@ void main() {
     test('cancels a live stream without reporting an error', () async {
       holdResponse = true;
       releaseResponse = Completer<void>();
-      responseClosed = Completer<void>();
+      clientDisconnected = Completer<void>();
       sseBody = sseFrame('line one\n');
 
       final chunks = <String>[];
@@ -183,8 +208,10 @@ void main() {
       expect(chunks, <String>['line one\n']);
 
       await subscription.cancel().timeout(const Duration(seconds: 2));
+      // 只有服务端观察到写入失败才证明客户端真的断开了连接；
+      // 服务端自然结束会走 responseClosed，不满足该断言。
+      await clientDisconnected!.future.timeout(const Duration(seconds: 3));
       releaseResponse!.complete();
-      await responseClosed!.future.timeout(const Duration(seconds: 2));
       expect(errors, isEmpty);
     });
 
@@ -192,7 +219,7 @@ void main() {
         () async {
       holdResponse = true;
       releaseResponse = Completer<void>();
-      responseClosed = Completer<void>();
+      clientDisconnected = Completer<void>();
       sseBody = sseFrame('first stream line\n');
 
       final firstChunks = <String>[];
@@ -203,8 +230,8 @@ void main() {
 
       await waitFor(() => firstChunks.isNotEmpty);
       await first.cancel().timeout(const Duration(seconds: 2));
+      await clientDisconnected!.future.timeout(const Duration(seconds: 3));
       releaseResponse!.complete();
-      await responseClosed!.future.timeout(const Duration(seconds: 2));
 
       holdResponse = false;
       sseBody = '${sseFrame('second stream line\n')}'

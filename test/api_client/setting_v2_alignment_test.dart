@@ -7,6 +7,36 @@ import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 
 void main() {
+  test('serializes panel proxy settings with a string port', () {
+    const request = api.ProxyUpdate(
+      proxyType: 'https',
+      proxyUrl: 'proxy.example.com',
+      proxyPort: 8080,
+      proxyUser: 'proxy-user',
+      proxyPasswdKeep: 'Disable',
+    );
+
+    expect(request.toJson(), <String, dynamic>{
+      'proxyType': 'https',
+      'proxyUrl': 'proxy.example.com',
+      'proxyPort': '8080',
+      'proxyUser': 'proxy-user',
+      'proxyPasswdKeep': 'Disable',
+    });
+  });
+
+  test('serializes snapshot import with an account and selected names', () {
+    const request = api.SnapshotImport(
+      backupAccountID: 7,
+      names: ['one.tar.gz', 'two.tar.gz'],
+    );
+
+    expect(request.toJson(), <String, dynamic>{
+      'backupAccountID': 7,
+      'names': ['one.tar.gz', 'two.tar.gz'],
+    });
+  });
+
   group('SettingV2Api alignment', () {
     late HttpServer server;
     late DioClient client;

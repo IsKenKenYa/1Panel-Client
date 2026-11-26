@@ -74,11 +74,14 @@ void main() {
           queryParameters: anyNamed('queryParameters'),
           options: anyNamed('options'),
         )).thenAnswer((_) async => _successMapResponse({
-              'id': 1,
-              'primaryDomain': 'example.com',
-              'status': 'valid',
-              'type': 'lets-encrypt',
-              'autoRenew': true,
+              'code': 200,
+              'data': {
+                'id': 1,
+                'primaryDomain': 'example.com',
+                'status': 'valid',
+                'type': 'lets-encrypt',
+                'autoRenew': true,
+              },
             }, path: '/websites/ssl/1'));
 
         final response = await api.getWebsiteSSLById(1);
@@ -168,18 +171,22 @@ void main() {
     });
 
     group('resolveWebsiteSSL', () {
-      test('returns WebsiteSSL from resolve', () async {
+      test('returns DNS TXT records from resolve', () async {
         when(mockClient.post(
           any,
           data: anyNamed('data'),
           options: anyNamed('options'),
           queryParameters: anyNamed('queryParameters'),
         )).thenAnswer((_) async => _successMapResponse({
-              'id': 1,
-              'primaryDomain': 'example.com',
-              'status': 'valid',
-              'pem': '-----BEGIN CERTIFICATE-----',
-              'privateKey': '-----BEGIN PRIVATE KEY-----',
+              'code': 200,
+              'data': [
+                {
+                  'domain': 'example.com',
+                  'resolve': '_acme-challenge.example.com',
+                  'value': 'challenge-token',
+                  'err': '',
+                },
+              ],
             }, path: '/websites/ssl/resolve'));
 
         final request = WebsiteSSLResolve(
@@ -187,8 +194,8 @@ void main() {
           websiteSSLId: 1,
         );
         final response = await api.resolveWebsiteSSL(request);
-        expect(response.data, isA<WebsiteSSL>());
-        expect(response.data!.primaryDomain, 'example.com');
+        expect(response.data?.single['resolve'], '_acme-challenge.example.com');
+        expect(response.data?.single['value'], 'challenge-token');
       });
     });
 
@@ -206,6 +213,16 @@ void main() {
                     'id': 1,
                     'primaryDomain': 'example.com',
                     'status': 'valid',
+                    'domains': 'assets.example.com, shop.example.com',
+                    'websites': [
+                      {
+                        'id': 42,
+                        'primaryDomain': 'shop.example.com',
+                        'domains': [
+                          {'domain': 'www.shop.example.com', 'port': 443},
+                        ],
+                      },
+                    ],
                   },
                   {
                     'id': 2,
@@ -224,6 +241,11 @@ void main() {
         expect(response.data, isA<PageResult<WebsiteSSL>>());
         expect(response.data!.items.length, 2);
         expect(response.data!.items.first.primaryDomain, 'example.com');
+        expect(response.data!.items.first.domains,
+            ['assets.example.com', 'shop.example.com']);
+        expect(response.data!.items.first.websites?.single.id, 42);
+        expect(response.data!.items.first.websites?.single.domains,
+            ['www.shop.example.com']);
         expect(response.data!.total, 2);
       });
     });
@@ -321,9 +343,12 @@ void main() {
           queryParameters: anyNamed('queryParameters'),
           options: anyNamed('options'),
         )).thenAnswer((_) async => _successMapResponse({
-              'id': 5,
-              'primaryDomain': 'mysite.com',
-              'status': 'valid',
+              'code': 200,
+              'data': {
+                'id': 5,
+                'primaryDomain': 'mysite.com',
+                'status': 'valid',
+              },
             }, path: '/websites/ssl/website/10'));
 
         final response = await api.getWebsiteSSLByWebsiteId(10);

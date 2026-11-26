@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/data/repositories/database_repository.dart';
 
 void main() {
@@ -10,5 +11,24 @@ void main() {
       expect(DatabaseRepository.confFileType('mariadb'), 'mariadb-conf');
       expect(DatabaseRepository.confFileType('postgresql'), 'postgresql-conf');
     });
+  });
+
+  test('远程连接读取 address 并允许缺少状态字段', () {
+    final response = <String, dynamic>{
+      'id': 29,
+      'name': 'postgres-remote',
+      'type': 'postgresql',
+      'version': '18.x',
+      'address': 'database.example.com',
+      'port': 5432,
+    };
+
+    final item = DatabaseListItem.fromRemoteInfo(DatabaseInfo.fromJson(response));
+
+    expect(item.id, 29);
+    expect(item.address, 'database.example.com');
+    expect(item.status, isNull);
+    response.remove('id');
+    expect(() => DatabaseInfo.fromJson(response), throwsA(isA<TypeError>()));
   });
 }

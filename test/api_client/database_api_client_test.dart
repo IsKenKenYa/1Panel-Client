@@ -103,10 +103,6 @@ void _expectDatabaseInfo(DatabaseInfo database) {
     database.version,
     fieldName: 'database.version',
   );
-  TestDataValidator.expectNonEmptyString(
-    database.status,
-    fieldName: 'database.status',
-  );
 }
 
 void _expectDatabaseOption(Map<String, dynamic> item, {required String path}) {
