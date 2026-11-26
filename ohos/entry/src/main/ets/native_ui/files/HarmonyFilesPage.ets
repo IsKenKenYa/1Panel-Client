@@ -1,6 +1,7 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
+import { MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyFileContentPage } from './HarmonyFileContentPage';
 
@@ -641,7 +642,9 @@ export struct HarmonyFilesPage {
     .hideTitleBar(true)
     .navDestination(this.destination)
     .mode(NavigationMode.Auto)
-    .navBarWidth(240)
+    .navBarWidth(MODULE_SPLIT_NAV_BAR_WIDTH)
+    .navBarWidthRange(MODULE_SPLIT_NAV_BAR_RANGE)
+    .minContentWidth(MODULE_SPLIT_MIN_CONTENT_WIDTH)
     .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
     .width('100%')
     .height('100%')

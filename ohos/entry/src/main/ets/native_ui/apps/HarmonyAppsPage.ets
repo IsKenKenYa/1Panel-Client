@@ -1,7 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
-import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { moduleTitleOptions, MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyAppDestinationArgs, HarmonyAppIcon, HarmonyCatalogApp, HarmonyInstalledApp } from './HarmonyAppModels';
 import { HarmonyAppInstallPage } from './HarmonyAppInstallPage';
@@ -368,7 +368,9 @@ export struct HarmonyAppsPage {
       .menus(this.menus())
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
-      .navBarWidth(240)
+      .navBarWidth(MODULE_SPLIT_NAV_BAR_WIDTH)
+      .navBarWidthRange(MODULE_SPLIT_NAV_BAR_RANGE)
+      .minContentWidth(MODULE_SPLIT_MIN_CONTENT_WIDTH)
       .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary'))

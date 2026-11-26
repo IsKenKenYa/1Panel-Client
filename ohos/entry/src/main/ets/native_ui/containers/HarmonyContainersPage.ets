@@ -1,7 +1,7 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { KeyCode } from '@kit.InputKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { moduleTitleOptions, MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyContainerFormPage } from './HarmonyContainerFormPage';
 import { HarmonyContainerFilesPage } from './HarmonyContainerFilesPage';
@@ -585,7 +585,9 @@ export struct HarmonyContainersPage {
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true).menus(this.rootMenus())
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
-      .navBarWidth(240)
+      .navBarWidth(MODULE_SPLIT_NAV_BAR_WIDTH)
+      .navBarWidthRange(MODULE_SPLIT_NAV_BAR_RANGE)
+      .minContentWidth(MODULE_SPLIT_MIN_CONTENT_WIDTH)
       .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary')).width('100%').height('100%')
