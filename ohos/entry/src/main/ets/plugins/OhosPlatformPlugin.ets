@@ -12,8 +12,11 @@ import common from '@ohos.app.ability.common';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
+import fileUri from '@ohos.file.fileuri';
 import Want from '@ohos.app.ability.Want';
+import wantConstant from '@ohos.app.ability.wantConstant';
 import picker from '@ohos.file.picker';
+import { util } from '@kit.ArkTS';
 import OhosDownloadPlugin from './OhosDownloadPlugin';
 
 const TAG = 'OhosPlatformPlugin';
@@ -58,6 +61,10 @@ export default class OhosPlatformPlugin
   // plugin registration. When missing (e.g. headless tests), picker calls
   // surface an explicit error instead of silently writing to private dir.
   private uiAbilityContext: common.UIAbilityContext | null = null;
+  // 每次挂载递增的绑定代次；卸载递增表示旧绑定作废。所有异步保存路径在
+  // 每次 await 恢复后、创建目标与首次 open/写入/删除前都要核对代次。
+  private bindingGeneration: number = 0;
+  private detached: boolean = false;
 
   getUniqueClassName(): string {
     return 'OhosPlatformPlugin';
@@ -72,6 +79,8 @@ export default class OhosPlatformPlugin
   }
 
   onAttachedToEngine(binding: FlutterPluginBinding): void {
+    this.bindingGeneration += 1;
+    this.detached = false;
     this.applicationContext = binding.getApplicationContext() as common.Context;
     this.channel = new MethodChannel(binding.getBinaryMessenger(), CHANNEL);
     this.channel.setMethodCallHandler(this);
@@ -84,6 +93,9 @@ export default class OhosPlatformPlugin
   }
 
   onDetachedFromEngine(binding: FlutterPluginBinding): void {
+    // 先递增代次并标记卸载，挂起的异步保存在下一次检查点退出。
+    this.bindingGeneration += 1;
+    this.detached = true;
     if (this.downloadPlugin) {
       this.downloadPlugin.onDetachedFromEngine(binding);
       this.downloadPlugin = null;
@@ -104,7 +116,9 @@ export default class OhosPlatformPlugin
     call: MethodCall,
     result: MethodResult,
   ): Promise<void> {
+    let generation: number = this.bindingGeneration;
     try {
+      generation = this.requireCurrentGeneration();
       switch (call.method) {
         case 'getRuntimeInfo':
           result.success(await this.getRuntimeInfo());
@@ -122,6 +136,9 @@ export default class OhosPlatformPlugin
         case 'pickSaveDirectory':
           result.success(await this.pickSaveDirectory());
           return;
+        case 'pickFiles':
+          result.success(await this.pickFiles(call, generation));
+          return;
         case 'getPublicDownloadDir':
           result.success(await this.getPublicDownloadDir());
           return;
@@ -129,26 +146,35 @@ export default class OhosPlatformPlugin
           // Legacy entry point kept for compatibility — routes to the new
           // kind-aware picker with default `document` kind. Returns null on
           // cancel and throws on real errors (no more silent fallback).
-          result.success(await this.pickAndSaveBytesByKind(call, 'document'));
+          result.success(await this.pickAndSaveBytesByKind(
+            call,
+            'document',
+            generation,
+          ));
           return;
         case 'pickAndSaveBytesByKind':
           result.success(await this.pickAndSaveBytesByKind(
             call,
             this.requireMimeKindArgument(call),
+            generation,
           ));
           return;
         case 'saveBytesToPublicDownload':
-          result.success(await this.saveBytesToPublicDownload(call));
+          result.success(await this.saveBytesToPublicDownload(call, generation));
           return;
         case 'saveBytesToDownload':
-          result.success(await this.saveBytesToDownload(call));
+          result.success(await this.saveBytesToDownload(call, generation));
           return;
         default:
           result.notImplemented();
       }
     } catch (error) {
       Log.e(TAG, `Failed to handle ${call.method}`, error);
-      result.error('ohos_platform_error', `${error}`, null);
+      try {
+        result.error('ohos_platform_error', `${error}`, null);
+      } catch (replyError) {
+        Log.w(TAG, `Failed to reply ${call.method}: ${replyError}`);
+      }
     }
   }
 
@@ -173,6 +199,7 @@ export default class OhosPlatformPlugin
   }
 
   private async saveBytes(call: MethodCall): Promise<string> {
+    const generation = this.requireCurrentGeneration();
     const context = this.requireContext();
     const fileName = this.sanitizeFileName(
       this.requireNonEmptyStringArgument(call, 'fileName'),
@@ -184,12 +211,16 @@ export default class OhosPlatformPlugin
 
     const exportDir = `${context.filesDir}/exports`;
     await this.ensureDirectory(exportDir);
+    this.requireBoundGeneration(generation);
     const filePath = await this.nextAvailablePath(exportDir, fileName);
+    // 目录创建与路径分配都等待过，首次 open/TRUNC 前必须确认绑定仍然有效。
+    this.requireBoundGeneration(generation);
     const file = fs.openSync(
       filePath,
       fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC,
     );
     try {
+      this.requireBoundGeneration(generation);
       fs.writeSync(
         file.fd,
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
@@ -204,10 +235,13 @@ export default class OhosPlatformPlugin
   private async openPath(call: MethodCall): Promise<boolean> {
     const appContext = this.requireContext();
     const path = this.requireNonEmptyStringArgument(call, 'path');
-    // Standard OHOS intent to open a file with the system's default viewer for its MIME type.
+    // fileUri.getUriFromPath 生成规范 URI；自行拼接的 file:// 地址不保证可用。
+    const uri = fileUri.getUriFromPath(path);
     const want: Want = {
       action: 'ohos.want.action.viewData',
-      uri: `file://${path}`,
+      uri: uri,
+      // 目标查看器需要显式只读授权才能读取本应用沙箱内的文件。
+      flags: wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION,
     };
     try {
       const uiAbility = FlutterManager.getInstance().getUIAbility(appContext);
@@ -228,14 +262,14 @@ export default class OhosPlatformPlugin
     }
   }
 
-  // Open a content:// URI (returned by picker) via the system file viewer.
-  // No persistent permission is required — OHOS grants the viewer ad-hoc
-  // read access to the picked URI.
+  // 打开 Picker 返回的 content:// 或文档 URI：入参已具备临时读授权，
+  // 原样使用并转授只读权限，不再经过路径转换。
   private async openUri(call: MethodCall): Promise<boolean> {
     const contentUri = this.requireNonEmptyStringArgument(call, 'uri');
     const want: Want = {
       action: 'ohos.want.action.viewData',
       uri: contentUri,
+      flags: wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION,
     };
     try {
       const pickerContext = this.getUIAbilityContext();
@@ -248,22 +282,40 @@ export default class OhosPlatformPlugin
   }
 
   private async pickSaveDirectory(): Promise<string | null> {
-    try {
-      const pickerContext = this.getUIAbilityContext();
-      // DocumentViewPicker.select returns content URIs, not filesystem paths.
-      const documentPicker = new picker.DocumentViewPicker(pickerContext);
-      const selectResult: string[] = await documentPicker.select({
-        maxSelectNumber: 1,
-        fileSuffixFilters: ['.txt', '.log', '.pdf', '.zip'],
-      });
-      if (selectResult && selectResult.length > 0) {
-        return selectResult[0];
+    const documentPicker = new picker.DocumentViewPicker(this.getUIAbilityContext());
+    const selectResult = await documentPicker.select({
+      maxSelectNumber: 1,
+      selectMode: picker.DocumentSelectMode.FOLDER,
+    });
+    return selectResult.length > 0 ? selectResult[0] : null;
+  }
+
+  private async pickFiles(call: MethodCall, generation: number): Promise<string[]> {
+    const context = this.requireContext();
+    const documentPicker = new picker.DocumentViewPicker(this.getUIAbilityContext());
+    const multiple = call.argument('allowMultiple') === true;
+    const extensions = call.argument('fileSuffixFilters') as string[];
+    const uris = await documentPicker.select({
+      maxSelectNumber: multiple ? undefined : 1,
+      fileSuffixFilters: extensions.length > 0 ? extensions : undefined,
+    });
+    this.requireBoundGeneration(generation);
+    const files: string[] = [];
+    for (const uri of uris) {
+      const name = this.sanitizeFileName(new fileUri.FileUri(uri).name);
+      const directory = `${context.cacheDir}/picked_files/${util.generateRandomUUID()}`;
+      fs.mkdirSync(directory, true);
+      const path = `${directory}/${name}`;
+      const source = fs.openSync(uri, fs.OpenMode.READ_ONLY);
+      try {
+        await fs.copyFile(source.fd, path);
+      } finally {
+        fs.closeSync(source);
       }
-      return null;
-    } catch (error) {
-      Log.w(TAG, `pickSaveDirectory failed: ${error}`);
-      return null;
+      this.requireBoundGeneration(generation);
+      files.push(path);
     }
+    return files;
   }
 
   // Returns the on-device "Downloads" directory exposed by the system
@@ -271,12 +323,14 @@ export default class OhosPlatformPlugin
   // would do on macOS — gives callers a stable path for subfolder-based
   // saves when the picker is off.
   private async getPublicDownloadDir(): Promise<OhosPublicDownloadDir> {
+    const generation = this.requireCurrentGeneration();
     const context = this.requireContext();
     // /storage/emulated/0/Download is not directly accessible from the
     // OHOS app sandbox; we surface the same logical location through
     // filesDir/Download so users can browse it in the Files app.
     const downloadsDir = `${context.filesDir}/Download`;
     await this.ensureDirectory(downloadsDir);
+    this.requireBoundGeneration(generation);
     const result: OhosPublicDownloadDir = {
       path: downloadsDir,
       displayName: '下载',
@@ -296,6 +350,7 @@ export default class OhosPlatformPlugin
   private async pickAndSaveBytesByKind(
     call: MethodCall,
     kind: MimeKind,
+    generation: number,
   ): Promise<SaveOutcome | null> {
     const fileName = this.sanitizeFileName(
       this.requireNonEmptyStringArgument(call, 'fileName'),
@@ -312,6 +367,7 @@ export default class OhosPlatformPlugin
     if (kind === 'audio') {
       const audioPicker = new picker.AudioViewPicker(pickerContext);
       const saveResult = await audioPicker.save({ newFileNames: [fileName] });
+      this.requireBoundGeneration(generation);
       targetUri = saveResult && saveResult.length > 0 ? saveResult[0] : null;
     } else {
       // image_video falls through to the document picker because
@@ -320,6 +376,7 @@ export default class OhosPlatformPlugin
       // folder for image/video bytes via the same DocumentViewPicker flow.
       const documentPicker = new picker.DocumentViewPicker(pickerContext);
       const saveResult = await documentPicker.save({ newFileNames: [fileName] });
+      this.requireBoundGeneration(generation);
       targetUri = saveResult && saveResult.length > 0 ? saveResult[0] : null;
     }
 
@@ -328,6 +385,9 @@ export default class OhosPlatformPlugin
       return null;
     }
 
+    // Picker 返回后可能已经卸载：写入前必须确认绑定仍然有效，
+    // 旧调用不得覆盖新绑定创建的同名文件。
+    this.requireBoundGeneration(generation);
     // Write bytes to the picked URI. fs.openSync accepts content:// URIs
     // in OHOS — the picker grant is sufficient for the writing ability.
     const file = fs.openSync(
@@ -335,6 +395,7 @@ export default class OhosPlatformPlugin
       fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC,
     );
     try {
+      this.requireBoundGeneration(generation);
       fs.writeSync(
         file.fd,
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
@@ -362,7 +423,10 @@ export default class OhosPlatformPlugin
   //
   // `subDir` is sanitized for filesystem use to defend against
   // user-supplied separators or illegal characters.
-  private async saveBytesToPublicDownload(call: MethodCall): Promise<SaveOutcome> {
+  private async saveBytesToPublicDownload(
+    call: MethodCall,
+    generation: number,
+  ): Promise<SaveOutcome> {
     const context = this.requireContext();
     const fileName = this.sanitizeFileName(
       this.requireNonEmptyStringArgument(call, 'fileName'),
@@ -387,12 +451,15 @@ export default class OhosPlatformPlugin
       ? `${baseDir}/${subDir}/${category}`
       : `${baseDir}/${category}`;
     await this.ensureDirectory(exportDir);
+    this.requireBoundGeneration(generation);
     const filePath = await this.nextAvailablePath(exportDir, fileName);
+    this.requireBoundGeneration(generation);
     const file = fs.openSync(
       filePath,
       fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC,
     );
     try {
+      this.requireBoundGeneration(generation);
       fs.writeSync(
         file.fd,
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
@@ -413,7 +480,10 @@ export default class OhosPlatformPlugin
     };
   }
 
-  private async saveBytesToDownload(call: MethodCall): Promise<string> {
+  private async saveBytesToDownload(
+    call: MethodCall,
+    generation: number,
+  ): Promise<string> {
     const context = this.requireContext();
     const fileName = this.sanitizeFileName(
       this.requireNonEmptyStringArgument(call, 'fileName'),
@@ -426,12 +496,15 @@ export default class OhosPlatformPlugin
     // Save to exports directory in app files
     const exportDir = `${context.filesDir}/exports`;
     await this.ensureDirectory(exportDir);
+    this.requireBoundGeneration(generation);
     const filePath = await this.nextAvailablePath(exportDir, fileName);
+    this.requireBoundGeneration(generation);
     const file = fs.openSync(
       filePath,
       fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC,
     );
     try {
+      this.requireBoundGeneration(generation);
       fs.writeSync(
         file.fd,
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
@@ -575,5 +648,18 @@ export default class OhosPlatformPlugin
       return raw;
     }
     throw new Error(`Unsupported mimeKind: ${raw}`);
+  }
+
+  private requireCurrentGeneration(): number {
+    if (this.detached || this.applicationContext == null) {
+      throw new Error('Ohos platform plugin detached from engine');
+    }
+    return this.bindingGeneration;
+  }
+
+  private requireBoundGeneration(generation: number): void {
+    if (this.detached || generation !== this.bindingGeneration) {
+      throw new Error('Ohos platform plugin detached from engine');
+    }
   }
 }

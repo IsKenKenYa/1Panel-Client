@@ -10,10 +10,10 @@ import {
   StreamHandler,
   EventSink,
 } from '@ohos/flutter_ohos';
-import common from '@ohos.app.ability.common';
-import http from '@ohos.net.http';
-import fs from '@ohos.file.fs';
-import picker from '@ohos.file.picker';
+import { common } from '@kit.AbilityKit';
+import { request } from '@kit.BasicServicesKit';
+import { url as urlModule, util } from '@kit.ArkTS';
+import { fileIo as fs, picker } from '@kit.CoreFileKit';
 
 const TAG = 'OhosDownloadPlugin';
 const METHOD_CHANNEL = 'onepanel/ohos_download';
@@ -24,12 +24,12 @@ interface DownloadEntry {
   url: string;
   savedDir: string;
   fileName: string;
-  headers: Record<string, string>;
   status: string;
   bytesReceived: number;
   totalBytes: number;
   filePath: string;
-  httpRequest: http.HttpRequest | null;
+  targetUri: string | null;
+  task: request.DownloadTask;
 }
 
 class ProgressStreamHandler implements StreamHandler {
@@ -43,53 +43,29 @@ class ProgressStreamHandler implements StreamHandler {
     this.sink = null;
   }
 
+  release(): void {
+    this.sink = null;
+  }
+
   sendEvent(data: Object): void {
-    if (this.sink != null) {
-      this.sink.success(data);
-    }
+    this.sink?.success(data);
   }
 }
 
-// Hand-rolled UUID v4 — ArkTS stdlib has no built-in UUID generator.
-function generateTaskId(): string {
-  const hex = '0123456789abcdef';
-  let result = '';
-  for (let i = 0; i < 36; i++) {
-    if (i === 8 || i === 13 || i === 18 || i === 23) {
-      result += '-';
-    } else if (i === 14) {
-      result += '4'; // UUID v4 version nibble (RFC 4122)
-    } else if (i === 19) {
-      result += hex.charAt(8 + Math.floor(Math.random() * 4)); // RFC 4122 variant bits (10xx)
-    } else {
-      result += hex.charAt(Math.floor(Math.random() * 16));
-    }
-  }
-  return result;
-}
-
-export default class OhosDownloadPlugin
-  implements FlutterPlugin, MethodCallHandler
-{
+export default class OhosDownloadPlugin implements FlutterPlugin, MethodCallHandler {
   private methodChannel: MethodChannel | null = null;
   private eventChannel: EventChannel | null = null;
   private streamHandler: ProgressStreamHandler = new ProgressStreamHandler();
   private applicationContext: common.Context | null = null;
-  // Required by DocumentViewPicker when asking the user to pick a save
-  // location. Injected by OhosPlatformPlugin when it wires this plugin
-  // as a sub-plugin. When missing, the picker step is skipped and the
-  // download falls back to the public download directory.
   private uiAbilityContext: common.UIAbilityContext | null = null;
-  private downloads: Map<string, DownloadEntry> = new Map();
+  private downloads: Map<string, DownloadEntry> = new Map<string, DownloadEntry>();
+
+  constructor(uiAbilityContext?: common.UIAbilityContext) {
+    this.uiAbilityContext = uiAbilityContext ?? null;
+  }
 
   getUniqueClassName(): string {
     return 'OhosDownloadPlugin';
-  }
-
-  constructor(uiAbilityContext?: common.UIAbilityContext) {
-    if (uiAbilityContext != null) {
-      this.uiAbilityContext = uiAbilityContext;
-    }
   }
 
   onAttachedToEngine(binding: FlutterPluginBinding): void {
@@ -101,102 +77,72 @@ export default class OhosDownloadPlugin
   }
 
   onDetachedFromEngine(binding: FlutterPluginBinding): void {
-    if (this.methodChannel != null) {
-      this.methodChannel.setMethodCallHandler(null);
-      this.methodChannel = null;
-    }
+    this.methodChannel?.setMethodCallHandler(null);
+    this.eventChannel?.setStreamHandler(null);
+    this.streamHandler.release();
+    this.downloads.forEach((entry: DownloadEntry): void => {
+      this.removeListeners(entry.task);
+      entry.task.delete().then((): void => {
+        if (entry.status !== 'completed' && fs.accessSync(entry.filePath)) {
+          fs.unlinkSync(entry.filePath);
+        }
+      }).catch((error: Error): void => {
+        Log.e(TAG, `Failed to release download task: ${error}`);
+      });
+    });
+    this.downloads.clear();
+    this.methodChannel = null;
     this.eventChannel = null;
     this.applicationContext = null;
     this.uiAbilityContext = null;
-    this.downloads.forEach((entry) => {
-      if (entry.httpRequest) {
-        entry.httpRequest.destroy();
-        entry.httpRequest = null;
-      }
-    });
-    this.downloads.clear();
   }
 
   onMethodCall(call: MethodCall, result: MethodResult): void {
     this.handleMethodCall(call, result);
   }
 
-  private async handleMethodCall(
-    call: MethodCall,
-    result: MethodResult,
-  ): Promise<void> {
+  private async handleMethodCall(call: MethodCall, result: MethodResult): Promise<void> {
     try {
       switch (call.method) {
         case 'enqueue':
           result.success(await this.enqueue(call));
           return;
-        case 'pause': {
-          const taskId = call.argument('taskId') as string;
-          this.pauseDownload(taskId);
-          result.success(true);
+        case 'pause':
+          await this.pauseDownload(this.taskArgument(call));
+          result.success(null);
           return;
-        }
-        case 'resume': {
-          const taskId = call.argument('taskId') as string;
-          await this.resumeDownload(taskId);
-          result.success(true);
+        case 'resume':
+          await this.resumeDownload(this.taskArgument(call));
+          result.success(null);
           return;
-        }
-        case 'cancel': {
-          const taskId = call.argument('taskId') as string;
-          this.cancelDownload(taskId);
-          result.success(true);
+        case 'cancel':
+          await this.cancelDownload(this.taskArgument(call));
+          result.success(null);
           return;
-        }
-        case 'delete': {
-          const taskId = call.argument('taskId') as string;
-          this.deleteTask(taskId);
-          result.success(true);
+        case 'delete':
+          await this.deleteTask(this.taskArgument(call));
+          result.success(null);
           return;
-        }
         case 'getProgress': {
-          const taskId = call.argument('taskId') as string;
-          const entry = this.downloads.get(taskId);
-          if (entry) {
-            const progress = entry.totalBytes > 0
-              ? Math.floor((entry.bytesReceived / entry.totalBytes) * 100)
-              : 0;
-            const progressMap: Record<string, Object> = {
-              'taskId': entry.taskId,
-              'bytesReceived': entry.bytesReceived,
-              'totalBytes': entry.totalBytes,
-              'status': entry.status,
-              'progress': progress,
-            };
-            result.success(progressMap);
-          } else {
-            result.success(null);
-          }
-          return;
-        }
-        case 'saveDownloadedFile': {
-          const taskId = call.argument('taskId') as string;
-          result.success(await this.saveDownloadedFile(taskId));
+          const entry = this.downloads.get(this.taskArgument(call));
+          result.success(entry === undefined ? null : this.progressMap(entry));
           return;
         }
         case 'listTasks': {
           const tasks: Record<string, Object>[] = [];
-          this.downloads.forEach((entry) => {
-            const progress = entry.totalBytes > 0
-              ? Math.floor((entry.bytesReceived / entry.totalBytes) * 100)
-              : 0;
-            tasks.push({
-              'taskId': entry.taskId,
-              'url': entry.url,
-              'savedDir': entry.savedDir,
-              'fileName': entry.fileName,
-              'status': entry.status,
-              'bytesReceived': entry.bytesReceived,
-              'totalBytes': entry.totalBytes,
-              'progress': progress,
-            });
+          this.downloads.forEach((entry: DownloadEntry): void => {
+            const item = this.progressMap(entry);
+            item['url'] = entry.url;
+            item['savedDir'] = entry.savedDir;
+            item['fileName'] = entry.fileName;
+            tasks.push(item);
           });
           result.success(tasks);
+          return;
+        }
+        case 'saveDownloadedFile': {
+          const entry = this.downloads.get(this.taskArgument(call));
+          result.success(entry?.status === 'completed' ? entry.targetUri ?? entry.filePath : null);
           return;
         }
         default:
@@ -208,281 +154,201 @@ export default class OhosDownloadPlugin
     }
   }
 
-  private async enqueue(call: MethodCall): Promise<string> {
+  private async enqueue(call: MethodCall): Promise<string | null> {
     const context = this.requireContext();
-    const url = this.requireNonEmptyStringArgument(call, 'url');
+    const url = this.requireStringArgument(call, 'url');
+    const explicitName = call.argument('fileName') as string | null;
+    const pathname = urlModule.URL.parseURL(url).pathname;
+    const lastSegment = pathname.substring(pathname.lastIndexOf('/') + 1);
+    const derivedName = lastSegment.length > 0 ? decodeURIComponent(lastSegment) : 'download';
+    const fileName = (explicitName ?? derivedName).replace(/[<>:"/\\|?*]/g, '_');
+    const taskId = util.generateRandomUUID();
     const usePicker = (call.argument('usePicker') as boolean | null) ?? true;
-    const explicitDir = call.argument('savedDir') as string | null;
-    const fileName = this.sanitizeFileName(
-      (call.argument('fileName') as string | null) || this.extractFileName(url),
-    );
-    const rawHeaders = call.argument('headers') as Record<string, string> || {};
-
-    // Step 1: decide where the file will be written. The picker route asks
-    // the user via DocumentViewPicker; the silent route writes into
-    // ${filesDir}/exports/downloads/ so the user can still find the file
-    // in the Files app under Open1Panel/exports/downloads.
-    let targetPath: string | null = null;
-    if (usePicker && this.uiAbilityContext != null) {
-      const outcome = await this.pickSaveLocation(fileName);
-      if (outcome != null) {
-        targetPath = outcome.uri;
+    let targetUri: string | null = null;
+    if (usePicker) {
+      if (this.uiAbilityContext === null) {
+        throw new Error('UIAbility context is required to choose a download location');
       }
+      const documentPicker = new picker.DocumentViewPicker(this.uiAbilityContext);
+      const locations = await documentPicker.save({ newFileNames: [fileName] });
+      if (locations.length === 0) return null;
+      targetUri = locations[0];
     }
-    if (targetPath == null) {
-      const fallbackDir = explicitDir ?? `${context.filesDir}/exports/downloads`;
-      await this.ensureDirectory(fallbackDir);
-      targetPath = await this.nextAvailablePath(fallbackDir, fileName);
+    if (this.applicationContext !== context) {
+      throw new Error('Download plugin is not attached');
     }
 
-    const taskId = generateTaskId();
+    const requestedDir = call.argument('savedDir') as string | null;
+    const savedDir = requestedDir !== null && requestedDir.length > 0
+      ? requestedDir : `${context.filesDir}/Download`;
+    const directory = targetUri === null ? savedDir : `${context.cacheDir}/downloads`;
+    if (!fs.accessSync(directory)) fs.mkdirSync(directory, true);
+    const filePath = targetUri === null
+      ? this.nextAvailablePath(directory, fileName) : `${directory}/${taskId}`;
+    const rawHeaders = call.argument('headers') as Map<string, string> | null;
+    const headers: Record<string, string> = { 'Accept-Encoding': 'identity' };
+    rawHeaders?.forEach((headerValue: string, headerName: string): void => {
+      headers[headerName] = headerValue;
+    });
+    const task = await request.downloadFile(context, {
+      url,
+      header: headers,
+      filePath,
+      enableMetered: true,
+    });
+    if (this.applicationContext !== context) {
+      await task.delete();
+      throw new Error('Download plugin is not attached');
+    }
     const entry: DownloadEntry = {
       taskId,
       url,
-      savedDir: explicitDir ?? '',
+      savedDir,
       fileName,
-      headers: rawHeaders,
       status: 'running',
       bytesReceived: 0,
       totalBytes: 0,
-      filePath: targetPath,
-      httpRequest: null,
+      filePath,
+      targetUri,
+      task,
     };
     this.downloads.set(taskId, entry);
-
-    this.executeDownload(entry).catch((error: Error) => {
-      Log.e(TAG, `Download ${taskId} failed: ${error}`);
-      entry.status = 'failed';
+    task.on('progress', (received: number, total: number): void => {
+      if (entry.status !== 'running') return;
+      entry.bytesReceived = received;
+      entry.totalBytes = total;
       this.sendProgress(entry);
     });
-
+    task.on('pause', (): void => {
+      entry.status = 'paused';
+      this.sendProgress(entry);
+    });
+    task.on('complete', (): void => {
+      this.completeDownload(entry).catch((error: Error): void => {
+        entry.status = 'failed';
+        Log.e(TAG, `Failed to save completed download: ${error}`);
+        this.sendProgress(entry);
+      });
+    });
+    task.on('fail', (code: number): void => {
+      entry.status = 'failed';
+      Log.e(TAG, `Download failed with code ${code}`);
+      this.sendProgress(entry);
+    });
+    this.sendProgress(entry);
     return taskId;
   }
 
-  // Download the body with @ohos.net.http and write bytes into either
-  // the picked content:// URI or the public download file path. The
-  // picker grant is sufficient to write to a content:// URI returned
-  // by DocumentViewPicker. fs.openSync accepts content URIs in OHOS.
-  private async executeDownload(entry: DownloadEntry): Promise<void> {
-    const httpRequest = http.createHttp();
-    entry.httpRequest = httpRequest;
-
-    try {
-      // OHOS http API buffers the full response before returning — no streaming support.
-      const response = await httpRequest.request(entry.url, {
-        method: http.RequestMethod.GET,
-        header: entry.headers,
-        expectDataType: http.HttpDataType.ARRAY_BUFFER,
-        connectTimeout: 15000,
-        readTimeout: 30000,
-      });
-
-      if (response.responseCode !== 200) {
-        entry.status = 'failed';
-        this.sendProgress(entry);
-        return;
-      }
-
-      const headerObj = response.header as Record<string, string>;
-      const contentLength = headerObj['content-length'];
-      entry.totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
-
-      // TRUNC is intentional: resume re-downloads the whole file (no Range support on OHOS).
-      const file = fs.openSync(
-        entry.filePath,
-        fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC,
-      );
-
+  private async completeDownload(entry: DownloadEntry): Promise<void> {
+    if (this.downloads.get(entry.taskId) !== entry) return;
+    if (entry.targetUri !== null) {
+      const file = fs.openSync(entry.targetUri, fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);
       try {
-        // Chunk-based write loop is not for streaming — the buffer is already fully in memory.
-        // Chunking exists solely to allow pause/cancel checks between writes and to avoid
-        // blocking the event loop on a single giant writeSync call.
-        const buffer = response.result as ArrayBuffer;
-        const uint8 = new Uint8Array(buffer);
-        const chunkSize = 64 * 1024;
-        for (let offset = 0; offset < uint8.length; offset += chunkSize) {
-          // Fake pause: poll-wait until status changes back to 'running' or 'cancelled'.
-          // OHOS http API has no native pause/resume for downloads.
-          while (entry.status === 'paused') {
-            await new Promise<void>((resolve: () => void) => setTimeout(resolve, 500));
-          }
-          if (entry.status === 'cancelled') break;
-          if (entry.status !== 'running') break;
-
-          const end = Math.min(offset + chunkSize, uint8.length);
-          const chunk = uint8.slice(offset, end);
-          fs.writeSync(file.fd, chunk.buffer as ArrayBuffer);
-          entry.bytesReceived = offset + chunk.byteLength;
-          this.sendProgress(entry);
-        }
-        fs.fsyncSync(file.fd);
+        await fs.copyFile(entry.filePath, file.fd);
       } finally {
         fs.closeSync(file);
       }
-
-      if (entry.status === 'cancelled') {
-        try { fs.unlinkSync(entry.filePath); } catch (_) {}
-        entry.status = 'cancelled';
-      } else {
-        entry.status = 'completed';
-      }
-      this.sendProgress(entry);
-    } catch (error) {
-      Log.e(TAG, `Download execution error: ${error}`);
-      entry.status = 'failed';
-      this.sendProgress(entry);
-    } finally {
-      httpRequest.destroy();
-      entry.httpRequest = null;
+      fs.unlinkSync(entry.filePath);
     }
+    if (this.downloads.get(entry.taskId) !== entry) return;
+    entry.status = 'completed';
+    if (entry.totalBytes > 0) entry.bytesReceived = entry.totalBytes;
+    this.sendProgress(entry);
   }
 
-  private pauseDownload(taskId: string): void {
-    const entry = this.downloads.get(taskId);
-    if (entry && entry.status === 'running') {
-      entry.status = 'paused';
-      this.sendProgress(entry);
-    }
+  private async pauseDownload(taskId: string): Promise<void> {
+    const entry = this.requireTask(taskId);
+    if (entry.status !== 'running') return;
+    if (!await entry.task.suspend()) throw new Error('Download could not be paused');
+    entry.status = 'paused';
+    this.sendProgress(entry);
   }
 
-  // Resume re-downloads from scratch: OHOS http API has no Range header support,
-  // so there is no way to resume a partial download. The file is truncated and re-fetched.
   private async resumeDownload(taskId: string): Promise<void> {
-    const entry = this.downloads.get(taskId);
-    if (entry && entry.status === 'paused') {
-      entry.status = 'running';
-      this.sendProgress(entry);
-      await this.executeDownload(entry);
-    }
+    const entry = this.requireTask(taskId);
+    if (entry.status !== 'paused') return;
+    if (!await entry.task.restore()) throw new Error('Download could not be resumed');
+    entry.status = 'running';
+    this.sendProgress(entry);
   }
 
-  private cancelDownload(taskId: string): void {
-    const entry = this.downloads.get(taskId);
-    if (entry) {
-      entry.status = 'cancelled';
-      if (entry.httpRequest) {
-        entry.httpRequest.destroy();
-        entry.httpRequest = null;
-      }
-      try { fs.unlinkSync(entry.filePath); } catch (_) {}
-      this.sendProgress(entry);
-      this.downloads.delete(taskId);
-    }
-  }
-
-  private deleteTask(taskId: string): void {
+  private async cancelDownload(taskId: string): Promise<void> {
+    const entry = this.requireTask(taskId);
+    this.removeListeners(entry.task);
+    await entry.task.delete();
+    entry.status = 'cancelled';
+    if (fs.accessSync(entry.filePath)) fs.unlinkSync(entry.filePath);
+    this.sendProgress(entry);
     this.downloads.delete(taskId);
   }
 
-  private async saveDownloadedFile(taskId: string): Promise<Record<string, string> | null> {
-    const entry = this.downloads.get(taskId);
-    if (!entry || entry.status !== 'completed') return null;
+  private async deleteTask(taskId: string): Promise<void> {
+    const entry = this.requireTask(taskId);
+    if (entry.status === 'running' || entry.status === 'paused') {
+      await this.cancelDownload(taskId);
+      return;
+    }
+    this.removeListeners(entry.task);
+    await entry.task.delete();
+    this.downloads.delete(taskId);
+  }
+
+  private removeListeners(task: request.DownloadTask): void {
+    task.off('progress');
+    task.off('pause');
+    task.off('complete');
+    task.off('fail');
+  }
+
+  private progressMap(entry: DownloadEntry): Record<string, Object> {
+    const progress = entry.status === 'completed' ? 100 : entry.totalBytes > 0
+      ? Math.floor(entry.bytesReceived / entry.totalBytes * 100) : 0;
     return {
-      'uri': entry.filePath,
-      'displayName': entry.fileName,
-    };
-  }
-
-  // Ask the user where to save via DocumentViewPicker. Returns null on
-  // cancel so the caller can fall back to the public download directory.
-  private async pickSaveLocation(fileName: string): Promise<Record<string, string> | null> {
-    if (this.uiAbilityContext == null) {
-      return null;
-    }
-    try {
-      const documentPicker = new picker.DocumentViewPicker(this.uiAbilityContext);
-      const saveResult: string[] = await documentPicker.save({ newFileNames: [fileName] });
-      if (!saveResult || saveResult.length === 0) {
-        return null;
-      }
-      return {
-        'uri': saveResult[0],
-        'displayName': this.extractDisplayName(saveResult[0], fileName),
-      };
-    } catch (error) {
-      Log.w(TAG, `pickSaveLocation failed: ${error}`);
-      return null;
-    }
-  }
-
-  private extractDisplayName(uri: string, fallback: string): string {
-    try {
-      const lastSlash = uri.lastIndexOf('/');
-      if (lastSlash < 0 || lastSlash === uri.length - 1) {
-        return fallback;
-      }
-      const raw = decodeURIComponent(uri.substring(lastSlash + 1));
-      return raw.length > 0 ? raw : fallback;
-    } catch (_) {
-      return fallback;
-    }
-  }
-
-  private sendProgress(entry: DownloadEntry): void {
-    const progress = entry.totalBytes > 0
-      ? Math.floor((entry.bytesReceived / entry.totalBytes) * 100)
-      : 0;
-    const map: Record<string, Object> = {
       'taskId': entry.taskId,
       'bytesReceived': entry.bytesReceived,
       'totalBytes': entry.totalBytes,
       'status': entry.status,
       'progress': progress,
     };
-    this.streamHandler.sendEvent(map);
   }
 
-  private extractFileName(url: string): string {
-    try {
-      const lastSlash = url.lastIndexOf('/');
-      const queryIndex = url.indexOf('?', lastSlash);
-      const end = queryIndex > 0 ? queryIndex : url.length;
-      const name = url.substring(lastSlash + 1, end);
-      return name.length > 0 ? name : 'download';
-    } catch (_) {
-      return 'download';
+  private sendProgress(entry: DownloadEntry): void {
+    if (this.downloads.get(entry.taskId) === entry) {
+      this.streamHandler.sendEvent(this.progressMap(entry));
     }
   }
 
-  private sanitizeFileName(fileName: string): string {
-    return fileName.replace(/[<>:"/\\|?*]/g, '_');
-  }
-
-  private async ensureDirectory(path: string): Promise<void> {
-    try {
-      if (fs.accessSync(path)) return;
-    } catch (_) {}
-    fs.mkdirSync(path, true);
-  }
-
-  private async nextAvailablePath(directory: string, fileName: string): Promise<string> {
-    const first = `${directory}/${fileName}`;
-    if (!this.exists(first)) return first;
-
+  private nextAvailablePath(directory: string, fileName: string): string {
     const lastDot = fileName.lastIndexOf('.');
     const baseName = lastDot > 0 ? fileName.substring(0, lastDot) : fileName;
     const extension = lastDot > 0 ? fileName.substring(lastDot) : '';
-    for (let counter = 1; counter <= 9999; counter++) {
-      const candidate = `${directory}/${baseName}_${counter}${extension}`;
-      if (!this.exists(candidate)) return candidate;
+    let candidate = `${directory}/${fileName}`;
+    let counter = 1;
+    while (fs.accessSync(candidate)) {
+      candidate = `${directory}/${baseName}_${counter}${extension}`;
+      counter += 1;
     }
-    throw new Error(`Failed to generate unique file name: ${fileName}`);
-  }
-
-  private exists(path: string): boolean {
-    try { return fs.accessSync(path); } catch (_) { return false; }
+    return candidate;
   }
 
   private requireContext(): common.Context {
-    if (this.applicationContext == null) {
-      throw new Error('Application context is not ready');
-    }
+    if (this.applicationContext === null) throw new Error('Download plugin is not attached');
     return this.applicationContext;
   }
 
-  private requireNonEmptyStringArgument(call: MethodCall, key: string): string {
-    const value = call.argument(key) as string | null;
-    if (value != null && value.length > 0) return value;
-    throw new Error(`Missing required string argument: ${key}`);
+  private requireTask(taskId: string): DownloadEntry {
+    const entry = this.downloads.get(taskId);
+    if (entry === undefined) throw new Error(`Download task does not exist: ${taskId}`);
+    return entry;
+  }
+
+  private taskArgument(call: MethodCall): string {
+    return this.requireStringArgument(call, 'taskId');
+  }
+
+  private requireStringArgument(call: MethodCall, key: string): string {
+    const content = call.argument(key) as string | null;
+    if (content === null || content.length === 0) throw new Error(`Missing argument: ${key}`);
+    return content;
   }
 }
