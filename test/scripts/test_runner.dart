@@ -304,8 +304,14 @@ class TestRunner {
 
   static Future<bool> runUnitTests({String? moduleFilter}) async {
     printHeader('运行单元测试');
+    printHeader('HarmonyOS 设计规范检查');
+    final harmonyDesignExitCode = await runCommand(
+      Platform.resolvedExecutable,
+      ['run', 'test/scripts/check_harmony_design_guards.dart'],
+    );
     final normalizedFilter = moduleFilter?.toLowerCase();
     var failures = 0;
+    if (harmonyDesignExitCode != 0) failures++;
 
     if (normalizedFilter == null || normalizedFilter.isEmpty) {
       final okApi = await runTests('test/api/', description: 'API单元测试');
