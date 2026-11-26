@@ -1,4 +1,6 @@
+import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge, sheetMaterial } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyPanelField } from './HarmonyPanelControls';
 
 @Component
@@ -103,6 +105,14 @@ export struct HarmonyPanelMonitorPage {
       }.width('100%').padding(16).constraintSize({ minHeight: 56 })
     }.backgroundColor($r('sys.color.comp_background_primary'))
       .enabled(!this.busy).onClick((): void => { this.edit(key, this.value(key)); })
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+        event,
+        (): void => { this.edit(key, this.value(key)); },
+      ))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
   }
 
   @Builder
@@ -117,6 +127,14 @@ export struct HarmonyPanelMonitorPage {
     }.backgroundColor($r('sys.color.comp_background_primary'))
       .enabled(!this.busy && (key === 'defaultIO' ? this.ioOptions.length > 0 : this.networkOptions.length > 0))
       .onClick((): void => { this.selectDevice(key, key === 'defaultIO' ? this.ioOptions : this.networkOptions); })
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+        event,
+        (): void => { this.selectDevice(key, key === 'defaultIO' ? this.ioOptions : this.networkOptions); },
+      ))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
   }
 
   @Builder

@@ -1,6 +1,7 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { handleActivationKey } from '../../HarmonyInteractionUtils';
 
 class HarmonyOpenRestyModule {
   name: string;
@@ -356,6 +357,14 @@ export struct HarmonyOpenRestyPage {
       .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
       .borderRadius(16)
       .onClick((): void => { this.openPage(destination); })
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+        event,
+        (): void => { this.openPage(destination); },
+      ))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
       .accessibilityGroup(true)
       .accessibilityText(`${label}, ${summary}`)
     }

@@ -1,5 +1,6 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../../HarmonyNativeBridge';
+import { handleActivationKey } from '../../HarmonyInteractionUtils';
 
 interface HarmonyWebsiteTemplateVariable {
   variableKey: string;
@@ -340,6 +341,16 @@ export struct HarmonyWebsiteTemplatesPage {
     }.width('100%').justifyContent(FlexAlign.Center)
   }
 
+  private openListItem(item: Map<string, Object | null>, output: boolean): void {
+    if (output) {
+      this.outputDetail = item;
+      const route: NavPathInfo = { name: 'output-detail' };
+      this.paths.pushPath(route);
+    } else {
+      this.edit(this.recordId(item));
+    }
+  }
+
   @Builder
   private listBody(output: boolean) {
     Column({ space: 12 }) {
@@ -376,13 +387,15 @@ export struct HarmonyWebsiteTemplatesPage {
                 }
               }.padding(16).width('100%').constraintSize({ minHeight: 72 })
                 .backgroundColor($r('sys.color.comp_background_primary')).borderRadius(16)
-                .onClick((): void => {
-                  if (output) {
-                    this.outputDetail = item;
-                    const route: NavPathInfo = { name: 'output-detail' };
-                    this.paths.pushPath(route);
-                  } else this.edit(this.recordId(item));
-                })
+                .onClick((): void => { this.openListItem(item, output); })
+                .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+                  event,
+                  (): void => { this.openListItem(item, output); },
+                ))
+                .focusable(true)
+                .focusOnTouch(true)
+                .focusBox({ margin: LengthMetrics.vp(2) })
+                .hoverEffect(HoverEffect.Highlight)
             }
           }, (item: Map<string, Object | null>): string => `${this.recordId(item)}`)
           ListItem() { this.pageButtons(output) }
