@@ -28,43 +28,46 @@ class TabletShellPage extends StatelessWidget {
     final railTheme = Theme.of(context);
     final isIpad = tabletKind == TabletKind.ipad;
     return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            right: false,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(12, isIpad ? 20 : 16, 8, 16),
-              child: NavigationRail(
-                scrollable: true,
-                minWidth: isIpad ? 88 : 96,
-                minExtendedWidth: isIpad ? 220 : 236,
-                groupAlignment: -0.92,
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (index) => onSelect(modules[index]),
-                labelType: modules.length > 8
-                    ? NavigationRailLabelType.none
-                    : NavigationRailLabelType.all,
-                useIndicator: true,
-                indicatorColor: railTheme.colorScheme.primaryContainer,
-                destinations: shellRailDestinations(
-                  context,
-                  modules,
-                  hasServer: hasServer,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: Row(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12, isIpad ? 20 : 16, 8, 16),
+                child: NavigationRail(
+                  scrollable: true,
+                  minWidth: isIpad ? 88 : 96,
+                  minExtendedWidth: isIpad ? 220 : 236,
+                  groupAlignment: -0.92,
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (index) => onSelect(modules[index]),
+                  labelType: modules.length > 8
+                      ? NavigationRailLabelType.none
+                      : NavigationRailLabelType.all,
+                  useIndicator: true,
+                  indicatorColor: railTheme.colorScheme.secondaryContainer,
+                  destinations: shellRailDestinations(
+                    context,
+                    modules,
+                    hasServer: hasServer,
+                  ),
                 ),
               ),
             ),
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-            child: SafeArea(
-              bottom: false,
-              child: AdaptiveWidthContainer(
-                maxWidth: spec.contentMaxWidth,
-                child: body,
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(
+              child: SafeArea(
+                bottom: false,
+                child: AdaptiveWidthContainer(
+                  maxWidth: spec.contentMaxWidth,
+                  child: body,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

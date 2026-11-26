@@ -1,4 +1,5 @@
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'dart:ui';
 import 'dart:math' as math;
 
@@ -289,7 +290,7 @@ class _MacosShellView extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               scheme.surface,
-              scheme.surfaceContainerLowest,
+              scheme.surfaceContainer,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -319,7 +320,7 @@ class _MacosShellView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerLow.withValues(
+                      color: AppTheme.cardSurface(scheme).withValues(
                         alpha: contentAlpha,
                       ),
                       border: Border.all(color: scheme.outlineVariant),
@@ -356,7 +357,7 @@ class _WindowsShellScaffold extends StatelessWidget {
           Container(
             width: 280,
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
+              color: AppTheme.chromeSurface(scheme),
               border: Border(
                 right: BorderSide(color: scheme.outlineVariant),
               ),
@@ -447,7 +448,7 @@ class _AndroidPadShellScaffold extends StatelessWidget {
             indicatorShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
             ),
-            backgroundColor: scheme.surfaceContainerLowest,
+            backgroundColor: AppTheme.chromeSurface(scheme),
             destinations: _destinations(context),
           ),
           Expanded(
@@ -528,7 +529,8 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
           Expanded(
             flex: 2,
             child: DecoratedBox(
-              decoration: BoxDecoration(color: scheme.surfaceContainerLowest),
+              decoration:
+                  BoxDecoration(color: AppTheme.chromeSurface(scheme)),
               child: SafeArea(
                 child: ListView(
                   padding: AppDesignTokens.cardPadding,

@@ -74,7 +74,7 @@ class DesktopSidebar extends StatelessWidget {
             },
             labelType: NavigationRailLabelType.none,
             useIndicator: true,
-            indicatorColor: scheme.primaryContainer,
+            indicatorColor: scheme.secondaryContainer,
             minExtendedWidth: width,
             leading: extended
                 ? Padding(

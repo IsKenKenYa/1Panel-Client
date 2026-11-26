@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/config/app_route_constants.dart';
+import 'package:onepanel_client/core/channel/harmony_entry_presentation.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -26,16 +29,28 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   String? _lockError;
   bool _showOnboarding = false;
+  HarmonyEntryPresentation? _entry;
+  Completer<String?>? _entryChoice;
   final TestingChannelConsentService _consentService =
       TestingChannelConsentService();
 
   @override
   void initState() {
     super.initState();
+    _entry = context.read<HarmonyEntryPresentation?>();
     _bootstrap();
   }
 
+  @override
+  void dispose() {
+    final choice = _entryChoice;
+    if (choice != null && !choice.isCompleted) choice.complete(null);
+    unawaited(_entry?.dismiss(this));
+    super.dispose();
+  }
+
   Future<void> _bootstrap() async {
+    unawaited(_entry?.show(this, 'loading'));
     // Allow splash screen to render before heavy async work starts
     await Future.delayed(const Duration(milliseconds: 300));
 
@@ -53,7 +68,7 @@ class _SplashPageState extends State<SplashPage> {
           return;
         }
         if (!appLockController.isLoaded) {
-          setState(() => _lockError = appLockController.lastError);
+          _showStartupError(appLockController.lastError);
           return;
         }
       }
@@ -69,17 +84,30 @@ class _SplashPageState extends State<SplashPage> {
           break;
         }
 
-        final retry = await ConfirmActionSheetWidget.show(
-          context,
-          title: context.l10n.appLockTitle,
-          message: appLockController.lastError ?? context.l10n.appLockAuthFailed,
-          confirmLabel: context.l10n.commonRetry,
+        final l10n = context.l10n;
+        final message = appLockController.lastError ?? l10n.appLockAuthFailed;
+        final nativeChoice = await _chooseNative(
+          'authRetry',
+          title: l10n.appLockTitle,
+          message: message,
         );
+        if (!mounted) return;
+        final retry = nativeChoice != null
+            ? nativeChoice == 'retry'
+            : await ConfirmActionSheetWidget.show(
+                context,
+                title: l10n.appLockTitle,
+                message: message,
+                confirmLabel: l10n.commonRetry,
+              );
 
         if (retry != true) {
-          if (mounted) setState(() => _lockError = appLockController.lastError ?? appOpenUnlockReason);
+          if (mounted) {
+            _showStartupError(appLockController.lastError ?? appOpenUnlockReason);
+          }
           return;
         }
+        unawaited(_entry?.show(this, 'loading'));
       }
     }
 
@@ -108,6 +136,53 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
+  void _showStartupError(String? message) {
+    setState(() => _lockError = message);
+    unawaited(_entry?.show(
+      this,
+      'startupError',
+      title: context.l10n.appLockTitle,
+      message: message ?? context.l10n.appLockAuthFailed,
+      onAction: (action) {
+        if (mounted && action == 'retry') _retryStartup();
+      },
+    ));
+  }
+
+  void _retryStartup() {
+    setState(() => _lockError = null);
+    unawaited(_bootstrap());
+  }
+
+  Future<String?> _chooseNative(
+    String page, {
+    required String title,
+    String message = '',
+    bool requireConsent = false,
+  }) async {
+    final entry = _entry;
+    if (entry == null || !entry.enabled) return null;
+    final choice = Completer<String?>();
+    _entryChoice = choice;
+    final shown = await entry.show(
+      this,
+      page,
+      title: title,
+      message: message,
+      requireConsent: requireConsent,
+      onAction: (action) {
+        if (!choice.isCompleted) choice.complete(action);
+      },
+    );
+    if (!shown) {
+      _entryChoice = null;
+      return null;
+    }
+    final action = await choice.future;
+    _entryChoice = null;
+    return action;
+  }
+
   Future<bool> _handleTestingChannelGate() async {
     if (!AppReleaseChannelConfig.shouldShowColdStartWarning) {
       return true;
@@ -121,10 +196,18 @@ class _SplashPageState extends State<SplashPage> {
       return false;
     }
 
-    final confirmed = await _showTestingWarningDialog(
-      requireConsent: AppReleaseChannelConfig.shouldRequireConsent &&
-          consentState.requiresConsent,
+    final requireConsent = AppReleaseChannelConfig.shouldRequireConsent &&
+        consentState.requiresConsent;
+    final l10n = context.l10n;
+    final nativeChoice = await _chooseNative(
+      'warning',
+      title: l10n.testingWarningDialogTitle(_channelLabel(l10n)),
+      requireConsent: requireConsent,
     );
+    if (!mounted) return false;
+    final confirmed = nativeChoice != null
+        ? nativeChoice == 'continue'
+        : await _showTestingWarningDialog(requireConsent: requireConsent);
 
     if (!mounted) {
       return false;
@@ -138,6 +221,7 @@ class _SplashPageState extends State<SplashPage> {
     if (consentState.requiresConsent) {
       await _consentService.markAccepted(consentState);
     }
+    if (mounted) unawaited(_entry?.show(this, 'loading'));
 
     return true;
   }
@@ -237,10 +321,7 @@ class _SplashPageState extends State<SplashPage> {
     final l10n = context.l10n;
     if (_lockError != null) {
       return Scaffold(
-        body: ModuleErrorStateWidget(message: _lockError, onRetry: () {
-          setState(() => _lockError = null);
-          _bootstrap();
-        }),
+        body: ModuleErrorStateWidget(message: _lockError, onRetry: _retryStartup),
       );
     }
     return Scaffold(

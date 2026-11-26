@@ -182,37 +182,16 @@ class _AppShellPageState extends State<AppShellPage> {
                 );
               },
             ),
-            body: Builder(
-              // 悬浮胶囊模式下向 body 注入底栏让位：extendBody 后 body 延伸
-              // 到胶囊后方，末项遮挡由页面 ListView 消费 MediaQuery.padding
-              // 解决（固定 padding 的列表由下方 removePadding 方案兜底）。
-              builder: (context) {
-                final content = moreModules.isEmpty
-                    ? body
-                    : ShellDrawerScope(
-                        openDrawer: () =>
-                            _mobileScaffoldKey.currentState?.openDrawer(),
-                        child: body,
-                      );
-                if (!UIRenderPolicy.liquidGlassEnabled) {
-                  return content;
-                }
-                // 胶囊占高：NavigationBar 80 + 下留白 10 + 左右留边 0。
-                const floatHeight = 90.0;
-                return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    padding: MediaQuery.of(context).padding.copyWith(
-                          bottom: MediaQuery.of(context).padding.bottom +
-                              floatHeight,
-                        ),
-                    viewPadding: MediaQuery.of(context).viewPadding.copyWith(
-                          bottom: MediaQuery.of(context).viewPadding.bottom +
-                              floatHeight,
-                        ),
-                  ),
-                  child: content,
-                );
-              },
+            body: SafeArea(
+              top: false,
+              bottom: false,
+              child: moreModules.isEmpty
+                  ? body
+                  : ShellDrawerScope(
+                      openDrawer: () =>
+                          _mobileScaffoldKey.currentState?.openDrawer(),
+                      child: body,
+                    ),
             ),
             bottomNavigationBar: AppBottomNavigationBar(
               currentIndex: selectedIndex,

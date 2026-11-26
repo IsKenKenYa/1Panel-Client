@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
@@ -81,7 +82,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
         final sidebar = DesktopSidebar(
           width: 250,
           extended: placement != DesktopNavigationPlacement.rail,
-          backgroundColor: scheme.surfaceContainerLow,
+          backgroundColor: AppTheme.chromeSurface(scheme),
           modules: modules,
           selectedModule: selectedModule,
           hasServer: currentServer.hasServer,

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/features/shell/server_route_observer.dart';
 import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
@@ -80,7 +81,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
         final sidebar = DesktopSidebar(
           width: 280,
           extended: placement != DesktopNavigationPlacement.rail,
-          backgroundColor: scheme.surfaceContainerLow,
+          backgroundColor: AppTheme.chromeSurface(scheme),
           modules: modules,
           selectedModule: selectedModule,
           hasServer: currentServer.hasServer,
@@ -112,7 +113,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
-                                color: scheme.surfaceContainerLow,
+                                color: AppTheme.chromeSurface(scheme),
                                 border: Border(
                                   bottom:
                                       BorderSide(color: scheme.outlineVariant),
