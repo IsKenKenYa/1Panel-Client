@@ -40,6 +40,7 @@ class WebsiteV2Api {
   Future<PageResult<WebsiteInfo>> getWebsites({
     String? name,
     String? type,
+    int? websiteGroupId,
     int page = 1,
     int pageSize = 10,
     String order = 'descending',
@@ -52,6 +53,7 @@ class WebsiteV2Api {
       orderBy: orderBy,
       name: name,
       type: type,
+      websiteGroupId: websiteGroupId,
     );
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/search'),
@@ -303,11 +305,13 @@ class WebsiteV2Api {
     return WebsiteHttpsConfig.fromJson(_extractMapData(response));
   }
 
-  Future<Map<String, dynamic>> getWebsiteResource(int websiteId) async {
+  Future<List<WebsiteResource>> getWebsiteResource(int websiteId) async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/resource/$websiteId'),
     );
-    return _extractMapData(response);
+    return _extractListData(response)
+        .map((item) => WebsiteResource.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<Map<String, dynamic>>> getWebsiteDatabases() async {
@@ -773,6 +777,15 @@ class WebsiteV2Api {
       data: {'id': id},
     );
     return response.data.toString();
+  }
+
+  Future<List<int>> downloadCertificateAuthorityBytes(int id) async {
+    final response = await _client.post<List<int>>(
+      ApiConstants.buildApiPath('/websites/ca/download'),
+      data: {'id': id},
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return response.data!;
   }
 
   Future<void> updateWebsiteProxy({

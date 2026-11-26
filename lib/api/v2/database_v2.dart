@@ -551,14 +551,17 @@ class DatabaseV2Api {
     );
   }
 
-  Future<Response<List<Map<String, dynamic>>>> loadMongodbPrivileges(
+  Future<Response<String>> loadMongodbPrivileges(
     Map<String, dynamic> request,
   ) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/mongodb/privileges'),
       data: request,
     );
-    return _mapListResponse(response);
+    return ApiResponseParser.withData(
+      response,
+      ApiResponseParser.unwrap(response.data) as String,
+    );
   }
 
   Future<Response<void>> changeMongodbPrivileges(

@@ -40,6 +40,7 @@ class WebsiteRepository {
   Future<PageResult<WebsiteInfo>> searchWebsites({
     String? name,
     String? type,
+    int? websiteGroupId,
     int page = 1,
     int pageSize = PagedQuery.listPageSize,
   }) async {
@@ -47,6 +48,7 @@ class WebsiteRepository {
     return api.getWebsites(
       name: name,
       type: type,
+      websiteGroupId: websiteGroupId,
       page: page,
       pageSize: pageSize,
     );

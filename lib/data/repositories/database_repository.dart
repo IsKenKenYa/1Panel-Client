@@ -17,7 +17,7 @@ class DatabaseRepository {
   final ApiClientManager _clientManager;
   final ApiConfig? _config;
   static const String _remoteDatabaseTypes =
-      'mysql,mariadb,postgresql,redis,redis-cluster';
+      'mysql,mariadb,postgresql,mongodb,redis,redis-cluster';
 
   Future<DatabaseV2Api> _getApi() async {
     final config = _config;
@@ -284,19 +284,17 @@ class DatabaseRepository {
 
   Future<void> submitForm(DatabaseFormInput input) async {
     final api = await _getApi();
-    if (input.isRemote) {
+    if (input.scope == DatabaseScope.remote) {
       final payload = <String, dynamic>{
         if (input.id != null) 'id': input.id,
         'name': input.name,
+        'type': input.engine,
         'version': input.engine,
         'from': 'remote',
         'address': input.address,
         'port': input.port,
         'username': input.username,
-        // API requires base64-encoded password for remote databases
-        'password': input.password == null
-            ? null
-            : base64Encode(utf8.encode(input.password!)),
+        'password': input.password,
         'description': input.description,
         'timeout': input.timeout ?? 30,
       };
@@ -337,7 +335,7 @@ class DatabaseRepository {
       case DatabaseScope.mongodb:
         await api.createMongodbDatabase({
           ...payload,
-          'superUser': input.superUser ?? true,
+          'permission': input.permission,
         });
         return;
       case DatabaseScope.redis:
@@ -354,34 +352,27 @@ class DatabaseRepository {
   Future<void> updateDescription(
       DatabaseListItem item, String description) async {
     final api = await _getApi();
+    final request = {'id': item.id!, 'description': description};
     if (item.scope == DatabaseScope.postgresql) {
-      await api.updatePostgresqlDescription({
-        'name': item.name,
-        'description': description,
-      });
+      await api.updatePostgresqlDescription(request);
       return;
     }
     if (item.scope == DatabaseScope.mongodb) {
-      await api.updateMongodbDescription({
-        'database': item.lookupName,
-        'description': description,
-      });
+      await api.updateMongodbDescription(request);
       return;
     }
-    await api.updateMysqlDescription({
-      'name': item.name,
-      'description': description,
-    });
+    await api.updateMysqlDescription(request);
   }
 
   Future<void> changePassword(DatabaseListItem item, String password) async {
     final api = await _getApi();
+    final encoded = base64Encode(utf8.encode(password));
     final payload = <String, dynamic>{
-      'id': item.id ?? 0,
+      if (item.id != null) 'id': item.id,
       'from': item.source,
       'type': item.engine,
       'database': item.lookupName,
-      'value': password,
+      'value': encoded,
     };
     if (item.scope == DatabaseScope.postgresql) {
       await api.updatePostgresqlPassword(payload);
@@ -389,16 +380,16 @@ class DatabaseRepository {
     }
     if (item.scope == DatabaseScope.mongodb) {
       await api.changeMongodbPassword({
-        'type': item.engine,
         'database': item.lookupName,
-        'value': password,
+        'name': item.name,
+        'password': encoded,
       });
       return;
     }
     if (item.scope == DatabaseScope.redis) {
       await api.changeRedisPassword({
         'database': item.lookupName,
-        'value': password,
+        'value': encoded,
       });
       return;
     }
@@ -424,8 +415,9 @@ class DatabaseRepository {
     if (item.scope == DatabaseScope.mongodb) {
       await api.bindMongodbUser({
         'database': item.lookupName,
+        'name': item.name,
         'username': username,
-        'password': password,
+        'password': base64Encode(utf8.encode(password)),
       });
       return;
     }
@@ -444,6 +436,7 @@ class DatabaseRepository {
     final api = await _getApi();
     final response = await api.checkRemoteDatabase({
       'name': input.name,
+      'type': input.engine,
       'version': input.engine,
       'from': 'remote',
       'address': input.address,
@@ -511,6 +504,7 @@ class DatabaseRepository {
   Future<void> deleteMongodb(DatabaseListItem item) async {
     final api = await _getApi();
     await api.deleteMongodbDatabase({
+      'id': item.id!,
       'type': item.engine,
       'database': item.lookupName,
     });
@@ -520,6 +514,7 @@ class DatabaseRepository {
       DatabaseListItem item) async {
     final api = await _getApi();
     final response = await api.deleteMongodbDatabaseCheck({
+      'id': item.id!,
       'type': item.engine,
       'database': item.lookupName,
     });
@@ -532,19 +527,35 @@ class DatabaseRepository {
   ) async {
     final api = await _getApi();
     await api.changeMongodbRootPassword({
+      'from': item.source,
       'type': item.engine,
       'database': item.lookupName,
-      'value': password,
+      'value': base64Encode(utf8.encode(password)),
     });
   }
 
   Future<List<Map<String, dynamic>>> loadMongodbPrivileges(
       DatabaseListItem item) async {
+    final username = item.username;
+    if (username == null || username.isEmpty) return [];
     final api = await _getApi();
     final response = await api.loadMongodbPrivileges({
-      'type': item.engine,
       'database': item.lookupName,
+      'name': item.name,
+      'username': username,
     });
-    return response.data ?? const <Map<String, dynamic>>[];
+    return [
+      {'username': username, 'privileges': response.data},
+    ];
+  }
+
+  Future<void> changeMongodbPrivileges(DatabaseListItem item, String role) async {
+    final api = await _getApi();
+    await api.changeMongodbPrivileges({
+      'database': item.lookupName,
+      'name': item.name,
+      'username': item.username!,
+      'permission': role,
+    });
   }
 }

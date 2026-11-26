@@ -348,6 +348,7 @@ AlertConfigUpdate _$AlertConfigUpdateFromJson(Map<String, dynamic> json) =>
       config: json['config'] as String?,
       status: json['status'] as String?,
       displayName: json['displayName'] as String?,
+      revision: json['revision'] as String?,
     );
 
 Map<String, dynamic> _$AlertConfigUpdateToJson(AlertConfigUpdate instance) =>
@@ -358,6 +359,7 @@ Map<String, dynamic> _$AlertConfigUpdateToJson(AlertConfigUpdate instance) =>
       'config': instance.config,
       'status': instance.status,
       'displayName': instance.displayName,
+      'revision': ?instance.revision,
     };
 
 AlertConfigTest _$AlertConfigTestFromJson(Map<String, dynamic> json) =>

@@ -785,28 +785,32 @@ class WebsiteRedirect extends Equatable {
 
 /// Website resource model
 class WebsiteResource extends Equatable {
-  final String? type;
-  final String? content;
+  final int id;
+  final String type;
+  final String name;
 
   const WebsiteResource({
-    this.type,
-    this.content,
+    required this.id,
+    required this.type,
+    required this.name,
   });
 
   factory WebsiteResource.fromJson(Map<String, dynamic> json) {
     return WebsiteResource(
-      type: json['type'] as String?,
-      content: json['content'] as String?,
+      id: json['resourceID'] as int,
+      type: json['type'] as String,
+      name: json['name'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'resourceID': id,
       'type': type,
-      'content': content,
+      'name': name,
     };
   }
 
   @override
-  List<Object?> get props => [type, content];
+  List<Object?> get props => [id, type, name];
 }

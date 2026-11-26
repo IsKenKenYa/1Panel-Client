@@ -92,7 +92,7 @@ class WebsiteSSL extends Equatable {
     }
     if (raw is String) {
       final parts =
-          raw.split(RegExp(r'[\\s,]+')).where((e) => e.isNotEmpty).toList();
+          raw.split(RegExp(r'[\s,]+')).where((e) => e.isNotEmpty).toList();
       return parts.isEmpty ? null : parts;
     }
     return null;

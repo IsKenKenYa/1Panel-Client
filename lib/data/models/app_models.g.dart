@@ -512,6 +512,7 @@ Map<String, dynamic> _$AppUpdateResponseToJson(AppUpdateResponse instance) =>
 
 AppVersion _$AppVersionFromJson(Map<String, dynamic> json) => AppVersion(
       version: json['version'] as String,
+      detailId: (json['detailId'] as num?)?.toInt(),
       description: json['description'] as String?,
       releaseDate: json['releaseDate'] as String?,
       isPrerelease: json['isPrerelease'] as bool?,
@@ -520,6 +521,7 @@ AppVersion _$AppVersionFromJson(Map<String, dynamic> json) => AppVersion(
 Map<String, dynamic> _$AppVersionToJson(AppVersion instance) =>
     <String, dynamic>{
       'version': instance.version,
+      'detailId': instance.detailId,
       'description': instance.description,
       'releaseDate': instance.releaseDate,
       'isPrerelease': instance.isPrerelease,

@@ -4,6 +4,7 @@ import '../../data/models/app_models.dart';
 import '../../core/config/api_constants.dart';
 
 import '../../data/models/app_config_models.dart';
+import 'api_response_parser.dart';
 
 /// 1Panel V2 API - 应用管理接口
 class AppV2Api {
@@ -181,10 +182,12 @@ class AppV2Api {
 
   /// 更新应用
   Future<void> updateApp(String appInstallId) async {
+    final versions = await getAppUpdateVersions(appInstallId);
     await operateApp(
       AppInstalledOperateRequest(
-        installId: int.tryParse(appInstallId) ?? 0,
+        installId: int.parse(appInstallId),
         operate: 'upgrade',
+        detailId: versions.first.detailId!,
       ),
     );
   }
@@ -288,7 +291,13 @@ class AppV2Api {
       ApiConstants.buildApiPath('/apps/ignored/detail'),
     );
     final data = response.data as Map<String, dynamic>;
-    return _parseListData(data['data'], AppInstallInfo.fromJson);
+    return _parseListData(data['data'], (entry) => AppInstallInfo(
+      id: (entry['ID'] ?? entry['id']) as int,
+      appId: entry['appID'] as int?,
+      appDetailId: entry['appDetailID'] as int?,
+      name: entry['name'] as String,
+      version: entry['version'] as String?,
+    ));
   }
 
   /// 取消忽略应用更新
@@ -358,14 +367,33 @@ class AppV2Api {
     if (innerData == null) {
       return {};
     }
+    if (innerData is List) {
+      return {'items': innerData};
+    }
     return innerData as Map<String, dynamic>;
   }
 
   /// 忽略应用更新
   Future<void> ignoreAppUpdate(AppInstalledIgnoreUpgradeRequest request) async {
+    final installId = request.appInstallId.toString();
+    final installation = await getAppInstallInfo(installId);
+    final appId = installation.appId ?? (await getAppByKey(installation.appKey!)).id!;
+    final versions = request.scope == AppIgnoreUpgradeScope.version
+        ? await getAppUpdateVersions(installId)
+        : const <AppVersion>[];
+    return ignoreAppVersion(
+      appId: appId,
+      scope: request.scope,
+      detailId: request.scope == AppIgnoreUpgradeScope.version
+          ? versions.first.detailId!
+          : null,
+    );
+  }
+
+  Future<void> ignoreAppVersion({required int appId, required String scope, int? detailId}) async {
     await _client.post(
       ApiConstants.buildApiPath('/apps/installed/ignore'),
-      data: request.toJson(),
+      data: {'appID': appId, 'scope': scope, if (detailId != null) 'appDetailID': detailId},
     );
   }
 
@@ -463,23 +491,11 @@ class AppV2Api {
   Future<List<AppVersion>> getAppUpdateVersions(String appInstallId) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/apps/installed/update/versions'),
-      data: {'appInstallID': int.tryParse(appInstallId) ?? 0},
+      data: {'appInstallID': int.parse(appInstallId), 'loadCompose': false},
     );
-    final data = response.data as Map<String, dynamic>;
-    // 处理API返回的data字段可能是Map或List的情况
-    final dataField = data['data'];
-    if (dataField is List) {
-      return dataField
-          .map((e) => AppVersion.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } else if (dataField is Map<String, dynamic>) {
-      final items = dataField['items'] as List?;
-      return items
-              ?.map((e) => AppVersion.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [];
-    }
-    return [];
+    return ApiResponseParser.asList(response.data, nestedItemsKey: 'items')
+        .map((entry) => AppVersion.fromJson(entry as Map<String, dynamic>))
+        .toList();
   }
 
   /// 获取应用服务列表

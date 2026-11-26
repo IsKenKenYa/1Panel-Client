@@ -172,13 +172,16 @@ class AlertV2Api {
   /// 测试告警配置（邮箱 / 自定义 webhook）。
   Future<Response<AlertConfigTestResult>> testAlertConfig(
       AlertConfigTest request) async {
-    final response = await _client.post<Map<String, dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/alert/config/test'),
       data: request.toJson(),
     );
+    final data = ApiResponseParser.unwrap(response.data);
     return ApiResponseParser.withData(
       response,
-      AlertConfigTestResult.fromJson(ApiResponseParser.asMap(response.data)),
+      data is bool
+          ? AlertConfigTestResult(success: data)
+          : AlertConfigTestResult.fromJson(ApiResponseParser.asMap(data)),
     );
   }
 }

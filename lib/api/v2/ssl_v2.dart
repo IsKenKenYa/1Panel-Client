@@ -3,6 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/ssl_models.dart';
 import '../../data/models/common_models.dart';
+import 'api_response_parser.dart';
 
 class SSLV2Api {
   final DioClient _client;
@@ -31,7 +32,7 @@ class SSLV2Api {
       ApiConstants.buildApiPath('/websites/ssl/$id'),
     );
     return Response(
-      data: WebsiteSSL.fromJson(response.data as Map<String, dynamic>),
+      data: WebsiteSSL.fromJson(ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -69,6 +70,15 @@ class SSLV2Api {
     );
   }
 
+  Future<List<int>> downloadSSLBytes(int id) async {
+    final response = await _client.post<List<int>>(
+      ApiConstants.buildApiPath('/websites/ssl/download'),
+      data: {'id': id},
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return response.data!;
+  }
+
   /// 申请SSL证书
   ///
   /// 为网站申请SSL证书
@@ -86,17 +96,16 @@ class SSLV2Api {
   /// 解析网站SSL证书状态和配置
   /// @param sslResolve SSL解析配置
   /// @return 解析结果
-  Future<Response<WebsiteSSL>> resolveWebsiteSSL(
-      WebsiteSSLResolve sslResolve) async {
+  Future<Response<List<Map<String, dynamic>>>> resolveWebsiteSSL(
+    WebsiteSSLResolve sslResolve,
+  ) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/websites/ssl/resolve'),
       data: sslResolve.toJson(),
     );
-    return Response(
-      data: WebsiteSSL.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+    return ApiResponseParser.withData(
+      response,
+      ApiResponseParser.asList(response.data).cast<Map<String, dynamic>>(),
     );
   }
 
@@ -186,7 +195,7 @@ class SSLV2Api {
       ApiConstants.buildApiPath('/websites/ssl/website/$websiteId'),
     );
     return Response(
-      data: WebsiteSSL.fromJson(response.data as Map<String, dynamic>),
+      data: WebsiteSSL.fromJson(ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

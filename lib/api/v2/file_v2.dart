@@ -5,6 +5,7 @@ import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/file_models.dart';
+import 'api_response_parser.dart';
 
 class FileV2Api {
   final DioClient _client;
@@ -177,20 +178,16 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/content'),
       data: data,
     );
-    String content = '';
-    if (response.data != null) {
-      if (response.data is Map<String, dynamic>) {
-        final dataWrapper = response.data as Map<String, dynamic>;
-        final dataField = dataWrapper['data'];
-        if (dataField is Map<String, dynamic>) {
-          content = dataField['content'] as String? ?? '';
-        } else {
-          content = dataField?.toString() ?? '';
-        }
-      } else {
-        content = response.data.toString();
-      }
-    }
+    return _fileTextResponse(response);
+  }
+
+  Response<String> _fileTextResponse(Response<dynamic> response) {
+    final payload = ApiResponseParser.unwrap(response.data);
+    final content = switch (payload) {
+      String text => text,
+      {'content': final String text} => text,
+      _ => throw const FormatException('Missing file content'),
+    };
     return Response(
       data: content,
       statusCode: response.statusCode,
@@ -405,28 +402,12 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/favorite/search'),
       data: request.toJson(),
     );
-    final responseData = response.data;
-    List<FileInfo> files = [];
-
-    if (responseData is Map<String, dynamic>) {
-      final dataWrapper = responseData['data'];
-      if (dataWrapper is Map<String, dynamic>) {
-        final itemsRaw = dataWrapper['items'];
-        if (itemsRaw is List) {
-          files = itemsRaw
-              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
-              .toList();
-        }
-      } else if (dataWrapper is List) {
-        files = dataWrapper
-            .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
-            .toList();
-      }
-    } else if (responseData is List) {
-      files = responseData
-          .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
-          .toList();
-    }
+    final files = ApiResponseParser.asList(response.data, nestedItemsKey: 'items')
+        .map((item) => FileInfo.fromJson({
+              ...item as Map<String, dynamic>,
+              if (item['id'] != null) 'favoriteID': item['id'],
+            }))
+        .toList();
     return Response(
       data: files,
       statusCode: response.statusCode,
@@ -465,17 +446,7 @@ class FileV2Api {
   /// @param request 文件读取请求
   /// @return 文件内容
   Future<Response<String>> readFile(FileRead request) async {
-    // V2 契约迁移：/files/read 已删除，整体读取改为 /files/content（{path, isDetail}）。
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/files/content'),
-      data: <String, dynamic>{'path': request.path, 'isDetail': false},
-    );
-    return Response(
-      data: response.data?.toString() ?? '',
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
+    return getFileContent(request.path);
   }
 
   Future<Response<FileReadByLineResponse>> readFileByLine(
@@ -591,7 +562,11 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/recycle/status'),
     );
     return Response(
-      data: FileRecycleStatus.fromJson(response.data as Map<String, dynamic>),
+      data: FileRecycleStatus.fromJson(switch (ApiResponseParser.unwrap(response.data)) {
+        final String status => <String, dynamic>{'status': status},
+        final Map<String, dynamic> status => status,
+        _ => throw const FormatException('Invalid recycle bin status'),
+      }),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -887,12 +862,7 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/preview'),
       data: request.toJson(),
     );
-    return Response(
-      data: response.data?.toString() ?? '',
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
+    return _fileTextResponse(response);
   }
 
   /// 获取系统用户和组
@@ -1072,9 +1042,7 @@ class FileV2Api {
       data: request,
     );
     return Response<Map<String, dynamic>>(
-      data: response.data is Map
-          ? Map<String, dynamic>.from(response.data as Map)
-          : const <String, dynamic>{},
+      data: ApiResponseParser.asMap(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -1097,9 +1065,7 @@ class FileV2Api {
       data: request,
     );
     return Response<List<dynamic>>(
-      data: response.data is List
-          ? List<dynamic>.from(response.data as List)
-          : const <dynamic>[],
+      data: ApiResponseParser.asList(response.data, nestedItemsKey: 'items'),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -1209,9 +1175,7 @@ class FileV2Api {
       data: request,
     );
     return Response<List<dynamic>>(
-      data: response.data is List
-          ? List<dynamic>.from(response.data as List)
-          : const <dynamic>[],
+      data: ApiResponseParser.asList(response.data, nestedItemsKey: 'items'),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -1226,7 +1190,7 @@ class FileV2Api {
       data: request,
     );
     return Response<String>(
-      data: response.data?.toString() ?? '',
+      data: ApiResponseParser.asMap(response.data)['content'] as String?,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -1287,9 +1251,7 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/wget/process/keys'),
     );
     return Response<List<dynamic>>(
-      data: response.data is List
-          ? List<dynamic>.from(response.data as List)
-          : const <dynamic>[],
+      data: ApiResponseParser.asList(response.data, nestedItemsKey: 'keys'),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

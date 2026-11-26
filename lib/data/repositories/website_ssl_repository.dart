@@ -105,9 +105,12 @@ class WebsiteSslRepository {
     await api.applySSL(request);
   }
 
-  Future<void> resolveCertificate(WebsiteSSLResolve request) async {
+  Future<List<Map<String, dynamic>>> resolveCertificate(
+    WebsiteSSLResolve request,
+  ) async {
     final api = await _ensureSslApi();
-    await api.resolveWebsiteSSL(request);
+    final response = await api.resolveWebsiteSSL(request);
+    return response.data!;
   }
 
   Future<void> updateCertificate(WebsiteSSLUpdate request) async {
@@ -129,6 +132,11 @@ class WebsiteSslRepository {
     final api = await _ensureSslApi();
     final response = await api.downloadSSLFile(id);
     return response.data;
+  }
+
+  Future<List<int>> downloadCertificateBytes(int id) async {
+    final api = await _ensureSslApi();
+    return api.downloadSSLBytes(id);
   }
 
   Future<List<Map<String, dynamic>>> getSslOptions() async {

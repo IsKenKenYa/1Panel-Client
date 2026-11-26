@@ -129,7 +129,7 @@ class WebsiteConfigRepository {
     await api.updateWebsiteLoadBalancerFile(request);
   }
 
-  Future<Map<String, dynamic>> getResource(int websiteId) async {
+  Future<List<WebsiteResource>> getResource(int websiteId) async {
     final api = await _ensureApi();
     return api.getWebsiteResource(websiteId);
   }

@@ -559,6 +559,8 @@ class AlertConfigUpdate extends Equatable {
   final String? config;
   final String? status;
   final String? displayName;
+  @JsonKey(includeIfNull: false)
+  final String? revision;
 
   const AlertConfigUpdate({
     required this.id,
@@ -567,6 +569,7 @@ class AlertConfigUpdate extends Equatable {
     this.config,
     this.status,
     this.displayName,
+    this.revision,
   });
 
   factory AlertConfigUpdate.fromJson(Map<String, dynamic> json) =>
@@ -576,7 +579,7 @@ class AlertConfigUpdate extends Equatable {
 
   @override
   List<Object?> get props =>
-      <Object?>[id, type, title, config, status, displayName];
+      <Object?>[id, type, title, config, status, displayName, revision];
 }
 
 /// 告警配置测试请求（dto.AlertConfigTest）。

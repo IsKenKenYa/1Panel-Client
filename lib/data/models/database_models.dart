@@ -189,7 +189,7 @@ class DatabaseInfo extends Equatable {
   final String name;
   final String type;
   final String version;
-  final String status;
+  final String? status;
   final String? host;
   final int? port;
   final String? username;
@@ -209,7 +209,7 @@ class DatabaseInfo extends Equatable {
     required this.name,
     required this.type,
     required this.version,
-    required this.status,
+    this.status,
     this.host,
     this.port,
     this.username,
@@ -231,8 +231,8 @@ class DatabaseInfo extends Equatable {
       name: json['name'] as String,
       type: json['type'] as String,
       version: json['version'] as String,
-      status: json['status'] as String,
-      host: json['host'] as String?,
+      status: json['status'] as String?,
+      host: (json['address'] ?? json['host']) as String?,
       port: json['port'] as int?,
       username: json['username'] as String?,
       password: json['password'] as String?,

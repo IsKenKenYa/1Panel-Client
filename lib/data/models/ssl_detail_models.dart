@@ -241,10 +241,13 @@ class Website extends Equatable {
   });
 
   factory Website.fromJson(Map<String, dynamic> json) {
+    final domains = json['domains'] as List?;
     return Website(
       id: json['id'] as int?,
       primaryDomain: json['primaryDomain'] as String?,
-      domains: (json['domains'] as List?)?.cast<String>(),
+      domains: domains?.map((item) {
+        return item is String ? item : (item as Map<String, dynamic>)['domain'] as String;
+      }).toList(),
       protocol: json['protocol'] as String?,
       ssl: json['ssl'] as bool?,
     );

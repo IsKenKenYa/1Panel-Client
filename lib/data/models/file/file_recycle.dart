@@ -144,12 +144,14 @@ class FileRecycleResult extends Equatable {
 }
 
 class FileRecycleStatus extends Equatable {
+  final String? status;
   final int fileCount;
   final int totalSize;
   final String? oldestFile;
   final String? newestFile;
 
   const FileRecycleStatus({
+    this.status,
     required this.fileCount,
     required this.totalSize,
     this.oldestFile,
@@ -158,6 +160,7 @@ class FileRecycleStatus extends Equatable {
 
   factory FileRecycleStatus.fromJson(Map<String, dynamic> json) {
     return FileRecycleStatus(
+      status: json['status'] as String?,
       fileCount: json['fileCount'] as int? ?? 0,
       totalSize: json['totalSize'] as int? ?? 0,
       oldestFile: json['oldestFile'] as String?,
@@ -167,6 +170,7 @@ class FileRecycleStatus extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
+      if (status != null) 'status': status,
       'fileCount': fileCount,
       'totalSize': totalSize,
       'oldestFile': oldestFile,
@@ -175,5 +179,5 @@ class FileRecycleStatus extends Equatable {
   }
 
   @override
-  List<Object?> get props => [fileCount, totalSize, oldestFile, newestFile];
+  List<Object?> get props => [status, fileCount, totalSize, oldestFile, newestFile];
 }

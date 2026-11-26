@@ -903,12 +903,14 @@ class AppUpdateResponse {
 @JsonSerializable()
 class AppVersion {
   final String version;
+  final int? detailId;
   final String? description;
   final String? releaseDate;
   final bool? isPrerelease;
 
   AppVersion({
     required this.version,
+    this.detailId,
     this.description,
     this.releaseDate,
     this.isPrerelease,

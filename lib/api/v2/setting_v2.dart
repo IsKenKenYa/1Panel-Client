@@ -848,7 +848,7 @@ class SettingV2Api {
       ApiConstants.buildApiPath('/settings/website/dir'),
     );
     return Response<String>(
-      data: response.data?.toString() ?? '',
+      data: ApiResponseParser.asPrimitive<String>(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -943,12 +943,27 @@ class PortUpdate {
 class ProxyUpdate {
   final String? proxyUrl;
   final int? proxyPort;
+  final String? proxyType;
+  final String? proxyUser;
+  final String? proxyPasswd;
+  final String? proxyPasswdKeep;
 
-  const ProxyUpdate({this.proxyUrl, this.proxyPort});
+  const ProxyUpdate({
+    this.proxyUrl,
+    this.proxyPort,
+    this.proxyType,
+    this.proxyUser,
+    this.proxyPasswd,
+    this.proxyPasswdKeep,
+  });
 
   Map<String, dynamic> toJson() => {
         if (proxyUrl != null) 'proxyUrl': proxyUrl,
-        if (proxyPort != null) 'proxyPort': proxyPort,
+        if (proxyPort != null) 'proxyPort': proxyPort.toString(),
+        if (proxyType != null) 'proxyType': proxyType,
+        if (proxyUser != null) 'proxyUser': proxyUser,
+        if (proxyPasswd != null) 'proxyPasswd': proxyPasswd,
+        if (proxyPasswdKeep != null) 'proxyPasswdKeep': proxyPasswdKeep,
       };
 }
 
@@ -1076,11 +1091,21 @@ class SnapshotDescriptionUpdate {
 }
 
 class SnapshotImport {
-  final String path;
+  final int backupAccountID;
+  final List<String> names;
+  final String? description;
 
-  const SnapshotImport({required this.path});
+  const SnapshotImport({
+    required this.backupAccountID,
+    required this.names,
+    this.description,
+  });
 
-  Map<String, dynamic> toJson() => {'path': path};
+  Map<String, dynamic> toJson() => {
+        'backupAccountID': backupAccountID,
+        'names': names,
+        if (description != null) 'description': description,
+      };
 }
 
 class SnapshotRecover {
