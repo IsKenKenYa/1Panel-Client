@@ -10,8 +10,6 @@ import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeA
 export struct HarmonyAIPage {
   @Prop initialRoute: string = '/ai';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private selectedTab: number = 0;
   /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;

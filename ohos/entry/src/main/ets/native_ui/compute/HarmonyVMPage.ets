@@ -10,10 +10,8 @@ import { HarmonyVMFormPage } from './HarmonyVMFormPage';
 
 @Component
 export struct HarmonyVMPage {
-  onBack: () => void = (): void => {};
   @Prop initialRoute: string = '/vm';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  @Prop showBack: boolean = true;
   @State private selectedTab: number = 0;
   /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
   @State private splitLayout: boolean = false;

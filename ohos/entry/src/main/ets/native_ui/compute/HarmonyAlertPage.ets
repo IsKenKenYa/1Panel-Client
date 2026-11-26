@@ -72,8 +72,6 @@ struct HarmonyAlertWebhookPairEditor {
 
 @Component
 export struct HarmonyAlertPage {
-  @Prop showBack: boolean = true;
-  onBack: () => void = (): void => {};
   @State private selectedTab: number = 0;
   @State private rules: Map<string, Object | null>[] = [];
   @State private logs: Map<string, Object | null>[] = [];
