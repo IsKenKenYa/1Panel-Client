@@ -75,6 +75,8 @@ export struct HarmonyAlertPage {
   @Prop showBack: boolean = true;
   onBack: () => void = (): void => {};
   @State private selectedTab: number = 0;
+  /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
+  @State private splitLayout: boolean = false;
   @State private rules: Map<string, Object | null>[] = [];
   @State private logs: Map<string, Object | null>[] = [];
   @State private channels: Map<string, Object | null>[] = [];
@@ -737,7 +739,15 @@ export struct HarmonyAlertPage {
       .title(this.rootTitle, { barStyle: BarStyle.STANDARD })
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true).menus(this.menus()).navDestination(this.destination)
-      .mode(NavigationMode.Stack).width('100%').height('100%')
+      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
+      .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
+      .onAreaChange((_old: Area, current: Area): void => {
+        const measured = current.width;
+        if (typeof measured === 'number') {
+          this.splitLayout = measured >= 600;
+        }
+      })
   }
 }

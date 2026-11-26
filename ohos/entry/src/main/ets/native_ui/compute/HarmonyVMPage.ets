@@ -13,6 +13,8 @@ export struct HarmonyVMPage {
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
   @Prop showBack: boolean = true;
   @State private selectedTab: number = 0;
+  /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
+  @State private splitLayout: boolean = false;
   @State private environment: Map<string, Object | null> = new Map<string, Object | null>();
   @State private vms: Map<string, Object | null>[] = [];
   @State private networks: Map<string, Object | null>[] = [];
@@ -752,8 +754,15 @@ export struct HarmonyVMPage {
       .hideBackButton(true)
       .menus(this.rootMenus())
       .navDestination(this.destination)
-      .mode(NavigationMode.Stack)
+      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
       .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
+      .onAreaChange((_old: Area, current: Area): void => {
+        const measured = current.width;
+        if (typeof measured === 'number') {
+          this.splitLayout = measured >= 600;
+        }
+      })
   }
 }

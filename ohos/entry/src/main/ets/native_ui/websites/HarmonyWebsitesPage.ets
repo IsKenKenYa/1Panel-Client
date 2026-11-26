@@ -19,6 +19,8 @@ export struct HarmonyWebsitesPage {
   routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
   onBack: () => void = (): void => {};
   @State private websites: HarmonyWebsiteRecord[] = [];
+  /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
+  @State private splitLayout: boolean = false;
   @State private groups: HarmonyWebsiteOption[] = [];
   @State private loading: boolean = true;
   @State private pageError: string = '';
@@ -483,11 +485,18 @@ export struct HarmonyWebsitesPage {
       .hideBackButton(true)
       .menus(this.navigationMenus())
       .navDestination(this.destination)
-      .mode(NavigationMode.Stack)
+      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary'))
       .width('100%')
       .height('100%')
       .onAppear((): void => { this.begin(); })
+      .onAreaChange((_old: Area, current: Area): void => {
+        const measured = current.width;
+        if (typeof measured === 'number') {
+          this.splitLayout = measured >= 600;
+        }
+      })
   }
 }

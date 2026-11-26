@@ -14,6 +14,8 @@ export struct HarmonyDatabasesPage {
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
   onBack: () => void = (): void => {};
   @State private currentScope: string = 'mysql';
+  /** 窗口宽度达到 600vp 时列表与详情同屏显示。 */
+  @State private splitLayout: boolean = false;
   @State private targets: HarmonyDatabaseItem[] = [];
   @State private selectedTarget: number = -1;
   @State private entries: HarmonyDatabaseItem[] = [];
@@ -335,9 +337,16 @@ export struct HarmonyDatabasesPage {
       .titleMode(NavigationTitleMode.Mini)
       .hideBackButton(true)
       .navDestination(this.destination)
-      .mode(NavigationMode.Stack)
+      .mode(this.splitLayout ? NavigationMode.Split : NavigationMode.Stack)
+      .navBarWidth(240)
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
+      .onAreaChange((_old: Area, current: Area): void => {
+        const measured = current.width;
+        if (typeof measured === 'number') {
+          this.splitLayout = measured >= 600;
+        }
+      })
   }
 }
