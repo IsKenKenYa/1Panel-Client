@@ -1,5 +1,13 @@
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
 
+/**
+ * 应用图标向面板取回的 data URL 缓存。
+ *
+ * 面板 `/apps/icon/:key` 直接返回 PNG 字节，比访问上游 CDN 稳定，
+ * 同一 appKey 在列表、详情与目录页之间复用同一份结果。
+ */
+const appIconCache: Map<string, string> = new Map<string, string>();
+
 export class HarmonyInstalledApp {
   readonly installId: number;
   readonly name: string;
@@ -24,16 +32,46 @@ export struct HarmonyAppIcon {
   @Prop appKey: string = '';
   @Prop iconSize: number = 44;
   @State private imageSource: string = '';
+  @State private resolvedKey: string = '';
 
   aboutToAppear(): void {
+    this.resolve();
+  }
+
+  aboutToReuse(params: Record<string, Object>): void {
+    this.source = params.source as string ?? '';
+    this.appKey = params.appKey as string ?? '';
+    this.iconSize = params.iconSize as number ?? 44;
+    this.resolve();
+  }
+
+  private async resolve(): Promise<void> {
+    const key = this.appKey;
+    if (key.length === 0 || key === this.resolvedKey) {
+      return;
+    }
+    const cached = appIconCache.get(key);
+    if (cached !== undefined) {
+      this.resolvedKey = key;
+      this.imageSource = cached;
+      return;
+    }
+    const args = new Map<string, Object | null>();
+    args.set('appKey', key);
+    try {
+      const source = await HarmonyNativeBridge.instance.invoke<string | null>('getHarmonyAppIcon', args);
+      if (source !== null && source.length > 0) {
+        appIconCache.set(key, source);
+        this.resolvedKey = key;
+        this.imageSource = source;
+        return;
+      }
+    } catch (error) {
+      // 面板取图失败时退回上游地址。
+    }
     if (this.source.startsWith('https://') || this.source.startsWith('http://')) {
+      this.resolvedKey = key;
       this.imageSource = this.source;
-    } else if (this.appKey.length > 0) {
-      const args = new Map<string, Object | null>();
-      args.set('appKey', this.appKey);
-      HarmonyNativeBridge.instance.invoke<string | null>('getHarmonyAppIcon', args)
-        .then((source: string | null): void => { this.imageSource = source ?? ''; })
-        .catch((): void => {});
     }
   }
 
