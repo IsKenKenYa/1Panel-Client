@@ -4,6 +4,7 @@ import common from '@ohos.app.ability.common';
 import { OhosCompatibilityPluginRegistrant } from '../plugins/OhosCompatibilityPluginRegistrant';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { HarmonyNativeBridge } from '../native_ui/HarmonyNativeBridge';
+import { HarmonyContainerTerminalBridge } from '../native_ui/containers/HarmonyContainerTerminalBridge';
 
 export default class EntryAbility extends FlutterAbility {
   configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -17,5 +18,6 @@ export default class EntryAbility extends FlutterAbility {
     const uiAbilityContext = this.context as common.UIAbilityContext;
     OhosCompatibilityPluginRegistrant.registerWith(flutterEngine, uiAbilityContext)
     flutterEngine.getPlugins()?.add(HarmonyNativeBridge.instance);
+    flutterEngine.getPlugins()?.add(HarmonyContainerTerminalBridge.instance);
   }
 }
