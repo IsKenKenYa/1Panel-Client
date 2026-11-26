@@ -30,7 +30,6 @@ export struct HarmonyContainerAssetsPage {
   @Prop initialSection: string = 'images';
   /** 由外层 NavDestination 承载标题栏时，内层导航只负责内容与二级页，避免出现两层标题栏。 */
   @Prop embedded: boolean = false;
-  onBack: () => void = (): void => {};
   @State private items: HarmonyContainerAsset[] = [];
   @State private selected: HarmonyContainerAsset[] = [];
   @State private loading: boolean = false;

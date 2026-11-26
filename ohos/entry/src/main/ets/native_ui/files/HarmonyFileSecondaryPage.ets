@@ -5,7 +5,6 @@ import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 export struct HarmonyFileSecondaryPage {
   route: string = '';
   routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private rows: Array<Map<string, Object | null>> = [];
   @State private loading: boolean = true;
   @State private errorMessage: string = '';

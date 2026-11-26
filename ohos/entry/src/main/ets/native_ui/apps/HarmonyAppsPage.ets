@@ -15,7 +15,6 @@ import { HarmonyIgnoredAppsPage } from './HarmonyIgnoredAppsPage';
 export struct HarmonyAppsPage {
   @Prop initialRoute: string = '/apps';
   @Prop routeArguments: Map<string, Object | null> = new Map<string, Object | null>();
-  onBack: () => void = (): void => {};
   @State private installedApps: HarmonyInstalledApp[] = [];
   @State private catalogApps: HarmonyCatalogApp[] = [];
   @State private selectedTab: number = 0;

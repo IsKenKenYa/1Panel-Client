@@ -53,49 +53,49 @@ export struct HarmonyNativeDestination {
       HarmonyContainersPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route === '/orchestration' || this.route === '/compose-templates') {
       HarmonyOrchestrationPage({
-        initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab,
+        initialRoute: this.route, routeArguments: this.routeArguments,
       })
     } else if (this.route === '/apps' || this.route === '/app-store' ||
       this.route === '/app-detail' || this.route === '/installed-app-detail') {
-      HarmonyAppsPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyAppsPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/database')) {
-      HarmonyDatabasesPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyDatabasesPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route === '/website-ssl-center' || this.route === '/website-certificate-detail' ||
       this.route === '/website-site-ssl' || this.route === '/website/https') {
       HarmonyWebsiteSslCenterPage({
-        initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack,
+        initialRoute: this.route, routeArguments: this.routeArguments,
       })
     } else if (this.route.startsWith('/website') || this.route.startsWith('/openresty') ||
       this.route === '/security-gateway') {
-      HarmonyWebsitesPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyWebsitesPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/runtimes')) {
-      HarmonyRuntimesPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyRuntimesPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/ai') || this.route === '/vm' || this.route === '/alert') {
       HarmonyComputePage({
-        initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab,
+        initialRoute: this.route, routeArguments: this.routeArguments,
       })
     } else if (this.route.startsWith('/system-settings') || this.route === '/panel-ssl') {
-      HarmonyPanelPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyPanelPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/commands')) {
-      HarmonyCommandsPage({ routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab })
+      HarmonyCommandsPage({ routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/cronjobs')) {
       HarmonyCronjobsPage({
-        initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab,
+        initialRoute: this.route, routeArguments: this.routeArguments,
       })
     } else if (this.route.startsWith('/backups')) {
       HarmonyBackupsPage({
-        initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab,
+        initialRoute: this.route, routeArguments: this.routeArguments,
       })
     } else if (this.route === '/scripts') {
-      HarmonyScriptsPage({ onBack: this.onBack, showBack: !this.tab })
+      HarmonyScriptsPage()
     } else if (this.route === '/operations/groups') {
-      HarmonyGroupsPage({ routeArguments: this.routeArguments, onBack: this.onBack, showBack: !this.tab })
+      HarmonyGroupsPage({ routeArguments: this.routeArguments })
     } else if (this.route === '/operations' || this.route === '/logs' || this.route === '/logs/task/detail') {
-      HarmonyHostActivityPage({ initialRoute: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyHostActivityPage({ initialRoute: this.route, routeArguments: this.routeArguments })
     } else if (this.route.startsWith('/toolbox')) {
-      HarmonyHostToolboxPage({ initialRoute: this.route, onBack: this.onBack })
+      HarmonyHostToolboxPage({ initialRoute: this.route })
     } else if (this.route.startsWith('/firewall-v2')) {
-      HarmonyHostFirewallV2Page({ initialRoute: this.route, onBack: this.onBack })
+      HarmonyHostFirewallV2Page({ initialRoute: this.route })
     } else if (this.route === '/dashboard' || this.route === '/monitoring' || this.route === '/terminal' ||
       this.route === '/hosts/diagnostics' || this.route.startsWith('/hosts-assets') ||
       this.route.startsWith('/ssh') || this.route.startsWith('/processes') ||
@@ -142,7 +142,7 @@ export struct HarmonyNativeDestination {
         editable: this.route === '/files/editor', routeArguments: this.routeArguments, onBack: this.onBack,
       })
     } else if (this.route.startsWith('/files/')) {
-      HarmonyFileSecondaryPage({ route: this.route, routeArguments: this.routeArguments, onBack: this.onBack })
+      HarmonyFileSecondaryPage({ route: this.route, routeArguments: this.routeArguments })
     } else {
       NavDestination() {
         this.module()
