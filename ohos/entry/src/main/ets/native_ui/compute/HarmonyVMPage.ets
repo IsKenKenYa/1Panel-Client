@@ -3,6 +3,7 @@ import { pasteboard } from '@kit.BasicServicesKit';
 import { common } from '@kit.AbilityKit';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeInfo, computeText, computeWrite } from './HarmonyComputeControls';
 import { HarmonyVMFormPage } from './HarmonyVMFormPage';
@@ -43,6 +44,8 @@ export struct HarmonyVMPage {
   @State private selectedOrphans: Map<string, Object | null>[] = [];
   @State private resultText: string = '';
   private paths: NavPathStack = new NavPathStack();
+  private splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.rectangle_split_3x1'));
   private monitorTimer: number = -1;
   private monitorVisible: boolean = false;
   private monitorLoading: boolean = false;
@@ -773,6 +776,7 @@ export struct HarmonyVMPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))
       .onNavigationModeChange((mode: NavigationMode): void => {

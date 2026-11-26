@@ -2,6 +2,7 @@ import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { util } from '@kit.ArkTS';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeArguments, computeWrite } from './HarmonyComputeControls';
 
@@ -80,6 +81,8 @@ export struct HarmonyAIPage {
   @State private logText: string = '';
   private paths: NavPathStack = new NavPathStack();
   private bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
+  private splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.rays'));
   private tabs: string[] = ['aiTabModels', 'aiTabGpu', 'aiTabModelDownloader', 'aiTabDomain', 'aiTabAgents', 'aiTabMcp'];
   private agentTypes: string[] = ['openclaw', 'copaw', 'hermes-agent', 'deepseek-harness', 'octop'];
 
@@ -1080,6 +1083,7 @@ export struct HarmonyAIPage {
       .menus(this.rootMenus()).navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))
       .onNavigationModeChange((mode: NavigationMode): void => {
         this.updateSplitLayout(mode);

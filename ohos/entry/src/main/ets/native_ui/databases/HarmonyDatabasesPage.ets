@@ -2,6 +2,7 @@ import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyDatabaseItem, harmonyDatabaseText } from './HarmonyDatabaseModels';
 import { HarmonyDatabaseForm } from './HarmonyDatabaseForm';
 import { HarmonyDatabaseDetail, HarmonyDatabaseSlowLog } from './HarmonyDatabaseDetail';
@@ -30,6 +31,8 @@ export struct HarmonyDatabasesPage {
   private readonly bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
   private readonly scopes: string[] = ['mysql', 'postgresql', 'mongodb', 'redis', 'remote'];
   private readonly paths: NavPathStack = new NavPathStack();
+  private readonly splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.externaldrive'));
 
   aboutToAppear(): void {
     if (this.initialRoute === '/database-remote' || this.initialRoute === '/databases/remote-config') {
@@ -336,6 +339,7 @@ export struct HarmonyDatabasesPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .width('100%').height('100%')
       .backgroundColor($r('sys.color.background_secondary'))

@@ -1,6 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
 import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyWebsiteForm } from './HarmonyWebsiteForm';
 import { HarmonyWebsiteDomains } from './HarmonyWebsiteDomains';
 import { HarmonyWebsiteConfigPage } from './config/HarmonyWebsiteConfigPage';
@@ -38,6 +39,8 @@ export struct HarmonyWebsitesPage {
   private started: boolean = false;
   private paths: NavPathStack = new NavPathStack();
   private bridge: HarmonyNativeBridge = HarmonyNativeBridge.instance;
+  private splitPlaceholder: HarmonySplitPlaceholderContent =
+    new HarmonySplitPlaceholderContent($r('sys.symbol.worldclock'));
   private types: string[] = ['', 'runtime', 'proxy', 'subsite', 'static'];
   private sections: HarmonyWebsiteSection[] = [
     { section: 'edit', titleKey: 'websitesLifecycleEditTitle' },
@@ -508,6 +511,7 @@ export struct HarmonyWebsitesPage {
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
       .navBarWidth(240)
+      .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .backgroundColor($r('sys.color.background_secondary'))
       .width('100%')
