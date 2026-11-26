@@ -1,6 +1,6 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge, sheetMaterial } from '../HarmonyNativeBridge';
-import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 
 @Component
 export struct HarmonyStoragePage {
@@ -178,7 +178,7 @@ export struct HarmonyStoragePage {
                 }.padding(16).width('100%').constraintSize({ minHeight: 64 })
               }.backgroundColor($r('sys.color.comp_background_primary'))
                 .onClick((): void => { this.folderDraft = this.folder; this.folderSheet = true; })
-                .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(event, (): void => {
+                .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(event, (): void => {
                   this.folderDraft = this.folder;
                   this.folderSheet = true;
                 }))

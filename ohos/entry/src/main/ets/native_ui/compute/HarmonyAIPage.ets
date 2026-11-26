@@ -1,6 +1,7 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { util } from '@kit.ArkTS';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeArguments, computeWrite } from './HarmonyComputeControls';
 import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
 
@@ -443,6 +444,12 @@ export struct HarmonyAIPage {
     return actions;
   }
 
+  private activateRow(record: Map<string, Object | null>): void {
+    this.selected = record;
+    if (this.selectedTab === 4 && this.agentSection === 0) this.selectAgent(record);
+    else if (this.selectedTab === 5) this.openAction(record, 'aiMcpConfigPreviewTitle');
+  }
+
   @Builder
   private row(title: string, subtitle: string, actions: string[], record: Map<string, Object | null>) {
     Row({ space: 10 }) {
@@ -455,11 +462,15 @@ export struct HarmonyAIPage {
         .bindMenu(this.actionMenu(record, actions))
     }.padding({ left: 16, right: 8, top: 8, bottom: 8 }).constraintSize({ minHeight: 68 }).width('100%')
       .backgroundColor($r('sys.color.ohos_id_color_list_card_bg')).borderRadius(16)
-      .onClick((): void => {
-        this.selected = record;
-        if (this.selectedTab === 4 && this.agentSection === 0) this.selectAgent(record);
-        else if (this.selectedTab === 5) this.openAction(record, 'aiMcpConfigPreviewTitle');
-      })
+      .onClick((): void => { this.activateRow(record); })
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
+        event,
+        (): void => { this.activateRow(record); },
+      ))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
   }
 
   @Builder

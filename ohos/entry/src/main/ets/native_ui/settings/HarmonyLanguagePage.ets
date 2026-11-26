@@ -1,6 +1,6 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 
 @Component
 export struct HarmonyLanguagePage {
@@ -66,7 +66,7 @@ export struct HarmonyLanguagePage {
               }.constraintSize({ minHeight: 56 }).width('100%').padding(16)
             }.backgroundColor($r('sys.color.comp_background_primary'))
               .onClick((): void => { if (!this.isSaving) this.save(language); })
-              .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
                 event,
                 (): void => { if (!this.isSaving) this.save(language); },
               ))

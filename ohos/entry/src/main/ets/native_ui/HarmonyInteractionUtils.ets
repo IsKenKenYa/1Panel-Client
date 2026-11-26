@@ -1,6 +1,6 @@
 import { KeyCode } from '@kit.InputKit';
 
-export function handleSettingsActivationKey(event: KeyEvent | undefined, action: () => void): boolean {
+export function handleActivationKey(event: KeyEvent | undefined, action: () => void): boolean {
   if (event === undefined || event.type !== KeyType.Down) {
     return false;
   }

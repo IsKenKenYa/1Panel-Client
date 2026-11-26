@@ -1,6 +1,6 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 
 @Component
 export struct HarmonySecurityVerificationPage {
@@ -74,7 +74,7 @@ export struct HarmonySecurityVerificationPage {
               .enabled(!this.isOpening)
               .accessibilityText(this.text('settingsPanelAccountSecurity'))
               .onClick((): void => { this.openEntrance(); })
-              .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+              .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
                 event,
                 (): void => { this.openEntrance(); },
               ))

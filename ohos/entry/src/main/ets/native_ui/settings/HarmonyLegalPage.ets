@@ -1,6 +1,6 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 
 @Component
 export struct HarmonyLegalPage {
@@ -133,7 +133,7 @@ export struct HarmonyLegalPage {
           }.backgroundColor($r('sys.color.comp_background_primary'))
             .id(`harmony.legal.${document.get('id') as string}`)
             .onClick((): void => { this.openDocument(document.get('id') as string); })
-            .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+            .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
               event,
               (): void => { this.openDocument(document.get('id') as string); },
             ))
@@ -150,7 +150,7 @@ export struct HarmonyLegalPage {
           }.constraintSize({ minHeight: 56 }).width('100%').padding(16)
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id('harmony.legal.packages').onClick((): void => { this.loadPackages(); })
-          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+          .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
             event,
             (): void => { this.loadPackages(); },
           ))
@@ -172,7 +172,7 @@ export struct HarmonyLegalPage {
           }.constraintSize({ minHeight: 64 }).width('100%').padding(16)
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id('harmony.legal.sdk').onClick((): void => { this.openSdkDisclosure(); })
-          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+          .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
             event,
             (): void => { this.openSdkDisclosure(); },
           ))
@@ -203,7 +203,7 @@ export struct HarmonyLegalPage {
         }.backgroundColor($r('sys.color.comp_background_primary'))
           .id(`harmony.legal.package.${packageName}`)
           .onClick((): void => { this.loadLicense(packageName); })
-          .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+          .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
             event,
             (): void => { this.loadLicense(packageName); },
           ))

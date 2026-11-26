@@ -1,6 +1,6 @@
 import { LengthMetrics } from '@kit.ArkUI';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { handleSettingsActivationKey } from './HarmonySettingsInteractions';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 
 interface HarmonyAboutField {
   labelKey: string;
@@ -123,7 +123,7 @@ export struct HarmonyAboutPage {
       .id(`harmony.about.link.${linkId}`)
       .accessibilityText(`${this.text(titleKey)} ${subtitle}`)
       .onClick((): void => { this.openLink(linkId); })
-      .onKeyEvent((event?: KeyEvent): boolean => handleSettingsActivationKey(
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(
         event,
         (): void => { this.openLink(linkId); },
       ))

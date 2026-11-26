@@ -1,7 +1,8 @@
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { pasteboard } from '@kit.BasicServicesKit';
 import { common } from '@kit.AbilityKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
+import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeInfo, computeText, computeWrite } from './HarmonyComputeControls';
 import { HarmonyVMFormPage } from './HarmonyVMFormPage';
 import { HarmonyAutomationTitle } from '../automation/HarmonyAutomationUI';
@@ -430,6 +431,11 @@ export struct HarmonyVMPage {
       SymbolGlyph($r('sys.symbol.chevron_right')).fontSize(16).fontColor([$r('sys.color.font_secondary')])
     }.padding(16).constraintSize({ minHeight: 64 }).width('100%')
       .backgroundColor($r('sys.color.ohos_id_color_list_card_bg')).borderRadius(16).onClick(action)
+      .onKeyEvent((event?: KeyEvent): boolean => handleActivationKey(event, action))
+      .focusable(true)
+      .focusOnTouch(true)
+      .focusBox({ margin: LengthMetrics.vp(2) })
+      .hoverEffect(HoverEffect.Highlight)
   }
 
   @Builder
