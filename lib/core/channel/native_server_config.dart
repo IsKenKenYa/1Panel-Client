@@ -1,3 +1,6 @@
+import '../../features/server/server_connection_service.dart';
+import '../../features/shell/controllers/pinned_modules_controller.dart';
+import '../../features/shell/models/client_module.dart';
 import '../config/api_config.dart';
 
 /// 原生界面使用配置版本检测编辑冲突。
@@ -46,6 +49,13 @@ ApiConfig readNativeServerConfig(
       (existing?.additionalCredentials.isNotEmpty ?? false)) {
     throw ArgumentError('Provide credentials for the new address');
   }
+  // 同地址留空表示沿用旧凭据；旧凭据不存在时没有可沿用的内容，必须拒绝，
+  // 否则保存会写入空密钥并报告成功。
+  if (sameAddress && (key == null || key.isEmpty) &&
+      existing.apiKey.isEmpty &&
+      (type == ApiConfig.onePanelType)) {
+    throw ArgumentError('Enter an API key for this server');
+  }
   final tokenValidity = int.tryParse('${fields['tokenValidity'] ?? ''}');
   if (tokenValidity != null && (tokenValidity < 0 || tokenValidity > 9999)) {
     throw ArgumentError.value(tokenValidity, 'tokenValidity');
@@ -69,4 +79,62 @@ ApiConfig readNativeServerConfig(
     isDefault: existing?.isDefault ?? false,
     lastUsed: existing?.lastUsed,
   );
+}
+
+Future<ApiConfig> readNativeServerForEdit(String id) async {
+  try {
+    return await ApiConfigManager.getConfig(id);
+  } on MissingCredentialException {
+    return (await ApiConfigManager.getServerMetadata())
+        .firstWhere((config) => config.id == id);
+  }
+}
+
+Future<Map<String, Object?>> testHarmonyServerConnection(
+  Map<Object?, Object?> fields,
+) async {
+  final id = fields['id'] as String?;
+  final existing = id == null ? null : await readNativeServerForEdit(id);
+  final config = readNativeServerConfig(
+    fields,
+    id: id ?? '',
+    existing: existing,
+  );
+  final result = await ServerConnectionService().testConfig(config);
+  return {
+    'success': result.success,
+    'error': result.errorMessage,
+    'operatingSystem': result.operatingSystem,
+    'responseTimeMs': result.responseTime?.inMilliseconds,
+  };
+}
+
+Future<List<String>> getHarmonyPinnedModules(
+  PinnedModulesController controller,
+) async {
+  if (!controller.isLoaded) await controller.load();
+  return controller.pins.map((module) => module.storageId).toList();
+}
+
+Future<List<String>> setHarmonyPinnedModules(
+  PinnedModulesController controller,
+  Map<Object?, Object?>? fields,
+) async {
+  if (!controller.isLoaded) await controller.load();
+  if (fields == null) {
+    await controller.reset();
+  } else {
+    final primary = clientModuleFromId(fields['primary'] as String);
+    final secondary = clientModuleFromId(fields['secondary'] as String);
+    if (primary == null ||
+        !primary.pinnable ||
+        secondary == null ||
+        !secondary.pinnable ||
+        primary == secondary) {
+      throw ArgumentError('Two different pinnable modules are required');
+    }
+    await controller.setPin(0, primary);
+    await controller.setPin(1, secondary);
+  }
+  return controller.pins.map((module) => module.storageId).toList();
 }

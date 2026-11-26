@@ -13,7 +13,11 @@ class NativeChannelBusinessReadHandlers {
     // `/apps/installed/list` 只返回 {id, key, name}，没有状态与版本；
     // 列表页需要完整信息，走 `/apps/installed/search`。
     final page = await service.searchInstalledApps(
-      AppInstalledSearchRequest(page: 1, pageSize: 100),
+      AppInstalledSearchRequest(
+        page: (arguments?['page'] as num?)?.toInt() ?? 1,
+        pageSize: (arguments?['pageSize'] as num?)?.toInt() ?? 100,
+        name: arguments?['search'] as String?,
+      ),
     );
     return page.items
         .map((a) => {
@@ -22,6 +26,7 @@ class NativeChannelBusinessReadHandlers {
               'version': a.version ?? '',
               'icon': a.icon ?? '',
               'appId': a.appId,
+              'appKey': a.appKey,
               'installId': a.id,
             })
         .toList();
@@ -39,17 +44,21 @@ class NativeChannelBusinessReadHandlers {
     var icon = info.icon ?? '';
     var catalogName = info.appName ?? '';
     final appKey = info.appKey ?? '';
+    var appId = info.appId;
     if (appKey.isNotEmpty && (icon.isEmpty || catalogName.isEmpty)) {
       try {
         final catalog = await AppService().getAppByKey(appKey);
         if (icon.isEmpty) icon = catalog.icon ?? '';
         if (catalogName.isEmpty) catalogName = catalog.name ?? '';
+        appId ??= catalog.id;
       } catch (e) {
         appLogger.w('getAppInstallInfo: catalog lookup for $appKey failed: $e');
       }
     }
     return {
       'id': info.id,
+      'appId': appId,
+      'canUpdate': info.canUpdate,
       'name': info.name,
       'appName': catalogName,
       'appKey': appKey,
@@ -62,6 +71,7 @@ class NativeChannelBusinessReadHandlers {
       'appType': info.appType ?? '',
       'createdAt': info.createdAt ?? '',
       'icon': icon,
+      'webUI': info.webUI,
     };
   }
 
@@ -78,6 +88,8 @@ class NativeChannelBusinessReadHandlers {
       'memoryLimit': config.memoryLimit,
       'memoryUnit': config.memoryUnit,
       'webUI': config.webUI,
+      'dockerCompose': config.dockerCompose,
+      'rawCompose': config.rawCompose,
       'type': config.type,
       'specifyIP': config.specifyIP ?? '',
       'restartPolicy': config.restartPolicy ?? '',
@@ -90,10 +102,13 @@ class NativeChannelBusinessReadHandlers {
                 'labelEn': param.labelEn,
                 'type': param.type,
                 'value': param.value?.toString() ?? '',
+                'valueRaw': param.value,
                 'showValue': param.showValue ?? '',
                 'edit': param.edit,
                 'required': param.required ?? false,
                 'multiple': param.multiple ?? false,
+                'values': param.values,
+                'rule': param.rule,
               })
           .toList(),
     };
@@ -131,9 +146,10 @@ class NativeChannelBusinessReadHandlers {
     final service = AppService();
     final search = (arguments['search'] as String?)?.trim() ?? '';
     final response = await service.searchApps(AppSearchRequest(
-      page: 1,
-      pageSize: 100,
+      page: (arguments?['page'] as num?)?.toInt() ?? 1,
+      pageSize: (arguments?['pageSize'] as num?)?.toInt() ?? 100,
       name: search.isEmpty ? null : search,
+      tags: (arguments?['tags'] as List?)?.cast<String>(),
       showCurrentArch: true,
     ));
     return response.items
@@ -176,6 +192,8 @@ class NativeChannelBusinessReadHandlers {
     return {
       'appDetailId': detail.id,
       'fields': fields.map(_formFieldPayload).toList(),
+      'hostMode': detail.hostMode,
+      'dockerCompose': detail.dockerCompose,
     };
   }
 
@@ -188,6 +206,14 @@ class NativeChannelBusinessReadHandlers {
       'type': field.type,
       'required': field.required,
       'defaultValue': field.defaultValue?.toString(),
+      'defaultValueRaw': field.defaultValue,
+      'multiple': field.multiple,
+      'allowCreate': field.allowCreate,
+      'disabled': field.disabled,
+      'random': field.random,
+      'rule': field.rule,
+      'description': field.description,
+      'params': field.params,
       'values': (field.values ?? const <dynamic>[])
           .map((value) {
             if (value is Map) {
@@ -204,6 +230,10 @@ class NativeChannelBusinessReadHandlers {
           : {
               'envKey': field.child!.envKey,
               'type': field.child!.type,
+              'required': field.child!.required,
+              'labelZh': field.child!.labelZh,
+              'labelEn': field.child!.labelEn,
+              'services': field.child!.services,
             },
     };
   }

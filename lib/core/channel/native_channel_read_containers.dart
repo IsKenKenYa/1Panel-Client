@@ -56,17 +56,20 @@ class NativeChannelContainerReadHandlers {
     }
     final requestID = arguments?['requestID'] as int?;
     final session = ++_containerLogSession;
+    // 先接管归属再等待旧订阅取消：取消期间旧请求的停止到达时，归属已是
+    // 新请求，停止会因编号不匹配而跳过，不会把新请求判成 superseded。
+    _containerLogRequestID = requestID;
     final previous = _containerLogSubscription;
     _containerLogSubscription = null;
     await previous?.cancel();
-    if (session != _containerLogSession) {
+    if (session != _containerLogSession ||
+        _containerLogRequestID != requestID) {
       return <String, dynamic>{
         'success': false,
         'error': 'superseded',
         'session': _containerLogSession,
       };
     }
-    _containerLogRequestID = requestID;
     final follow = arguments?['follow'] as bool? ?? true;
     _containerLogSubscription = ContainerService()
         .streamContainerLogs(

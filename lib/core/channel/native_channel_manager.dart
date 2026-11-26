@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 import 'native_channel_database_deep_handlers.dart';
+import 'native_channel_harmony_handlers.dart';
 import 'native_channel_port.dart';
 import 'native_channel_read_handlers.dart';
 import 'native_channel_write_handlers.dart';
@@ -314,6 +315,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getAIBindDomain(arguments);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
+      case 'useTestStorageNamespace':
+        return NativeChannelWriteHandlers.useTestStorageNamespace(arguments);
       case 'seedDebugConfig':
         return NativeChannelWriteHandlers.seedDebugConfig(arguments);
       case 'addServer':
@@ -748,7 +751,7 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelDatabaseDeepHandlers.revokeDatabaseGrant(arguments);
 
       default:
-        throw MissingPluginException();
+        return NativeChannelHarmonyHandlers.dispatch(method, arguments);
     }
   }
 }

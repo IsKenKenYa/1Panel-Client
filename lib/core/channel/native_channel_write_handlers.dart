@@ -125,6 +125,31 @@ class NativeChannelWriteHandlers {
 
   // ── 服务器 ────────────────────────────────────────────────────────────────
 
+  /// 切换配置存储命名空间（仅调试构建）。
+  ///
+  /// 原生测试用它把配置读写切到独立命名空间，之后所有服务器与凭据条目都
+  /// 与用户真实配置互不可见；传入空字符串恢复真实命名空间。
+  /// 参数：`{namespace: String, reset?: bool}`；`reset` 为真时清空该命名空间
+  /// 下的服务器目录，只影响该命名空间内的条目。
+  static Future<Map<String, dynamic>> useTestStorageNamespace(
+    dynamic arguments,
+  ) async {
+    if (!kDebugMode) {
+      return _err(StateError('useTestStorageNamespace 仅调试构建可用'));
+    }
+    try {
+      final namespace = (arguments['namespace'] as String? ?? '').trim();
+      ApiConfigManager.useStorageNamespace(namespace);
+      if (arguments['reset'] == true) {
+        await ApiConfigManager.clearServerDirectory();
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('useTestStorageNamespace failed: $e');
+      return _err(e);
+    }
+  }
+
   /// 调试走查种子：原生壳把 `ONEPANEL_SEED_*` 环境变量经通道转发到这里，
   /// 通过正式配置存储写入服务器与 API Key。参数：`{url, apiKey, name?}`。
   static Future<Map<String, dynamic>> seedDebugConfig(dynamic arguments) async {
@@ -188,7 +213,7 @@ class NativeChannelWriteHandlers {
   static Future<Map<String, dynamic>> updateServer(dynamic arguments) async {
     try {
       final id = arguments['id'] as String;
-      final existing = await ApiConfigManager.getConfig(id);
+      final existing = await readNativeServerForEdit(id);
       final updated = readNativeServerConfig(
         arguments as Map,
         id: id,
@@ -3562,6 +3587,9 @@ class NativeChannelWriteHandlers {
         name: name,
         appVersion: appVersion,
         webUIPort: webUIPort,
+        accountId: arguments['accountId'] as int?,
+        model: arguments['model'] as String?,
+        token: arguments['token'] as String?,
         // openclaw 内嵌 Web UI 需限制 CORS 来源（同 MDUI3 创建语义）。
         allowedOrigins: agentType == 'openclaw'
             ? <String>['http://127.0.0.1:$webUIPort']

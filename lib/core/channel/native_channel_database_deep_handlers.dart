@@ -420,7 +420,7 @@ class NativeChannelDatabaseDeepHandlers {
   }
 
   /// 修改远程访问范围。参数：
-  /// `{id: int, from: String, type: String, database: String,
+  /// `{id?: int, from: String, type: String, database: String,
   ///   value: '%'|'localhost'}`。
   /// POST /databases/change/access。
   static Future<Map<String, dynamic>> updateDatabaseAccess(
@@ -431,9 +431,6 @@ class NativeChannelDatabaseDeepHandlers {
       final type = _str(arguments?['type']);
       final database = _str(arguments?['database']);
       final value = _str(arguments?['value']);
-      if (id == null) {
-        return {'success': false, 'error': 'id is required'};
-      }
       if (from.isEmpty || type.isEmpty || database.isEmpty || value.isEmpty) {
         return {
           'success': false,
@@ -441,7 +438,7 @@ class NativeChannelDatabaseDeepHandlers {
         };
       }
       await (await _databaseApi()).updateMysqlAccess(<String, dynamic>{
-        'id': id,
+        if (id != null) 'id': id,
         'from': from,
         'type': type,
         'database': database,
