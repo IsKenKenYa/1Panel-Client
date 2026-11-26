@@ -1,7 +1,7 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { Available } from '@kit.BasicServicesKit';
 import { HarmonyNativeBridge } from '../HarmonyNativeBridge';
-import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { moduleTitleOptions, MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { HarmonyDatabaseItem, harmonyDatabaseText } from './HarmonyDatabaseModels';
 import { HarmonyDatabaseForm } from './HarmonyDatabaseForm';
@@ -337,7 +337,9 @@ export struct HarmonyDatabasesPage {
       ])
       .navDestination(this.destination)
       .mode(NavigationMode.Auto)
-      .navBarWidth(240)
+      .navBarWidth(MODULE_SPLIT_NAV_BAR_WIDTH)
+      .navBarWidthRange(MODULE_SPLIT_NAV_BAR_RANGE)
+      .minContentWidth(MODULE_SPLIT_MIN_CONTENT_WIDTH)
       .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .expandSafeArea([SafeAreaType.KEYBOARD], [SafeAreaEdge.BOTTOM])
       .width('100%').height('100%')

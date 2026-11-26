@@ -1,7 +1,7 @@
 import { LengthMetrics, SymbolGlyphModifier } from '@kit.ArkUI';
 import { util } from '@kit.ArkTS';
 import { HarmonyNativeBridge, menuMaterial } from '../HarmonyNativeBridge';
-import { moduleTitleOptions } from '../HarmonyModuleTitle';
+import { moduleTitleOptions, MODULE_SPLIT_MIN_CONTENT_WIDTH, MODULE_SPLIT_NAV_BAR_RANGE, MODULE_SPLIT_NAV_BAR_WIDTH } from '../HarmonyModuleTitle';
 import { HarmonySplitPlaceholderContent } from '../HarmonySplitPlaceholder';
 import { handleActivationKey } from '../HarmonyInteractionUtils';
 import { HarmonyComputeField, HarmonyComputeInfo, HarmonyComputeToggle, computeArguments, computeWrite } from './HarmonyComputeControls';
@@ -1080,7 +1080,9 @@ export struct HarmonyAIPage {
       .titleMode(NavigationTitleMode.Mini).hideBackButton(true)
       .menus(this.rootMenus()).navDestination(this.destination)
       .mode(NavigationMode.Auto)
-      .navBarWidth(240)
+      .navBarWidth(MODULE_SPLIT_NAV_BAR_WIDTH)
+      .navBarWidthRange(MODULE_SPLIT_NAV_BAR_RANGE)
+      .minContentWidth(MODULE_SPLIT_MIN_CONTENT_WIDTH)
       .splitPlaceholder(this.splitPlaceholder.content(this.getUIContext()))
       .width('100%').height('100%').backgroundColor($r('sys.color.background_secondary'))
       .onNavigationModeChange((mode: NavigationMode): void => {
