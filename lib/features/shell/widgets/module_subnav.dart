@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class ModuleSubnavItem {
   const ModuleSubnavItem({
@@ -99,10 +100,7 @@ class ModuleSubnav extends StatelessWidget {
     );
   }
 
-  Widget _buildOverflow(
-    BuildContext context,
-    List<ModuleSubnavItem> overflow,
-  ) {
+  Widget _buildOverflow(BuildContext context, List<ModuleSubnavItem> overflow) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final selected = overflow.any((item) => item.id == selectedId);
@@ -146,29 +144,28 @@ class ModuleSubnav extends StatelessWidget {
     BuildContext context,
     List<ModuleSubnavItem> overflow,
   ) async {
-    final selection = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              for (final item in overflow)
-                ListTile(
-                  leading: Icon(item.icon),
-                  title: Text(item.label),
-                  selected: item.id == selectedId,
-                  trailing:
-                      item.id == selectedId ? const Icon(Icons.check) : null,
-                  onTap: () => Navigator.pop(sheetContext, item.id),
-                ),
-            ],
-          ),
-        );
-      },
+    final selection = await showAppFormSheet<String>(
+      context,
+      title: context.l10n.commonMore,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        children: [
+          for (final item in overflow)
+            ListTile(
+              minTileHeight: kMinInteractiveDimension,
+              visualDensity: VisualDensity.standard,
+              leading: Icon(item.icon),
+              title: Text(item.label),
+              selected: item.id == selectedId,
+              trailing: item.id == selectedId ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.pop(sheetContext, item.id),
+            ),
+        ],
+      ),
     );
-    if (context.mounted && selection != null) onSelected(selection);
+    if (context.mounted && selection != null) {
+      onSelected(selection);
+    }
   }
 
   Future<void> _showCustomize(
@@ -179,84 +176,79 @@ class ModuleSubnav extends StatelessWidget {
     final l10n = context.l10n;
     final mutable = orderedItems.map((item) => item.id).toList(growable: true);
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
+    await showAppFormSheet<void>(
+      context,
+      title: l10n.moduleSubnavCustomize,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.moduleSubnavCustomize,
-                      style: Theme.of(context).textTheme.titleLarge,
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.moduleSubnavHint(visibleCount),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 12),
+                  Flexible(
+                    child: ReorderableListView.builder(
+                      shrinkWrap: true,
+                      itemCount: mutable.length,
+                      onReorderItem: (oldIndex, newIndex) {
+                        setModalState(() {
+                          final item = mutable.removeAt(oldIndex);
+                          mutable.insert(newIndex, item);
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        final item = items.firstWhere(
+                          (entry) => entry.id == mutable[index],
+                        );
+                        return ListTile(
+                          key: ValueKey(item.id),
+                          minTileHeight: kMinInteractiveDimension,
+                          visualDensity: VisualDensity.standard,
+                          leading: Icon(item.icon),
+                          title: Text(item.label),
+                          subtitle: Text(
+                            index < visibleCount
+                                ? l10n.moduleSubnavVisible
+                                : l10n.moduleSubnavHidden,
+                          ),
+                          trailing: const Icon(Icons.drag_handle),
+                        );
+                      },
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.moduleSubnavHint(visibleCount),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 12),
-                    Flexible(
-                      child: ReorderableListView.builder(
-                        shrinkWrap: true,
-                        itemCount: mutable.length,
-                        onReorderItem: (oldIndex, newIndex) {
-                          setModalState(() {
-                            final item = mutable.removeAt(oldIndex);
-                            mutable.insert(newIndex, item);
-                          });
+                  ),
+                  const SizedBox(height: 12),
+                  OverflowBar(
+                    alignment: MainAxisAlignment.end,
+                    spacing: AppDesignTokens.spacingSm,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          await controller.reset();
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
                         },
-                        itemBuilder: (context, index) {
-                          final item = items.firstWhere(
-                              (entry) => entry.id == mutable[index]);
-                          return ListTile(
-                            key: ValueKey(item.id),
-                            leading: Icon(item.icon),
-                            title: Text(item.label),
-                            subtitle: Text(
-                              index < visibleCount
-                                  ? l10n.moduleSubnavVisible
-                                  : l10n.moduleSubnavHidden,
-                            ),
-                            trailing: const Icon(Icons.drag_handle),
-                          );
-                        },
+                        child: Text(l10n.commonReset),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    OverflowBar(
-                      alignment: MainAxisAlignment.end,
-                      spacing: AppDesignTokens.spacingSm,
-                      children: [
-                        TextButton(
-                          onPressed: () async {
-                            await controller.reset();
-                            if (context.mounted) {
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: Text(l10n.commonReset),
-                        ),
-                        FilledButton(
-                          onPressed: () async {
-                            await controller.reorder(mutable);
-                            if (context.mounted) {
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: Text(l10n.commonSave),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      FilledButton(
+                        onPressed: () async {
+                          await controller.reorder(mutable);
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Text(l10n.commonSave),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },
