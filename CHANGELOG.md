@@ -45,12 +45,12 @@ This Android release delivers multi-panel adapter support, runtime UI render mod
 
 #### Android Build Modernization and CI
 - Consolidated Android build configuration onto Kotlin DSL (`settings.gradle.kts`, `build.gradle.kts`, `app/build.gradle.kts`) and removed duplicate Groovy build scripts and redundant `MainActivity`.
-- Upgraded Gradle Wrapper to `9.3.1-bin`, Android Gradle Plugin to `9.0.1`, and Kotlin Gradle Plugin to `2.3.20`, and aligned library subprojects to `compileSdk` 36.
+- Upgraded Gradle Wrapper to `9.5.0-bin`, Android Gradle Plugin to `9.1.1`, and Kotlin Gradle Plugin to `2.3.20`, and aligned library subprojects to `compileSdk` 36.
 - Enabled Gradle parallel builds, local build caching, VFS watching, and tuned daemon memory settings; fixed Gradle wrapper cache key path in `flutter-ci.yml`.
 
 #### Android 构建现代化与 CI（中文）
 - 将 Android 构建脚本统一为 Kotlin DSL（`settings.gradle.kts`、`build.gradle.kts`、`app/build.gradle.kts`），清理遗留 Groovy 脚本与重复 `MainActivity`。
-- 升级 Gradle Wrapper 至 `9.3.1-bin`、Android Gradle Plugin 至 `9.0.1`、Kotlin Gradle Plugin 至 `2.3.20`，并将依赖库子工程的 `compileSdk` 统一提升至 `36`。
+- 升级 Gradle Wrapper 至 `9.5.0-bin`、Android Gradle Plugin 至 `9.1.1`、Kotlin Gradle Plugin 至 `2.3.20`，并将依赖库子工程的 `compileSdk` 统一提升至 `36`。
 - 在 `gradle.properties` 中开启并行构建、本地构建缓存、虚拟文件系统监听并调优守护进程内存配置；修复 `flutter-ci.yml` 中 `gradle-wrapper.properties` 的缓存路径。
 
 ## [0.6.0] - 2026-05-02
