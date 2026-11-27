@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -11,8 +11,6 @@ import 'package:onepanel_client/features/databases/services/database_user_servic
 import 'package:onepanel_client/features/databases/widgets/database_page_feedback_widget.dart';
 import 'package:onepanel_client/features/databases/widgets/database_summary_card_widget.dart';
 import 'package:onepanel_client/features/databases/widgets/database_user_cards_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 class DatabaseUsersPage extends StatelessWidget {
   const DatabaseUsersPage({
@@ -162,33 +160,14 @@ class _DatabaseUsersPageViewState extends State<_DatabaseUsersPageView> {
     DatabaseUsersProvider provider,
     Map<String, dynamic> user,
   ) async {
-    final controller = TextEditingController();
-    final password = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.databaseUserChangePassword),
-        content: TextField(
-          controller: controller,
-          obscureText: true,
-          autofocus: true,
-          decoration: InputDecoration(
-            labelText: context.l10n.databaseUserNewPasswordLabel,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () =>
-                Navigator.of(dialogContext).pop(controller.text),
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final password = await showAppTextInputDialog(
+      context,
+      title: context.l10n.databaseUserChangePassword,
+      labelText: context.l10n.databaseUserNewPasswordLabel,
+      obscureText: true,
+      trim: false,
+      allowEmpty: true,
     );
-    controller.dispose();
     if (password == null || password.isEmpty) return;
     await provider.changeMysqlUserPassword(user: user, password: password);
   }

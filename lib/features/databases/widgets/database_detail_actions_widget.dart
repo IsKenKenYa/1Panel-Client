@@ -6,9 +6,10 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/databases_provider.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class DatabaseDetailActionsWidget extends StatelessWidget {
   const DatabaseDetailActionsWidget({super.key});
 
@@ -87,28 +88,18 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
     required String initialValue,
     required Future<bool> Function(String) onSubmit,
   }) async {
-    final controller = TextEditingController(text: initialValue);
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: TextField(controller: controller),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await onSubmit(controller.text.trim());
-              if (!context.mounted) return;
-              _showSubmitResult(context, ok);
-              if (ok) Navigator.of(context).pop();
-            },
-            child: Text(context.l10n.commonSave),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: title,
+      initialValue: initialValue,
+      autofocus: false,
+      allowEmpty: true,
+      confirmLabel: context.l10n.commonSave,
+      onSubmit: (value) async {
+        final ok = await onSubmit(value);
+        if (context.mounted) _showSubmitResult(context, ok);
+        return ok;
+      },
     );
   }
 
@@ -116,31 +107,17 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
     BuildContext context, {
     required Future<bool> Function(String) onSubmit,
   }) async {
-    final controller = TextEditingController();
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.databaseChangePasswordAction),
-        content: TextField(
-          controller: controller,
-          obscureText: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await onSubmit(controller.text.trim());
-              if (!context.mounted) return;
-              _showSubmitResult(context, ok);
-              if (ok) Navigator.of(context).pop();
-            },
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: context.l10n.databaseChangePasswordAction,
+      obscureText: true,
+      autofocus: false,
+      allowEmpty: true,
+      onSubmit: (value) async {
+        final ok = await onSubmit(value);
+        if (context.mounted) _showSubmitResult(context, ok);
+        return ok;
+      },
     );
   }
 
@@ -151,45 +128,78 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
       required String password,
     }) onSubmit,
   }) async {
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.databaseBindUserAction),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: usernameController,
-              decoration: InputDecoration(
-                  labelText: context.l10n.databaseUsernameLabel),
-            ),
-            const SizedBox(height: AppDesignTokens.spacingSm),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                  labelText: context.l10n.databasePasswordLabel),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.commonCancel),
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (context) => _BindUserForm(
+        onSubmit: ({required username, required password}) async {
+          final ok = await onSubmit(username: username, password: password);
+          if (context.mounted) _showSubmitResult(context, ok);
+          return ok;
+        },
+      ),
+    );
+  }
+}
+
+class _BindUserForm extends StatefulWidget {
+  const _BindUserForm({required this.onSubmit});
+
+  final Future<bool> Function({
+    required String username,
+    required String password,
+  }) onSubmit;
+
+  @override
+  State<_BindUserForm> createState() => _BindUserFormState();
+}
+
+class _BindUserFormState extends State<_BindUserForm> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final ok = await widget.onSubmit(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (ok && mounted) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.databaseBindUserAction,
+      isSaving: _saving,
+      onConfirm: _submit,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _usernameController,
+            enabled: !_saving,
+            decoration: InputDecoration(labelText: l10n.databaseUsernameLabel),
           ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await onSubmit(
-                username: usernameController.text.trim(),
-                password: passwordController.text.trim(),
-              );
-              if (!context.mounted) return;
-              _showSubmitResult(context, ok);
-              if (ok) Navigator.of(context).pop();
-            },
-            child: Text(context.l10n.commonConfirm),
+          const SizedBox(height: AppDesignTokens.spacingSm),
+          TextField(
+            controller: _passwordController,
+            enabled: !_saving,
+            obscureText: true,
+            decoration: InputDecoration(labelText: l10n.databasePasswordLabel),
           ),
         ],
       ),

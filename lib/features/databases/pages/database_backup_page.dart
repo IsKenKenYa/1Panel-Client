@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -13,8 +13,6 @@ import 'package:onepanel_client/features/databases/services/database_backup_serv
 import 'package:onepanel_client/features/databases/widgets/database_backup_record_card_widget.dart';
 import 'package:onepanel_client/features/databases/widgets/database_page_feedback_widget.dart';
 import 'package:onepanel_client/features/databases/widgets/database_summary_card_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 class DatabaseBackupPage extends StatelessWidget {
   const DatabaseBackupPage({
@@ -121,34 +119,15 @@ class _DatabaseBackupPageView extends StatelessWidget {
     BuildContext context,
     DatabaseBackupProvider provider,
   ) async {
-    final controller = TextEditingController();
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.databaseBackupCreateAction),
-        content: TextField(
-          controller: controller,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: context.l10n.databaseBackupSecretLabel,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await provider.createBackup(secret: controller.text);
-              if (ok && context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: context.l10n.databaseBackupCreateAction,
+      labelText: context.l10n.databaseBackupSecretLabel,
+      obscureText: true,
+      autofocus: false,
+      trim: false,
+      allowEmpty: true,
+      onSubmit: (value) => provider.createBackup(secret: value),
     );
   }
 
@@ -157,44 +136,16 @@ class _DatabaseBackupPageView extends StatelessWidget {
     DatabaseBackupProvider provider,
     backup.BackupRecord record,
   ) async {
-    final controller = TextEditingController();
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.databaseBackupRestoreAction),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(context.l10n.databaseBackupRestoreConfirmMessage),
-            const SizedBox(height: AppDesignTokens.spacingMd),
-            TextField(
-              controller: controller,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: context.l10n.databaseBackupSecretLabel,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await provider.restoreBackup(
-                record,
-                secret: controller.text,
-              );
-              if (ok && context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: context.l10n.databaseBackupRestoreAction,
+      message: context.l10n.databaseBackupRestoreConfirmMessage,
+      labelText: context.l10n.databaseBackupSecretLabel,
+      obscureText: true,
+      autofocus: false,
+      trim: false,
+      allowEmpty: true,
+      onSubmit: (value) => provider.restoreBackup(record, secret: value),
     );
   }
 
