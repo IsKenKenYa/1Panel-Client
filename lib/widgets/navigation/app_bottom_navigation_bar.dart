@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/widgets/navigation/app_navigation_icon.dart';
 import 'package:onepanel_client/widgets/navigation/glass_chrome_settings.dart';
@@ -41,15 +43,46 @@ class AppBottomNavigationBar extends StatelessWidget {
     vertical: 12,
   );
 
+  /// 悬浮玻璃底栏在页面上占据的高度。
+  ///
+  /// 由栏体、上下内边距与系统安全区组成；`SafeArea.minimum` 取两者较大值，
+  /// 因此底部让位是 `max(垂直内边距, 安全区)`。
+  /// 壳层在液态玻璃模式下启用 `extendBody`，内容会延伸到栏下方；
+  /// 页面内的 FAB 与底部操作条按此值上移，避免被玻璃栏覆盖。
+  /// [glass] 为 false（实色底栏）时不需要额外让位，返回 0。
+  static double glassBarExtentOf(BuildContext context, {bool? glass}) {
+    final enabled = glass ?? UIRenderPolicy.liquidGlassEnabled;
+    if (!enabled) {
+      return 0;
+    }
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    final bottomGap = safeBottom > _glassBarPadding.bottom
+        ? safeBottom
+        : _glassBarPadding.bottom;
+    return _glassBarHeight + _glassBarPadding.top + bottomGap;
+  }
+
+  /// 读取并订阅渲染模式；不在 Provider 作用域内或控制器尚未载入时，
+  /// 退回策略里的当前生效值（启动期由 main 写入）。
+  static bool _glassEnabled(BuildContext context) {
+    final settings =
+        Provider.of<AppSettingsController?>(context, listen: true);
+    if (settings == null || !settings.loaded) {
+      return UIRenderPolicy.liquidGlassEnabled;
+    }
+    return UIRenderPolicy.glassEnabledFor(settings.uiRenderMode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final safeIndex = currentIndex.clamp(0, items.length - 1);
     final scheme = Theme.of(context).colorScheme;
+    // 订阅设置项：切换渲染模式后底栏立即换成玻璃或实色形态。
+    final glass = _glassEnabled(context);
 
-    if (!UIRenderPolicy.liquidGlassEnabled) {
+    if (!glass) {
       return _buildMaterialBar(context, safeIndex, scheme);
     }
-
     // 主题表面色直接混合，降低滚动内容的对比度，保留预设的模糊和折射。
     // 方向光/菲涅尔等质感参数由 chromeGlassSettings 统一给出。
     final barSettings = chromeGlassSettings(

@@ -124,7 +124,9 @@ void main() {
     expect(bottomBar.bottom, size.height);
     expect(barContent.bottom, size.height - insets.bottom);
     expect(contentMetrics.padding.bottom, bottomBar.height);
-    expect(contentMetrics.viewPadding.bottom, 0);
+    // viewPadding 与 padding 同为栏高：FAB 的 safeMargin 用
+    // minViewPadding.bottom - contentBottom + 16，两者一致才得 16dp 间距。
+    expect(contentMetrics.viewPadding.bottom, bottomBar.height);
   });
 
   testWidgets('renders navigation rail on medium width', (tester) async {

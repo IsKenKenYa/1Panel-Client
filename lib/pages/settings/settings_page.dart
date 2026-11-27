@@ -100,10 +100,12 @@ class _SettingsPageState extends State<SettingsPage> {
         () => settings.updateUIRenderMode(selected),
       );
       if (!saved || !mounted) return;
+      // 液态玻璃与 MDUI3 都是 Flutter 内渲染形态，切换即时生效；
+      // 只有切到原生宿主才需要拉起另一个进程。
       if (selected != UIRenderMode.native || !windows) {
         SnackBarUtils.showSuccess(
           context,
-          l10n.settingsUIRenderModeRestartHint,
+          l10n.settingsUIRenderModeSwitchApplied,
         );
         return;
       }

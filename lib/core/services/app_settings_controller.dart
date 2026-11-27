@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 
 class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   AppSettingsController({AppPreferencesService? preferencesService})
@@ -42,6 +43,8 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
     _cacheMaxSizeMB = cacheMaxSizeMB;
     _uiRenderMode = uiRenderMode;
     _applyCacheSettings();
+    // 载入后同步策略，使读取静态开关的旧调用点与控制器保持一致。
+    UIRenderPolicy.applyMode(_uiRenderMode);
     _loaded = true;
     notifyListeners();
   }
@@ -74,6 +77,8 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   Future<void> updateUIRenderMode(UIRenderMode mode) async {
     _uiRenderMode = await _preferencesService.saveUIRenderMode(mode);
     if (_uiRenderMode != UIRenderMode.native) _nativeHostMissing = false;
+    // 同步刷新渲染策略；界面经 notifyListeners 重建，切换无需重启。
+    UIRenderPolicy.applyMode(_uiRenderMode);
     notifyListeners();
   }
 }

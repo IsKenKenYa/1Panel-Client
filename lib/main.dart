@@ -108,17 +108,16 @@ void main() async {
   final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
   UIRenderPolicy.setLiquidGlassEnabled(uiRenderMode);
 
-  // 液态玻璃模式：仅 Apple Metal 预加载 premium 多 pass 折射 shader；
-  // GLES 低端设备跳过（premium 管线会阻塞主线程并丢失 GPU 上下文）。
-  if (UIRenderPolicy.liquidGlassEnabled) {
-    await LiquidGlass.precache();
-    await LiquidGlassWidgets.initialize(
-      enablePerformanceMonitor: false,
-      warmUpMode: UIRenderPolicy.premiumGlassAllowed
-          ? GlassWarmUpMode.auto
-          : GlassWarmUpMode.never,
-    );
-  }
+  // 预加载玻璃 shader：运行期可随时从 MDUI3 切到液态玻璃，因此不再按启动
+  // 模式条件跳过。premium 多 pass 折射仅 Apple Metal 预热；GLES 低端设备
+  // 用 never（premium 管线会阻塞主线程并丢失 GPU 上下文）。
+  await LiquidGlass.precache();
+  await LiquidGlassWidgets.initialize(
+    enablePerformanceMonitor: false,
+    warmUpMode: UIRenderPolicy.premiumGlassAllowed
+        ? GlassWarmUpMode.auto
+        : GlassWarmUpMode.never,
+  );
 
   // window_manager must be initialized before any window API calls;
   // only needed when Flutter renders its own UI (not in native/headless mode).
@@ -215,14 +214,14 @@ void main() async {
         ],
         child: kIsWeb ? BrowserVaultGate(child: appShell) : appShell,
       );
+    // 始终套玻璃包装：它只注册全局配置与亮度解析，是否渲染玻璃由各组件
+    // 按当前渲染模式决定。运行期在 MDUI3 与液态玻璃之间切换时无需重建根节点。
     runApp(
-      UIRenderPolicy.liquidGlassEnabled
-          ? LiquidGlassWidgets.wrap(
-              // MaterialApp 主题亮度解析：玻璃明暗跟随 ThemeMode 而非系统。
-              brightnessResolver: Theme.maybeBrightnessOf,
-              child: app,
-            )
-          : app,
+      LiquidGlassWidgets.wrap(
+        // MaterialApp 主题亮度解析：玻璃明暗跟随 ThemeMode 而非系统。
+        brightnessResolver: Theme.maybeBrightnessOf,
+        child: app,
+      ),
     );
   } else {
     // Engine-only mode (Headless)

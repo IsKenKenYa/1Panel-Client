@@ -20,6 +20,7 @@ import 'package:onepanel_client/ui/routing/ui_target.dart';
 import 'package:onepanel_client/ui/tablet/app/tablet_shell_page.dart';
 
 import '../../core/utils/snackbar_utils.dart';
+import '../../core/services/app_settings_controller.dart';
 import '../../core/theme/ui_render_policy.dart';
 
 class AppShellPage extends StatefulWidget {
@@ -58,6 +59,12 @@ class _AppShellPageState extends State<AppShellPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 渲染模式切换后需要立刻换掉铬件，因此在这里订阅设置。
+    // 控制器尚未载入时退回策略值，保持与启动期一致。
+    final settings = context.watch<AppSettingsController?>();
+    final glass = settings == null || !settings.loaded
+        ? UIRenderPolicy.liquidGlassEnabled
+        : UIRenderPolicy.glassEnabledFor(settings.uiRenderMode);
     return Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
         final spec = AdaptiveLayoutSpec.of(context);
@@ -164,7 +171,7 @@ class _AppShellPageState extends State<AppShellPage> {
             drawerEnableOpenDragGesture: true,
             // 玻璃底栏需要内容从栏下穿透可采样，否则玻璃后面是纯色背景，
             // 视觉上与实色无异（液态玻璃模式的前提条件）。
-            extendBody: UIRenderPolicy.liquidGlassEnabled,
+            extendBody: glass,
             drawer: moreModules.isEmpty ? null : MobileMoreModulesDrawer(
               modules: moreModules,
               pinnedModules: pinnedModules.pins,
@@ -182,16 +189,41 @@ class _AppShellPageState extends State<AppShellPage> {
                 );
               },
             ),
-            body: SafeArea(
-              top: false,
-              bottom: false,
-              child: moreModules.isEmpty
-                  ? body
-                  : ShellDrawerScope(
-                      openDrawer: () =>
-                          _mobileScaffoldKey.currentState?.openDrawer(),
-                      child: body,
-                    ),
+            body: Builder(
+              builder: (_) {
+                final chrome = AppBottomNavigationBar.glassBarExtentOf(
+                  context,
+                  glass: glass,
+                );
+                final media = MediaQuery.of(context);
+                final content = SafeArea(
+                  top: false,
+                  bottom: false,
+                  child: moreModules.isEmpty
+                      ? body
+                      : ShellDrawerScope(
+                          openDrawer: () =>
+                              _mobileScaffoldKey.currentState?.openDrawer(),
+                          child: body,
+                        ),
+                );
+                if (chrome <= 0) {
+                  return content;
+                }
+                // extendBody 让内容延伸到玻璃栏下方。Flutter 的 Scaffold 用
+                // minInsets（padding）与 minViewPadding（viewPadding）定位
+                // FAB。栏高本身已包含系统安全区，两者都直接取栏高：
+                // FabFloatOffsetY 的 safeMargin 是
+                // minViewPadding.bottom - 栏高 + 16，取同一值才得到 16dp 间距；
+                // 若在 viewPadding 上再叠安全区，FAB 会多抬一个安全区的高度。
+                return MediaQuery(
+                  data: media.copyWith(
+                    padding: media.padding.copyWith(bottom: chrome),
+                    viewPadding: media.viewPadding.copyWith(bottom: chrome),
+                  ),
+                  child: content,
+                );
+              },
             ),
             bottomNavigationBar: AppBottomNavigationBar(
               currentIndex: selectedIndex,

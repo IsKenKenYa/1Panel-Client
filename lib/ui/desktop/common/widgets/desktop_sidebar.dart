@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass/glass.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
@@ -48,6 +50,12 @@ class DesktopSidebar extends StatelessWidget {
         modules.indexOf(selectedModule).clamp(0, modules.length - 1);
     final scheme = Theme.of(context).colorScheme;
     final bgColor = backgroundColor ?? scheme.surface;
+    // 订阅渲染模式：切换后侧栏立即在玻璃与实色之间切换。
+    // 控制器尚未载入时退回策略值。
+    final settings = context.watch<AppSettingsController?>();
+    final glass = settings == null || !settings.loaded
+        ? UIRenderPolicy.liquidGlassEnabled
+        : UIRenderPolicy.glassEnabledFor(settings.uiRenderMode);
 
     return SafeArea(
       right: false,
@@ -62,7 +70,7 @@ class DesktopSidebar extends StatelessWidget {
         // NavigationRail backgroundColor 本就 transparent；md3 模式玻璃禁用
         // 后由 asGlass(enabled:false) 直通，需还原实色底。
         child: Container(
-          color: UIRenderPolicy.liquidGlassEnabled ? null : bgColor,
+          color: glass ? null : bgColor,
           child: NavigationRail(
             extended: extended,
             scrollable: true,
@@ -93,7 +101,7 @@ class DesktopSidebar extends StatelessWidget {
       ).asGlass(
         // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色侧栏。
         // Glass.regular 预设与移动端浮层观感一致。
-        enabled: UIRenderPolicy.liquidGlassEnabled,
+        enabled: glass,
         liquid: UIRenderPolicy.glassStyle,
         tintColor: bgColor,
       ),

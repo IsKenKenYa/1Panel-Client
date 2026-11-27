@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
@@ -35,6 +36,12 @@ class ServerAwarePageScaffold extends StatelessWidget {
       builder: (context, showMissingServer, _) {
         final scheme = Theme.of(context).colorScheme;
         final canPop = Navigator.of(context).canPop();
+        // 订阅渲染模式：切换后标题栏底色立即在玻璃与实色之间切换。
+        // 控制器尚未载入时退回策略值。
+        final settings = context.watch<AppSettingsController?>();
+        final glass = settings == null || !settings.loaded
+            ? UIRenderPolicy.liquidGlassEnabled
+            : UIRenderPolicy.glassEnabledFor(settings.uiRenderMode);
         return Scaffold(
           backgroundColor: scheme.surface,
           // 内容从标题栏下滚动穿透；标题栏在液态玻璃模式使用不透明
@@ -49,9 +56,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
               AppBar().preferredSize.height + (bottom?.preferredSize.height ?? 0),
             ),
             child: AppBar(
-              backgroundColor: UIRenderPolicy.liquidGlassEnabled
-                  ? scheme.surfaceContainer
-                  : null,
+              backgroundColor: glass ? scheme.surfaceContainer : null,
               leading: canPop
                   ? const BackButton()
                   : buildShellDrawerLeading(

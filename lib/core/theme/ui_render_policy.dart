@@ -10,16 +10,31 @@ import 'ui_render_mode.dart';
 class UIRenderPolicy {
   const UIRenderPolicy._();
 
-  /// Whether Liquid Glass navigation floats are currently rendered.
+  /// 当前是否渲染液态玻璃铬件。
   ///
-  /// Static by design: the mode is a boot-time choice (the settings dialog
-  /// already asks the user to restart after switching), so no reactive
-  /// plumbing is needed and glass surfaces can read it without context.
+  /// 启动时由 `main` 写入；运行期由 `AppSettingsController.updateUIRenderMode`
+  /// 刷新并通知监听者，界面用 [glassEnabledOf] 读取以自动重建，
+  /// 因此切换渲染模式不需要重启应用。
   static bool liquidGlassEnabled = false;
 
   static void setLiquidGlassEnabled(UIRenderMode mode) {
     liquidGlassEnabled = mode == UIRenderMode.liquidGlass;
   }
+
+  /// 玻璃模式是否生效（纯函数，便于测试与主题配置复用）。
+  static bool glassEnabledFor(UIRenderMode mode) =>
+      mode == UIRenderMode.liquidGlass;
+
+  /// 记录当前生效模式，供无 Provider 上下文的构建期调用读取。
+  static void applyMode(UIRenderMode mode) {
+    _currentMode = mode;
+    setLiquidGlassEnabled(mode);
+  }
+
+  static UIRenderMode _currentMode = UIRenderMode.md3;
+
+  /// 最近一次生效的渲染模式。
+  static UIRenderMode get currentMode => _currentMode;
 
   /// 全局统一玻璃配置（Apple `Glass.regular` 参数复刻）：磨砂为主、
   /// 边缘折射掰弯背景、饱和度提升、柔和阴影——供 AppBar 与桌面侧栏使用。
