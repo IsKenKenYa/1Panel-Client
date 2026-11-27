@@ -11,15 +11,11 @@ import 'package:onepanel_client/features/backups/widgets/backup_record_filter_sh
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class BackupRecordsPage extends StatefulWidget {
-  const BackupRecordsPage({
-    super.key,
-    this.args,
-  });
+  const BackupRecordsPage({super.key, this.args});
 
   final BackupRecordsArgs? args;
 
@@ -101,18 +97,20 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
 
   Future<void> _openFilter() async {
     final provider = context.read<BackupRecordsProvider>();
-    final result = await showModalBottomSheet<Map<String, String>>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => BackupRecordFilterSheetWidget(
-        initialType: provider.type,
-        initialName: provider.name,
-        initialDetailName: provider.detailName,
+    final result = await showAppFormSheet<Map<String, String>>(
+      context,
+      title: context.l10n.backupRecordsFilterAction,
+      builder: (_) => SingleChildScrollView(
+        child: BackupRecordFilterSheetWidget(
+          initialType: provider.type,
+          initialName: provider.name,
+          initialDetailName: provider.detailName,
+        ),
       ),
     );
-    if (!mounted || result == null) return;
+    if (!mounted || result == null) {
+      return;
+    }
     provider.updateFilters(
       type: result['type'],
       name: result['name'],
@@ -125,13 +123,16 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
       title: context.l10n.commonDelete,
-      message:
-          context.l10n.backupRecordsDeleteConfirm(item.record.fileName ?? ''),
+      message: context.l10n.backupRecordsDeleteConfirm(
+        item.record.fileName ?? '',
+      ),
       confirmLabel: context.l10n.commonDelete,
       confirmIcon: Icons.delete_outline,
       isDestructive: true,
     );
-    if (!confirmed || !mounted) return;
+    if (!confirmed || !mounted) {
+      return;
+    }
     await context.read<BackupRecordsProvider>().delete(item);
   }
 }

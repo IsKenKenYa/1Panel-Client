@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/backup_account_models.dart';
@@ -10,15 +10,13 @@ import 'package:onepanel_client/features/backups/models/backup_recover_args.dart
 import 'package:onepanel_client/features/backups/providers/backup_accounts_provider.dart';
 import 'package:onepanel_client/features/backups/services/backup_account_service.dart';
 import 'package:onepanel_client/features/backups/widgets/backup_account_card_widget.dart';
-import 'package:onepanel_client/features/backups/widgets/backup_files_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class BackupAccountsPage extends StatefulWidget {
   const BackupAccountsPage({super.key});
 
@@ -127,8 +125,10 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                 child: AsyncStatePageBodyWidget(
                   isLoading: provider.isLoading,
                   isEmpty: provider.isEmpty,
-                  errorMessage:
-                      localizeBackupError(l10n, provider.errorMessage),
+                  errorMessage: localizeBackupError(
+                    l10n,
+                    provider.errorMessage,
+                  ),
                   onRetry: provider.load,
                   emptyTitle: l10n.backupAccountsEmptyTitle,
                   emptyDescription: l10n.backupAccountsEmptyDescription,
@@ -140,8 +140,9 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final account = provider.items[index];
-                        final readOnly =
-                            _accountService.isReadOnlyLocal(account);
+                        final readOnly = _accountService.isReadOnlyLocal(
+                          account,
+                        );
                         return BackupAccountCardWidget(
                           account: account,
                           endpoint: _accountService.endpointText(account),
@@ -154,8 +155,8 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                           onDelete: readOnly ? null : () => _delete(account),
                           onRefreshToken:
                               _accountService.supportsRefreshToken(account.type)
-                                  ? () => _refreshToken(account)
-                                  : null,
+                              ? () => _refreshToken(account)
+                              : null,
                         );
                       },
                     ),
@@ -175,7 +176,9 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
       AppRoutes.backupAccountForm,
       arguments: const BackupAccountFormArgs(),
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     await context.read<BackupAccountsProvider>().load();
   }
 
@@ -185,7 +188,9 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
       AppRoutes.backupAccountForm,
       arguments: BackupAccountFormArgs(initialValue: account),
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     await context.read<BackupAccountsProvider>().load();
   }
 
@@ -206,10 +211,14 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
   }
 
   Future<void> _test(BackupAccountInfo account) async {
-    final result =
-        await context.read<BackupAccountsProvider>().testAccount(account);
-    if (!mounted || result == null) return;
-    final msg = localizeBackupError(context.l10n, result.msg) ??
+    final result = await context.read<BackupAccountsProvider>().testAccount(
+      account,
+    );
+    if (!mounted || result == null) {
+      return;
+    }
+    final msg =
+        localizeBackupError(context.l10n, result.msg) ??
         (result.isOk
             ? context.l10n.backupAccountsConnectionOk
             : context.l10n.backupAccountsConnectionFailed);
@@ -221,24 +230,35 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
   }
 
   Future<void> _refreshToken(BackupAccountInfo account) async {
-    final success =
-        await context.read<BackupAccountsProvider>().refreshToken(account);
-    if (!mounted || !success) return;
-    SnackBarUtils.showSuccess(context, context.l10n.backupAccountsTokenRefreshed);
+    final success = await context.read<BackupAccountsProvider>().refreshToken(
+      account,
+    );
+    if (!mounted || !success) {
+      return;
+    }
+    SnackBarUtils.showSuccess(
+      context,
+      context.l10n.backupAccountsTokenRefreshed,
+    );
   }
 
   Future<void> _browseFiles(BackupAccountInfo account) async {
-    final files =
-        await context.read<BackupAccountsProvider>().loadFiles(account);
-    if (!mounted || files == null) return;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => BackupFilesSheetWidget(
-        title: account.name,
-        items: files,
+    final files = await context.read<BackupAccountsProvider>().loadFiles(
+      account,
+    );
+    if (!mounted || files == null) {
+      return;
+    }
+    await showAppFormSheet<void>(
+      context,
+      title: account.name,
+      builder: (_) => ListView.separated(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+        itemCount: files.length,
+        separatorBuilder: (_, __) => const Divider(height: 1),
+        itemBuilder: (context, index) =>
+            ListTile(dense: true, title: Text(files[index])),
       ),
     );
   }
@@ -252,7 +272,9 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
       confirmIcon: Icons.delete_outline,
       isDestructive: true,
     );
-    if (!confirmed || !mounted) return;
+    if (!confirmed || !mounted) {
+      return;
+    }
     await context.read<BackupAccountsProvider>().deleteAccount(account);
   }
 }
