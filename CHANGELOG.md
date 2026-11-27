@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file. (本项目�
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-11-27
+
+### Overview
+
+This Android release delivers multi-panel adapter support, runtime UI render mode switching, unified shared UI components, V2 logs endpoint completion, and a modernized Android Gradle build pipeline.
+
+本版本面向 Android 渠道发布正式版，重点包含多面板适配与新版引导体验、壳层运行期渲染模式切换、全模块共享组件与弹窗统一、系统与任务日志 V2 接口补齐，以及 Android 构建工具链升级。
+
+### Added
+
+#### Multi-Panel and Onboarding
+- Added DPanel multi-panel adapter support and container overview integration.
+- Upgraded the responsive onboarding experience and updated bilingual copy for multi-panel workflows.
+
+#### 多面板与新手引导（中文）
+- 新增 DPanel 多面板适配器与基础容器展示能力。
+- 升级多面板响应式新手引导页面，并更新中英文引导文案。
+
+#### Logs and App Icon Caching
+- Completed V2 system log and task log API endpoints.
+- Added disk caching and batch prefetching for application icons.
+
+#### 日志接口与图标缓存（中文）
+- 补齐系统日志与任务日志 V2 接口支持。
+- 新增应用图标磁盘持久化缓存与批量预取能力。
+
+### Changed
+
+#### Adaptive Shell and Shared UI
+- Enabled runtime hot-switching between MDUI3 and liquid glass render modes without requiring an app restart.
+- Fixed floating action button clearance above the glass bottom navigation bar.
+- Unified server detail module grid layout and standardized dialogs and sheets across containers, files, websites, apps, databases, AI, VM, monitoring, terminal, settings, and toolbox modules.
+
+#### 自适应壳层与共享界面（中文）
+- 支持运行期在 MDUI3 与液态玻璃渲染模式之间即时切换，无需重启应用。
+- 修正液态玻璃底栏场景下悬浮操作按钮的让位间距计算。
+- 升级服务器详情模块入口为响应式多列网格，并统一容器、文件、网站、应用、数据库、AI、虚拟机、监控、终端、设置与工具箱等模块弹窗为共享标准组件。
+
+#### Android Build Modernization and CI
+- Consolidated Android build configuration onto Kotlin DSL (`settings.gradle.kts`, `build.gradle.kts`, `app/build.gradle.kts`) and removed duplicate Groovy build scripts and redundant `MainActivity`.
+- Upgraded Gradle Wrapper to `9.1.0-bin`, Android Gradle Plugin to `9.0.1`, and Kotlin Gradle Plugin to `2.3.20`, and aligned library subprojects to `compileSdk` 36.
+- Enabled Gradle parallel builds, local build caching, VFS watching, and tuned daemon memory settings; fixed Gradle wrapper cache key path in `flutter-ci.yml`.
+
+#### Android 构建现代化与 CI（中文）
+- 将 Android 构建脚本统一为 Kotlin DSL（`settings.gradle.kts`、`build.gradle.kts`、`app/build.gradle.kts`），清理遗留 Groovy 脚本与重复 `MainActivity`。
+- 升级 Gradle Wrapper 至 `9.1.0-bin`、Android Gradle Plugin 至 `9.0.1`、Kotlin Gradle Plugin 至 `2.3.20`，并将依赖库子工程的 `compileSdk` 统一提升至 `36`。
+- 在 `gradle.properties` 中开启并行构建、本地构建缓存、虚拟文件系统监听并调优守护进程内存配置；修复 `flutter-ci.yml` 中 `gradle-wrapper.properties` 的缓存路径。
+
 ## [0.6.0] - 2026-05-02
 
 ### Overview
