@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
@@ -443,10 +445,12 @@ class ExpressiveFilterBar extends StatelessWidget {
               selected: selected == value,
               showCheckmark: false,
               labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: selected == value ? scheme.onPrimary : scheme.onSurface,
+                    color: selected == value
+                        ? scheme.onSecondaryContainer
+                        : scheme.onSurface,
                   ),
-              selectedColor: scheme.primary,
-              backgroundColor: scheme.surfaceContainerHighest,
+              selectedColor: scheme.secondaryContainer,
+              backgroundColor: scheme.surfaceContainerHigh,
               side: BorderSide(
                 color: selected == value ? Colors.transparent : scheme.outlineVariant,
               ),
@@ -454,6 +458,127 @@ class ExpressiveFilterBar extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// 分区内的一组只读属性行，替代每行单独一张卡片的写法。
+///
+/// 每行只有标签与值，行间以描边分隔；标签使用次级色，值使用正文色。
+/// 需要图标、元数据或右侧操作的行请使用 [ExpressiveRow]。
+class SectionPropertyList extends StatelessWidget {
+  const SectionPropertyList({
+    super.key,
+    this.title,
+    this.description,
+    required this.properties,
+    this.actions = const <Widget>[],
+  });
+
+  final String? title;
+  final String? description;
+  final List<SectionProperty> properties;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionCard(
+      title: title,
+      description: description,
+      action: actions.isEmpty
+          ? null
+          : Wrap(alignment: WrapAlignment.end, children: actions),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          for (final (index, property) in properties.indexed) ...[
+            property,
+            if (index < properties.length - 1)
+              Divider(
+                height: 1,
+                thickness: 1,
+                indent: AppDesignTokens.spacingLg,
+                endIndent: AppDesignTokens.spacingLg,
+                color: Theme.of(context)
+                    .colorScheme
+                    .outlineVariant
+                    .withValues(alpha: 0.5),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// [SectionPropertyList] 中的单条属性行。
+class SectionProperty extends StatelessWidget {
+  const SectionProperty({
+    super.key,
+    required this.label,
+    required this.value,
+    this.valueKey,
+  });
+
+  final String label;
+
+  /// 值可能为空，此时显示短横线占位。
+  final String? value;
+
+  /// 测试定位用 Key（作用于值文本）。
+  final Key? valueKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final text = value == null || value!.isEmpty ? '-' : value!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesignTokens.spacingLg,
+        vertical: AppDesignTokens.spacingMd,
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final label = Text(
+            this.label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          );
+          final value = SelectableText(
+            text,
+            key: valueKey,
+            style: theme.textTheme.bodyMedium,
+          );
+          final minValueWidth = 8 *
+              MediaQuery.textScalerOf(context).scale(
+                    theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  );
+          if (!constraints.hasBoundedWidth ||
+              constraints.maxWidth < 128 + minValueWidth) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                label,
+                const SizedBox(height: AppDesignTokens.spacingXs),
+                value,
+              ],
+            );
+          }
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                width: math.min(128, constraints.maxWidth * 0.45),
+                child: label,
+              ),
+              const SizedBox(width: AppDesignTokens.spacingMd),
+              Expanded(child: value),
+            ],
+          );
+        },
       ),
     );
   }

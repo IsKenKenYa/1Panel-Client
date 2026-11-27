@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/api/v2/container_v2.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 /// Container inspect detail page.
 /// Mirrors frontend's container inspect view: shows raw JSON config.
@@ -95,10 +96,26 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
     return ListView(
       padding: AppDesignTokens.cardPadding,
       children: [
-        Card(child: ListTile(title:  Text(context.l10n.commonImage), subtitle: Text(config[context.l10n.commonImage]?.toString() ?? ''))),
-        Card(child: ListTile(title:  Text(context.l10n.commonCommand), subtitle: Text(config['Cmd']?.toString() ?? ''))),
-        Card(child: ListTile(title:  Text(context.l10n.containerInspectWorkingDir), subtitle: Text(config['WorkingDir']?.toString() ?? ''))),
-        Card(child: ListTile(title:  Text(context.l10n.containerInspectEntrypoint), subtitle: Text(config[context.l10n.containerInspectEntrypoint]?.toString() ?? ''))),
+        SectionPropertyList(
+          properties: [
+            SectionProperty(
+              label: context.l10n.commonImage,
+              value: config['Image']?.toString(),
+            ),
+            SectionProperty(
+              label: context.l10n.commonCommand,
+              value: config['Cmd']?.toString(),
+            ),
+            SectionProperty(
+              label: context.l10n.containerInspectWorkingDir,
+              value: config['WorkingDir']?.toString(),
+            ),
+            SectionProperty(
+              label: context.l10n.containerInspectEntrypoint,
+              value: config['Entrypoint']?.toString(),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -106,17 +123,32 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
   Widget _buildNetworkTab() {
     final networkSettings = _inspectData?['NetworkSettings'] as Map? ?? {};
     final networks = networkSettings['Networks'] as Map? ?? {};
+    if (networks.isEmpty) {
+      return ListView(
+        padding: AppDesignTokens.cardPadding,
+        children: const <Widget>[],
+      );
+    }
     return ListView(
       padding: AppDesignTokens.cardPadding,
-      children: networks.keys.map((name) {
-        final net = networks[name] as Map? ?? {};
-        return Card(
-          child: ListTile(
-            title: Text(name.toString()),
-            subtitle: Text('${context.l10n.containerInspectIpWith(net['IPAddress'] ?? 'N/A')} | ${context.l10n.containerInspectGateway}: ${net['Gateway'] ?? 'N/A'}'),
+      children: [
+        for (final name in networks.keys) ...[
+          SectionPropertyList(
+            title: name.toString(),
+            properties: [
+              SectionProperty(
+                label: context.l10n.containerInspectIpLabel,
+                value: (networks[name] as Map?)?['IPAddress']?.toString(),
+              ),
+              SectionProperty(
+                label: context.l10n.containerInspectGateway,
+                value: (networks[name] as Map?)?['Gateway']?.toString(),
+              ),
+            ],
           ),
-        );
-      }).toList(),
+          const SizedBox(height: AppDesignTokens.spacingMd),
+        ],
+      ],
     );
   }
 

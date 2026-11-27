@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
@@ -57,35 +58,29 @@ class _WebsiteCertificateDetailBody extends StatelessWidget {
             child: ListView(
               padding: AppDesignTokens.cardPadding,
               children: [
-                Card(
-                  child: ListTile(
-                    title: Text(l10n.websitesSslPrimaryDomain),
-                    subtitle: Text(cert?.primaryDomain ?? '-'),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: Text(l10n.websitesSslProviderLabel),
-                    subtitle: Text(cert?.provider ?? '-'),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: Text(l10n.websitesSslStatus),
-                    subtitle: Text(cert?.status ?? '-'),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: Text(l10n.websitesSslExpireDate),
-                    subtitle: Text(cert?.expireDate ?? '-'),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: Text(l10n.websitesSslDescriptionLabel),
-                    subtitle: Text(cert?.description ?? '-'),
-                  ),
+                SectionPropertyList(
+                  properties: [
+                    SectionProperty(
+                      label: l10n.websitesSslPrimaryDomain,
+                      value: cert?.primaryDomain,
+                    ),
+                    SectionProperty(
+                      label: l10n.websitesSslProviderLabel,
+                      value: cert?.provider,
+                    ),
+                    SectionProperty(
+                      label: l10n.websitesSslStatus,
+                      value: cert?.status,
+                    ),
+                    SectionProperty(
+                      label: l10n.websitesSslExpireDate,
+                      value: cert?.expireDate,
+                    ),
+                    SectionProperty(
+                      label: l10n.websitesSslDescriptionLabel,
+                      value: cert?.description,
+                    ),
+                  ],
                 ),
               ],
             ),
