@@ -4,7 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class ContainersPageContainerMaintenanceDialogs {
   static Future<void> showPruneDialog(BuildContext context) async {
@@ -66,10 +66,7 @@ class ContainersPageContainerMaintenanceDialogs {
       onConfirm: () async {
         final provider = context.read<ContainersProvider>();
         final report = await provider.pruneContainers(
-          ContainerPrune(
-            pruneType: type.value,
-            withTagAll: withTagAll,
-          ),
+          ContainerPrune(pruneType: type.value, withTagAll: withTagAll),
         );
         if (!context.mounted) return;
         final message = report?.message ?? l10n.containerOperateSuccess;
@@ -78,45 +75,24 @@ class ContainersPageContainerMaintenanceDialogs {
     );
   }
 
-  static void showDeleteContainerDialog(
+  static Future<void> showDeleteContainerDialog(
     BuildContext context,
     String containerId,
-  ) {
-    // Capture parent context before showing the dialog; the dialog's own context
-    // becomes invalid after Navigator.pop(), but we need the parent to read the
-    // provider and show the result snackbar.
-    final parentContext = context;
+  ) async {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    showDialog(
-      context: parentContext,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(Icons.delete_outline, color: colorScheme.error),
-        title: Text(l10n.commonDelete),
-        content: Text(l10n.containerDeleteConfirm(containerId)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              final provider = context.read<ContainersProvider>();
-              final success = await provider.deleteContainer(containerId);
-              if (!parentContext.mounted) return;
-              if (success) {
-                SnackBarUtils.showSuccess(parentContext, l10n.containerOperateSuccess);
-              }
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.error,
-              foregroundColor: colorScheme.onError,
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.containerDeleteConfirm(containerId),
+      confirmLabel: l10n.commonDelete,
+      confirmIcon: Icons.delete_outline,
+      isDestructive: true,
     );
+    if (!confirmed || !context.mounted) return;
+    final provider = context.read<ContainersProvider>();
+    final success = await provider.deleteContainer(containerId);
+    if (success && context.mounted) {
+      SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
+    }
   }
 }

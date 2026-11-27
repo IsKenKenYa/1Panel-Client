@@ -8,6 +8,7 @@ import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_li
 import 'package:onepanel_client/features/containers/dialogs/repo_create_dialog.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import '../containers_provider.dart';
 
 class ReposTab extends StatelessWidget {
@@ -40,61 +41,62 @@ class ReposTab extends StatelessWidget {
           hasCachedData: repos.isNotEmpty,
           onRetry: provider.loadRepos,
           child: RefreshIndicator(
-          onRefresh: provider.loadRepos,
-          child: ListView.separated(
-            padding: AppDesignTokens.cardPadding +
-                shellListBottomPadding(context),
-            itemCount: repos.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final repo = repos[index];
-              return AppCard(
-                title: repo.name,
-                child: ListTile(
-                  leading: const Icon(Icons.store),
-                  title: Text(repo.name),
-                  subtitle: Text(repo.downloadUrl),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      if (value == 'edit') {
-                        showDialog(
-                          context: context,
-                          builder: (context) => RepoCreateDialog(repo: repo),
-                        );
-                      } else if (value == 'delete') {
-                        final confirm = await ConfirmActionSheetWidget.show(
-                          context,
-                          title: l10n.commonDelete,
-                          message: l10n.commonDeleteRepoConfirm,
-                          confirmLabel: l10n.commonDelete,
-                          isDestructive: true,
-                        );
+            onRefresh: provider.loadRepos,
+            child: ListView.separated(
+              padding:
+                  AppDesignTokens.cardPadding + shellListBottomPadding(context),
+              itemCount: repos.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final repo = repos[index];
+                return AppCard(
+                  title: repo.name,
+                  child: ListTile(
+                    leading: const Icon(Icons.store),
+                    title: Text(repo.name),
+                    subtitle: Text(repo.downloadUrl),
+                    trailing: PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        if (value == 'edit') {
+                          await showAdaptiveFormPanel<void>(
+                            context,
+                            builder: (context) => RepoCreateDialog(repo: repo),
+                          );
+                        } else if (value == 'delete') {
+                          final confirm = await ConfirmActionSheetWidget.show(
+                            context,
+                            title: l10n.commonDelete,
+                            message: l10n.commonDeleteRepoConfirm,
+                            confirmLabel: l10n.commonDelete,
+                            isDestructive: true,
+                          );
 
-                        if (confirm == true) {
-                          await provider.deleteRepo([repo.id]);
+                          if (confirm == true) {
+                            await provider.deleteRepo([repo.id]);
+                          }
                         }
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(l10n.commonEdit),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(
-                          l10n.commonDelete,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.error),
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text(l10n.commonEdit),
                         ),
-                      ),
-                    ],
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text(
+                            l10n.commonDelete,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
         );
       },
     );

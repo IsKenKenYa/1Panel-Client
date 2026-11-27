@@ -8,6 +8,7 @@ import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_li
 import 'package:onepanel_client/features/containers/dialogs/template_create_dialog.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import '../containers_provider.dart';
 
 class TemplatesTab extends StatelessWidget {
@@ -40,62 +41,63 @@ class TemplatesTab extends StatelessWidget {
           hasCachedData: templates.isNotEmpty,
           onRetry: provider.loadTemplates,
           child: RefreshIndicator(
-          onRefresh: provider.loadTemplates,
-          child: ListView.separated(
-            padding: AppDesignTokens.cardPadding +
-                shellListBottomPadding(context),
-            itemCount: templates.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final template = templates[index];
-              return AppCard(
-                title: template.name,
-                child: ListTile(
-                  leading: const Icon(Icons.description),
-                  title: Text(template.name),
-                  subtitle: Text(template.description),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      if (value == 'edit') {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              TemplateCreateDialog(template: template),
-                        );
-                      } else if (value == 'delete') {
-                        final confirm = await ConfirmActionSheetWidget.show(
-                          context,
-                          title: l10n.commonDelete,
-                          message: l10n.commonDeleteTemplateConfirm,
-                          confirmLabel: l10n.commonDelete,
-                          isDestructive: true,
-                        );
+            onRefresh: provider.loadTemplates,
+            child: ListView.separated(
+              padding:
+                  AppDesignTokens.cardPadding + shellListBottomPadding(context),
+              itemCount: templates.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final template = templates[index];
+                return AppCard(
+                  title: template.name,
+                  child: ListTile(
+                    leading: const Icon(Icons.description),
+                    title: Text(template.name),
+                    subtitle: Text(template.description),
+                    trailing: PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        if (value == 'edit') {
+                          await showAdaptiveFormPanel<void>(
+                            context,
+                            builder: (context) =>
+                                TemplateCreateDialog(template: template),
+                          );
+                        } else if (value == 'delete') {
+                          final confirm = await ConfirmActionSheetWidget.show(
+                            context,
+                            title: l10n.commonDelete,
+                            message: l10n.commonDeleteTemplateConfirm,
+                            confirmLabel: l10n.commonDelete,
+                            isDestructive: true,
+                          );
 
-                        if (confirm == true) {
-                          await provider.deleteTemplate([template.id]);
+                          if (confirm == true) {
+                            await provider.deleteTemplate([template.id]);
+                          }
                         }
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(l10n.commonEdit),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(
-                          l10n.commonDelete,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.error),
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text(l10n.commonEdit),
                         ),
-                      ),
-                    ],
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text(
+                            l10n.commonDelete,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
         );
       },
     );

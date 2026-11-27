@@ -4,8 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class ContainersPageContainerEditDialogs {
   static Future<void> showRenameContainerDialog(
@@ -13,30 +12,13 @@ class ContainersPageContainerEditDialogs {
     String name,
   ) async {
     final l10n = context.l10n;
-    final controller = TextEditingController(text: name);
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.containerActionRename),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.commonName,
-            border: const OutlineInputBorder(),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final result = await showAppTextInputDialog(
+      context,
+      title: l10n.containerActionRename,
+      initialValue: name,
+      labelText: l10n.commonName,
+      trim: false,
+      allowEmpty: true,
     );
 
     if (result != null &&
@@ -49,8 +31,12 @@ class ContainersPageContainerEditDialogs {
         if (success) {
           SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
         } else {
-          SnackBarUtils.showError(context,
-              l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError));
+          SnackBarUtils.showError(
+            context,
+            l10n.containerOperateFailed(
+              provider.data.error ?? l10n.commonUnknownError,
+            ),
+          );
         }
       }
     }
@@ -61,57 +47,28 @@ class ContainersPageContainerEditDialogs {
     ContainerInfo container,
   ) async {
     final l10n = context.l10n;
-    final cpuController = TextEditingController();
-    final memoryController = TextEditingController();
-
-    await showAppFormDialog(
+    await showAdaptiveFormPanel<void>(
       context,
-      title: l10n.containerActionEdit,
-      confirmLabel: l10n.commonConfirm,
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: cpuController,
-              decoration: InputDecoration(
-                labelText: l10n.containerCpuShares,
-                border: const OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: memoryController,
-              decoration: InputDecoration(
-                labelText: l10n.containerMemory,
-                border: const OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
+      builder: (_) => _ContainerEditForm(
+        container: container,
+        onSubmit: (request) async {
+          final provider = context.read<ContainersProvider>();
+          final success = await provider.updateContainer(request);
+          if (context.mounted) {
+            if (success) {
+              SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
+            } else {
+              SnackBarUtils.showError(
+                context,
+                l10n.containerOperateFailed(
+                  provider.data.error ?? l10n.commonUnknownError,
+                ),
+              );
+            }
+          }
+          return success;
+        },
       ),
-      onConfirm: () async {
-        final provider = context.read<ContainersProvider>();
-        final cpuShares = int.tryParse(cpuController.text);
-        final memory = int.tryParse(memoryController.text);
-        final request = ContainerOperate(
-          name: container.name,
-          image: container.image,
-          cpuShares: cpuShares,
-          memory: memory,
-        );
-        final success = await provider.updateContainer(request);
-        if (!success) {
-          throw Exception(
-              l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError));
-        }
-        if (!context.mounted) {
-          return;
-        }
-        SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
-      },
     );
   }
 
@@ -135,10 +92,87 @@ class ContainersPageContainerEditDialogs {
         if (success) {
           SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
         } else {
-          SnackBarUtils.showError(context,
-              l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError));
+          SnackBarUtils.showError(
+            context,
+            l10n.containerOperateFailed(
+              provider.data.error ?? l10n.commonUnknownError,
+            ),
+          );
         }
       }
     }
+  }
+}
+
+class _ContainerEditForm extends StatefulWidget {
+  const _ContainerEditForm({required this.container, required this.onSubmit});
+
+  final ContainerInfo container;
+  final Future<bool> Function(ContainerOperate request) onSubmit;
+
+  @override
+  State<_ContainerEditForm> createState() => _ContainerEditFormState();
+}
+
+class _ContainerEditFormState extends State<_ContainerEditForm> {
+  final _cpuController = TextEditingController();
+  final _memoryController = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _cpuController.dispose();
+    _memoryController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (_saving) return;
+    final request = ContainerOperate(
+      name: widget.container.name,
+      image: widget.container.image,
+      cpuShares: int.tryParse(_cpuController.text),
+      memory: int.tryParse(_memoryController.text),
+    );
+    setState(() => _saving = true);
+    try {
+      final success = await widget.onSubmit(request);
+      if (success && mounted) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.containerActionEdit,
+      confirmLabel: l10n.commonConfirm,
+      isSaving: _saving,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _cpuController,
+            decoration: InputDecoration(
+              labelText: l10n.containerCpuShares,
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _memoryController,
+            decoration: InputDecoration(
+              labelText: l10n.containerMemory,
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ],
+      ),
+      onConfirm: _submit,
+    );
   }
 }
