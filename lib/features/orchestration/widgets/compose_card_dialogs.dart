@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
@@ -7,7 +7,6 @@ import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
 import 'package:onepanel_client/features/orchestration/widgets/compose_card_actions.dart';
 import 'package:onepanel_client/features/orchestration/widgets/orchestration_detail_line_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class ComposeCardDialogs {
   static Future<void> showComposeFormDialog(
@@ -20,82 +19,23 @@ class ComposeCardDialogs {
       String path,
       String content,
       String? env,
-    ) onSubmit,
+    )
+    onSubmit,
   }) async {
-    final l10n = context.l10n;
-    final nameController = TextEditingController(text: compose.name);
-    final pathController = TextEditingController(text: compose.path ?? '');
-    final contentController = TextEditingController();
-    final envController = TextEditingController();
+    final result =
+        await showAdaptiveFormPanel<
+          ({String name, String path, String content, String? env})
+        >(
+          context,
+          builder: (_) => _ComposeForm(compose: compose, title: title),
+        );
 
-    final shouldSubmit = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: l10n.commonName,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: pathController,
-                decoration: InputDecoration(
-                  labelText: l10n.commonPath,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: contentController,
-                decoration: InputDecoration(
-                  labelText: l10n.orchestrationComposeContentLabel,
-                  border: const OutlineInputBorder(),
-                ),
-                maxLines: 8,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: envController,
-                decoration: InputDecoration(
-                  labelText: l10n.env,
-                  border: const OutlineInputBorder(),
-                ),
-                maxLines: 4,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldSubmit != true || !context.mounted) return;
+    if (result == null || !context.mounted) return;
 
     await ComposeCardActions.runAction(
       context,
       provider,
-      () => onSubmit(
-        nameController.text.trim(),
-        pathController.text.trim(),
-        contentController.text,
-        envController.text.trim().isEmpty ? null : envController.text.trim(),
-      ),
+      () => onSubmit(result.name, result.path, result.content, result.env),
     );
   }
 
@@ -109,11 +49,26 @@ class ComposeCardDialogs {
       title: compose.name,
       children: [
         OrchestrationDetailLineWidget(label: 'ID', value: compose.id),
-        OrchestrationDetailLineWidget(label: l10n.commonPath, value: compose.path),
-        OrchestrationDetailLineWidget(label: l10n.commonStatus, value: compose.status),
-        OrchestrationDetailLineWidget(label: l10n.commonVersion, value: compose.version),
-        OrchestrationDetailLineWidget(label: l10n.containerInfoCreated, value: compose.createTime),
-        OrchestrationDetailLineWidget(label: l10n.commonUpdated, value: compose.updateTime),
+        OrchestrationDetailLineWidget(
+          label: l10n.commonPath,
+          value: compose.path,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.commonStatus,
+          value: compose.status,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.commonVersion,
+          value: compose.version,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.containerInfoCreated,
+          value: compose.createTime,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.commonUpdated,
+          value: compose.updateTime,
+        ),
         if (compose.services case final services? when services.isNotEmpty)
           OrchestrationDetailLineWidget(
             label: l10n.orchestrationServicesLabel,
@@ -169,11 +124,13 @@ class ComposeCardDialogs {
     bool forceDelete = false;
     bool deleteFile = false;
 
-    final shouldDelete = await showDialog<bool>(
-      context: context,
+    final shouldDelete = await showAdaptiveFormPanel<bool>(
+      context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.orchestrationComposeDelete),
+        builder: (context, setState) => AppFormPanel(
+          title: l10n.orchestrationComposeDelete,
+          confirmLabel: l10n.orchestrationComposeDelete,
+          destructive: true,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,19 +159,7 @@ class ComposeCardDialogs {
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(l10n.orchestrationComposeDelete),
-            ),
-          ],
+          onConfirm: () async => Navigator.of(context).pop(true),
         ),
       ),
     );
@@ -228,6 +173,89 @@ class ComposeCardDialogs {
         force: forceDelete,
         withFile: deleteFile,
       ),
+    );
+  }
+}
+
+class _ComposeForm extends StatefulWidget {
+  const _ComposeForm({required this.compose, required this.title});
+
+  final ComposeProject compose;
+  final String title;
+
+  @override
+  State<_ComposeForm> createState() => _ComposeFormState();
+}
+
+class _ComposeFormState extends State<_ComposeForm> {
+  late final _nameController = TextEditingController(text: widget.compose.name);
+  late final _pathController = TextEditingController(
+    text: widget.compose.path ?? '',
+  );
+  final _contentController = TextEditingController();
+  final _envController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _pathController.dispose();
+    _contentController.dispose();
+    _envController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: widget.title,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: l10n.commonName,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _pathController,
+            decoration: InputDecoration(
+              labelText: l10n.commonPath,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _contentController,
+            decoration: InputDecoration(
+              labelText: l10n.orchestrationComposeContentLabel,
+              border: const OutlineInputBorder(),
+            ),
+            maxLines: 8,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _envController,
+            decoration: InputDecoration(
+              labelText: l10n.env,
+              border: const OutlineInputBorder(),
+            ),
+            maxLines: 4,
+          ),
+        ],
+      ),
+      onConfirm: () async {
+        final env = _envController.text.trim();
+        Navigator.of(context).pop((
+          name: _nameController.text.trim(),
+          path: _pathController.text.trim(),
+          content: _contentController.text,
+          env: env.isEmpty ? null : env,
+        ));
+      },
     );
   }
 }
