@@ -51,6 +51,11 @@ class TextPreviewSheet extends StatelessWidget {
                   icon: const Icon(Icons.copy_all_outlined),
                   tooltip: context.l10n.commonCopy,
                 ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                  tooltip: context.l10n.commonClose,
+                ),
               ],
             ),
             const SizedBox(height: 16),

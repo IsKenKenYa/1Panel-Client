@@ -116,3 +116,147 @@ Future<bool> showAppFormDialog(
   );
   return result ?? false;
 }
+
+/// 单输入字段对话框，内部管理并释放 [TextEditingController]。
+///
+/// 传 [onSubmit] 时在弹窗内执行提交并显示防重加载状态，返回 `true` 后关闭；
+/// 不传 [onSubmit] 时直接返回输入的文本，取消返回 `null`。
+Future<String?> showAppTextInputDialog(
+  BuildContext context, {
+  required String title,
+  String? message,
+  String initialValue = '',
+  String? labelText,
+  String? hintText,
+  bool obscureText = false,
+  int maxLines = 1,
+  TextInputType? keyboardType,
+  bool autofocus = true,
+  bool trim = true,
+  bool allowEmpty = false,
+  String? confirmLabel,
+  Future<bool> Function(String value)? onSubmit,
+}) {
+  return showDialog<String>(
+    context: context,
+    builder: (_) => _AppTextInputDialog(
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      labelText: labelText,
+      hintText: hintText,
+      obscureText: obscureText,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      autofocus: autofocus,
+      trim: trim,
+      allowEmpty: allowEmpty,
+      confirmLabel: confirmLabel,
+      onSubmit: onSubmit,
+    ),
+  );
+}
+
+class _AppTextInputDialog extends StatefulWidget {
+  const _AppTextInputDialog({
+    required this.title,
+    this.message,
+    required this.initialValue,
+    this.labelText,
+    this.hintText,
+    required this.obscureText,
+    required this.maxLines,
+    this.keyboardType,
+    required this.autofocus,
+    required this.trim,
+    required this.allowEmpty,
+    this.confirmLabel,
+    this.onSubmit,
+  });
+
+  final String title;
+  final String? message;
+  final String initialValue;
+  final String? labelText;
+  final String? hintText;
+  final bool obscureText;
+  final int maxLines;
+  final TextInputType? keyboardType;
+  final bool autofocus;
+  final bool trim;
+  final bool allowEmpty;
+  final String? confirmLabel;
+  final Future<bool> Function(String value)? onSubmit;
+
+  @override
+  State<_AppTextInputDialog> createState() => _AppTextInputDialogState();
+}
+
+class _AppTextInputDialogState extends State<_AppTextInputDialog> {
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initialValue);
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleConfirm() async {
+    if (_saving) return;
+    final value = widget.trim ? _controller.text.trim() : _controller.text;
+    if (!widget.allowEmpty && value.isEmpty) {
+      return;
+    }
+    final onSubmit = widget.onSubmit;
+    if (onSubmit == null) {
+      Navigator.of(context).pop(value);
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final ok = await onSubmit(value);
+      if (ok && mounted) {
+        Navigator.of(context).pop(value);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _saving = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppFormDialog(
+      title: widget.title,
+      isSaving: _saving,
+      confirmLabel: widget.confirmLabel,
+      onConfirm: _handleConfirm,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.message != null) ...[
+            Text(widget.message!),
+            const SizedBox(height: 12),
+          ],
+          TextField(
+            controller: _controller,
+            obscureText: widget.obscureText,
+            maxLines: widget.obscureText ? 1 : widget.maxLines,
+            keyboardType: widget.keyboardType,
+            autofocus: widget.autofocus,
+            enabled: !_saving,
+            decoration: InputDecoration(
+              labelText: widget.labelText,
+              hintText: widget.hintText,
+            ),
+            onSubmitted: (_) => _handleConfirm(),
+          ),
+        ],
+      ),
+    );
+  }
+}
