@@ -49,7 +49,7 @@ class PanelCredentialFields extends StatelessWidget {
           child: TextFormField(
             enabled: enabled,
             key: ValueKey(field.id),
-            obscureText: true,
+            obscureText: field.obscureText,
             enableSuggestions: false,
             autocorrect: false,
             decoration: InputDecoration(

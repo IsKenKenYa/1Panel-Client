@@ -1,6 +1,7 @@
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 
+import 'dpanel_adapter.dart';
 import 'one_panel_adapter.dart';
 import 'panel_adapter.dart';
 
@@ -13,6 +14,7 @@ class PanelRegistry {
 
   static final instance = PanelRegistry([
     OnePanelAdapter(clientManager: ApiClientManager.instance),
+    const DPanelAdapter(),
   ]);
 
   final _adapters = <String, PanelAdapter>{};

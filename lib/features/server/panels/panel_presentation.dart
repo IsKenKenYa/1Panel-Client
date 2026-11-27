@@ -2,18 +2,27 @@ import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/panels/dpanel_adapter.dart';
 import 'package:onepanel_client/data/panels/panel_adapter.dart';
 import 'package:onepanel_client/data/panels/panel_registry.dart';
 
+import 'dpanel_module_sections.dart';
 import 'one_panel_module_sections.dart';
 
 /// 注册时提供本地化标签，凭据值只交给所选面板。
 class PanelCredentialField {
-  const PanelCredentialField(this.id, this.label, {this.isRequired = true});
+  const PanelCredentialField(
+    this.id,
+    this.label, {
+    this.isRequired = true,
+    this.obscureText = true,
+  });
 
   final String id;
   final String Function(BuildContext) label;
   final bool isRequired;
+  final bool obscureText;
 }
 
 class PanelPresentation {
@@ -41,6 +50,35 @@ abstract final class PanelPresentations {
       needsCapabilities: false,
       buildModules: (context, server, access) =>
           OnePanelModuleSections(serverId: server.id),
+    ),
+    DPanelAdapter.panelTypeId: PanelPresentation(
+      name: 'DPanel',
+      usesApiKey: false,
+      needsCapabilities: true,
+      fields: [
+        PanelCredentialField(
+          DPanelAdapter.fieldUsername,
+          (context) => context.l10n.commonUsername,
+          obscureText: false,
+        ),
+        PanelCredentialField(
+          DPanelAdapter.fieldPassword,
+          (context) => context.l10n.commonPassword,
+        ),
+        PanelCredentialField(
+          DPanelAdapter.fieldEntrance,
+          (context) => context.l10n.securitySettingsSecurityEntrance,
+          isRequired: false,
+          obscureText: false,
+        ),
+        PanelCredentialField(
+          DPanelAdapter.fieldTotpCode,
+          (context) => context.l10n.securitySettingsMfaCode,
+          isRequired: false,
+        ),
+      ],
+      buildModules: (context, server, access) =>
+          DPanelModuleSections(server: server, capabilities: access),
     ),
   };
 
