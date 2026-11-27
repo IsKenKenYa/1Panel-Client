@@ -5,10 +5,8 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 /// 网络分区：NAT / Bridge / Macvtap 三类与已用 IP 查看。
 class VmNetworkTab extends StatelessWidget {
@@ -49,7 +47,8 @@ class VmNetworkTab extends StatelessWidget {
             isLoading:
                 provider.networkState.isLoading && provider.networks.isEmpty,
             isEmpty:
-                provider.networks.isEmpty && provider.networkState.error == null,
+                provider.networks.isEmpty &&
+                provider.networkState.error == null,
             errorMessage: provider.networkState.error,
             onRetry: provider.loadNetworks,
             emptyTitle: l10n.vmNetworkEmptyTitle,
@@ -70,7 +69,8 @@ class VmNetworkTab extends StatelessWidget {
                 children: <Widget>[
                   ExpressiveSection(
                     title: l10n.vmTabNetworks,
-                    isBusy: provider.networks.isEmpty == false &&
+                    isBusy:
+                        provider.networks.isEmpty == false &&
                         provider.isMutating,
                     children: <Widget>[
                       for (final network in provider.networks)
@@ -99,8 +99,7 @@ class _NetworkCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final typeLabel = _typeLabel(l10n, network.type);
-    final running =
-        network.status == 'running' || network.status == 'Running';
+    final running = network.status == 'running' || network.status == 'Running';
 
     final meta = <String>[
       typeLabel,
@@ -131,8 +130,7 @@ class _NetworkCard extends StatelessWidget {
                   color: network.error.isEmpty
                       ? scheme.secondaryContainer
                       : scheme.errorContainer,
-                  borderRadius:
-                      BorderRadius.circular(AppDesignTokens.radiusSm),
+                  borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -161,8 +159,9 @@ class _NetworkCard extends StatelessWidget {
                       meta.join(' · '),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                     if (network.type == 'nat' &&
                         (network.gateway.isNotEmpty ||
@@ -174,16 +173,18 @@ class _NetworkCard extends StatelessWidget {
                         ' · ${l10n.vmNetworkDhcpEndLabel} ${network.dhcpEnd}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                     if (!network.registered) ...[
                       const SizedBox(height: AppDesignTokens.spacingXs),
                       Text(
                         l10n.vmNetworkNotRegistered,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.error),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.error,
+                        ),
                       ),
                     ],
                     if (network.description.isNotEmpty) ...[
@@ -192,8 +193,9 @@ class _NetworkCard extends StatelessWidget {
                         network.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ],
@@ -235,23 +237,31 @@ class _NetworkCard extends StatelessWidget {
   }
 
   Future<void> _toggleStatus(
-      BuildContext context, VMNetworkItem network, bool enable) async {
+    BuildContext context,
+    VMNetworkItem network,
+    bool enable,
+  ) async {
     final l10n = context.l10n;
     try {
-      await provider.updateNetwork(VMNetworkUpdate(
-        id: network.id,
-        status: enable ? 'running' : 'stopped',
-      ));
-      if (!context.mounted) return;
+      await provider.updateNetwork(
+        VMNetworkUpdate(id: network.id, status: enable ? 'running' : 'stopped'),
+      );
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
 
   Future<void> _deleteNetwork(
-      BuildContext context, VMNetworkItem network) async {
+    BuildContext context,
+    VMNetworkItem network,
+  ) async {
     final l10n = context.l10n;
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
@@ -260,26 +270,30 @@ class _NetworkCard extends StatelessWidget {
       confirmLabel: l10n.commonDelete,
       isDestructive: true,
     );
-    if (!confirmed || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.deleteNetwork(network.id);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonDeleted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
 
-  Future<void> _showUsedIps(
-      BuildContext context, VMNetworkItem network) {
+  Future<void> _showUsedIps(BuildContext context, VMNetworkItem network) {
     final l10n = context.l10n;
-    return showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        scrollable: true,
-        title: Text(l10n.vmNetworkUsedIpTitle),
-        content: network.usedIPs.isEmpty
+    return showAppDetailsSheet(
+      context,
+      title: l10n.vmNetworkUsedIpTitle,
+      children: [
+        network.usedIPs.isEmpty
             ? Text(l10n.vmNetworkUsedIpEmpty)
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -292,22 +306,18 @@ class _NetworkCard extends StatelessWidget {
                   ],
                   rows: <DataRow>[
                     for (final usage in network.usedIPs)
-                      DataRow(cells: <DataCell>[
-                        DataCell(Text(usage.ip)),
-                        DataCell(Text(usage.vmName)),
-                        DataCell(Text(usage.mac)),
-                        DataCell(Text(usage.source)),
-                      ]),
+                      DataRow(
+                        cells: <DataCell>[
+                          DataCell(Text(usage.ip)),
+                          DataCell(Text(usage.vmName)),
+                          DataCell(Text(usage.mac)),
+                          DataCell(Text(usage.source)),
+                        ],
+                      ),
                   ],
                 ),
               ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonClose),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -369,7 +379,9 @@ class _VmNetworkFormState extends State<_VmNetworkForm> {
     try {
       final bridges = await provider.listBridges();
       final interfaces = await provider.listInterfaces();
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _bridges = bridges;
         _interfaces = interfaces;
@@ -377,11 +389,12 @@ class _VmNetworkFormState extends State<_VmNetworkForm> {
         _bridgeName = recommended.isEmpty
             ? (bridges.isEmpty ? null : bridges.first.name)
             : recommended.first.name;
-        _sourceInterface =
-            interfaces.isEmpty ? null : interfaces.first.name;
+        _sourceInterface = interfaces.isEmpty ? null : interfaces.first.name;
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -401,8 +414,9 @@ class _VmNetworkFormState extends State<_VmNetworkForm> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     // Bridge 只提供标记为推荐的网桥。
-    final recommendedBridges =
-        _bridges.where((item) => item.recommended).toList(growable: false);
+    final recommendedBridges = _bridges
+        .where((item) => item.recommended)
+        .toList(growable: false);
     return AppFormPanel(
       title: l10n.vmNetworkCreateAction,
       isSaving: _saving,
@@ -494,8 +508,9 @@ class _VmNetworkFormState extends State<_VmNetworkForm> {
           if (_type == 'macvtap') ...[
             DropdownButtonFormField<String>(
               initialValue: _sourceInterface,
-              decoration:
-                  InputDecoration(labelText: l10n.vmNetworkSourceInterfaceLabel),
+              decoration: InputDecoration(
+                labelText: l10n.vmNetworkSourceInterfaceLabel,
+              ),
               items: <DropdownMenuItem<String>>[
                 for (final nic in _interfaces)
                   DropdownMenuItem(
@@ -537,19 +552,23 @@ class _VmNetworkFormState extends State<_VmNetworkForm> {
     }
     setState(() => _saving = true);
     try {
-      await provider.createNetwork(VMNetworkCreate(
-        name: name,
-        type: _type,
-        bridgeName: _type == 'bridge' ? _bridgeName : null,
-        sourceInterface: _type == 'macvtap' ? _sourceInterface : null,
-        cidr: _type == 'nat' ? _cidrController.text.trim() : null,
-        gateway: _type == 'nat' ? _gatewayController.text.trim() : null,
-        dhcpStart: _type == 'nat' ? _dhcpStartController.text.trim() : null,
-        dhcpEnd: _type == 'nat' ? _dhcpEndController.text.trim() : null,
-        autoStart: _autoStart,
-        description: _descriptionController.text.trim(),
-      ));
-      if (!mounted) return;
+      await provider.createNetwork(
+        VMNetworkCreate(
+          name: name,
+          type: _type,
+          bridgeName: _type == 'bridge' ? _bridgeName : null,
+          sourceInterface: _type == 'macvtap' ? _sourceInterface : null,
+          cidr: _type == 'nat' ? _cidrController.text.trim() : null,
+          gateway: _type == 'nat' ? _gatewayController.text.trim() : null,
+          dhcpStart: _type == 'nat' ? _dhcpStartController.text.trim() : null,
+          dhcpEnd: _type == 'nat' ? _dhcpEndController.text.trim() : null,
+          autoStart: _autoStart,
+          description: _descriptionController.text.trim(),
+        ),
+      );
+      if (!mounted) {
+        return;
+      }
       Navigator.of(context).pop();
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {

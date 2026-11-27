@@ -6,23 +6,29 @@ import 'package:onepanel_client/data/models/vm/vm_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/features/vm/vm_status.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_sparkline.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 /// 打开虚拟机实时监控弹层。
 Future<void> showVmMonitorDialog(BuildContext context, VMItem vm) {
-  return showDialog<void>(
-    context: context,
-    builder: (_) => VmMonitorDialog(vm: vm),
+  final provider = context.read<VmProvider>();
+  return showAppFormSheet<void>(
+    context,
+    title: '${context.l10n.vmMonitorTitle} · ${vm.name}',
+    builder: (_) => ChangeNotifierProvider.value(
+      value: provider,
+      child: VmMonitorDialog(vm: vm),
+    ),
   );
 }
 
-class VmMonitorDialog extends StatefulWidget {
+class VmMonitorDialog extends StatelessWidget {
   const VmMonitorDialog({super.key, required this.vm});
 
   final VMItem vm;
 
   @override
-  State<VmMonitorView> createState() => _VmMonitorState();
+  Widget build(BuildContext context) => VmMonitorView(vm: vm);
 }
 
 /// 监控内容视图；与弹层共用同一状态机，便于测试直接挂载。
@@ -56,8 +62,11 @@ class _VmMonitorState extends State<VmMonitorView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _poll();
+      if (!mounted) {
+        return;
+      }
       _timer = Timer.periodic(_pollInterval, (_) => _poll());
+      _poll();
     });
   }
 
@@ -68,7 +77,9 @@ class _VmMonitorState extends State<VmMonitorView> {
   }
 
   Future<void> _poll() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     if (!VmStatus.isRunning(widget.vm)) {
       setState(() => _running = false);
       _timer?.cancel();
@@ -76,14 +87,19 @@ class _VmMonitorState extends State<VmMonitorView> {
     }
     try {
       final stats = await context.read<VmProvider>().getStats(widget.vm.name);
-      if (!mounted) return;      setState(() {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
         _previous = _latest;
         _latest = stats;
         _error = null;
         _appendSample(stats);
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       _timer?.cancel();
       setState(() {
         _error = error.toString();
@@ -100,14 +116,15 @@ class _VmMonitorState extends State<VmMonitorView> {
       _disk.add(0);
       _network.add(0);
     } else {
-      final seconds =
-          (stats.timestamp - previous.timestamp).abs();
+      final seconds = (stats.timestamp - previous.timestamp).abs();
       final elapsed = seconds <= 0 ? 1 : seconds;
       _cpu.add(_cpuPercent(stats, previous));
       _memory.add(_memoryPercent(stats));
-      final diskDelta = (stats.disk.readBytes - previous.disk.readBytes).abs() +
+      final diskDelta =
+          (stats.disk.readBytes - previous.disk.readBytes).abs() +
           (stats.disk.writeBytes - previous.disk.writeBytes).abs();
-      final netDelta = (stats.network.rxBytes - previous.network.rxBytes).abs() +
+      final netDelta =
+          (stats.network.rxBytes - previous.network.rxBytes).abs() +
           (stats.network.txBytes - previous.network.txBytes).abs();
       _disk.add(diskDelta / elapsed);
       _network.add(netDelta / elapsed);
@@ -126,11 +143,15 @@ class _VmMonitorState extends State<VmMonitorView> {
 
   /// CPU 使用率：两次采样的 cpuTime 差值除以采样间隔与核数。
   double _cpuPercent(VMStats stats, VMStats? previous) {
-    if (previous == null || stats.vcpu <= 0) return 0;
+    if (previous == null || stats.vcpu <= 0) {
+      return 0;
+    }
     final seconds = (stats.timestamp - previous.timestamp).abs();
     final elapsed = seconds <= 0 ? 1 : seconds;
     final delta = stats.cpuTime - previous.cpuTime;
-    if (delta <= 0) return 0;
+    if (delta <= 0) {
+      return 0;
+    }
     final percent = delta / (elapsed * stats.vcpu);
     return percent.clamp(0, 1).toDouble() * 100;
   }
@@ -138,9 +159,13 @@ class _VmMonitorState extends State<VmMonitorView> {
   /// 内存使用率：已用内存（总量减可用）占比。
   double _memoryPercent(VMStats stats) {
     final total = stats.memory.actualKiB;
-    if (total <= 0) return 0;
+    if (total <= 0) {
+      return 0;
+    }
     final used = total - stats.memory.availableKiB;
-    if (used <= 0) return 0;
+    if (used <= 0) {
+      return 0;
+    }
     return (used / total).clamp(0, 1).toDouble() * 100;
   }
 
@@ -149,76 +174,51 @@ class _VmMonitorState extends State<VmMonitorView> {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final latest = _latest;
-    return Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720, maxHeight: 640),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      '${l10n.vmMonitorTitle} · ${widget.vm.name}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip:
-                        MaterialLocalizations.of(context).closeButtonTooltip,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (!_running)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                _error ?? l10n.vmMonitorStopped,
+                style: TextStyle(color: scheme.error),
               ),
-              if (!_running)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    _error ?? l10n.vmMonitorStopped,
-                    style: TextStyle(color: scheme.error),
-                  ),
-                ),
-              if (latest == null && _cpu.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: Text(l10n.vmMonitorWaitingSamples),
-                ),
-              _MonitorRow(
-                label: l10n.vmMonitorCpuChart,
-                samples: _cpu,
-                current: latest == null || _cpu.isEmpty
-                    ? null
-                    : _cpu.last,
-                unit: '%',
-              ),
-              _MonitorRow(
-                label: l10n.vmMonitorMemoryChart,
-                samples: _memory,
-                current: latest == null || _memory.isEmpty
-                    ? null
-                    : _memory.last,
-                unit: '%',
-              ),
-              _MonitorRow(
-                label: l10n.vmMonitorDiskChart,
-                samples: _disk,
-                current: _disk.isEmpty ? null : _disk.last,
-                unit: 'B/s',
-                bytesFormatter: true,
-              ),
-              _MonitorRow(
-                label: l10n.vmMonitorNetworkChart,
-                samples: _network,
-                current: _network.isEmpty ? null : _network.last,
-                unit: 'B/s',
-                bytesFormatter: true,
-              ),
-            ],
+            ),
+          if (latest == null && _cpu.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Text(l10n.vmMonitorWaitingSamples),
+            ),
+          _MonitorRow(
+            label: l10n.vmMonitorCpuChart,
+            samples: _cpu,
+            current: latest == null || _cpu.isEmpty ? null : _cpu.last,
+            unit: '%',
           ),
-        ),
+          _MonitorRow(
+            label: l10n.vmMonitorMemoryChart,
+            samples: _memory,
+            current: latest == null || _memory.isEmpty ? null : _memory.last,
+            unit: '%',
+          ),
+          _MonitorRow(
+            label: l10n.vmMonitorDiskChart,
+            samples: _disk,
+            current: _disk.isEmpty ? null : _disk.last,
+            unit: 'B/s',
+            bytesFormatter: true,
+          ),
+          _MonitorRow(
+            label: l10n.vmMonitorNetworkChart,
+            samples: _network,
+            current: _network.isEmpty ? null : _network.last,
+            unit: 'B/s',
+            bytesFormatter: true,
+          ),
+        ],
       ),
     );
   }
@@ -245,8 +245,8 @@ class _MonitorRow extends StatelessWidget {
     final displayValue = current == null
         ? '--'
         : bytesFormatter
-            ? _formatBytesPerSecond(current!)
-            : '${current!.toStringAsFixed(1)}$unit';
+        ? _formatBytesPerSecond(current!)
+        : '${current!.toStringAsFixed(1)}$unit';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -260,10 +260,7 @@ class _MonitorRow extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
-              Text(
-                displayValue,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
+              Text(displayValue, style: Theme.of(context).textTheme.titleSmall),
             ],
           ),
           const SizedBox(height: 6),

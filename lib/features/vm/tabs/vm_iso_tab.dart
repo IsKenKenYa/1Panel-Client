@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -7,7 +7,6 @@ import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_iso_form.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 
 /// ISO 分区：状态标签、导入进度与三种来源入口。
@@ -68,8 +67,8 @@ class VmIsoTab extends StatelessWidget {
                 children: <Widget>[
                   ExpressiveSection(
                     title: l10n.vmTabIso,
-                    isBusy: provider.isos.isEmpty == false &&
-                        provider.isMutating,
+                    isBusy:
+                        provider.isos.isEmpty == false && provider.isMutating,
                     children: <Widget>[
                       for (final iso in provider.isos)
                         _IsoCard(iso: iso, provider: provider),
@@ -120,8 +119,7 @@ class _IsoCard extends StatelessWidget {
                   color: iso.isExist
                       ? scheme.secondaryContainer
                       : scheme.errorContainer,
-                  borderRadius:
-                      BorderRadius.circular(AppDesignTokens.radiusSm),
+                  borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -158,8 +156,9 @@ class _IsoCard extends StatelessWidget {
                       iso.path,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                     if (meta.isNotEmpty) ...[
                       const SizedBox(height: AppDesignTokens.spacingXs),
@@ -167,8 +166,9 @@ class _IsoCard extends StatelessWidget {
                         meta.join(' · '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: scheme.onSurfaceVariant),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                     if (iso.error.isNotEmpty) ...[
@@ -177,8 +177,9 @@ class _IsoCard extends StatelessWidget {
                         iso.error,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.error),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.error,
+                        ),
                       ),
                     ],
                   ],
@@ -217,43 +218,40 @@ class _IsoCard extends StatelessWidget {
   Future<void> _deleteIso(BuildContext context, VMIsoItem iso) async {
     final l10n = context.l10n;
     var deleteFile = false;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, setState) => AlertDialog(
-          title: Text(l10n.vmIsoDeleteAction),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(iso.name),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: deleteFile,
-                title: Text(l10n.vmIsoDeleteFileLabel),
-                onChanged: (value) => setState(() => deleteFile = value ?? false),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.vmIsoDeleteAction),
+    final confirmed = await showAppFormDialog(
+      context,
+      title: l10n.vmIsoDeleteAction,
+      confirmLabel: l10n.vmIsoDeleteAction,
+      destructive: true,
+      onConfirm: () async {},
+      content: StatefulBuilder(
+        builder: (_, setState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(iso.name),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              value: deleteFile,
+              title: Text(l10n.vmIsoDeleteFileLabel),
+              onChanged: (value) => setState(() => deleteFile = value ?? false),
             ),
           ],
         ),
       ),
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.deleteIso(iso.id, deleteFile: deleteFile);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonDeleted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }

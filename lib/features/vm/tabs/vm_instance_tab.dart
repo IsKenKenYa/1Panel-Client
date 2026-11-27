@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -12,8 +12,6 @@ import 'package:onepanel_client/features/vm/widgets/vm_instance_card.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_instance_dialogs.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_monitor_dialog.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 /// 虚拟机实例分区：列表、筛选与创建入口。
 class VmInstanceTab extends StatelessWidget {
@@ -36,10 +34,9 @@ class VmInstanceTab extends StatelessWidget {
             emptyTitle: l10n.vmInstanceEmptyTitle,
             emptyDescription: l10n.vmInstanceEmptyDescription,
             emptyIcon: Icons.computer_outlined,
-            emptyActionLabel:
-                provider.canCreateVm && provider.environmentReady
-                    ? l10n.vmInstanceCreateAction
-                    : null,
+            emptyActionLabel: provider.canCreateVm && provider.environmentReady
+                ? l10n.vmInstanceCreateAction
+                : null,
             onEmptyAction: () => showVmCreateDialog(context),
             child: RefreshIndicator(
               onRefresh: provider.loadVms,
@@ -104,7 +101,9 @@ class _InstanceToolbar extends StatelessWidget {
                   hintText: l10n.vmInstanceSearchHint,
                   filled: true,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
+                    borderRadius: BorderRadius.circular(
+                      AppDesignTokens.radiusXl,
+                    ),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -117,9 +116,7 @@ class _InstanceToolbar extends StatelessWidget {
               ),
               const SizedBox(width: AppDesignTokens.spacingXs),
               FilledButton.tonalIcon(
-                onPressed: canCreate
-                    ? () => showVmCreateDialog(context)
-                    : null,
+                onPressed: canCreate ? () => showVmCreateDialog(context) : null,
                 icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.vmInstanceCreateAction),
               ),
@@ -135,7 +132,9 @@ class _InstanceToolbar extends StatelessWidget {
                         ? Icons.info_outlined
                         : Icons.warning_amber_outlined,
                     size: 16,
-                    color: canCreate ? scheme.onSurfaceVariant : scheme.tertiary,
+                    color: canCreate
+                        ? scheme.onSurfaceVariant
+                        : scheme.tertiary,
                   ),
                   const SizedBox(width: 6),
                   Expanded(
@@ -149,14 +148,15 @@ class _InstanceToolbar extends StatelessWidget {
                 ],
               ),
             ),
-          if (!provider.environmentReady && provider.environmentState.error == null)
+          if (!provider.environmentReady &&
+              provider.environmentState.error == null)
             Padding(
               padding: const EdgeInsets.only(top: 6),
               child: Text(
                 l10n.vmInstanceCreateDisabledHint,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: scheme.tertiary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: scheme.tertiary),
               ),
             ),
         ],
@@ -174,78 +174,129 @@ Future<void> showVmCreateDialog(BuildContext context) {
 Future<void> showVmInstanceActions(BuildContext context, VMItem vm) async {
   final provider = context.read<VmProvider>();
   final l10n = context.l10n;
-  final action = await showModalBottomSheet<String>(
-    context: context,
-    showDragHandle: true,
+  final action = await showAppFormSheet<String>(
+    context,
+    title: vm.name,
     builder: (sheetContext) {
       final options = <_VmActionOption>[
         if (VmStatus.canOpenConsole(vm))
-          _VmActionOption('console', l10n.vmInstanceActionConsole,
-              Icons.desktop_windows_outlined),
+          _VmActionOption(
+            'console',
+            l10n.vmInstanceActionConsole,
+            Icons.desktop_windows_outlined,
+          ),
         if (VmStatus.isRunning(vm) || vm.status == 'blocked')
           _VmActionOption(
-              'monitor', l10n.vmInstanceActionMonitor, Icons.monitor_heart_outlined),
-        _VmActionOption('detail', l10n.vmInstanceActionDetail,
-            Icons.info_outlined),
+            'monitor',
+            l10n.vmInstanceActionMonitor,
+            Icons.monitor_heart_outlined,
+          ),
+        _VmActionOption(
+          'detail',
+          l10n.vmInstanceActionDetail,
+          Icons.info_outlined,
+        ),
         if (VmStatus.canInspectResources(vm))
-          _VmActionOption('health', l10n.vmInstanceActionHealthCheck,
-              Icons.medical_services_outlined),
+          _VmActionOption(
+            'health',
+            l10n.vmInstanceActionHealthCheck,
+            Icons.medical_services_outlined,
+          ),
         if (VmStatus.canOperate(vm, 'start'))
-          _VmActionOption('start', l10n.vmInstanceActionStart,
-              Icons.play_arrow_outlined),
+          _VmActionOption(
+            'start',
+            l10n.vmInstanceActionStart,
+            Icons.play_arrow_outlined,
+          ),
         if (VmStatus.canOperate(vm, 'shutdown'))
           _VmActionOption(
-              'shutdown', l10n.vmInstanceActionShutdown, Icons.power_settings_new),
+            'shutdown',
+            l10n.vmInstanceActionShutdown,
+            Icons.power_settings_new,
+          ),
         if (VmStatus.canOperate(vm, 'reboot'))
-          _VmActionOption('reboot', l10n.vmInstanceActionReboot, Icons.restart_alt),
+          _VmActionOption(
+            'reboot',
+            l10n.vmInstanceActionReboot,
+            Icons.restart_alt,
+          ),
         if (VmStatus.canOperate(vm, 'suspend'))
           _VmActionOption('suspend', l10n.vmInstanceActionSuspend, Icons.pause),
         if (VmStatus.canOperate(vm, 'resume'))
-          _VmActionOption('resume', l10n.vmInstanceActionResume, Icons.play_circle_outline),
+          _VmActionOption(
+            'resume',
+            l10n.vmInstanceActionResume,
+            Icons.play_circle_outline,
+          ),
         if (VmStatus.canOperate(vm, 'destroy'))
-          _VmActionOption('destroy', l10n.vmInstanceActionDestroy, Icons.dangerous_outlined),
+          _VmActionOption(
+            'destroy',
+            l10n.vmInstanceActionDestroy,
+            Icons.dangerous_outlined,
+          ),
         if (VmStatus.canEdit(vm))
-          _VmActionOption('edit', l10n.vmInstanceActionEdit, Icons.edit_outlined),
-        _VmActionOption('rename', l10n.vmInstanceActionRename, Icons.drive_file_rename_outline),
-        if (VmStatus.canResizeDisk(vm))
-          _VmActionOption('resize', l10n.vmInstanceActionDisk, Icons.storage_outlined),
-        if (VmStatus.canInspectResources(vm))
-          _VmActionOption('snapshot', l10n.vmInstanceActionSnapshot,
-              Icons.history_outlined),
-        if (VmStatus.canEdit(vm))
-          _VmActionOption('template', l10n.vmInstanceActionTemplate,
-              Icons.copy_all_outlined),
-        _VmActionOption('delete', l10n.vmInstanceActionDelete, Icons.delete_outline,
-            destructive: true),
-      ];
-      return SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            for (final option in options)
-              ListTile(
-                leading: Icon(
-                  option.icon,
-                  color: option.destructive
-                      ? Theme.of(sheetContext).colorScheme.error
-                      : null,
-                ),
-                title: Text(
-                  option.label,
-                  style: option.destructive
-                      ? TextStyle(
-                          color: Theme.of(sheetContext).colorScheme.error)
-                      : null,
-                ),
-                onTap: () => Navigator.of(sheetContext).pop(option.id),
-              ),
-          ],
+          _VmActionOption(
+            'edit',
+            l10n.vmInstanceActionEdit,
+            Icons.edit_outlined,
+          ),
+        _VmActionOption(
+          'rename',
+          l10n.vmInstanceActionRename,
+          Icons.drive_file_rename_outline,
         ),
+        if (VmStatus.canResizeDisk(vm))
+          _VmActionOption(
+            'resize',
+            l10n.vmInstanceActionDisk,
+            Icons.storage_outlined,
+          ),
+        if (VmStatus.canInspectResources(vm))
+          _VmActionOption(
+            'snapshot',
+            l10n.vmInstanceActionSnapshot,
+            Icons.history_outlined,
+          ),
+        if (VmStatus.canEdit(vm))
+          _VmActionOption(
+            'template',
+            l10n.vmInstanceActionTemplate,
+            Icons.copy_all_outlined,
+          ),
+        _VmActionOption(
+          'delete',
+          l10n.vmInstanceActionDelete,
+          Icons.delete_outline,
+          destructive: true,
+        ),
+      ];
+      return ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          for (final option in options)
+            ListTile(
+              leading: Icon(
+                option.icon,
+                color: option.destructive
+                    ? Theme.of(sheetContext).colorScheme.error
+                    : null,
+              ),
+              title: Text(
+                option.label,
+                style: option.destructive
+                    ? TextStyle(color: Theme.of(sheetContext).colorScheme.error)
+                    : null,
+              ),
+              onTap: () => Navigator.of(sheetContext).pop(option.id),
+            ),
+        ],
       );
     },
   );
 
-  if (action == null || !context.mounted) return;
+  if (action == null || !context.mounted) {
+    return;
+  }
   switch (action) {
     case 'console':
       await showVmConsole(context, vm, provider);
@@ -292,20 +343,30 @@ Future<void> _operateVm(
     confirmLabel: label,
     isDestructive: operation == 'destroy' || operation == 'shutdown',
   );
-  if (!confirmed || !context.mounted) return;
+  if (!confirmed || !context.mounted) {
+    return;
+  }
   try {
     await provider.operate(vm.name, operation);
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     SnackBarUtils.showSuccess(context, l10n.vmInstanceOperateCompleted(label));
   } catch (error) {
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     SnackBarUtils.showError(context, error.toString());
   }
 }
 
 class _VmActionOption {
-  const _VmActionOption(this.id, this.label, this.icon,
-      {this.destructive = false});
+  const _VmActionOption(
+    this.id,
+    this.label,
+    this.icon, {
+    this.destructive = false,
+  });
 
   final String id;
   final String label;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/label_value_row.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -9,8 +8,7 @@ import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/features/vm/vm_status.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_instance_card.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// 虚拟机详情弹层：基本信息、磁盘表与网卡表。
 Future<void> showVmDetailDialog(
@@ -18,14 +16,10 @@ Future<void> showVmDetailDialog(
   VMItem vm,
   VmProvider provider,
 ) async {
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720, maxHeight: 640),
-        child: _VmDetailBody(vm: vm),
-      ),
-    ),
+  await showAppFormSheet<void>(
+    context,
+    title: vm.name,
+    builder: (_) => _VmDetailBody(vm: vm),
   );
 }
 
@@ -42,22 +36,7 @@ class _VmDetailBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  vm.name,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              VmStatusChip(status: vm.status),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
+          VmStatusChip(status: vm.status),
           const SizedBox(height: 12),
           _DetailRow(label: l10n.vmInstanceUuidLabel, value: vm.uuid),
           _DetailRow(
@@ -70,10 +49,7 @@ class _VmDetailBody extends StatelessWidget {
           ),
           _DetailRow(label: l10n.vmInstanceDiskBusColumn, value: vm.diskBus),
           _DetailRow(label: l10n.vmInstanceNetworkColumn, value: vm.network),
-          _DetailRow(
-            label: l10n.vmInstanceBootOrderLabel,
-            value: vm.bootOrder,
-          ),
+          _DetailRow(label: l10n.vmInstanceBootOrderLabel, value: vm.bootOrder),
           _DetailRow(
             label: l10n.vmInstanceIsoPathsLabel,
             value: vm.isoPaths.join(', '),
@@ -84,10 +60,7 @@ class _VmDetailBody extends StatelessWidget {
                 ? ''
                 : '${vm.graphics!.type} ${vm.graphics!.listen}:${vm.graphics!.port}',
           ),
-          _DetailRow(
-            label: l10n.commonDescription,
-            value: vm.description,
-          ),
+          _DetailRow(label: l10n.commonDescription, value: vm.description),
           const SizedBox(height: 16),
           SectionCard(
             title: l10n.vmInstanceDisksSectionTitle,
@@ -97,19 +70,27 @@ class _VmDetailBody extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
                       columns: <DataColumn>[
-                        DataColumn(label: Text(l10n.vmInstanceDiskDeviceColumn)),
-                        DataColumn(label: Text(l10n.vmInstanceDiskTargetColumn)),
+                        DataColumn(
+                          label: Text(l10n.vmInstanceDiskDeviceColumn),
+                        ),
+                        DataColumn(
+                          label: Text(l10n.vmInstanceDiskTargetColumn),
+                        ),
                         DataColumn(label: Text(l10n.vmInstanceDiskBusColumn)),
-                        DataColumn(label: Text(l10n.vmInstanceDiskSourceColumn)),
+                        DataColumn(
+                          label: Text(l10n.vmInstanceDiskSourceColumn),
+                        ),
                       ],
                       rows: <DataRow>[
                         for (final disk in vm.disks)
-                          DataRow(cells: <DataCell>[
-                            DataCell(Text(disk.device)),
-                            DataCell(Text(disk.target)),
-                            DataCell(Text(disk.bus)),
-                            DataCell(Text(disk.source)),
-                          ]),
+                          DataRow(
+                            cells: <DataCell>[
+                              DataCell(Text(disk.device)),
+                              DataCell(Text(disk.target)),
+                              DataCell(Text(disk.bus)),
+                              DataCell(Text(disk.source)),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -124,20 +105,24 @@ class _VmDetailBody extends StatelessWidget {
                     child: DataTable(
                       columns: <DataColumn>[
                         DataColumn(label: Text(l10n.vmInstanceNicTypeColumn)),
-                        DataColumn(label: Text(l10n.vmInstanceNicNetworkColumn)),
+                        DataColumn(
+                          label: Text(l10n.vmInstanceNicNetworkColumn),
+                        ),
                         DataColumn(label: Text(l10n.vmInstanceNicModelColumn)),
                         DataColumn(label: Text(l10n.vmInstanceNicMacColumn)),
                         DataColumn(label: Text(l10n.vmInstanceNicIpColumn)),
                       ],
                       rows: <DataRow>[
                         for (final nic in vm.interfaces)
-                          DataRow(cells: <DataCell>[
-                            DataCell(Text(nic.type)),
-                            DataCell(Text(nic.source)),
-                            DataCell(Text(nic.model)),
-                            DataCell(Text(nic.mac)),
-                            DataCell(Text(nic.ip)),
-                          ]),
+                          DataRow(
+                            cells: <DataCell>[
+                              DataCell(Text(nic.type)),
+                              DataCell(Text(nic.source)),
+                              DataCell(Text(nic.model)),
+                              DataCell(Text(nic.mac)),
+                              DataCell(Text(nic.ip)),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -182,25 +167,25 @@ Future<void> showVmConsole(
   }
   try {
     final graphics = await provider.loadConsole(vm.name);
-    if (!context.mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => _VmConsoleDialog(
-        vmName: vm.name,
-        graphics: graphics,
-      ),
+    if (!context.mounted) {
+      return;
+    }
+    await showAppFormSheet<void>(
+      context,
+      title: l10n.vmInstanceActionConsole,
+      showCloseButton: false,
+      builder: (_) => _VmConsoleDetails(vmName: vm.name, graphics: graphics),
     );
   } catch (error) {
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     SnackBarUtils.showError(context, error.toString());
   }
 }
 
-class _VmConsoleDialog extends StatelessWidget {
-  const _VmConsoleDialog({
-    required this.vmName,
-    required this.graphics,
-  });
+class _VmConsoleDetails extends StatelessWidget {
+  const _VmConsoleDetails({required this.vmName, required this.graphics});
 
   final String vmName;
   final VMGraphics graphics;
@@ -208,68 +193,80 @@ class _VmConsoleDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final address = _resolveConsoleAddress(context, graphics);
-    return AlertDialog(
-      scrollable: true,
-      title: Text(l10n.vmInstanceActionConsole),
-      content: Column(
+    final address = _resolveConsoleAddress(graphics);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _DetailRow(label: vmName, value: vmName),
-          _DetailRow(
-            label: l10n.vmInstanceGraphicsLabel,
-            value: graphics.type,
-          ),
+          _DetailRow(label: l10n.vmInstanceGraphicsLabel, value: graphics.type),
           _DetailRow(label: l10n.commonAddress, value: graphics.listen),
           _DetailRow(label: l10n.commonPort, value: graphics.port),
           if (address != null) ...[
             const SizedBox(height: 12),
             Text(l10n.vmInstanceConsoleAddressLabel),
             const SizedBox(height: 4),
-            SelectableText(address, style: Theme.of(context).textTheme.bodySmall),
+            SelectableText(
+              address,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
           const SizedBox(height: 8),
           Text(
             l10n.vmInstanceConsoleOpenHint,
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          const SizedBox(height: 12),
+          OverflowBar(
+            alignment: MainAxisAlignment.end,
+            spacing: 8,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.commonCancel),
+              ),
+              if (address != null)
+                FilledButton.icon(
+                  onPressed: () => _openInBrowser(context, address),
+                  icon: const Icon(Icons.open_in_new, size: 18),
+                  label: Text(l10n.vmInstanceConsoleOpenAction),
+                ),
+            ],
+          ),
         ],
       ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.commonCancel),
-        ),
-        if (address != null)
-          FilledButton.icon(
-            onPressed: () => _openInBrowser(context, address),
-            icon: const Icon(Icons.open_in_new, size: 18),
-            label: Text(l10n.vmInstanceConsoleOpenAction),
-          ),
-      ],
     );
   }
 
   /// 服务端给出 url 时直接使用；否则以图形监听地址组装 VNC 地址。
-  String? _resolveConsoleAddress(BuildContext context, VMGraphics graphics) {
+  String? _resolveConsoleAddress(VMGraphics graphics) {
     final explicit = graphics.url;
     if (explicit != null && explicit.isNotEmpty) {
       return explicit;
     }
-    if (graphics.listen.isEmpty || graphics.port.isEmpty) return null;
+    if (graphics.listen.isEmpty || graphics.port.isEmpty) {
+      return null;
+    }
     final scheme = graphics.listen.startsWith('0.0.0.0') ? 'vnc' : 'vnc';
     return '$scheme://${graphics.listen.replaceAll('0.0.0.0', '127.0.0.1')}:${graphics.port}';
   }
 
   Future<void> _openInBrowser(BuildContext context, String address) async {
     final uri = Uri.tryParse(address);
-    if (uri == null) return;
+    if (uri == null) {
+      return;
+    }
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     if (!opened) {
       await Clipboard.setData(ClipboardData(text: address));
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showWarning(
         context,
         context.l10n.vmInstanceConsoleOpenHint,
@@ -318,13 +315,19 @@ class _VmHealthCheckPanelState extends State<_VmHealthCheckPanel> {
     });
     try {
       final result = await widget.provider.healthCheck(widget.vm.name);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() => _result = result);
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() => _error = error.toString());
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -377,8 +380,7 @@ class _VmHealthCheckPanelState extends State<_VmHealthCheckPanel> {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
-                    if (item.fixCommand != null &&
-                        item.fixCommand!.isNotEmpty)
+                    if (item.fixCommand != null && item.fixCommand!.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(left: 4, top: 4),
                         child: Row(
@@ -399,9 +401,13 @@ class _VmHealthCheckPanelState extends State<_VmHealthCheckPanel> {
                                 await Clipboard.setData(
                                   ClipboardData(text: item.fixCommand!),
                                 );
-                                if (!context.mounted) return;
+                                if (!context.mounted) {
+                                  return;
+                                }
                                 SnackBarUtils.showSuccess(
-                                    context, l10n.commonCopySuccess);
+                                  context,
+                                  l10n.commonCopySuccess,
+                                );
                               },
                             ),
                           ],
@@ -440,10 +446,7 @@ class _HealthLevelChip extends StatelessWidget {
       ),
       child: Text(
         normalized,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: color),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
       ),
     );
   }
@@ -462,11 +465,7 @@ Future<void> showVmSnapshotDialog(
 }
 
 class VmSnapshotView extends StatefulWidget {
-  const VmSnapshotView({
-    super.key,
-    required this.vm,
-    required this.provider,
-  });
+  const VmSnapshotView({super.key, required this.vm, required this.provider});
 
   final VMItem vm;
   final VmProvider provider;
@@ -494,12 +493,19 @@ class _VmSnapshotViewState extends State<VmSnapshotView> {
     });
     try {
       final items = await widget.provider.listSnapshots(widget.vm.name);
-      if (!mounted) return;
-      setState(() => _snapshots = items);    } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
+      setState(() => _snapshots = items);
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
       setState(() => _error = error.toString());
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -588,145 +594,112 @@ class _VmSnapshotViewState extends State<VmSnapshotView> {
   }
 
   Future<void> _createSnapshot(BuildContext context) async {
-    final l10n = context.l10n;
-    final nameController = TextEditingController(
-      text: 'snapshot-${DateTime.now().millisecondsSinceEpoch}',
+    final request = await showAdaptiveFormPanel<VMSnapshotReq>(
+      context,
+      builder: (_) => _VmSnapshotCreateForm(vmName: widget.vm.name),
     );
-    final descriptionController = TextEditingController();
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.vmInstanceSnapshotCreateAction),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextField(
-              controller: nameController,
-              decoration:
-                  InputDecoration(labelText: l10n.vmInstanceSnapshotNameLabel),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(labelText: l10n.commonDescription),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !context.mounted) return;
+    if (request == null || !context.mounted) {
+      return;
+    }
     setState(() => _saving = true);
     try {
-      await widget.provider.createSnapshot(VMSnapshotReq(
-        name: widget.vm.name,
-        snapshotName: nameController.text.trim(),
-        description: descriptionController.text.trim(),
-      ));
-      if (!mounted) return;
+      await widget.provider.createSnapshot(request);
+      if (!mounted) {
+        return;
+      }
       await _load();
     } catch (error) {
       if (context.mounted) {
         SnackBarUtils.showError(context, error.toString());
       }
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() => _saving = false);
+      }
     }
   }
 
   Future<void> _recoverSnapshot(
-      BuildContext context, VMSnapshotItem snapshot) async {
+    BuildContext context,
+    VMSnapshotItem snapshot,
+  ) async {
     final l10n = context.l10n;
     if (!VmStatus.isShutOff(widget.vm)) {
       SnackBarUtils.showWarning(context, l10n.vmInstanceSnapshotNeedShutOff);
       return;
     }
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.vmInstanceSnapshotRecoverAction),
-        content: Text(l10n.vmInstanceSnapshotRecoverConfirm(snapshot.name)),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.vmInstanceSnapshotRecoverAction),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.vmInstanceSnapshotRecoverAction,
+      message: l10n.vmInstanceSnapshotRecoverConfirm(snapshot.name),
+      confirmLabel: l10n.vmInstanceSnapshotRecoverAction,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     setState(() => _saving = true);
     try {
-      await widget.provider.recoverSnapshot(VMSnapshotReq(
-        name: widget.vm.name,
-        snapshotName: snapshot.name,
-      ));
-      if (!mounted) return;
+      await widget.provider.recoverSnapshot(
+        VMSnapshotReq(name: widget.vm.name, snapshotName: snapshot.name),
+      );
+      if (!mounted) {
+        return;
+      }
       await _load();
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {
       if (context.mounted) {
         SnackBarUtils.showError(context, error.toString());
       }
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() => _saving = false);
+      }
     }
   }
 
   Future<void> _deleteSnapshot(
-      BuildContext context, VMSnapshotItem snapshot) async {
+    BuildContext context,
+    VMSnapshotItem snapshot,
+  ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.vmInstanceSnapshotDeleteAction),
-        content: Text(snapshot.name),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.vmInstanceSnapshotDeleteAction),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.vmInstanceSnapshotDeleteAction,
+      message: snapshot.name,
+      confirmLabel: l10n.vmInstanceSnapshotDeleteAction,
+      isDestructive: true,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     setState(() => _saving = true);
     try {
-      await widget.provider.deleteSnapshot(VMSnapshotReq(
-        name: widget.vm.name,
-        snapshotName: snapshot.name,
-      ));
-      if (!mounted) return;
+      await widget.provider.deleteSnapshot(
+        VMSnapshotReq(name: widget.vm.name, snapshotName: snapshot.name),
+      );
+      if (!mounted) {
+        return;
+      }
       await _load();
     } catch (error) {
       if (context.mounted) {
         SnackBarUtils.showError(context, error.toString());
       }
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() => _saving = false);
+      }
     }
   }
 
   static String _formatTimestamp(int value) {
-    if (value <= 0) return '--';
+    if (value <= 0) {
+      return '--';
+    }
     final asSeconds = value > 100000000000
         ? DateTime.fromMillisecondsSinceEpoch(value)
         : DateTime.fromMillisecondsSinceEpoch(value * 1000);
@@ -741,5 +714,59 @@ class _VmSnapshotViewState extends State<VmSnapshotView> {
       return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MiB';
     }
     return '$bytes B';
+  }
+}
+
+class _VmSnapshotCreateForm extends StatefulWidget {
+  const _VmSnapshotCreateForm({required this.vmName});
+
+  final String vmName;
+
+  @override
+  State<_VmSnapshotCreateForm> createState() => _VmSnapshotCreateFormState();
+}
+
+class _VmSnapshotCreateFormState extends State<_VmSnapshotCreateForm> {
+  final nameController = TextEditingController(
+    text: 'snapshot-${DateTime.now().millisecondsSinceEpoch}',
+  );
+  final descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.vmInstanceSnapshotCreateAction,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              labelText: l10n.vmInstanceSnapshotNameLabel,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: descriptionController,
+            decoration: InputDecoration(labelText: l10n.commonDescription),
+          ),
+        ],
+      ),
+      onConfirm: () async => Navigator.of(context).pop(
+        VMSnapshotReq(
+          name: widget.vmName,
+          snapshotName: nameController.text.trim(),
+          description: descriptionController.text.trim(),
+        ),
+      ),
+    );
   }
 }

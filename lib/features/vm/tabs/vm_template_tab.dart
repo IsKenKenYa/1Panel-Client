@@ -6,7 +6,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// 模板分区：列表、删除与磁盘删除选项。
 class VmTemplateTab extends StatelessWidget {
@@ -41,7 +41,8 @@ class VmTemplateTab extends StatelessWidget {
           child: AsyncStatePageBodyWidget(
             isLoading:
                 provider.templateState.isLoading && provider.templates.isEmpty,
-            isEmpty: provider.templates.isEmpty &&
+            isEmpty:
+                provider.templates.isEmpty &&
                 provider.templateState.error == null,
             errorMessage: provider.templateState.error,
             onRetry: provider.loadTemplates,
@@ -98,8 +99,7 @@ class _TemplateCard extends StatelessWidget {
     final statusText = template.isExist
         ? l10n.vmIsoStatusReady
         : l10n.vmIsoStatusFileMissing;
-    final statusColor =
-        template.isExist ? scheme.primary : scheme.error;
+    final statusColor = template.isExist ? scheme.primary : scheme.error;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -119,8 +119,7 @@ class _TemplateCard extends StatelessWidget {
                   color: template.isExist
                       ? scheme.secondaryContainer
                       : scheme.errorContainer,
-                  borderRadius:
-                      BorderRadius.circular(AppDesignTokens.radiusSm),
+                  borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -151,8 +150,9 @@ class _TemplateCard extends StatelessWidget {
                         const SizedBox(width: AppDesignTokens.spacingSm),
                         Text(
                           statusText,
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: statusColor),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: statusColor,
+                          ),
                         ),
                       ],
                     ),
@@ -161,8 +161,9 @@ class _TemplateCard extends StatelessWidget {
                       meta.join(' · '),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                     if (template.diskPath.isNotEmpty) ...[
                       const SizedBox(height: AppDesignTokens.spacingXs),
@@ -170,8 +171,9 @@ class _TemplateCard extends StatelessWidget {
                         template.diskPath,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                     if (template.description.isNotEmpty) ...[
@@ -180,8 +182,9 @@ class _TemplateCard extends StatelessWidget {
                         template.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: scheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ],
@@ -209,48 +212,46 @@ class _TemplateCard extends StatelessWidget {
   }
 
   Future<void> _deleteTemplate(
-      BuildContext context, VMTemplateItem template) async {
+    BuildContext context,
+    VMTemplateItem template,
+  ) async {
     final l10n = context.l10n;
     var deleteDisk = false;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, setState) => AlertDialog(
-          title: Text(l10n.vmTemplateDeleteAction),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('${template.name}\n${template.diskPath}'),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: deleteDisk,
-                title: Text(l10n.vmTemplateDeleteDiskLabel),
-                onChanged: (value) =>
-                    setState(() => deleteDisk = value ?? false),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.vmTemplateDeleteAction),
+    final confirmed = await showAppFormDialog(
+      context,
+      title: l10n.vmTemplateDeleteAction,
+      confirmLabel: l10n.vmTemplateDeleteAction,
+      destructive: true,
+      onConfirm: () async {},
+      content: StatefulBuilder(
+        builder: (_, setState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('${template.name}\n${template.diskPath}'),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              value: deleteDisk,
+              title: Text(l10n.vmTemplateDeleteDiskLabel),
+              onChanged: (value) => setState(() => deleteDisk = value ?? false),
             ),
           ],
         ),
       ),
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.deleteTemplate(template.id, deleteDisk: deleteDisk);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonDeleted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -265,4 +266,3 @@ class _TemplateCard extends StatelessWidget {
     return '$bytes B';
   }
 }
-
