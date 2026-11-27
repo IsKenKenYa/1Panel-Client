@@ -24,7 +24,7 @@ class OnePanelModuleSections extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionEntryList(
+        SectionCard(
           title: l10n.shellPinnedModulesTitle,
           description: l10n.shellPinnedModulesDescription,
           action: TextButton.icon(
@@ -32,23 +32,27 @@ class OnePanelModuleSections extends StatelessWidget {
             icon: const Icon(Icons.tune),
             label: Text(l10n.shellPinnedModulesCustomize),
           ),
-          items: [
-            for (final module in pins) _buildClientModuleItem(context, module),
-          ],
+          child: _AdaptiveModuleGrid(
+            items: [
+              for (final module in pins) _buildClientModuleItem(context, module),
+            ],
+          ),
         ),
         const SizedBox(height: AppDesignTokens.spacingLg),
-        SectionEntryList(
+        SectionCard(
           title: l10n.serverModulesTitle,
-          items: [
-            for (final module in kPinnableClientModules)
-              if (!pins.contains(module))
-                _buildClientModuleItem(context, module),
-          ],
+          child: _AdaptiveModuleGrid(
+            items: [
+              for (final module in kPinnableClientModules)
+                if (!pins.contains(module))
+                  _buildClientModuleItem(context, module),
+            ],
+          ),
         ),
         const SizedBox(height: AppDesignTokens.spacingLg),
-        SectionEntryList(
+        SectionCard(
           title: l10n.commonMore,
-          items: _buildServerModuleItems(context),
+          child: _AdaptiveModuleGrid(items: _buildServerModuleItems(context)),
         ),
       ],
     );
@@ -162,5 +166,158 @@ class OnePanelModuleSections extends StatelessWidget {
       return;
     }
     openRouteRespectingShell(context, route);
+  }
+}
+
+class _AdaptiveModuleGrid extends StatelessWidget {
+  const _AdaptiveModuleGrid({required this.items});
+
+  final List<SectionEntryItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final textScale = MediaQuery.textScalerOf(context).scale(14) / 14;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final columns = textScale >= 1.35 || width < 360
+            ? 1
+            : width >= 720
+            ? 3
+            : 2;
+
+        if (columns == 1) {
+          return Column(
+            children: [
+              for (final (index, item) in items.indexed) ...[
+                _buildTile(theme, scheme, item, compact: false),
+                if (index < items.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: AppDesignTokens.spacingLg,
+                    endIndent: AppDesignTokens.spacingLg,
+                    color: scheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
+              ],
+            ],
+          );
+        }
+
+        final rows = <List<SectionEntryItem>>[];
+        for (var i = 0; i < items.length; i += columns) {
+          final end = (i + columns).clamp(0, items.length);
+          rows.add(items.sublist(i, end));
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(AppDesignTokens.spacingSm),
+          child: Column(
+            children: [
+              for (final (rowIndex, row) in rows.indexed) ...[
+                if (rowIndex > 0)
+                  const SizedBox(height: AppDesignTokens.spacingSm),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var col = 0; col < columns; col++) ...[
+                        if (col > 0)
+                          const SizedBox(width: AppDesignTokens.spacingSm),
+                        Expanded(
+                          child: col < row.length
+                              ? Material(
+                                  color: scheme.surfaceContainerLow,
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppDesignTokens.radiusMd,
+                                    ),
+                                    side: BorderSide(
+                                      color: scheme.outlineVariant.withValues(
+                                        alpha: 0.45,
+                                      ),
+                                    ),
+                                  ),
+                                  child: _buildTile(
+                                    theme,
+                                    scheme,
+                                    row[col],
+                                    compact: true,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTile(
+    ThemeData theme,
+    ColorScheme scheme,
+    SectionEntryItem item, {
+    required bool compact,
+  }) {
+    return ListTile(
+      key: item.key,
+      minTileHeight: compact ? 52 : 56,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: compact
+            ? AppDesignTokens.spacingMd
+            : AppDesignTokens.spacingLg,
+        vertical: AppDesignTokens.spacingXs,
+      ),
+      leading: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+        ),
+        alignment: Alignment.center,
+        child: Icon(item.icon, size: 20),
+      ),
+      title: Text(
+        item.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: !compact && item.subtitle != null
+          ? Text(
+              item.subtitle!,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            )
+          : null,
+      trailing: compact
+          ? null
+          : item.trailing ??
+                (item.onTap == null
+                    ? null
+                    : Icon(
+                        Icons.chevron_right_rounded,
+                        size: 20,
+                        color: scheme.onSurfaceVariant,
+                      )),
+      onTap: item.onTap,
+    );
   }
 }

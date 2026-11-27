@@ -8,8 +8,7 @@ import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// 宽内容区内打开对话框，其余宽度使用独立页面。
 Future<bool?> openServerForm(BuildContext context, {String? serverId}) {
@@ -17,15 +16,14 @@ Future<bool?> openServerForm(BuildContext context, {String? serverId}) {
       ? const ServerFormPage()
       : _EditServerForm(serverId: serverId);
   if (AdaptiveLayoutSpec.of(context).isDesktop) {
-    return showDialog<bool>(
-      context: context,
-      routeSettings: const RouteSettings(name: AppRoutes.serverConfig),
+    return showAdaptiveFormPanel<bool>(
+      context,
       builder: (dialogContext) => LayoutBuilder(
         builder: (context, constraints) {
           final spec = AdaptiveLayoutSpec.of(context);
           final compact =
               constraints.maxWidth < PlatformUtils.mobileWidthBreakpoint ||
-                  constraints.maxHeight < 480;
+              constraints.maxHeight < 480;
           return Dialog(
             insetPadding: compact ? EdgeInsets.zero : spec.dialogInsetPadding,
             constraints: compact
@@ -64,22 +62,22 @@ class _EditServerFormState extends State<_EditServerForm> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<ApiConfig>(
-        future: _config,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ServerFormPage(existing: snapshot.requireData);
-          }
-          return Scaffold(
-            appBar: AppBar(title: Text(context.l10n.serverFormEditTitle)),
-            body: snapshot.hasError
-                ? ModuleErrorStateWidget(
-                    message: context.l10n.serverFormStorageError,
-                    onRetry: () => setState(() => _config = _load()),
-                  )
-                : const Center(child: CircularProgressIndicator()),
-          );
-        },
+    future: _config,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return ServerFormPage(existing: snapshot.requireData);
+      }
+      return Scaffold(
+        appBar: AppBar(title: Text(context.l10n.serverFormEditTitle)),
+        body: snapshot.hasError
+            ? ModuleErrorStateWidget(
+                message: context.l10n.serverFormStorageError,
+                onRetry: () => setState(() => _config = _load()),
+              )
+            : const Center(child: CircularProgressIndicator()),
       );
+    },
+  );
 }
 
 /// 用户确认后删除指定服务器并刷新当前选择。
@@ -104,10 +102,7 @@ Future<bool> confirmAndDeleteServer(
     if (!context.mounted) {
       return true;
     }
-    SnackBarUtils.showSuccess(
-      context,
-      l10n.serverDeleteSuccess(config.name),
-    );
+    SnackBarUtils.showSuccess(context, l10n.serverDeleteSuccess(config.name));
     return true;
   } catch (error) {
     if (!context.mounted) {
