@@ -6,8 +6,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_clam_provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 part 'toolbox_clam_page_actions_part.dart';

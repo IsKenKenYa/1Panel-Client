@@ -6,10 +6,11 @@ import 'package:onepanel_client/data/models/host_tool_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_host_tool_provider.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_sections_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class ToolboxHostToolPage extends StatefulWidget {
   const ToolboxHostToolPage({super.key});
 
@@ -174,7 +175,11 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
                         isThreeLine: true,
                         trailing: PopupMenuButton<String>(
                           onSelected: (String value) => _handleProcessAction(
-                              context, provider, process, value),
+                            context,
+                            provider,
+                            process,
+                            value,
+                          ),
                           itemBuilder: (_) => <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(
                               value: 'edit',
@@ -222,58 +227,16 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     ToolboxHostToolProvider provider,
   ) async {
     final l10n = context.l10n;
-    final configPathController =
-        TextEditingController(text: provider.serviceInfo.configPath);
-    final serviceNameController =
-        TextEditingController(text: provider.serviceInfo.serviceName);
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dialogContext) => AlertDialog(
-        title: Text(l10n.toolboxHostToolInitAction),
-        scrollable: true,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextField(
-              controller: configPathController,
-              decoration: InputDecoration(
-                labelText: l10n.toolboxHostToolConfigPathLabel,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: serviceNameController,
-              decoration: InputDecoration(
-                labelText: l10n.toolboxHostToolServiceNameLabel,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final success = await provider.initSupervisor(
-                configPath: configPathController.text.trim(),
-                serviceName: serviceNameController.text.trim(),
-              );
-              if (!mounted || !dialogContext.mounted) return;
-              Navigator.of(dialogContext).pop();
-              SnackBarUtils.showSuccess(context, 
-                    success
-                        ? l10n.toolboxHostToolSaveSuccess
-                        : (provider.error ?? l10n.commonSaveFailed),
-              );
-            },
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final success = await showAdaptiveFormPanel<bool>(
+      context,
+      builder: (_) => _HostToolInitForm(provider: provider),
+    );
+    if (!context.mounted || success == null) return;
+    SnackBarUtils.showSuccess(
+      context,
+      success
+          ? l10n.toolboxHostToolSaveSuccess
+          : (provider.error ?? l10n.commonSaveFailed),
     );
   }
 
@@ -282,41 +245,27 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     ToolboxHostToolProvider provider,
   ) async {
     final l10n = context.l10n;
-    final controller = TextEditingController(text: provider.configContent);
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dialogContext) => AlertDialog(
-        title: Text(l10n.toolboxHostToolConfigSectionTitle),
-        scrollable: true,
-        content: TextField(
-          controller: controller,
-          maxLines: 14,
-          minLines: 5,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final success =
-                  await provider.saveSupervisorConfig(controller.text);
-              if (!mounted || !dialogContext.mounted) return;
-              Navigator.of(dialogContext).pop();
-              SnackBarUtils.showSuccess(context, 
-                    success
-                        ? l10n.toolboxHostToolSaveSuccess
-                        : (provider.error ?? l10n.commonSaveFailed),
-              );
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: l10n.toolboxHostToolConfigSectionTitle,
+      initialValue: provider.configContent,
+      maxLines: 14,
+      autofocus: false,
+      trim: false,
+      allowEmpty: true,
+      confirmLabel: l10n.commonSave,
+      onSubmit: (value) async {
+        final success = await provider.saveSupervisorConfig(value);
+        if (context.mounted) {
+          SnackBarUtils.showSuccess(
+            context,
+            success
+                ? l10n.toolboxHostToolSaveSuccess
+                : (provider.error ?? l10n.commonSaveFailed),
+          );
+        }
+        return true;
+      },
     );
   }
 
@@ -326,109 +275,17 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     HostToolProcessConfig? initialValue,
   }) async {
     final l10n = context.l10n;
-    final nameController =
-        TextEditingController(text: initialValue?.name ?? '');
-    final commandController =
-        TextEditingController(text: initialValue?.command ?? '');
-    final userController =
-        TextEditingController(text: initialValue?.user ?? '');
-    final dirController = TextEditingController(text: initialValue?.dir ?? '');
-    final numprocsController = TextEditingController(
-        text: initialValue?.numprocs.isNotEmpty == true
-            ? initialValue!.numprocs
-            : '1');
-    final environmentController =
-        TextEditingController(text: initialValue?.environment ?? '');
-    bool autoStart = (initialValue?.autoStart ?? 'true') == 'true';
-    bool autoRestart = (initialValue?.autoRestart ?? 'true') == 'true';
-
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dialogContext) => StatefulBuilder(
-        builder:
-            (BuildContext context, void Function(void Function()) setState) {
-          return AlertDialog(
-            title: Text(
-              initialValue == null
-                  ? l10n.toolboxHostToolProcessCreateTitle
-                  : l10n.toolboxHostToolProcessEditTitle,
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _HostToolField(
-                      controller: nameController, label: l10n.commonName),
-                  _HostToolField(
-                    controller: commandController,
-                    label: l10n.toolboxHostToolCommandLabel,
-                  ),
-                  _HostToolField(
-                    controller: userController,
-                    label: l10n.toolboxHostToolUserLabel,
-                  ),
-                  _HostToolField(
-                    controller: dirController,
-                    label: l10n.toolboxHostToolDirLabel,
-                  ),
-                  _HostToolField(
-                    controller: numprocsController,
-                    label: l10n.toolboxHostToolNumprocsLabel,
-                  ),
-                  _HostToolField(
-                    controller: environmentController,
-                    label: l10n.toolboxHostToolEnvironmentLabel,
-                    maxLines: 3,
-                  ),
-                  SwitchListTile(
-                    value: autoStart,
-                    onChanged: (bool value) =>
-                        setState(() => autoStart = value),
-                    title: Text(l10n.toolboxHostToolAutoStartLabel),
-                  ),
-                  SwitchListTile(
-                    value: autoRestart,
-                    onChanged: (bool value) =>
-                        setState(() => autoRestart = value),
-                    title: Text(l10n.toolboxHostToolAutoRestartLabel),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () async {
-                  final success = await provider.saveProcess(
-                    HostToolProcessConfigRequest(
-                      name: nameController.text.trim(),
-                      operate: initialValue == null ? 'create' : 'update',
-                      command: commandController.text.trim(),
-                      user: userController.text.trim(),
-                      dir: dirController.text.trim(),
-                      numprocs: numprocsController.text.trim(),
-                      autoRestart: autoRestart ? 'true' : 'false',
-                      autoStart: autoStart ? 'true' : 'false',
-                      environment: environmentController.text.trim(),
-                    ),
-                  );
-                  if (!mounted || !dialogContext.mounted) return;
-                  Navigator.of(dialogContext).pop();
-                  SnackBarUtils.showSuccess(context, 
-                        success
-                            ? l10n.toolboxHostToolSaveSuccess
-                            : (provider.error ?? l10n.commonSaveFailed),
-                  );
-                },
-                child: Text(l10n.commonSave),
-              ),
-            ],
-          );
-        },
-      ),
+    final success = await showAdaptiveFormPanel<bool>(
+      context,
+      builder: (_) =>
+          _HostToolProcessForm(provider: provider, initialValue: initialValue),
+    );
+    if (!context.mounted || success == null) return;
+    SnackBarUtils.showSuccess(
+      context,
+      success
+          ? l10n.toolboxHostToolSaveSuccess
+          : (provider.error ?? l10n.commonSaveFailed),
     );
   }
 
@@ -447,68 +304,255 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
       await provider.operateProcess(name: process.name, operate: action);
       return;
     }
-    final content =
-        await provider.loadProcessFile(name: process.name, file: action);
+    final content = await provider.loadProcessFile(
+      name: process.name,
+      file: action,
+    );
     if (!context.mounted || content == null) return;
-    final controller = TextEditingController(text: content);
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dialogContext) => AlertDialog(
-        title: Text(action == 'config'
-            ? l10n.toolboxHostToolConfigFileAction
-            : action == 'out.log'
-                ? l10n.toolboxHostToolOutLogAction
-                : l10n.toolboxHostToolErrLogAction),
-        scrollable: true,
-        content: TextField(
-          controller: controller,
-          maxLines: 14,
-          minLines: 5,
-          readOnly: action != 'config',
-          decoration: const InputDecoration(border: OutlineInputBorder()),
+    if (action == 'config') {
+      await showAppTextInputDialog(
+        context,
+        title: l10n.toolboxHostToolConfigFileAction,
+        initialValue: content,
+        maxLines: 14,
+        autofocus: false,
+        trim: false,
+        allowEmpty: true,
+        confirmLabel: l10n.commonSave,
+        onSubmit: (value) async {
+          final success = await provider.updateProcessFile(
+            name: process.name,
+            file: action,
+            content: value,
+          );
+          if (context.mounted) {
+            SnackBarUtils.showSuccess(
+              context,
+              success
+                  ? l10n.toolboxHostToolSaveSuccess
+                  : (provider.error ?? l10n.commonSaveFailed),
+            );
+          }
+          return true;
+        },
+      );
+    } else {
+      await showAppFormDialog(
+        context,
+        title: action == 'out.log'
+            ? l10n.toolboxHostToolOutLogAction
+            : l10n.toolboxHostToolErrLogAction,
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SelectableText(content),
         ),
-        actions: <Widget>[
-          if (action != 'config')
-            TextButton(
-              onPressed: () async {
-                final success = await provider.clearProcessFile(
-                  name: process.name,
-                  file: action,
-                );
-                if (!mounted || !dialogContext.mounted) return;
-                Navigator.of(dialogContext).pop();
-                SnackBarUtils.showSuccess(context, 
-                      success
-                          ? l10n.toolboxHostToolSaveSuccess
-                          : (provider.error ?? l10n.commonSaveFailed),
-                );
-              },
-              child: Text(l10n.commonClear),
+        confirmLabel: l10n.commonClear,
+        destructive: true,
+        onConfirm: () async {
+          final success = await provider.clearProcessFile(
+            name: process.name,
+            file: action,
+          );
+          if (!context.mounted) return;
+          SnackBarUtils.showSuccess(
+            context,
+            success
+                ? l10n.toolboxHostToolSaveSuccess
+                : (provider.error ?? l10n.commonSaveFailed),
+          );
+        },
+      );
+    }
+  }
+}
+
+class _HostToolInitForm extends StatefulWidget {
+  const _HostToolInitForm({required this.provider});
+
+  final ToolboxHostToolProvider provider;
+
+  @override
+  State<_HostToolInitForm> createState() => _HostToolInitFormState();
+}
+
+class _HostToolInitFormState extends State<_HostToolInitForm> {
+  late final _configPathController = TextEditingController(
+    text: widget.provider.serviceInfo.configPath,
+  );
+  late final _serviceNameController = TextEditingController(
+    text: widget.provider.serviceInfo.serviceName,
+  );
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _configPathController.dispose();
+    _serviceNameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.toolboxHostToolInitAction,
+      isSaving: _saving,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextField(
+            controller: _configPathController,
+            decoration: InputDecoration(
+              labelText: l10n.toolboxHostToolConfigPathLabel,
+              border: const OutlineInputBorder(),
             ),
-          if (action == 'config')
-            FilledButton(
-              onPressed: () async {
-                final success = await provider.updateProcessFile(
-                  name: process.name,
-                  file: action,
-                  content: controller.text,
-                );
-                if (!mounted || !dialogContext.mounted) return;
-                Navigator.of(dialogContext).pop();
-                SnackBarUtils.showSuccess(context, 
-                      success
-                          ? l10n.toolboxHostToolSaveSuccess
-                          : (provider.error ?? l10n.commonSaveFailed),
-                );
-              },
-              child: Text(l10n.commonSave),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _serviceNameController,
+            decoration: InputDecoration(
+              labelText: l10n.toolboxHostToolServiceNameLabel,
+              border: const OutlineInputBorder(),
             ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonClose),
           ),
         ],
       ),
+      onConfirm: () async {
+        if (_saving) return;
+        setState(() => _saving = true);
+        try {
+          final success = await widget.provider.initSupervisor(
+            configPath: _configPathController.text.trim(),
+            serviceName: _serviceNameController.text.trim(),
+          );
+          if (context.mounted && ModalRoute.of(context)?.isCurrent == true) {
+            Navigator.of(context).pop(success);
+          }
+        } finally {
+          if (mounted) setState(() => _saving = false);
+        }
+      },
+    );
+  }
+}
+
+class _HostToolProcessForm extends StatefulWidget {
+  const _HostToolProcessForm({required this.provider, this.initialValue});
+
+  final ToolboxHostToolProvider provider;
+  final HostToolProcessConfig? initialValue;
+
+  @override
+  State<_HostToolProcessForm> createState() => _HostToolProcessFormState();
+}
+
+class _HostToolProcessFormState extends State<_HostToolProcessForm> {
+  late final _nameController = TextEditingController(
+    text: widget.initialValue?.name ?? '',
+  );
+  late final _commandController = TextEditingController(
+    text: widget.initialValue?.command ?? '',
+  );
+  late final _userController = TextEditingController(
+    text: widget.initialValue?.user ?? '',
+  );
+  late final _dirController = TextEditingController(
+    text: widget.initialValue?.dir ?? '',
+  );
+  late final _numprocsController = TextEditingController(
+    text: widget.initialValue?.numprocs.isNotEmpty == true
+        ? widget.initialValue!.numprocs
+        : '1',
+  );
+  late final _environmentController = TextEditingController(
+    text: widget.initialValue?.environment ?? '',
+  );
+  late bool _autoStart = (widget.initialValue?.autoStart ?? 'true') == 'true';
+  late bool _autoRestart =
+      (widget.initialValue?.autoRestart ?? 'true') == 'true';
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _commandController.dispose();
+    _userController.dispose();
+    _dirController.dispose();
+    _numprocsController.dispose();
+    _environmentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: widget.initialValue == null
+          ? l10n.toolboxHostToolProcessCreateTitle
+          : l10n.toolboxHostToolProcessEditTitle,
+      confirmLabel: l10n.commonSave,
+      isSaving: _saving,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _HostToolField(controller: _nameController, label: l10n.commonName),
+          _HostToolField(
+            controller: _commandController,
+            label: l10n.toolboxHostToolCommandLabel,
+          ),
+          _HostToolField(
+            controller: _userController,
+            label: l10n.toolboxHostToolUserLabel,
+          ),
+          _HostToolField(
+            controller: _dirController,
+            label: l10n.toolboxHostToolDirLabel,
+          ),
+          _HostToolField(
+            controller: _numprocsController,
+            label: l10n.toolboxHostToolNumprocsLabel,
+          ),
+          _HostToolField(
+            controller: _environmentController,
+            label: l10n.toolboxHostToolEnvironmentLabel,
+            maxLines: 3,
+          ),
+          SwitchListTile(
+            value: _autoStart,
+            onChanged: (value) => setState(() => _autoStart = value),
+            title: Text(l10n.toolboxHostToolAutoStartLabel),
+          ),
+          SwitchListTile(
+            value: _autoRestart,
+            onChanged: (value) => setState(() => _autoRestart = value),
+            title: Text(l10n.toolboxHostToolAutoRestartLabel),
+          ),
+        ],
+      ),
+      onConfirm: () async {
+        if (_saving) return;
+        setState(() => _saving = true);
+        try {
+          final success = await widget.provider.saveProcess(
+            HostToolProcessConfigRequest(
+              name: _nameController.text.trim(),
+              operate: widget.initialValue == null ? 'create' : 'update',
+              command: _commandController.text.trim(),
+              user: _userController.text.trim(),
+              dir: _dirController.text.trim(),
+              numprocs: _numprocsController.text.trim(),
+              autoRestart: _autoRestart ? 'true' : 'false',
+              autoStart: _autoStart ? 'true' : 'false',
+              environment: _environmentController.text.trim(),
+            ),
+          );
+          if (context.mounted && ModalRoute.of(context)?.isCurrent == true) {
+            Navigator.of(context).pop(success);
+          }
+        } finally {
+          if (mounted) setState(() => _saving = false);
+        }
+      },
     );
   }
 }

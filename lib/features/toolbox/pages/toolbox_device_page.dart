@@ -5,7 +5,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_device_provider.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_device_info_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 part 'toolbox_device_page_actions_part.dart';
