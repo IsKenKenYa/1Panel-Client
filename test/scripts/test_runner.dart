@@ -309,9 +309,15 @@ class TestRunner {
       Platform.resolvedExecutable,
       ['run', 'test/scripts/check_harmony_design_guards.dart'],
     );
+    printHeader('Flutter UI 复用与分层守卫检查');
+    final flutterUiGuardExitCode = await runCommand(
+      Platform.resolvedExecutable,
+      ['run', 'test/scripts/check_flutter_ui_guards.dart'],
+    );
     final normalizedFilter = moduleFilter?.toLowerCase();
     var failures = 0;
     if (harmonyDesignExitCode != 0) failures++;
+    if (flutterUiGuardExitCode != 0) failures++;
 
     if (normalizedFilter == null || normalizedFilter.isEmpty) {
       final okApi = await runTests('test/api/', description: 'API单元测试');
