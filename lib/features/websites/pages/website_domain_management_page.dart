@@ -7,7 +7,7 @@ import '../../../data/models/website_models.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../providers/website_domain_provider.dart';
 import '../widgets/website_common_widgets.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 part 'website_domain_management_actions_part.dart';
 

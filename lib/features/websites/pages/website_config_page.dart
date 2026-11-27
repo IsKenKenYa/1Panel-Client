@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -15,14 +16,18 @@ class WebsiteConfigPage extends StatelessWidget {
   final String? displayName;
   final WebsiteConfigProvider? provider;
 
-  const WebsiteConfigPage(
-      {super.key, required this.websiteId, this.displayName, this.provider});
+  const WebsiteConfigPage({
+    super.key,
+    required this.websiteId,
+    this.displayName,
+    this.provider,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => (provider ?? WebsiteConfigProvider(websiteId: websiteId))
-        ..loadAll(),
+      create: (_) =>
+          (provider ?? WebsiteConfigProvider(websiteId: websiteId))..loadAll(),
       child: _WebsiteConfigBody(title: displayName),
     );
   }
@@ -154,8 +159,10 @@ class _ConfigEditorCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesConfigEditorTitle,
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.websitesConfigEditorTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -213,8 +220,10 @@ class _ScopeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesConfigScopeTitle,
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.websitesConfigScopeTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 12),
             DropdownButtonFormField<NginxKey>(
               initialValue: scope,
@@ -223,8 +232,10 @@ class _ScopeCard extends StatelessWidget {
                 border: const OutlineInputBorder(),
               ),
               items: NginxKey.values
-                  .map((key) =>
-                      DropdownMenuItem(value: key, child: Text(key.value)))
+                  .map(
+                    (key) =>
+                        DropdownMenuItem(value: key, child: Text(key.value)),
+                  )
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -247,9 +258,10 @@ class _ScopeCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(param.name ?? '-',
-                                  style:
-                                      Theme.of(context).textTheme.titleSmall),
+                              Text(
+                                param.name ?? '-',
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
                               const SizedBox(height: 6),
                               Wrap(
                                 spacing: 6,
@@ -277,46 +289,33 @@ class _ScopeCard extends StatelessWidget {
     );
   }
 
-  Future<void> _showEditDialog(BuildContext context, WebsiteNginxParam param,
-      List<WebsiteNginxParam> allParams) async {
+  Future<void> _showEditDialog(
+    BuildContext context,
+    WebsiteNginxParam param,
+    List<WebsiteNginxParam> allParams,
+  ) async {
     final l10n = context.l10n;
-    final controller = TextEditingController(text: param.params.join(','));
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.websitesConfigScopeEditTitle(param.name ?? '-')),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.websitesConfigScopeValuesLabel,
-            hintText: l10n.websitesConfigScopeValuesHint,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final values = controller.text
-                  .split(',')
-                  .map((e) => e.trim())
-                  .where((e) => e.isNotEmpty)
-                  .toList();
-              Navigator.of(ctx).pop();
-              final updated = param.copyWith(params: values);
-              final next = allParams
-                  .map((item) => item.name == updated.name ? updated : item)
-                  .toList();
-              await onEdit(next);
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
+    final input = await showAppTextInputDialog(
+      context,
+      title: l10n.websitesConfigScopeEditTitle(param.name ?? '-'),
+      initialValue: param.params.join(','),
+      labelText: l10n.websitesConfigScopeValuesLabel,
+      hintText: l10n.websitesConfigScopeValuesHint,
+      allowEmpty: true,
+      autofocus: false,
+      confirmLabel: l10n.commonSave,
     );
-    controller.dispose();
+    if (input == null) return;
+    final values = input
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    final updated = param.copyWith(params: values);
+    final next = allParams
+        .map((item) => item.name == updated.name ? updated : item)
+        .toList();
+    await onEdit(next);
   }
 }
 
@@ -346,8 +345,10 @@ class _PhpVersionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesPhpVersionTitle,
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.websitesPhpVersionTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 12),
             Text(
               '${l10n.websitesRuntimeLabel}: ${currentRuntimeName ?? '-'}',
@@ -363,10 +364,7 @@ class _PhpVersionCard extends StatelessWidget {
                 border: const OutlineInputBorder(),
               ),
               items: [
-                const DropdownMenuItem<int?>(
-                  value: null,
-                  child: Text('-'),
-                ),
+                const DropdownMenuItem<int?>(value: null, child: Text('-')),
                 ...runtimes.map(
                   (runtime) => DropdownMenuItem<int?>(
                     value: runtime.id,

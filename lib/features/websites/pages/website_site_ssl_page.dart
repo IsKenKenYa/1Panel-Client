@@ -31,12 +31,13 @@ class WebsiteSiteSslPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<WebsiteSiteSslProvider>(
-      create: (_) => provider ??
-          WebsiteSiteSslProvider(
-            websiteId: websiteId,
-            expectedDomain: displayName,
-          )
-        ..load(),
+      create: (_) =>
+          provider ??
+                WebsiteSiteSslProvider(
+                  websiteId: websiteId,
+                  expectedDomain: displayName,
+                )
+            ..load(),
       child: _WebsiteSiteSslBody(
         websiteId: websiteId,
         displayName: displayName,
@@ -46,10 +47,7 @@ class WebsiteSiteSslPage extends StatelessWidget {
 }
 
 class _WebsiteSiteSslBody extends StatelessWidget {
-  const _WebsiteSiteSslBody({
-    required this.websiteId,
-    this.displayName,
-  });
+  const _WebsiteSiteSslBody({required this.websiteId, this.displayName});
 
   final int websiteId;
   final String? displayName;
@@ -90,7 +88,10 @@ class _WebsiteSiteSslBody extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
               children: [
-                RiskNoticeBanner(notices: localizeWebsiteSiteSslRiskNotices(context, notices), title: l10n.websiteSiteSslRiskNoticesTitle),
+                RiskNoticeBanner(
+                  notices: localizeWebsiteSiteSslRiskNotices(context, notices),
+                  title: l10n.websiteSiteSslRiskNoticesTitle,
+                ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
                 SectionCard(
                   title: l10n.websiteSiteSslCurrentCertSection,
@@ -104,38 +105,39 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                             child: Text(
                               boundCertificate?.primaryDomain ??
                                   l10n.websiteSiteSslNoCertificateBound,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
                           SecurityStatusChip(
                             label: _localizedHealthLabel(
                               context,
                               resolveCertificateHealthStatus(
-                                  boundCertificate?.expireDate),
+                                boundCertificate?.expireDate,
+                              ),
                             ),
                             color: _healthColor(
                               context,
                               resolveCertificateHealthStatus(
-                                  boundCertificate?.expireDate),
+                                boundCertificate?.expireDate,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: AppDesignTokens.spacingMd),
                       LabelValueRow(
-                          label: l10n.websiteSiteSslProviderRow,
-                          value: boundCertificate?.provider ?? '-'),
+                        label: l10n.websiteSiteSslProviderRow,
+                        value: boundCertificate?.provider ?? '-',
+                      ),
                       LabelValueRow(
-                          label: l10n.websiteSiteSslExpirationRow,
-                          value: boundCertificate?.expireDate ?? '-'),
+                        label: l10n.websiteSiteSslExpirationRow,
+                        value: boundCertificate?.expireDate ?? '-',
+                      ),
                       LabelValueRow(
-                          label: l10n.websiteSiteSslCurrentModeRow,
-                          value: currentConfig?.httpConfig ?? '-'),
+                        label: l10n.websiteSiteSslCurrentModeRow,
+                        value: currentConfig?.httpConfig ?? '-',
+                      ),
                     ],
                   ),
                 ),
@@ -153,8 +155,9 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                             : l10n.systemSettingsDisabled,
                       ),
                       LabelValueRow(
-                          label: l10n.websiteSiteSslHttpModeRow,
-                          value: currentConfig?.httpConfig ?? '-'),
+                        label: l10n.websiteSiteSslHttpModeRow,
+                        value: currentConfig?.httpConfig ?? '-',
+                      ),
                       LabelValueRow(
                         label: l10n.websiteSiteSslCertTypeRow,
                         value: currentConfig?.ssl?.type ?? 'existed',
@@ -187,7 +190,9 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                   ConfigDiffPreviewCard(
                     title: l10n.websiteSiteSslStrategyDiffTitle,
                     items: localizeWebsiteSiteSslDiffItems(
-                        context, pendingDiff),
+                      context,
+                      pendingDiff,
+                    ),
                     onApply: provider.isSaving
                         ? null
                         : () async {
@@ -196,11 +201,15 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                               return;
                             }
                             if (success) {
-                              SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+                              SnackBarUtils.showSuccess(
+                                context,
+                                l10n.commonSaveSuccess,
+                              );
                             } else {
                               SnackBarUtils.showError(
-                                  context,
-                                  provider.error ?? l10n.commonSaveFailed);
+                                context,
+                                provider.error ?? l10n.commonSaveFailed,
+                              );
                             }
                           },
                     onDiscard: provider.discardDraft,
@@ -215,7 +224,8 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                     children: [
                       LabelValueRow(
                         label: l10n.websiteSiteSslSelectedCertRow,
-                        value: provider.selectedCertificate?.primaryDomain ??
+                        value:
+                            provider.selectedCertificate?.primaryDomain ??
                             boundCertificate?.primaryDomain ??
                             '-',
                       ),
@@ -228,30 +238,34 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                             onPressed: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => WebsiteSslCenterPage(
-                                    initialWebsiteId: websiteId),
+                                  initialWebsiteId: websiteId,
+                                ),
                               ),
                             ),
                             icon: const Icon(Icons.workspace_premium_outlined),
-                            label: Text(l10n.websiteSiteSslOpenCertCenterAction),
+                            label: Text(
+                              l10n.websiteSiteSslOpenCertCenterAction,
+                            ),
                           ),
                           OutlinedButton.icon(
-                            onPressed: provider.canRollback &&
-                                    !provider.isSaving
+                            onPressed:
+                                provider.canRollback && !provider.isSaving
                                 ? () async {
-                                    final success =
-                                        await provider.rollbackLastSuccessful();
+                                    final success = await provider
+                                        .rollbackLastSuccessful();
                                     if (!context.mounted) {
                                       return;
                                     }
                                     if (success) {
                                       SnackBarUtils.showSuccess(
-                                          context,
-                                          l10n.websiteSiteSslRollbackSuccess);
+                                        context,
+                                        l10n.websiteSiteSslRollbackSuccess,
+                                      );
                                     } else {
                                       SnackBarUtils.showError(
-                                          context,
-                                          provider.error ??
-                                              l10n.commonSaveFailed);
+                                        context,
+                                        provider.error ?? l10n.commonSaveFailed,
+                                      );
                                     }
                                   }
                                 : null,
@@ -308,84 +322,83 @@ class _WebsiteSiteSslBody extends StatelessWidget {
     int? selectedCertificateId =
         provider.selectedCertificate?.id ?? provider.boundCertificate?.id;
 
-    await showDialog<void>(
-      context: context,
+    await showAdaptiveFormPanel<void>(
+      context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.websiteSiteSslUpdateDialogTitle),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.websiteSiteSslEnableHttpsLabel),
-                  value: enable,
-                  onChanged: (value) => setState(() => enable = value),
+        builder: (context, setState) => AppFormPanel(
+          title: l10n.websiteSiteSslUpdateDialogTitle,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.websiteSiteSslEnableHttpsLabel),
+                value: enable,
+                onChanged: (value) => setState(() => enable = value),
+              ),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              DropdownButtonFormField<String>(
+                initialValue: httpConfig,
+                decoration: InputDecoration(
+                  labelText: l10n.websiteSiteSslHttpModeRow,
                 ),
-                const SizedBox(height: AppDesignTokens.spacingSm),
-                DropdownButtonFormField<String>(
-                  initialValue: httpConfig,
-                  decoration: InputDecoration(labelText: l10n.websiteSiteSslHttpModeRow),
-                  items: const [
-                    DropdownMenuItem(
-                        value: 'HTTPAlso', child: Text('HTTPAlso')),
-                    DropdownMenuItem(
-                        value: 'HTTPToHTTPS', child: Text('HTTPToHTTPS')),
-                    DropdownMenuItem(
-                        value: 'HTTPSOnly', child: Text('HTTPSOnly')),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => httpConfig = value ?? 'HTTPAlso'),
+                items: const [
+                  DropdownMenuItem(value: 'HTTPAlso', child: Text('HTTPAlso')),
+                  DropdownMenuItem(
+                    value: 'HTTPToHTTPS',
+                    child: Text('HTTPToHTTPS'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'HTTPSOnly',
+                    child: Text('HTTPSOnly'),
+                  ),
+                ],
+                onChanged: (value) =>
+                    setState(() => httpConfig = value ?? 'HTTPAlso'),
+              ),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              DropdownButtonFormField<int?>(
+                initialValue: selectedCertificateId,
+                decoration: InputDecoration(
+                  labelText: l10n.websiteSiteSslDiffLabelCertificate,
                 ),
-                const SizedBox(height: AppDesignTokens.spacingSm),
-                DropdownButtonFormField<int?>(
-                  initialValue: selectedCertificateId,
-                  decoration: InputDecoration(labelText: l10n.websiteSiteSslDiffLabelCertificate),
-                  items: [
-                    DropdownMenuItem<int?>(
-                      value: null,
-                      child: Text(l10n.websiteSiteSslNoCertificate),
-                    ),
-                    ...provider.certificates.map(
-                      (certificate) => DropdownMenuItem<int?>(
-                        value: certificate.id,
-                        child: Text(certificate.primaryDomain ??
-                            'Certificate #${certificate.id ?? '-'}'),
+                items: [
+                  DropdownMenuItem<int?>(
+                    value: null,
+                    child: Text(l10n.websiteSiteSslNoCertificate),
+                  ),
+                  ...provider.certificates.map(
+                    (certificate) => DropdownMenuItem<int?>(
+                      value: certificate.id,
+                      child: Text(
+                        certificate.primaryDomain ??
+                            'Certificate #${certificate.id ?? '-'}',
                       ),
                     ),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => selectedCertificateId = value),
-                ),
-              ],
-            ),
+                  ),
+                ],
+                onChanged: (value) =>
+                    setState(() => selectedCertificateId = value),
+              ),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(context.l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                WebsiteSSL? nextCertificate;
-                for (final certificate in provider.certificates) {
-                  if (certificate.id == selectedCertificateId) {
-                    nextCertificate = certificate;
-                    break;
-                  }
-                }
-                provider.stageHttpsStrategy(
-                  enable: enable,
-                  httpConfig: httpConfig,
-                  certificate: nextCertificate,
-                  clearCertificate: selectedCertificateId == null,
-                );
-                Navigator.pop(dialogContext);
-              },
-              child: Text(l10n.websiteSiteSslPreviewAction),
-            ),
-          ],
+          confirmLabel: l10n.websiteSiteSslPreviewAction,
+          onConfirm: () async {
+            WebsiteSSL? nextCertificate;
+            for (final certificate in provider.certificates) {
+              if (certificate.id == selectedCertificateId) {
+                nextCertificate = certificate;
+                break;
+              }
+            }
+            provider.stageHttpsStrategy(
+              enable: enable,
+              httpConfig: httpConfig,
+              certificate: nextCertificate,
+              clearCertificate: selectedCertificateId == null,
+            );
+            Navigator.pop(dialogContext);
+          },
         ),
       ),
     );
@@ -405,7 +418,9 @@ class _WebsiteSiteSslBody extends StatelessWidget {
   }
 
   String _localizedHealthLabel(
-      BuildContext context, CertificateHealthStatus status) {
+    BuildContext context,
+    CertificateHealthStatus status,
+  ) {
     final l10n = context.l10n;
     switch (status) {
       case CertificateHealthStatus.healthy:

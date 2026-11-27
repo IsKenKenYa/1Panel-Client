@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/website_group_models.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class WebsiteListDialogs {
   static Future<bool> confirmDelete(
@@ -30,38 +30,22 @@ class WebsiteListDialogs {
     List<WebsiteGroup> groups,
   ) async {
     int? selectedId = groups.first.id;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(context.l10n.websitesSetGroupAction),
-          content: DropdownButtonFormField<int>(
-            initialValue: selectedId,
-            items: [
-              for (final group in groups)
-                DropdownMenuItem<int>(
-                  value: group.id,
-                  child: Text(group.name ?? '${group.id}'),
-                ),
-            ],
-            onChanged: (value) => setState(() => selectedId = value),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text(context.l10n.commonCancel),
+    final confirmed = await showAppFormDialog(
+      context,
+      title: context.l10n.websitesSetGroupAction,
+      content: DropdownButtonFormField<int>(
+        initialValue: selectedId,
+        items: [
+          for (final group in groups)
+            DropdownMenuItem<int>(
+              value: group.id,
+              child: Text(group.name ?? '${group.id}'),
             ),
-            FilledButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text(context.l10n.commonConfirm),
-            ),
-          ],
-        ),
+        ],
+        onChanged: (value) => selectedId = value,
       ),
+      onConfirm: () async {},
     );
-    if (confirmed == true) {
-      return selectedId;
-    }
-    return null;
+    return confirmed ? selectedId : null;
   }
 }

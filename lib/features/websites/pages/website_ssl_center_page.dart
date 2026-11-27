@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../../../data/models/ssl_models.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
 
@@ -17,10 +16,7 @@ import 'website_site_ssl_page.dart';
 import 'website_ssl_accounts_page.dart';
 
 class WebsiteSslCenterPage extends StatelessWidget {
-  const WebsiteSslCenterPage({
-    super.key,
-    this.initialWebsiteId,
-  });
+  const WebsiteSslCenterPage({super.key, this.initialWebsiteId});
 
   final int? initialWebsiteId;
 
@@ -95,40 +91,56 @@ class _WebsiteSslCenterBody extends StatelessWidget {
                           runSpacing: 8,
                           children: [
                             ChoiceChip(
-                              label: Text(l10n.websitesSslFilterAllCount(
-                                  provider.certificates.length)),
-                              selected: provider.expiryWindow ==
+                              label: Text(
+                                l10n.websitesSslFilterAllCount(
+                                  provider.certificates.length,
+                                ),
+                              ),
+                              selected:
+                                  provider.expiryWindow ==
                                   CertificateExpiryWindow.all,
-                              onSelected: (_) => provider
-                                  .setExpiryWindow(CertificateExpiryWindow.all),
+                              onSelected: (_) => provider.setExpiryWindow(
+                                CertificateExpiryWindow.all,
+                              ),
                             ),
                             ChoiceChip(
-                              label: Text(l10n.websitesSslFilterExpiredCount(
-                                  provider.expiredCount)),
-                              selected: provider.expiryWindow ==
+                              label: Text(
+                                l10n.websitesSslFilterExpiredCount(
+                                  provider.expiredCount,
+                                ),
+                              ),
+                              selected:
+                                  provider.expiryWindow ==
                                   CertificateExpiryWindow.expired,
                               onSelected: (_) => provider.setExpiryWindow(
-                                  CertificateExpiryWindow.expired),
+                                CertificateExpiryWindow.expired,
+                              ),
                             ),
                             ChoiceChip(
                               label: Text(
                                 l10n.websitesSslFilterWithin7DaysCount(
-                                    provider.within7DaysCount),
+                                  provider.within7DaysCount,
+                                ),
                               ),
-                              selected: provider.expiryWindow ==
+                              selected:
+                                  provider.expiryWindow ==
                                   CertificateExpiryWindow.within7Days,
                               onSelected: (_) => provider.setExpiryWindow(
-                                  CertificateExpiryWindow.within7Days),
+                                CertificateExpiryWindow.within7Days,
+                              ),
                             ),
                             ChoiceChip(
                               label: Text(
                                 l10n.websitesSslFilterWithin30DaysCount(
-                                    provider.within30DaysCount),
+                                  provider.within30DaysCount,
+                                ),
                               ),
-                              selected: provider.expiryWindow ==
+                              selected:
+                                  provider.expiryWindow ==
                                   CertificateExpiryWindow.within30Days,
                               onSelected: (_) => provider.setExpiryWindow(
-                                  CertificateExpiryWindow.within30Days),
+                                CertificateExpiryWindow.within30Days,
+                              ),
                             ),
                           ],
                         ),
@@ -179,23 +191,17 @@ class _WebsiteSslCenterBody extends StatelessWidget {
                     _CertificateGroupSection(
                       title: _localizedGroupTitle(context, section.key),
                       certificates: section.value,
-                      onTapCertificate: (cert) => _openCertificateDetail(
-                        context,
-                        cert,
-                      ),
+                      onTapCertificate: (cert) =>
+                          _openCertificateDetail(context, cert),
                       onApplyCertificate: (cert) async {
                         await _confirmApplyCertificate(context, cert);
                       },
                       onUpdateCertificate: (cert) =>
                           _showUpdateDialog(context, cert),
-                      onDeleteCertificate: (cert) => _confirmDeleteCertificate(
-                        context,
-                        cert,
-                      ),
-                      onOpenBoundWebsite: (cert) => _openBoundWebsite(
-                        context,
-                        cert,
-                      ),
+                      onDeleteCertificate: (cert) =>
+                          _confirmDeleteCertificate(context, cert),
+                      onOpenBoundWebsite: (cert) =>
+                          _openBoundWebsite(context, cert),
                       boundWebsiteCountOf: (cert) =>
                           provider.affectedWebsiteCount(cert),
                       boundWebsiteDomainsOf: (cert) =>
@@ -210,98 +216,29 @@ class _WebsiteSslCenterBody extends StatelessWidget {
         heroTag: 'website_ssl_center_create_fab',
         onPressed: () => _showCreateDialog(context),
         icon: const Icon(Icons.add_outlined),
-        label: Text(initialWebsiteId == null
-            ? l10n.websitesSslCreateAction
-            : l10n.websitesSslApplyAction),
+        label: Text(
+          initialWebsiteId == null
+              ? l10n.websitesSslCreateAction
+              : l10n.websitesSslApplyAction,
+        ),
       ),
     );
   }
 
   Future<void> _showCreateDialog(BuildContext context) async {
-    final l10n = context.l10n;
-    final acmeController = TextEditingController();
-    final domainController = TextEditingController();
-    final providerController = TextEditingController();
-    var autoRenew = false;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.websitesSslCreateAction),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: acmeController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      labelText: l10n.websitesSslAcmeAccountIdLabel),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: domainController,
-                  decoration:
-                      InputDecoration(labelText: l10n.websitesSslPrimaryDomain),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: providerController,
-                  decoration:
-                      InputDecoration(labelText: l10n.websitesSslProviderLabel),
-                ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.websitesSslAutoRenew),
-                  value: autoRenew,
-                  onChanged: (value) => setState(() => autoRenew = value),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(l10n.commonCancel)),
-            FilledButton(
-              onPressed: () async {
-                final acmeId = int.tryParse(acmeController.text.trim()) ?? 0;
-                final domain = domainController.text.trim();
-                final providerName = providerController.text.trim();
-                Navigator.of(ctx).pop();
-                if (acmeId == 0 || domain.isEmpty || providerName.isEmpty) {
-                  return;
-                }
-                await context
-                    .read<WebsiteSslCenterProvider>()
-                    .createCertificate(
-                      WebsiteSSLCreate(
-                        acmeAccountId: acmeId,
-                        primaryDomain: domain,
-                        provider: providerName,
-                        autoRenew: autoRenew,
-                      ),
-                    );
-              },
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
-        ),
-      ),
+    final provider = context.read<WebsiteSslCenterProvider>();
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (_) => _CenterCertificateForm(provider: provider),
     );
-
-    // Dispose after dialog closes; the controllers are no longer referenced.
-    acmeController.dispose();
-    domainController.dispose();
-    providerController.dispose();
   }
 
   Future<void> _showUploadDialog(BuildContext context) async {
     final provider = context.read<WebsiteSslCenterProvider>();
-    await showDialog<bool>(
-      context: context,
-      builder: (_) => WebsiteSslUploadDialog(onUpload: provider.uploadCertificate),
+    await showAdaptiveFormPanel<bool>(
+      context,
+      builder: (_) =>
+          WebsiteSslUploadDialog(onUpload: provider.uploadCertificate),
     );
   }
 
@@ -378,139 +315,12 @@ class _WebsiteSslCenterBody extends StatelessWidget {
   }
 
   Future<void> _showUpdateDialog(BuildContext context, WebsiteSSL cert) async {
-    final l10n = context.l10n;
-    final certId = cert.id;
-    if (certId == null) {
-      return;
-    }
-
-    final primaryController =
-        TextEditingController(text: cert.primaryDomain ?? '');
-    final providerController = TextEditingController(text: cert.provider ?? '');
-    final descriptionController =
-        TextEditingController(text: cert.description ?? '');
-    final domainsController = TextEditingController(
-      text: (cert.domains ?? const <String>[]).skip(1).join(','),
+    if (cert.id == null) return;
+    final provider = context.read<WebsiteSslCenterProvider>();
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (_) => _CenterCertificateForm(provider: provider, cert: cert),
     );
-    bool autoRenew = cert.autoRenew ?? false;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.websitesSslUpdateAction),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: primaryController,
-                  decoration:
-                      InputDecoration(labelText: l10n.websitesSslPrimaryDomain),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: providerController,
-                  decoration:
-                      InputDecoration(labelText: l10n.websitesSslProviderLabel),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: domainsController,
-                  decoration: InputDecoration(
-                    labelText: l10n.websitesSslOtherDomainsLabel,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                      labelText: l10n.websitesSslDescriptionLabel),
-                ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.websitesSslAutoRenew),
-                  value: autoRenew,
-                  onChanged: (value) => setState(() => autoRenew = value),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final primary = primaryController.text.trim();
-                final providerName = providerController.text.trim();
-                if (primary.isEmpty || providerName.isEmpty) {
-                  Navigator.of(ctx).pop();
-                  return;
-                }
-
-                final centerProvider = context.read<WebsiteSslCenterProvider>();
-                final affectedCount = centerProvider.affectedWebsiteCount(cert);
-                final affectedDomains =
-                    centerProvider.affectedWebsiteDomains(cert);
-                final affectedDomainsText = affectedDomains.isEmpty
-                    ? l10n.websitesSslNoAffectedWebsites
-                    : l10n.websitesSslAffectedWebsitesDomains(
-                        affectedDomains.join(', '),
-                      );
-                final confirmed = await ConfirmActionSheetWidget.show(
-                  ctx,
-                  title: l10n.websitesSslUpdateAction,
-                  message:
-                      '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
-                      '$affectedDomainsText'
-                      '${centerProvider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
-                  confirmLabel: l10n.commonSave,
-                );
-                if (!confirmed) {
-                  return;
-                }
-
-                if (!ctx.mounted) {
-                  return;
-                }
-                Navigator.of(ctx).pop();
-                await centerProvider.updateCertificate(
-                  WebsiteSSLUpdate(
-                    id: certId,
-                    primaryDomain: primary,
-                    provider: providerName,
-                    autoRenew: autoRenew,
-                    description: descriptionController.text.trim().isEmpty
-                        ? null
-                        : descriptionController.text.trim(),
-                    otherDomains: domainsController.text.trim().isEmpty
-                        ? null
-                        : domainsController.text.trim(),
-                  ),
-                );
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    // Dispose after dialog closes; the controllers are no longer referenced.
-    primaryController.dispose();
-    providerController.dispose();
-    descriptionController.dispose();
-    domainsController.dispose();
-  }
-
-  String _affectedDomainsText(BuildContext context, List<String> domains) {
-    final l10n = context.l10n;
-    if (domains.isEmpty) {
-      return l10n.websitesSslNoAffectedWebsites;
-    }
-    return l10n.websitesSslAffectedWebsitesDomains(domains.join(', '));
   }
 
   void _openBoundWebsite(BuildContext context, WebsiteSSL cert) {
@@ -534,10 +344,8 @@ class _WebsiteSslCenterBody extends StatelessWidget {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => WebsiteSiteSslPage(
-          websiteId: websiteId!,
-          displayName: displayName,
-        ),
+        builder: (_) =>
+            WebsiteSiteSslPage(websiteId: websiteId!, displayName: displayName),
       ),
     );
   }
@@ -559,6 +367,165 @@ class _WebsiteSslCenterBody extends StatelessWidget {
       default:
         return rawTitle;
     }
+  }
+}
+
+String _affectedDomainsText(BuildContext context, List<String> domains) {
+  final l10n = context.l10n;
+  if (domains.isEmpty) {
+    return l10n.websitesSslNoAffectedWebsites;
+  }
+  return l10n.websitesSslAffectedWebsitesDomains(domains.join(', '));
+}
+
+class _CenterCertificateForm extends StatefulWidget {
+  const _CenterCertificateForm({required this.provider, this.cert});
+
+  final WebsiteSslCenterProvider provider;
+  final WebsiteSSL? cert;
+
+  @override
+  State<_CenterCertificateForm> createState() => _CenterCertificateFormState();
+}
+
+class _CenterCertificateFormState extends State<_CenterCertificateForm> {
+  final acmeController = TextEditingController();
+  late final primaryController = TextEditingController(
+    text: widget.cert?.primaryDomain ?? '',
+  );
+  late final providerController = TextEditingController(
+    text: widget.cert?.provider ?? '',
+  );
+  late final descriptionController = TextEditingController(
+    text: widget.cert?.description ?? '',
+  );
+  late final domainsController = TextEditingController(
+    text: (widget.cert?.domains ?? const <String>[]).skip(1).join(','),
+  );
+  late bool autoRenew = widget.cert?.autoRenew ?? false;
+
+  @override
+  void dispose() {
+    acmeController.dispose();
+    primaryController.dispose();
+    providerController.dispose();
+    descriptionController.dispose();
+    domainsController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final cert = widget.cert;
+    final provider = widget.provider;
+    final l10n = context.l10n;
+    final primary = primaryController.text.trim();
+    final providerName = providerController.text.trim();
+    if (cert == null) {
+      final acmeId = int.tryParse(acmeController.text.trim()) ?? 0;
+      Navigator.of(context).pop();
+      if (acmeId == 0 || primary.isEmpty || providerName.isEmpty) return;
+      await provider.createCertificate(
+        WebsiteSSLCreate(
+          acmeAccountId: acmeId,
+          primaryDomain: primary,
+          provider: providerName,
+          autoRenew: autoRenew,
+        ),
+      );
+      return;
+    }
+    if (primary.isEmpty || providerName.isEmpty) {
+      Navigator.of(context).pop();
+      return;
+    }
+    final affectedCount = provider.affectedWebsiteCount(cert);
+    final affectedDomains = provider.affectedWebsiteDomains(cert);
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesSslUpdateAction,
+      message:
+          '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
+          '${_affectedDomainsText(context, affectedDomains)}'
+          '${provider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
+      confirmLabel: l10n.commonSave,
+    );
+    if (!confirmed || !mounted) return;
+    final description = descriptionController.text.trim();
+    final otherDomains = domainsController.text.trim();
+    final request = WebsiteSSLUpdate(
+      id: cert.id!,
+      primaryDomain: primary,
+      provider: providerName,
+      autoRenew: autoRenew,
+      description: description.isEmpty ? null : description,
+      otherDomains: otherDomains.isEmpty ? null : otherDomains,
+    );
+    Navigator.of(context).pop();
+    await provider.updateCertificate(request);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isEdit = widget.cert != null;
+    return AppFormPanel(
+      title: isEdit
+          ? l10n.websitesSslUpdateAction
+          : l10n.websitesSslCreateAction,
+      confirmLabel: isEdit ? l10n.commonSave : l10n.commonConfirm,
+      onConfirm: _submit,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!isEdit) ...[
+            TextField(
+              controller: acmeController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: l10n.websitesSslAcmeAccountIdLabel,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          TextField(
+            controller: primaryController,
+            decoration: InputDecoration(
+              labelText: l10n.websitesSslPrimaryDomain,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: providerController,
+            decoration: InputDecoration(
+              labelText: l10n.websitesSslProviderLabel,
+            ),
+          ),
+          if (isEdit) ...[
+            const SizedBox(height: 12),
+            TextField(
+              controller: domainsController,
+              decoration: InputDecoration(
+                labelText: l10n.websitesSslOtherDomainsLabel,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                labelText: l10n.websitesSslDescriptionLabel,
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.websitesSslAutoRenew),
+            value: autoRenew,
+            onChanged: (value) => setState(() => autoRenew = value),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -597,9 +564,9 @@ class _CertificateGroupSection extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               title,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           for (final cert in certificates)
@@ -670,8 +637,9 @@ class _CertificateGroupSection extends StatelessWidget {
                 ),
               ),
             ),
-          if (certificates
-              .any((certificate) => boundWebsiteCountOf(certificate) > 0))
+          if (certificates.any(
+            (certificate) => boundWebsiteCountOf(certificate) > 0,
+          ))
             Wrap(
               spacing: 8,
               runSpacing: 8,

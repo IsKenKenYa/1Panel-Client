@@ -8,8 +8,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 
 import '../providers/website_ssl_accounts_provider.dart';
 import '../widgets/website_async_state_view.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'website_dns_template_form.dart';
 
 part 'website_ssl_accounts_actions_part.dart';
