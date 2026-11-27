@@ -2270,7 +2270,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsUIRenderModeRestartHint =>
-      'Please restart the app for the UI render mode changes to take effect.';
+      'Native host selected; launching the native UI.';
+
+  @override
+  String get settingsUIRenderModeSwitchApplied =>
+      'UI style switched. Applied immediately.';
 
   @override
   String get settingsUIRenderModeHostMissing =>
@@ -2610,11 +2614,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingStart => 'Start';
 
   @override
-  String get onboardingTitle1 => 'Bring your 1Panel servers into one client';
+  String get onboardingTitle1 => 'Manage multiple server panels in one client';
 
   @override
   String get onboardingDesc1 =>
-      'Connect and manage multiple 1Panel servers from one place, with your common tasks always within reach.';
+      'Connect and manage 1Panel, DPanel, and other compatible servers from one place, with daily operations always within reach.';
 
   @override
   String get onboardingTitle2 => 'Keep everyday operations close';
@@ -2635,7 +2639,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDesc4 =>
-      'Prepare your server address and API Key, then connect your first machine to start using KenPanel.';
+      'Choose your panel type, prepare your server address and credentials, then connect your first machine to start using KenPanel.';
 
   @override
   String get coachServerAddTitle => 'Add your first server';
@@ -6855,6 +6859,62 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to load system log content.';
 
   @override
+  String get logsSystemEntriesLoadFailed => 'Failed to load system logs.';
+
+  @override
+  String get logsSystemEntriesEmptyTitle => 'No system logs';
+
+  @override
+  String get logsSystemEntriesEmptyDescription =>
+      'Adjust the filters or refresh to query the system logs again.';
+
+  @override
+  String get logsSystemPriorityLabel => 'Priority';
+
+  @override
+  String get logsSystemPriorityDebug => 'Debug';
+
+  @override
+  String get logsSystemPriorityInfo => 'Info';
+
+  @override
+  String get logsSystemPriorityNotice => 'Notice';
+
+  @override
+  String get logsSystemPriorityWarning => 'Warning';
+
+  @override
+  String get logsSystemPriorityError => 'Error';
+
+  @override
+  String get logsSystemPriorityCritical => 'Critical';
+
+  @override
+  String get logsSystemServiceLabel => 'Service';
+
+  @override
+  String get logsSystemKeywordLabel => 'Keyword';
+
+  @override
+  String get logsSystemKeywordUnsupported =>
+      'This log source does not support keyword filtering.';
+
+  @override
+  String get logsSystemPreviousPage => 'Previous';
+
+  @override
+  String get logsSystemNextPage => 'Next';
+
+  @override
+  String get logsSystemRefreshAction => 'Refresh';
+
+  @override
+  String get logsSystemFilterAction => 'Filter';
+
+  @override
+  String get logsSystemRawLabel => 'Raw record';
+
+  @override
   String get operationsRuntimesTitle => 'Runtimes';
 
   @override
@@ -8978,6 +9038,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String containerInspectIpWith(String ip) {
     return 'IP: $ip';
   }
+
+  @override
+  String get containerInspectIpLabel => 'IP address';
 
   @override
   String monitorSettingsEdit(String key) {

@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/data/models/logs_models.dart';
+import 'package:onepanel_client/data/models/system_log_models.dart';
 
 class LogsRepository {
   LogsRepository({
@@ -51,6 +52,25 @@ class LogsRepository {
     final api = await _ensureLogsApi();
     final response = await api.getSystemLogFiles();
     return response.data ?? const <String>[];
+  }
+
+  Future<SystemLogStatus> loadSystemLogStatus() async {
+    final api = await _ensureLogsApi();
+    final response = await api.getSystemLogStatus();
+    return response.data ??
+        const SystemLogStatus(source: SystemLogSourceKind.unknown);
+  }
+
+  Future<List<String>> loadRunningServices() async {
+    final api = await _ensureLogsApi();
+    final response = await api.getRunningServices();
+    return response.data ?? const <String>[];
+  }
+
+  Future<SystemLogPage> readSystemLogs(SystemLogSearch request) async {
+    final api = await _ensureLogsApi();
+    final response = await api.readSystemLogs(request);
+    return response.data ?? const SystemLogPage();
   }
 
   Future<FileReadByLineResponse> readLogLines(

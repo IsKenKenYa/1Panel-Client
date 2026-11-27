@@ -1,6 +1,7 @@
 import 'package:onepanel_client/api/v2/task_log_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/file/file_read_by_line.dart';
 import 'package:onepanel_client/data/models/task_log_models.dart';
 
 class TaskLogRepository {
@@ -28,5 +29,11 @@ class TaskLogRepository {
     final api = await _ensureApi();
     final response = await api.getExecutingTaskCount();
     return response.data ?? 0;
+  }
+
+  Future<FileReadByLineResponse> readTaskLog(TaskLogReadRequest request) async {
+    final api = await _ensureApi();
+    final response = await api.readTaskLog(request);
+    return response.data ?? const FileReadByLineResponse();
   }
 }

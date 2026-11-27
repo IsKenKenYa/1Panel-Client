@@ -5,6 +5,7 @@ import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/logs_models.dart';
+import '../../data/models/system_log_models.dart';
 
 /// 1Panel log query API client.
 ///
@@ -67,6 +68,55 @@ class LogsV2Api {
       data: rawItems.map((dynamic item) => item.toString()).toList(
             growable: false,
           ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// `GET /logs/system/status`：日志来源、版本与关键字筛选能力。
+  Future<Response<SystemLogStatus>> getSystemLogStatus() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/logs/system/status'),
+    );
+    return Response<SystemLogStatus>(
+      data: SystemLogStatus.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// `GET /logs/system/services`：正在运行的服务名，用于筛选下拉。
+  Future<Response<List<String>>> getRunningServices() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/logs/system/services'),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<String>>(
+      data: rawItems.map((dynamic item) => item.toString()).toList(
+            growable: false,
+          ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// `POST /logs/system/read`：游标分页读取宿主系统日志。
+  Future<Response<SystemLogPage>> readSystemLogs(
+    SystemLogSearch request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/logs/system/read'),
+      data: request.toJson(),
+    );
+    return Response<SystemLogPage>(
+      data: SystemLogPage.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

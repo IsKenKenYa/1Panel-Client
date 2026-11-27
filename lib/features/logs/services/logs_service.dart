@@ -2,6 +2,7 @@ import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/paged_query.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/data/models/logs_models.dart';
+import 'package:onepanel_client/data/models/system_log_models.dart';
 import 'package:onepanel_client/data/models/task_log_models.dart';
 import 'package:onepanel_client/data/repositories/logs_repository.dart';
 import 'package:onepanel_client/data/repositories/task_log_repository.dart';
@@ -32,6 +33,18 @@ class LogsService {
     return _logsRepository.loadSystemLogFiles();
   }
 
+  Future<SystemLogStatus> loadSystemLogStatus() {
+    return _logsRepository.loadSystemLogStatus();
+  }
+
+  Future<List<String>> loadRunningServices() {
+    return _logsRepository.loadRunningServices();
+  }
+
+  Future<SystemLogPage> readSystemLogs(SystemLogSearch request) {
+    return _logsRepository.readSystemLogs(request);
+  }
+
   Future<PageResult<TaskLog>> searchTaskLogs(TaskLogSearch request) {
     return _taskLogRepository.searchTaskLogs(request);
   }
@@ -40,6 +53,10 @@ class LogsService {
     return _taskLogRepository.loadExecutingTaskCount();
   }
 
+  /// 读取单个系统日志文件的按行内容，对应 `/files/read/system`。
+  ///
+  /// 与 [readSystemLogs] 的条目查询是两条入口：前者用于按文件查看原始行，
+  /// 后者用于按服务、级别与关键字查询宿主日志条目。
   Future<FileReadByLineResponse> loadSystemLogContent({
     required String fileName,
     bool useCoreLogs = false,
@@ -59,6 +76,7 @@ class LogsService {
     );
   }
 
+  /// 按行读取任务日志，对应 `POST /logs/tasks/read`。
   Future<FileReadByLineResponse> loadTaskLogContent({
     required String taskId,
     String? taskType,
@@ -68,16 +86,15 @@ class LogsService {
     int pageSize = PagedQuery.logPageSize,
     bool latest = true,
   }) {
-    return _logsRepository.readLogLines(
-      FileReadByLineRequest(
-        type: 'task',
+    return _taskLogRepository.readTaskLog(
+      TaskLogReadRequest(
+        page: page,
+        pageSize: pageSize,
+        latest: latest,
         taskId: taskId,
         taskType: taskType,
         taskOperate: taskOperate,
         resourceId: resourceId,
-        page: page,
-        pageSize: pageSize,
-        latest: latest,
       ),
     );
   }

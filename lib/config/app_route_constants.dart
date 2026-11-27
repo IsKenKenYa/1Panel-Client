@@ -127,6 +127,7 @@ class AppRoutes {
   static const String backupRecover = '/backups/recover';
   static const String logs = '/logs';
   static const String systemLogViewer = '/logs/system';
+  static const String systemLogEntries = '/logs/system/entries';
   static const String taskLogDetail = '/logs/task/detail';
   static const String runtimes = '/runtimes';
   static const String runtimeDetail = '/runtimes/detail';

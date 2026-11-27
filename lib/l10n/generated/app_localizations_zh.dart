@@ -2210,7 +2210,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsUIRenderModeMD3 => 'MDUI3';
 
   @override
-  String get settingsUIRenderModeRestartHint => '修改 UI 渲染模式后，请重启应用以生效。';
+  String get settingsUIRenderModeRestartHint => '切换到原生宿主已保存，正在启动原生界面。';
+
+  @override
+  String get settingsUIRenderModeSwitchApplied => '界面风格已切换，立即生效。';
 
   @override
   String get settingsUIRenderModeHostMissing =>
@@ -2521,10 +2524,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingStart => '开始使用';
 
   @override
-  String get onboardingTitle1 => '把 1Panel 服务器装进一个客户端';
+  String get onboardingTitle1 => '多面板服务器统一装进一个客户端';
 
   @override
-  String get onboardingDesc1 => '集中连接和管理多台 1Panel 服务器，常用操作不再分散在不同设备里。';
+  String get onboardingDesc1 =>
+      '集中连接和管理 1Panel、DPanel 等多类面板服务器，常用运维操作不再分散在不同设备里。';
 
   @override
   String get onboardingTitle2 => '把常用运维入口放到手边';
@@ -2542,7 +2546,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingTitle4 => '先连接第一台服务器';
 
   @override
-  String get onboardingDesc4 => '准备好服务器地址和 API Key，连接后就可以开始使用 KenPanel。';
+  String get onboardingDesc4 => '选择面板类型并准备好服务器地址与凭据，连接后即可开始使用 KenPanel。';
 
   @override
   String get coachServerAddTitle => '先添加第一台服务器';
@@ -6652,6 +6656,60 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logsSystemContentLoadFailed => '加载系统日志内容失败。';
 
   @override
+  String get logsSystemEntriesLoadFailed => '加载系统日志失败。';
+
+  @override
+  String get logsSystemEntriesEmptyTitle => '暂无系统日志';
+
+  @override
+  String get logsSystemEntriesEmptyDescription => '调整筛选条件或刷新后可重新查询系统日志。';
+
+  @override
+  String get logsSystemPriorityLabel => '级别';
+
+  @override
+  String get logsSystemPriorityDebug => '调试';
+
+  @override
+  String get logsSystemPriorityInfo => '信息';
+
+  @override
+  String get logsSystemPriorityNotice => '通知';
+
+  @override
+  String get logsSystemPriorityWarning => '警告';
+
+  @override
+  String get logsSystemPriorityError => '错误';
+
+  @override
+  String get logsSystemPriorityCritical => '严重';
+
+  @override
+  String get logsSystemServiceLabel => '服务';
+
+  @override
+  String get logsSystemKeywordLabel => '关键字';
+
+  @override
+  String get logsSystemKeywordUnsupported => '当前日志来源不支持关键字筛选。';
+
+  @override
+  String get logsSystemPreviousPage => '上一页';
+
+  @override
+  String get logsSystemNextPage => '下一页';
+
+  @override
+  String get logsSystemRefreshAction => '刷新';
+
+  @override
+  String get logsSystemFilterAction => '筛选';
+
+  @override
+  String get logsSystemRawLabel => '原始记录';
+
+  @override
   String get operationsRuntimesTitle => '运行时';
 
   @override
@@ -8742,6 +8800,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String containerInspectIpWith(String ip) {
     return 'IP: $ip';
   }
+
+  @override
+  String get containerInspectIpLabel => 'IP 地址';
 
   @override
   String monitorSettingsEdit(String key) {

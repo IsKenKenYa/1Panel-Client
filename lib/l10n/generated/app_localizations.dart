@@ -4337,8 +4337,14 @@ abstract class AppLocalizations {
   /// No description provided for @settingsUIRenderModeRestartHint.
   ///
   /// In en, this message translates to:
-  /// **'Please restart the app for the UI render mode changes to take effect.'**
+  /// **'Native host selected; launching the native UI.'**
   String get settingsUIRenderModeRestartHint;
+
+  /// No description provided for @settingsUIRenderModeSwitchApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'UI style switched. Applied immediately.'**
+  String get settingsUIRenderModeSwitchApplied;
 
   /// No description provided for @settingsUIRenderModeHostMissing.
   ///
@@ -4949,13 +4955,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle1.
   ///
   /// In en, this message translates to:
-  /// **'Bring your 1Panel servers into one client'**
+  /// **'Manage multiple server panels in one client'**
   String get onboardingTitle1;
 
   /// No description provided for @onboardingDesc1.
   ///
   /// In en, this message translates to:
-  /// **'Connect and manage multiple 1Panel servers from one place, with your common tasks always within reach.'**
+  /// **'Connect and manage 1Panel, DPanel, and other compatible servers from one place, with daily operations always within reach.'**
   String get onboardingDesc1;
 
   /// No description provided for @onboardingTitle2.
@@ -4991,7 +4997,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDesc4.
   ///
   /// In en, this message translates to:
-  /// **'Prepare your server address and API Key, then connect your first machine to start using KenPanel.'**
+  /// **'Choose your panel type, prepare your server address and credentials, then connect your first machine to start using KenPanel.'**
   String get onboardingDesc4;
 
   /// No description provided for @coachServerAddTitle.
@@ -12920,6 +12926,114 @@ abstract class AppLocalizations {
   /// **'Failed to load system log content.'**
   String get logsSystemContentLoadFailed;
 
+  /// No description provided for @logsSystemEntriesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load system logs.'**
+  String get logsSystemEntriesLoadFailed;
+
+  /// No description provided for @logsSystemEntriesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No system logs'**
+  String get logsSystemEntriesEmptyTitle;
+
+  /// No description provided for @logsSystemEntriesEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust the filters or refresh to query the system logs again.'**
+  String get logsSystemEntriesEmptyDescription;
+
+  /// No description provided for @logsSystemPriorityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get logsSystemPriorityLabel;
+
+  /// No description provided for @logsSystemPriorityDebug.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get logsSystemPriorityDebug;
+
+  /// No description provided for @logsSystemPriorityInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get logsSystemPriorityInfo;
+
+  /// No description provided for @logsSystemPriorityNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice'**
+  String get logsSystemPriorityNotice;
+
+  /// No description provided for @logsSystemPriorityWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get logsSystemPriorityWarning;
+
+  /// No description provided for @logsSystemPriorityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get logsSystemPriorityError;
+
+  /// No description provided for @logsSystemPriorityCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical'**
+  String get logsSystemPriorityCritical;
+
+  /// No description provided for @logsSystemServiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get logsSystemServiceLabel;
+
+  /// No description provided for @logsSystemKeywordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword'**
+  String get logsSystemKeywordLabel;
+
+  /// No description provided for @logsSystemKeywordUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This log source does not support keyword filtering.'**
+  String get logsSystemKeywordUnsupported;
+
+  /// No description provided for @logsSystemPreviousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get logsSystemPreviousPage;
+
+  /// No description provided for @logsSystemNextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get logsSystemNextPage;
+
+  /// No description provided for @logsSystemRefreshAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get logsSystemRefreshAction;
+
+  /// No description provided for @logsSystemFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get logsSystemFilterAction;
+
+  /// No description provided for @logsSystemRawLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw record'**
+  String get logsSystemRawLabel;
+
   /// No description provided for @operationsRuntimesTitle.
   ///
   /// In en, this message translates to:
@@ -16914,6 +17028,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'IP: {ip}'**
   String containerInspectIpWith(String ip);
+
+  /// No description provided for @containerInspectIpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP address'**
+  String get containerInspectIpLabel;
 
   /// No description provided for @monitorSettingsEdit.
   ///

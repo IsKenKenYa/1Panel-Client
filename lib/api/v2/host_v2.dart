@@ -78,6 +78,33 @@ class HostV2Api {
     }
   }
 
+  /// GET 版本的主路径与旧路径回退，响应体交给调用方转换。
+  Future<Response<T>> _getWithLegacyFallback<T>({
+    required String primaryPath,
+    required String legacyPath,
+    required T Function(dynamic data) parse,
+  }) async {
+    Response<Map<String, dynamic>> raw;
+    try {
+      raw = await _client.get<Map<String, dynamic>>(
+        ApiConstants.buildApiPath(primaryPath),
+      );
+    } catch (error) {
+      if (!_shouldFallbackToLegacy(error)) {
+        rethrow;
+      }
+      raw = await _client.get<Map<String, dynamic>>(
+        ApiConstants.buildApiPath(legacyPath),
+      );
+    }
+    return Response<T>(
+      data: parse(raw.data),
+      statusCode: raw.statusCode,
+      statusMessage: raw.statusMessage,
+      requestOptions: raw.requestOptions,
+    );
+  }
+
   Future<Response<void>> createHost(HostCreate request) {
     return _postWithLegacyFallback<void>(
       primaryPath: '/core/hosts',
@@ -292,28 +319,24 @@ class HostV2Api {
   // ── 诊断与 SSH 日志清理（V2 新增）──
 
   /// 获取诊断摘要（goroutine/内存等概览）。
-  Future<Response<Map<String, dynamic>>> getDiagnosticsSummary() async {
-    final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/hosts/diagnostics/summary'),
-    );
-    return Response<Map<String, dynamic>>(
-      data: ApiResponseParser.asMap(response.data),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+  ///
+  /// 2.x 主路径为 `/core/hosts/diagnostics/*`，旧服务端只暴露 `/hosts/*`。
+  Future<Response<Map<String, dynamic>>> getDiagnosticsSummary() {
+    return _getWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/core/hosts/diagnostics/summary',
+      legacyPath: '/hosts/diagnostics/summary',
+      parse: ApiResponseParser.asMap,
     );
   }
 
   /// 获取 goroutine 转储。
-  Future<Response<String>> getDiagnosticsGoroutines() async {
-    final response = await _client.get<String>(
-      ApiConstants.buildApiPath('/hosts/diagnostics/goroutines'),
-    );
-    return Response<String>(
-      data: response.data?.toString() ?? '',
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+  Future<Response<String>> getDiagnosticsGoroutines() {
+    return _getWithLegacyFallback<String>(
+      primaryPath: '/core/hosts/diagnostics/goroutines',
+      legacyPath: '/hosts/diagnostics/goroutines',
+      // goroutine 转储以纯文本返回，同时兼容 `{data: text}` 信封。
+      parse: (dynamic payload) =>
+          ApiResponseParser.asStringOrNull(payload) ?? payload?.toString() ?? '',
     );
   }
 
@@ -322,8 +345,9 @@ class HostV2Api {
     required String type,
     int? duration,
   }) {
-    return _client.post(
-      ApiConstants.buildApiPath('/hosts/diagnostics/profiles'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/core/hosts/diagnostics/profiles',
+      legacyPath: '/hosts/diagnostics/profiles',
       data: <String, dynamic>{
         'type': type,
         if (duration != null) 'duration': duration,

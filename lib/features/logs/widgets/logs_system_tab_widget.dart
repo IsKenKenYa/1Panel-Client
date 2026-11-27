@@ -24,9 +24,22 @@ class LogsSystemTabWidget extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: AppDesignTokens.cardPadding,
-          child: SystemLogSourceFilter(
-            value: provider.source,
-            onChanged: provider.updateSource,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: SystemLogSourceFilter(
+                  value: provider.source,
+                  onChanged: provider.updateSource,
+                ),
+              ),
+              const SizedBox(width: AppDesignTokens.spacingSm),
+              TextButton.icon(
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.systemLogEntries),
+                icon: const Icon(Icons.search, size: 18),
+                label: Text(l10n.logsSystemFilterAction),
+              ),
+            ],
           ),
         ),
         Expanded(

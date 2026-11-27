@@ -1,5 +1,41 @@
 import 'package:equatable/equatable.dart';
 
+/// `POST /logs/tasks/read` 请求。`page` 与 `pageSize` 为服务端必填。
+class TaskLogReadRequest extends Equatable {
+  const TaskLogReadRequest({
+    required this.page,
+    required this.pageSize,
+    this.latest = false,
+    this.taskId,
+    this.taskType,
+    this.taskOperate,
+    this.resourceId,
+  });
+
+  final int page;
+  final int pageSize;
+  final bool latest;
+  final String? taskId;
+  final String? taskType;
+  final String? taskOperate;
+  final int? resourceId;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'page': page,
+        'pageSize': pageSize,
+        'latest': latest,
+        if (taskId != null && taskId!.isNotEmpty) 'taskID': taskId,
+        if (taskType != null && taskType!.isNotEmpty) 'taskType': taskType,
+        if (taskOperate != null && taskOperate!.isNotEmpty)
+          'taskOperate': taskOperate,
+        if (resourceId != null) 'resourceID': resourceId,
+      };
+
+  @override
+  List<Object?> get props =>
+      [page, pageSize, latest, taskId, taskType, taskOperate, resourceId];
+}
+
 /// Task log model
 class TaskLog extends Equatable {
   final String? id;

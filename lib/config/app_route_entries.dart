@@ -108,8 +108,10 @@ import 'package:onepanel_client/features/host_assets/providers/host_assets_provi
 import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart';
 import 'package:onepanel_client/features/logs/models/task_log_detail_args.dart';
 import 'package:onepanel_client/features/logs/pages/logs_center_page.dart';
+import 'package:onepanel_client/features/logs/pages/system_log_entries_page.dart';
 import 'package:onepanel_client/features/logs/pages/system_log_viewer_page.dart';
 import 'package:onepanel_client/features/logs/pages/task_log_detail_page.dart';
+import 'package:onepanel_client/features/logs/providers/system_log_entries_provider.dart';
 import 'package:onepanel_client/features/logs/providers/logs_provider.dart';
 import 'package:onepanel_client/features/logs/providers/system_logs_provider.dart';
 import 'package:onepanel_client/features/logs/providers/task_logs_provider.dart';
@@ -964,6 +966,14 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             args: readRouteArg<SystemLogViewerArgs>(settings.arguments) ??
                 const SystemLogViewerArgs(),
           ),
+        ),
+      ),
+      AppRoutes.systemLogEntries: shellAwareModuleEntry(
+        routeName: AppRoutes.systemLogEntries,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<SystemLogEntriesProvider>(
+          create: (_) => SystemLogEntriesProvider(),
+          child: const SystemLogEntriesPage(),
         ),
       ),
       AppRoutes.taskLogDetail: shellAwareModuleEntry(
