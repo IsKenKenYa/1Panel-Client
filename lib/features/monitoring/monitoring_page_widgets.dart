@@ -1,10 +1,7 @@
 part of 'monitoring_page.dart';
 
 class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.label,
-    required this.value,
-  });
+  const _StatItem({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -139,26 +136,26 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
             child: !_isExpanded
                 ? const SizedBox.shrink()
                 : timeSeries == null || timeSeries.data.isEmpty
-                    ? _EmptyView(
-                        title: l10n.commonEmpty,
-                        hint: widget.emptyHint ?? l10n.monitorSeriesEmptyDesc,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppDesignTokens.spacingMd,
-                          AppDesignTokens.spacingSm,
-                          AppDesignTokens.spacingMd,
-                          AppDesignTokens.spacingMd,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildStatsRow(context, timeSeries, widget.unit),
-                            const SizedBox(height: AppDesignTokens.spacingMd),
-                            _buildSimpleChart(context, timeSeries, widget.unit),
-                          ],
-                        ),
-                      ),
+                ? _EmptyView(
+                    title: l10n.commonEmpty,
+                    hint: widget.emptyHint ?? l10n.monitorSeriesEmptyDesc,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppDesignTokens.spacingMd,
+                      AppDesignTokens.spacingSm,
+                      AppDesignTokens.spacingMd,
+                      AppDesignTokens.spacingMd,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildStatsRow(context, timeSeries, widget.unit),
+                        const SizedBox(height: AppDesignTokens.spacingMd),
+                        _buildSimpleChart(context, timeSeries, widget.unit),
+                      ],
+                    ),
+                  ),
           ),
         ],
       ),
@@ -209,7 +206,9 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
     MonitorTimeSeries timeSeries,
     String unit,
   ) {
-    if (timeSeries.data.isEmpty) return const SizedBox.shrink();
+    if (timeSeries.data.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.fromLTRB(
@@ -239,10 +238,7 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
 }
 
 class _EmptyView extends StatelessWidget {
-  const _EmptyView({
-    required this.title,
-    this.hint,
-  });
+  const _EmptyView({required this.title, this.hint});
 
   final String title;
   final String? hint;
@@ -272,10 +268,7 @@ class _EmptyView extends StatelessWidget {
 }
 
 class _GPUStatItem extends StatelessWidget {
-  const _GPUStatItem({
-    required this.label,
-    required this.value,
-  });
+  const _GPUStatItem({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -286,14 +279,11 @@ class _GPUStatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
@@ -329,7 +319,9 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     if (_refreshInterval != provider.refreshInterval) {
       provider.setRefreshInterval(_refreshInterval);
     }
-    if (_timeRange != provider.timeRange) provider.setTimeRange(_timeRange);
+    if (_timeRange != provider.timeRange) {
+      provider.setTimeRange(_timeRange);
+    }
     if (_maxDataPoints != provider.maxDataPoints) {
       provider.setMaxDataPoints(_maxDataPoints);
     }
@@ -348,29 +340,161 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return AlertDialog(
-      title: Text(l10n.monitorChartSettings),
+    return AppFormPanel(
+      title: l10n.monitorChartSettings,
+      confirmLabel: l10n.commonSave,
+      onConfirm: () async => _saveSettings(),
       content: SizedBox(
         width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DropdownButtonFormField<Duration>(
+              initialValue: _refreshInterval,
+              decoration: InputDecoration(
+                labelText: l10n.monitorRefreshInterval,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: const Duration(seconds: 3),
+                  child: Text(l10n.monitorSeconds(3)),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(seconds: 5),
+                  child: Text(l10n.monitorSecondsDefault(5)),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(seconds: 10),
+                  child: Text(l10n.monitorSeconds(10)),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(seconds: 30),
+                  child: Text(l10n.monitorSeconds(30)),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(minutes: 1),
+                  child: Text(l10n.monitorMinute(1)),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _refreshInterval = value;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            const Divider(),
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            DropdownButtonFormField<Duration>(
+              initialValue: _timeRange,
+              decoration: InputDecoration(
+                labelText: l10n.monitorTimeRange,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                if (_timeRange != const Duration(hours: 1) &&
+                    _timeRange != const Duration(hours: 6) &&
+                    _timeRange != const Duration(hours: 24) &&
+                    _timeRange != const Duration(days: 7))
+                  DropdownMenuItem(
+                    value: _timeRange,
+                    child: Text(l10n.monitorTimeRangeCustom),
+                  ),
+                DropdownMenuItem(
+                  value: const Duration(hours: 1),
+                  child: Text(l10n.monitorTimeRangeLast1h),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(hours: 6),
+                  child: Text(l10n.monitorTimeRangeLast6h),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(hours: 24),
+                  child: Text(l10n.monitorTimeRangeLast24h),
+                ),
+                DropdownMenuItem(
+                  value: const Duration(days: 7),
+                  child: Text(l10n.monitorTimeRangeLast7d),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _timeRange = value;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            const Divider(),
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            DropdownButtonFormField<int>(
+              initialValue: _maxDataPoints,
+              decoration: InputDecoration(
+                labelText: l10n.monitorDataPoints,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: 6,
+                  child: Text(
+                    l10n.monitorDataPointsCount(6, l10n.monitorTimeMinutes(30)),
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: 12,
+                  child: Text(
+                    l10n.monitorDataPointsCount(12, l10n.monitorTimeHours(1)),
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: 1000,
+                  child: Text(
+                    l10n.monitorDataPointsCount(1000, l10n.monitorAll),
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _maxDataPoints = value;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            const Divider(),
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            Text(
+              '${l10n.monitorGPU} ${l10n.monitorSettings}',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            SwitchListTile(
+              title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
+              value: _gpuAutoRefreshEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _gpuAutoRefreshEnabled = value;
+                });
+              },
+            ),
+            if (_gpuAutoRefreshEnabled) ...[
+              const SizedBox(height: AppDesignTokens.spacingSm),
               DropdownButtonFormField<Duration>(
-                initialValue: _refreshInterval,
+                initialValue: _gpuRefreshInterval,
                 decoration: InputDecoration(
-                  labelText: l10n.monitorRefreshInterval,
+                  labelText:
+                      '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
                   border: const OutlineInputBorder(),
                 ),
                 items: [
                   DropdownMenuItem(
-                    value: const Duration(seconds: 3),
-                    child: Text(l10n.monitorSeconds(3)),
-                  ),
-                  DropdownMenuItem(
                     value: const Duration(seconds: 5),
-                    child: Text(l10n.monitorSecondsDefault(5)),
+                    child: Text(l10n.monitorSeconds(5)),
                   ),
                   DropdownMenuItem(
                     value: const Duration(seconds: 10),
@@ -388,154 +512,15 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
-                      _refreshInterval = value;
+                      _gpuRefreshInterval = value;
                     });
                   }
                 },
               ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              const Divider(),
-              const SizedBox(height: AppDesignTokens.spacingSm),
-              DropdownButtonFormField<Duration>(
-                initialValue: _timeRange,
-                decoration: InputDecoration(
-                  labelText: l10n.monitorTimeRange,
-                  border: const OutlineInputBorder(),
-                ),
-                items: [
-                  if (_timeRange != const Duration(hours: 1) &&
-                      _timeRange != const Duration(hours: 6) &&
-                      _timeRange != const Duration(hours: 24) &&
-                      _timeRange != const Duration(days: 7))
-                    DropdownMenuItem(
-                      value: _timeRange,
-                      child: Text(l10n.monitorTimeRangeCustom),
-                    ),
-                  DropdownMenuItem(
-                    value: const Duration(hours: 1),
-                    child: Text(l10n.monitorTimeRangeLast1h),
-                  ),
-                  DropdownMenuItem(
-                    value: const Duration(hours: 6),
-                    child: Text(l10n.monitorTimeRangeLast6h),
-                  ),
-                  DropdownMenuItem(
-                    value: const Duration(hours: 24),
-                    child: Text(l10n.monitorTimeRangeLast24h),
-                  ),
-                  DropdownMenuItem(
-                    value: const Duration(days: 7),
-                    child: Text(l10n.monitorTimeRangeLast7d),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _timeRange = value;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              const Divider(),
-              const SizedBox(height: AppDesignTokens.spacingSm),
-              DropdownButtonFormField<int>(
-                initialValue: _maxDataPoints,
-                decoration: InputDecoration(
-                  labelText: l10n.monitorDataPoints,
-                  border: const OutlineInputBorder(),
-                ),
-                items: [
-                  DropdownMenuItem(
-                    value: 6,
-                    child: Text(l10n.monitorDataPointsCount(
-                        6, l10n.monitorTimeMinutes(30))),
-                  ),
-                  DropdownMenuItem(
-                    value: 12,
-                    child: Text(l10n.monitorDataPointsCount(
-                        12, l10n.monitorTimeHours(1))),
-                  ),
-                  DropdownMenuItem(
-                    value: 1000,
-                    child: Text(
-                        l10n.monitorDataPointsCount(1000, l10n.monitorAll)),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _maxDataPoints = value;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              const Divider(),
-              const SizedBox(height: AppDesignTokens.spacingSm),
-              Text(
-                '${l10n.monitorGPU} ${l10n.monitorSettings}',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              SwitchListTile(
-                title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
-                value: _gpuAutoRefreshEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _gpuAutoRefreshEnabled = value;
-                  });
-                },
-              ),
-              if (_gpuAutoRefreshEnabled) ...[
-                const SizedBox(height: AppDesignTokens.spacingSm),
-                DropdownButtonFormField<Duration>(
-                  initialValue: _gpuRefreshInterval,
-                  decoration: InputDecoration(
-                    labelText:
-                        '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
-                    border: const OutlineInputBorder(),
-                  ),
-                  items: [
-                    DropdownMenuItem(
-                      value: const Duration(seconds: 5),
-                      child: Text(l10n.monitorSeconds(5)),
-                    ),
-                    DropdownMenuItem(
-                      value: const Duration(seconds: 10),
-                      child: Text(l10n.monitorSeconds(10)),
-                    ),
-                    DropdownMenuItem(
-                      value: const Duration(seconds: 30),
-                      child: Text(l10n.monitorSeconds(30)),
-                    ),
-                    DropdownMenuItem(
-                      value: const Duration(minutes: 1),
-                      child: Text(l10n.monitorMinute(1)),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _gpuRefreshInterval = value;
-                      });
-                    }
-                  },
-                ),
-              ],
             ],
-          ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: _saveSettings,
-          child: Text(l10n.commonSave),
-        ),
-      ],
     );
   }
 }
@@ -560,8 +545,9 @@ class _MetricSelector extends StatelessWidget {
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 220),
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppDesignTokens.spacingSm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesignTokens.spacingSm,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         border: Border.all(color: colorScheme.outlineVariant),

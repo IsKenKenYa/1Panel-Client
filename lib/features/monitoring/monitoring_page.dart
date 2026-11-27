@@ -3,17 +3,14 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
-import 'package:onepanel_client/shared/widgets/metric_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/models/monitor_models.dart';
 import 'monitoring_provider.dart';
 import 'widgets/monitor_chart.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 
 part 'monitoring_page_widgets.dart';
@@ -62,9 +59,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   void _showSettingsDialog(BuildContext context) {
     final provider = context.read<MonitoringProvider>();
-    showDialog(
-      context: context,
-      useRootNavigator: false,
+    showAdaptiveFormPanel<void>(
+      context,
       builder: (_) => ChangeNotifierProvider.value(
         value: provider,
         child: const _MonitorSettingsDialog(),
@@ -97,39 +93,42 @@ class _MonitoringBody extends StatelessWidget {
           maxWidth: spec.dashboardMaxWidth,
           child: RefreshIndicator(
             onRefresh: refresh,
-            child: LayoutBuilder(builder: (context, constraints) {
-              const metrics = _HistoryMetric.values;
-              const gap = AppDesignTokens.spacingMd;
-              final columns =
-                  constraints.maxWidth - spec.pagePadding.horizontal >= 800
-                      ? 2
-                      : 1;
-              return ListView(
-                padding: spec.pagePadding,
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  const _CurrentMetrics(),
-                  for (var i = 0; i < metrics.length; i += columns)
-                    Padding(
-                      padding: const EdgeInsets.only(top: gap),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: _HistoryCard(metrics[i])),
-                          if (columns == 2) ...[
-                            const SizedBox(width: gap),
-                            Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                const metrics = _HistoryMetric.values;
+                const gap = AppDesignTokens.spacingMd;
+                final columns =
+                    constraints.maxWidth - spec.pagePadding.horizontal >= 800
+                    ? 2
+                    : 1;
+                return ListView(
+                  padding: spec.pagePadding,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    const _CurrentMetrics(),
+                    for (var i = 0; i < metrics.length; i += columns)
+                      Padding(
+                        padding: const EdgeInsets.only(top: gap),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: _HistoryCard(metrics[i])),
+                            if (columns == 2) ...[
+                              const SizedBox(width: gap),
+                              Expanded(
                                 child: i + 1 < metrics.length
                                     ? _HistoryCard(metrics[i + 1])
-                                    : const SizedBox.shrink()),
+                                    : const SizedBox.shrink(),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  const _GpuCard(),
-                ],
-              );
-            }),
+                    const _GpuCard(),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -147,13 +146,15 @@ class _HistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final series = context.select((MonitoringProvider p) => switch (metric) {
-          _HistoryMetric.cpu => p.data.cpuTimeSeries,
-          _HistoryMetric.memory => p.data.memoryTimeSeries,
-          _HistoryMetric.load => p.data.loadTimeSeries,
-          _HistoryMetric.disk => p.data.ioTimeSeries,
-          _HistoryMetric.network => p.data.networkTimeSeries,
-        });
+    final series = context.select(
+      (MonitoringProvider p) => switch (metric) {
+        _HistoryMetric.cpu => p.data.cpuTimeSeries,
+        _HistoryMetric.memory => p.data.memoryTimeSeries,
+        _HistoryMetric.load => p.data.loadTimeSeries,
+        _HistoryMetric.disk => p.data.ioTimeSeries,
+        _HistoryMetric.network => p.data.networkTimeSeries,
+      },
+    );
     final (title, unit) = switch (metric) {
       _HistoryMetric.cpu => (l10n.serverCpuLabel, '%'),
       _HistoryMetric.memory => (l10n.serverMemoryLabel, '%'),
@@ -164,15 +165,18 @@ class _HistoryCard extends StatelessWidget {
     final disk = metric == _HistoryMetric.disk;
     Widget? deviceSelector;
     if (disk || metric == _HistoryMetric.network) {
-      final (value, options) = context.select((MonitoringProvider p) => disk
-          ? (p.data.selectedIO, p.data.ioOptions)
-          : (p.data.selectedNetwork, p.data.networkOptions));
+      final (value, options) = context.select(
+        (MonitoringProvider p) => disk
+            ? (p.data.selectedIO, p.data.ioOptions)
+            : (p.data.selectedNetwork, p.data.networkOptions),
+      );
       final provider = context.read<MonitoringProvider>();
       deviceSelector = _MetricSelector(
         value: value,
         options: options,
-        onChanged:
-            disk ? provider.selectIOOption : provider.selectNetworkOption,
+        onChanged: disk
+            ? provider.selectIOOption
+            : provider.selectNetworkOption,
       );
     }
     return _ExpandableChartCard(
@@ -194,7 +198,9 @@ class _GpuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gpuInfo = context.select((MonitoringProvider p) => p.data.gpuInfo);
-    if (gpuInfo.isEmpty) return const SizedBox.shrink();
+    if (gpuInfo.isEmpty) {
+      return const SizedBox.shrink();
+    }
     final l10n = context.l10n;
 
     return SectionCard(
@@ -270,7 +276,9 @@ class _CurrentMetrics extends StatelessWidget {
             );
     });
     final l10n = context.l10n;
-    if (metrics == null) return const SizedBox.shrink();
+    if (metrics == null) {
+      return const SizedBox.shrink();
+    }
 
     return SectionCard(
       title: l10n.monitorMetricCurrent,
