@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// AI Agent 插件管理页。
 /// 对齐前端 `ai/agents` 详情的插件子页：已装列表 + 插件市场 + 安装/操作。
@@ -55,14 +56,19 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
   }
 
   Future<void> _load() async {
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       await _withApi((api) async {
         final res = await api.listAgentPlugins({'agentId': widget.agentId});
         _plugins = _asList(res.data);
         return null;
       });
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -84,19 +90,20 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
         _market = _asList(res.data);
         return null;
       });
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       if (mounted) {
         SnackBarUtils.showError(
-            context, ErrorMessageUtils.userFacingMessage(e));
+          context,
+          ErrorMessageUtils.userFacingMessage(e),
+        );
       }
     }
   }
 
-  Future<void> _operate(
-    Map<String, dynamic> plugin,
-    String operate,
-  ) async {
+  Future<void> _operate(Map<String, dynamic> plugin, String operate) async {
     setState(() => _isMutating = true);
     try {
       await _withApi((api) async {
@@ -115,10 +122,14 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
     } catch (e) {
       if (mounted) {
         SnackBarUtils.showError(
-            context, ErrorMessageUtils.userFacingMessage(e));
+          context,
+          ErrorMessageUtils.userFacingMessage(e),
+        );
       }
     } finally {
-      if (mounted) setState(() => _isMutating = false);
+      if (mounted) {
+        setState(() => _isMutating = false);
+      }
     }
   }
 
@@ -141,31 +152,30 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
     } catch (e) {
       if (mounted) {
         SnackBarUtils.showError(
-            context, ErrorMessageUtils.userFacingMessage(e));
+          context,
+          ErrorMessageUtils.userFacingMessage(e),
+        );
       }
     } finally {
-      if (mounted) setState(() => _isMutating = false);
+      if (mounted) {
+        setState(() => _isMutating = false);
+      }
     }
   }
 
-  Future<void> _confirmOperate(String title, Future<void> Function() action) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(title),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+  Future<void> _confirmOperate(
+    String title,
+    Future<void> Function() action,
+  ) async {
+    final confirmed = await showAppFormDialog(
+      context,
+      title: title,
+      content: const SizedBox.shrink(),
+      onConfirm: () async {},
     );
-    if (confirmed == true) await action();
+    if (confirmed && mounted) {
+      await action();
+    }
   }
 
   @override
@@ -176,118 +186,123 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
       appBar: AppBar(
         title: Text(l10n.aiAgentPluginsTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
+          IconButton(
+            tooltip: context.l10n.commonRefresh,
+            icon: const Icon(Icons.refresh_outlined),
+            onPressed: _load,
+          ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(_error!),
-                      TextButton(
-                        onPressed: _load,
-                        child: Text(l10n.commonRetry),
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_error!),
+                  TextButton(onPressed: _load, child: Text(l10n.commonRetry)),
+                ],
+              ),
+            )
+          : ListView(
+              padding: AppDesignTokens.cardPadding,
+              children: [
+                Text(
+                  l10n.aiAgentInstalledPlugins,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                if (_plugins.isEmpty) Text(l10n.commonEmpty),
+                for (final plugin in _plugins)
+                  Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(plugin['name']?.toString() ?? '-'),
+                      subtitle: Text(
+                        'v${plugin['version'] ?? '-'} · ${plugin['origin'] ?? ''}',
                       ),
-                    ],
-                  ),
-                )
-              : ListView(
-                  padding: AppDesignTokens.cardPadding,
-                  children: [
-                    Text(l10n.aiAgentInstalledPlugins,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    if (_plugins.isEmpty) Text(l10n.commonEmpty),
-                    for (final plugin in _plugins)
-                      Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          title: Text(plugin['name']?.toString() ?? '-'),
-                          subtitle: Text(
-                            'v${plugin['version'] ?? '-'} · ${plugin['origin'] ?? ''}',
-                          ),
-                          trailing: PopupMenuButton<String>(
-                            onSelected: (value) => _confirmOperate(
-                              value,
-                              () => _operate(plugin, value),
-                            ),
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: (plugin['enabled'] == true)
-                                    ? 'disable'
-                                    : 'enable',
-                                child: Text(
-                                  (plugin['enabled'] == true)
-                                      ? l10n.aiAgentsDisabled
-                                      : l10n.aiAgentsEnabled,
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'upgrade',
-                                child: Text(l10n.aiAgentPluginUpgrade),
-                              ),
-                              PopupMenuItem(
-                                value: 'uninstall',
-                                child: Text(l10n.aiAgentPluginUninstall),
-                              ),
-                            ],
-                          ),
+                      trailing: PopupMenuButton<String>(
+                        onSelected: (value) => _confirmOperate(
+                          value,
+                          () => _operate(plugin, value),
                         ),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: (plugin['enabled'] == true)
+                                ? 'disable'
+                                : 'enable',
+                            child: Text(
+                              (plugin['enabled'] == true)
+                                  ? l10n.aiAgentsDisabled
+                                  : l10n.aiAgentsEnabled,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'upgrade',
+                            child: Text(l10n.aiAgentPluginUpgrade),
+                          ),
+                          PopupMenuItem(
+                            value: 'uninstall',
+                            child: Text(l10n.aiAgentPluginUninstall),
+                          ),
+                        ],
                       ),
-                    const SizedBox(height: 16),
-                    Text(l10n.aiAgentPluginMarket,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _keywordController,
-                            decoration: InputDecoration(
-                              hintText: l10n.aiAgentPluginSearchHint,
-                              isDense: true,
-                              border: const OutlineInputBorder(),
-                            ),
-                            onSubmitted: (_) => _searchMarket(),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.search),
-                          tooltip: context.l10n.commonSearch,
-                          onPressed: _isMutating ? null : _searchMarket,
-                        ),
-                      ],
                     ),
-                    const SizedBox(height: 8),
-                    if (_market.isEmpty) Text(l10n.aiAgentPluginMarketEmpty),
-                    for (final item in _market)
-                      Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          title: Text(item['name']?.toString() ?? '-'),
-                          subtitle: Text(
-                            item['description']?.toString() ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          isThreeLine: true,
-                          trailing: IconButton(
-                            icon: const Icon(Icons.download_outlined),
-                            tooltip: l10n.imageOpsPush,
-                            onPressed: _isMutating
-                                ? null
-                                : () => _confirmOperate(
-                                      l10n.aiAgentPluginInstallConfirm,
-                                      () => _installMarket(item),
-                                    ),
-                          ),
+                  ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.aiAgentPluginMarket,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _keywordController,
+                        decoration: InputDecoration(
+                          hintText: l10n.aiAgentPluginSearchHint,
+                          isDense: true,
+                          border: const OutlineInputBorder(),
                         ),
+                        onSubmitted: (_) => _searchMarket(),
                       ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.search),
+                      tooltip: context.l10n.commonSearch,
+                      onPressed: _isMutating ? null : _searchMarket,
+                    ),
                   ],
                 ),
+                const SizedBox(height: 8),
+                if (_market.isEmpty) Text(l10n.aiAgentPluginMarketEmpty),
+                for (final item in _market)
+                  Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(item['name']?.toString() ?? '-'),
+                      subtitle: Text(
+                        item['description']?.toString() ?? '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      isThreeLine: true,
+                      trailing: IconButton(
+                        icon: const Icon(Icons.download_outlined),
+                        tooltip: l10n.imageOpsPush,
+                        onPressed: _isMutating
+                            ? null
+                            : () => _confirmOperate(
+                                l10n.aiAgentPluginInstallConfirm,
+                                () => _installMarket(item),
+                              ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 }

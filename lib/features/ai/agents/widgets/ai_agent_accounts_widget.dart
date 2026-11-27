@@ -3,7 +3,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/ai/agent_models.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'ai_agent_account_dialog.dart';
@@ -79,9 +79,8 @@ class _AIAgentAccountsWidgetState extends State<AIAgentAccountsWidget> {
                         labelText: l10n.commonSearch,
                         border: const OutlineInputBorder(),
                       ),
-                      onSubmitted: (value) => provider.filterAccounts(
-                        keyword: value,
-                      ),
+                      onSubmitted: (value) =>
+                          provider.filterAccounts(keyword: value),
                     ),
                   ),
                   FilledButton.icon(
@@ -93,8 +92,8 @@ class _AIAgentAccountsWidgetState extends State<AIAgentAccountsWidget> {
                     onPressed: provider.isLoading
                         ? null
                         : () => provider.filterAccounts(
-                              keyword: _searchController.text.trim(),
-                            ),
+                            keyword: _searchController.text.trim(),
+                          ),
                     icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.commonRefresh),
                   ),
@@ -155,14 +154,21 @@ class _AIAgentAccountsWidgetState extends State<AIAgentAccountsWidget> {
     BuildContext context, {
     AgentAccountItem? account,
   }) async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => Dialog(
-        child: Padding(
+    final provider = context.read<AgentsProvider>();
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (panelContext) {
+        final form = Padding(
           padding: AppDesignTokens.cardPadding,
-          child: AIAgentAccountDialog(account: account),
-        ),
-      ),
+          child: ChangeNotifierProvider.value(
+            value: provider,
+            child: AIAgentAccountDialog(account: account),
+          ),
+        );
+        return ModalRoute.of(panelContext) is DialogRoute<void>
+            ? Dialog(child: form)
+            : form;
+      },
     );
   }
 

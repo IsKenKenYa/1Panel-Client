@@ -6,8 +6,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/ai/providers/model_downloader_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/model_downloader_sections.dart';
 import 'package:onepanel_client/features/ai/widgets/model_downloader_settings_sheet.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// AI 模块的模型下载分区：推荐、搜索、任务、本地四块。
 class ModelDownloaderTabWidget extends StatefulWidget {
@@ -28,7 +27,9 @@ class _ModelDownloaderTabWidgetState extends State<ModelDownloaderTabWidget> {
   }
 
   void _loadOnce() {
-    if (_initialized || !mounted) return;
+    if (_initialized || !mounted) {
+      return;
+    }
     _initialized = true;
     context.read<ModelDownloaderProvider>().loadAll();
   }
@@ -49,19 +50,17 @@ class _ModelDownloaderTabWidgetState extends State<ModelDownloaderTabWidget> {
     }
 
     return PartialErrorToastListener(
-      errorMessage: provider.featuredError ??
-          provider.searchError ??
-          provider.localError,
-      hasCachedData: provider.featured.items.isNotEmpty ||
-          provider.localModels.isNotEmpty,
+      errorMessage:
+          provider.featuredError ?? provider.searchError ?? provider.localError,
+      hasCachedData:
+          provider.featured.items.isNotEmpty || provider.localModels.isNotEmpty,
       onRetry: provider.loadAll,
       child: ListView(
         padding: EdgeInsets.fromLTRB(
           AppDesignTokens.spacingLg,
           AppDesignTokens.spacingMd,
           AppDesignTokens.spacingLg,
-          AppDesignTokens.spacingXl +
-              MediaQuery.paddingOf(context).bottom,
+          AppDesignTokens.spacingXl + MediaQuery.paddingOf(context).bottom,
         ),
         children: <Widget>[
           ModelFeaturedSection(provider: provider),
@@ -86,14 +85,25 @@ class _ModelDownloaderTabWidgetState extends State<ModelDownloaderTabWidget> {
   }
 }
 
-/// 打开下载设置抽屉。
+/// 打开模型下载设置。
 Future<void> showModelDownloaderSettings(BuildContext context) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    showDragHandle: true,
-    builder: (_) => const ModelDownloaderSettingsSheet(),
+  final provider = context.read<ModelDownloaderProvider>();
+  return showAdaptiveFormPanel<void>(
+    context,
+    builder: (panelContext) {
+      final form = ChangeNotifierProvider.value(
+        value: provider,
+        child: const ModelDownloaderSettingsSheet(),
+      );
+      if (ModalRoute.of(panelContext) is DialogRoute<void>) {
+        return Dialog(child: form);
+      }
+      return MediaQuery.removeViewInsets(
+        context: panelContext,
+        removeBottom: true,
+        child: form,
+      );
+    },
   );
 }
 

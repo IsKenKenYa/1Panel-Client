@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'ai_agent_create_dialog.dart';
@@ -61,8 +59,8 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
                     onPressed: provider.isLoading
                         ? null
                         : () => provider.searchAgents(
-                              _searchController.text.trim(),
-                            ),
+                            _searchController.text.trim(),
+                          ),
                     icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.commonRefresh),
                   ),
@@ -97,7 +95,12 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
 
                     return Row(
                       children: <Widget>[
-                        SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,  child: list),
+                        SizedBox(
+                          width: AdaptiveLayoutSpec.of(
+                            context,
+                          ).dialogConstraints.maxWidth,
+                          child: list,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(child: detail),
                       ],
@@ -125,7 +128,9 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
           return ListTile(
             selected: selected,
             title: Text(item.name ?? '-'),
-            subtitle: Text('${item.agentType ?? '-'}  ·  ${item.status ?? '-'}'),
+            subtitle: Text(
+              '${item.agentType ?? '-'}  ·  ${item.status ?? '-'}',
+            ),
             onTap: () => provider.selectAgent(item),
             trailing: IconButton(
               icon: const Icon(Icons.delete_outline),
@@ -141,14 +146,21 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
   }
 
   Future<void> _showCreateDialog(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => const Dialog(
-        child: Padding(
+    final provider = context.read<AgentsProvider>();
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (panelContext) {
+        final form = Padding(
           padding: AppDesignTokens.cardPadding,
-          child: AIAgentCreateDialog(),
-        ),
-      ),
+          child: ChangeNotifierProvider.value(
+            value: provider,
+            child: const AIAgentCreateDialog(),
+          ),
+        );
+        return ModalRoute.of(panelContext) is DialogRoute<void>
+            ? Dialog(child: form)
+            : form;
+      },
     );
   }
 

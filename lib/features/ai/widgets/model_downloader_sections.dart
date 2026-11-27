@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/model_downloader_models.dart';
 import 'package:onepanel_client/features/ai/providers/model_downloader_provider.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 /// 推荐模型分区。
 class ModelFeaturedSection extends StatelessWidget {
@@ -59,7 +58,8 @@ class ModelFeaturedSection extends StatelessWidget {
           ),
         if (items.isEmpty)
           ExpressiveHint(
-            message: provider.featuredError ??
+            message:
+                provider.featuredError ??
                 l10n.modelDownloaderFeaturedEmptyTitle,
             isError: provider.featuredError != null,
             icon: Icons.widgets_outlined,
@@ -75,10 +75,14 @@ class ModelFeaturedSection extends StatelessWidget {
     final l10n = context.l10n;
     try {
       await provider.syncFeatured();
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -95,8 +99,8 @@ class _FeaturedModelRow extends StatelessWidget {
     final l10n = context.l10n;
     final description =
         model.description[Localizations.localeOf(context).languageCode] ??
-            model.description.values.firstOrNull ??
-            '';
+        model.description.values.firstOrNull ??
+        '';
     final meta = <String>[
       if (model.family.isNotEmpty) model.family,
       if (model.backboneParams.isNotEmpty) model.backboneParams,
@@ -121,10 +125,14 @@ class _FeaturedModelRow extends StatelessWidget {
     final l10n = context.l10n;
     try {
       await provider.downloadFeatured(model);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.modelDownloaderDownloadStarted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -200,7 +208,9 @@ class _ModelSearchSectionState extends State<ModelSearchSection> {
                 ],
                 selected: provider.searchSource,
                 onSelected: (value) {
-                  if (value == null) return;
+                  if (value == null) {
+                    return;
+                  }
                   provider.setSearchSource(value);
                 },
               ),
@@ -213,7 +223,9 @@ class _ModelSearchSectionState extends State<ModelSearchSection> {
                 ],
                 selected: provider.searchSort,
                 onSelected: (value) {
-                  if (value == null) return;
+                  if (value == null) {
+                    return;
+                  }
                   provider.setSearchSort(value);
                 },
               ),
@@ -282,10 +294,14 @@ class _MarketModelRow extends StatelessWidget {
     final l10n = context.l10n;
     try {
       await provider.downloadModel(repoID: item.repoID, source: source);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.modelDownloaderDownloadStarted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -314,8 +330,7 @@ class ModelTasksSection extends StatelessWidget {
       children: <Widget>[
         if (tasks.isEmpty)
           ExpressiveHint(
-            message: provider.taskError ??
-                l10n.modelDownloaderTaskEmptyTitle,
+            message: provider.taskError ?? l10n.modelDownloaderTaskEmptyTitle,
             isError: provider.taskError != null,
             icon: Icons.download_outlined,
           )
@@ -336,9 +351,8 @@ class _TaskRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
-    final progress =
-        (task.progress > 1 ? task.progress / 100 : task.progress)
-            .clamp(0.0, 1.0);
+    final progress = (task.progress > 1 ? task.progress / 100 : task.progress)
+        .clamp(0.0, 1.0);
     final name = task.modelName.isEmpty ? task.repoID : task.modelName;
 
     return Padding(
@@ -362,17 +376,17 @@ class _TaskRow extends StatelessWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(width: AppDesignTokens.spacingSm),
               Text(
                 _statusLabel(l10n, task.status),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: _statusColor(task.status, scheme),
-                    ),
+                  color: _statusColor(task.status, scheme),
+                ),
               ),
             ],
           ),
@@ -394,16 +408,18 @@ class _TaskRow extends StatelessWidget {
                   '${_formatBytes(task.downloadedSize)} / '
                   '${_formatBytes(task.totalSize)}',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                        fontFeatures: const <FontFeature>[
-                          FontFeature.tabularFigures(),
-                        ],
-                      ),
+                    color: scheme.onSurfaceVariant,
+                    fontFeatures: const <FontFeature>[
+                      FontFeature.tabularFigures(),
+                    ],
+                  ),
                 ),
               ),
               if (task.canCancel)
                 TextButton(
-                  onPressed: provider.isMutating ? null : () => _cancel(context),
+                  onPressed: provider.isMutating
+                      ? null
+                      : () => _cancel(context),
                   child: Text(l10n.modelDownloaderTaskCancelAction),
                 ),
               if (task.canRetry)
@@ -413,8 +429,9 @@ class _TaskRow extends StatelessWidget {
                 ),
               if (task.canRemoveRecord)
                 TextButton(
-                  onPressed:
-                      provider.isMutating ? null : () => _remove(context),
+                  onPressed: provider.isMutating
+                      ? null
+                      : () => _remove(context),
                   child: Text(l10n.modelDownloaderTaskRemoveAction),
                 ),
             ],
@@ -424,10 +441,9 @@ class _TaskRow extends StatelessWidget {
               padding: const EdgeInsets.only(top: 2),
               child: Text(
                 task.errorMessage!,
-                style:
-                    Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.error,
-                        ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: scheme.error),
               ),
             ),
         ],
@@ -445,13 +461,19 @@ class _TaskRow extends StatelessWidget {
       confirmLabel: l10n.modelDownloaderTaskCancelAction,
       isDestructive: true,
     );
-    if (!confirmed || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.cancelTask(task.id);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -465,13 +487,19 @@ class _TaskRow extends StatelessWidget {
       message: l10n.modelDownloaderTaskRetryConfirm(name),
       confirmLabel: l10n.modelDownloaderTaskRetryAction,
     );
-    if (!confirmed || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.retryTask(task.id);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonOperationSuccess);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -486,13 +514,19 @@ class _TaskRow extends StatelessWidget {
       confirmLabel: l10n.modelDownloaderTaskRemoveAction,
       isDestructive: true,
     );
-    if (!confirmed || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.removeTask(task.id);
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonDeleted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
@@ -585,8 +619,7 @@ class ModelLocalSection extends StatelessWidget {
       children: <Widget>[
         if (models.isEmpty)
           ExpressiveHint(
-            message: provider.localError ??
-                l10n.modelDownloaderLocalEmptyTitle,
+            message: provider.localError ?? l10n.modelDownloaderLocalEmptyTitle,
             isError: provider.localError != null,
             icon: Icons.folder_open_outlined,
           )
@@ -631,50 +664,50 @@ class _LocalModelRow extends StatelessWidget {
   Future<void> _delete(BuildContext context) async {
     final l10n = context.l10n;
     var withFile = true;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, setState) => AlertDialog(
-          title: Text(l10n.modelDownloaderLocalDeleteAction),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(l10n.modelDownloaderLocalDeleteConfirm(
-                  model.name.isEmpty ? model.repoID : model.name)),
-              const SizedBox(height: AppDesignTokens.spacingSm),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: withFile,
-                title: Text(l10n.modelDownloaderLocalDeleteFileLabel),
-                onChanged: (value) => setState(() => withFile = value ?? true),
+    final confirmed = await showAppFormDialog(
+      context,
+      title: l10n.modelDownloaderLocalDeleteAction,
+      confirmLabel: l10n.modelDownloaderLocalDeleteAction,
+      destructive: true,
+      onConfirm: () async {},
+      content: StatefulBuilder(
+        builder: (dialogContext, setState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              l10n.modelDownloaderLocalDeleteConfirm(
+                model.name.isEmpty ? model.repoID : model.name,
               ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.commonCancel),
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.modelDownloaderLocalDeleteAction),
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              value: withFile,
+              title: Text(l10n.modelDownloaderLocalDeleteFileLabel),
+              onChanged: (value) => setState(() => withFile = value ?? true),
             ),
           ],
         ),
       ),
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
     try {
       await provider.deleteLocalModel(
         model.name.isEmpty ? model.repoID : model.name,
         downloadType: model.downloadType.isEmpty ? null : model.downloadType,
         withFile: withFile,
       );
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showSuccess(context, l10n.commonDeleted);
     } catch (error) {
-      if (!context.mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       SnackBarUtils.showError(context, error.toString());
     }
   }
