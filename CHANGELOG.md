@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. (本项目�
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-11-27
+
+### Fixed
+
+#### Android Release Startup and Installer Compatibility
+- Added `android/app/proguard-rules.pro` to preserve reflection constructors for `androidx.room.RoomDatabase` (`WorkDatabase_Impl`), `androidx.work.Worker` / `InputMerger`, and `VersionedParcelable` under AGP 9.x R8 strict full mode, resolving the release cold-start crash in `WorkManagerInitializer`.
+- Enabled `v1`, `v2`, and `v3` APK signing (`enableV1Signing`, `enableV2Signing`, `enableV3Signing`) in `android/app/build.gradle.kts` to include `META-INF` JAR certificates alongside v2/v3 signing blocks for broader OEM installer compatibility (including Honor MagicOS and third-party file managers).
+
+#### Android 正式版启动崩溃与安装包签名兼容修复（中文）
+- 新增 `android/app/proguard-rules.pro`，为 AGP 9.x R8 严格全模式补充 `RoomDatabase`（`WorkDatabase_Impl`）、`Worker`、`InputMerger` 与 `VersionedParcelable` 反射构造函数保留规则，修复 Release 包启动时 `WorkManagerInitializer` 初始化崩溃。
+- 在 `android/app/build.gradle.kts` 的 `release` 签名配置中显式开启 `v1`、`v2` 与 `v3` 签名（`enableV1Signing`、`enableV2Signing`、`enableV3Signing`），在保留 v2/v3 签名块的同时生成 `META-INF` 证书文件，兼容荣耀 MagicOS 及各类第三方安装器的证书校验。
+
 ## [0.6.1] - 2026-11-27
 
 ### Overview
