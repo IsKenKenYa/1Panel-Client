@@ -8,14 +8,12 @@ import 'package:onepanel_client/core/platform/services/platform_file_service.dar
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/features/commands/providers/commands_provider.dart';
 import 'package:onepanel_client/features/commands/widgets/command_card_widget.dart';
-import 'package:onepanel_client/features/commands/widgets/command_import_preview_sheet_widget.dart';
 import 'package:onepanel_client/features/commands/widgets/commands_page_header_widget.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
 import 'package:onepanel_client/shared/mixins/server_aware_page_mixin.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
 class CommandsPage extends StatefulWidget {
@@ -25,8 +23,7 @@ class CommandsPage extends StatefulWidget {
   State<CommandsPage> createState() => _CommandsPageState();
 }
 
-class _CommandsPageState extends State<CommandsPage>
-    with ServerAwarePageMixin {
+class _CommandsPageState extends State<CommandsPage> with ServerAwarePageMixin {
   late final TextEditingController _searchController;
 
   @override
@@ -188,7 +185,9 @@ class _CommandsPageState extends State<CommandsPage>
 
   Future<void> _copyCommand(CommandInfo item) async {
     await Clipboard.setData(ClipboardData(text: item.command ?? ''));
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     SnackBarUtils.showSuccess(context, context.l10n.commonCopySuccess);
   }
 
@@ -204,48 +203,126 @@ class _CommandsPageState extends State<CommandsPage>
     }
     final file = result.files.first;
     final bytes = file.bytes ?? await File(file.path!).readAsBytes();
-    await provider.loadImportPreview(
-      bytes: bytes,
-      fileName: file.name,
-    );
+    await provider.loadImportPreview(bytes: bytes, fileName: file.name);
     if (!mounted || provider.importPreviewItems.isEmpty) {
       if (mounted) {
-        SnackBarUtils.showInfo(context, context.l10n.commandsImportPreviewEmpty);
+        SnackBarUtils.showInfo(
+          context,
+          context.l10n.commandsImportPreviewEmpty,
+        );
       }
       return;
     }
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => ChangeNotifierProvider<CommandsProvider>.value(
-        value: provider,
-        child: Consumer<CommandsProvider>(
-          builder: (context, state, _) {
-            return CommandImportPreviewSheetWidget(
-              items: state.importPreviewItems,
-              selectedIds: state.selectedPreviewIds,
-              isImporting: state.isImporting,
-              onToggleItem: state.togglePreviewSelection,
-              onSelectAll: state.selectAllPreview,
-              onPickGroup: () => _pickPreviewGroup(state),
-              onImport: () async {
-                final success = await state.importSelectedPreview();
-                if (!pageContext.mounted) return;
-                if (success) {
-                  Navigator.of(context).pop();
-                  SnackBarUtils.showSuccess(pageContext, pageContext.l10n.commonImport);
-                }
-              },
-              emptyTitle: context.l10n.commandsImportPreviewEmptyTitle,
-              emptyDescription: context.l10n.commandsImportPreviewEmpty,
-              importLabel: context.l10n.commonImport,
-              selectAllLabel: context.l10n.commandsSelectAll,
-              groupLabel: context.l10n.commandsApplyGroup,
-            );
-          },
-        ),
+    await showAppFormSheet<void>(
+      context,
+      title: context.l10n.commonImport,
+      builder: (_) => ListenableBuilder(
+        listenable: provider,
+        builder: (context, _) {
+          final l10n = context.l10n;
+          final items = provider.importPreviewItems;
+          return LayoutBuilder(
+            builder: (context, constraints) => ListView(
+              shrinkWrap: true,
+              primary: false,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: items.isEmpty
+                          ? null
+                          : provider.selectAllPreview,
+                      icon: const Icon(Icons.done_all_outlined),
+                      label: Text(l10n.commandsSelectAll),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: items.isEmpty
+                          ? null
+                          : () => _pickPreviewGroup(provider),
+                      icon: const Icon(Icons.folder_outlined),
+                      label: Text(l10n.commandsApplyGroup),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: (constraints.maxHeight * 0.7)
+                      .clamp(120.0, 420.0)
+                      .toDouble(),
+                  child: AsyncStatePageBodyWidget(
+                    isLoading: provider.isImporting && items.isEmpty,
+                    isEmpty: items.isEmpty,
+                    emptyTitle: l10n.commandsImportPreviewEmptyTitle,
+                    emptyDescription: l10n.commandsImportPreviewEmpty,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      primary: false,
+                      itemCount: items.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return CheckboxListTile(
+                          value: provider.selectedPreviewIds.contains(item.id),
+                          onChanged: provider.isImporting
+                              ? null
+                              : (_) => provider.togglePreviewSelection(item.id),
+                          title: Text(item.name ?? ''),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.groupBelong ?? '-'),
+                              const SizedBox(height: 4),
+                              Text(
+                                item.command ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(fontFamily: 'monospace'),
+                              ),
+                            ],
+                          ),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.standard,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed:
+                      provider.isImporting ||
+                          provider.selectedPreviewIds.isEmpty
+                      ? null
+                      : () async {
+                          final success = await provider
+                              .importSelectedPreview();
+                          if (success && context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                          if (success && pageContext.mounted) {
+                            SnackBarUtils.showSuccess(
+                              pageContext,
+                              l10n.commonImport,
+                            );
+                          }
+                        },
+                  icon: provider.isImporting
+                      ? const SizedBox.square(
+                          dimension: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.upload_file_outlined),
+                  label: Text(l10n.commonImport),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
     provider.clearImportPreview();
@@ -257,12 +334,16 @@ class _CommandsPageState extends State<CommandsPage>
       groupType: 'command',
       initialSelectedGroupId: provider.selectedGroupId,
     );
-    if (groupId != null) provider.applyGroupToPreview(groupId);
+    if (groupId != null) {
+      provider.applyGroupToPreview(groupId);
+    }
   }
 
   Future<void> _exportCommands() async {
     final result = await context.read<CommandsProvider>().exportAllCommands();
-    if (!mounted || result == null) return;
+    if (!mounted || result == null) {
+      return;
+    }
     final message = result.success
         ? context.l10n.commandsExportSaved(result.filePath ?? '')
         : (result.errorMessage ?? context.l10n.commonSaveFailed);
@@ -279,7 +360,9 @@ class _CommandsPageState extends State<CommandsPage>
       allowClearSelection: true,
       clearOptionLabel: context.l10n.commandsFilterAllGroups,
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     provider.updateGroupFilter(groupId);
     await provider.load();
   }
@@ -294,7 +377,9 @@ class _CommandsPageState extends State<CommandsPage>
       confirmIcon: Icons.delete_outline,
       isDestructive: true,
     );
-    if (!confirmed) return;
+    if (!confirmed) {
+      return;
+    }
     await provider.deleteCommand(item);
   }
 
@@ -310,7 +395,9 @@ class _CommandsPageState extends State<CommandsPage>
       confirmIcon: Icons.delete_outline,
       isDestructive: true,
     );
-    if (!confirmed) return;
+    if (!confirmed) {
+      return;
+    }
     await provider.deleteSelected();
   }
 

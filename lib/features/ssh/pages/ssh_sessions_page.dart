@@ -7,9 +7,7 @@ import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffol
 import 'package:onepanel_client/features/ssh/providers/ssh_sessions_provider.dart';
 import 'package:onepanel_client/features/ssh/widgets/ssh_section_nav_widget.dart';
 import 'package:onepanel_client/features/ssh/widgets/ssh_session_card_widget.dart';
-import 'package:onepanel_client/features/ssh/widgets/ssh_session_filter_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +22,10 @@ class _SshSessionsPageState extends State<SshSessionsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final connection = context.select((CurrentServerController state) =>
-        (state.currentServerId, state.currentServer?.revision));
+    final connection = context.select(
+      (CurrentServerController state) =>
+          (state.currentServerId, state.currentServer?.revision),
+    );
     return Consumer<SshSessionsProvider>(
       builder: (context, provider, _) {
         return ServerAwarePageScaffold(
@@ -86,14 +86,13 @@ class _SshSessionsPageState extends State<SshSessionsPage> {
 
   Future<void> _openFilterSheet() async {
     final provider = context.read<SshSessionsProvider>();
-    final result = await showModalBottomSheet<SshSessionQuery>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => SshSessionFilterSheetWidget(initialQuery: provider.query),
+    final result = await showAdaptiveFormPanel<SshSessionQuery>(
+      context,
+      builder: (_) => _SshSessionFilterForm(initialQuery: provider.query),
     );
-    if (result == null || !mounted) return;
+    if (result == null || !mounted) {
+      return;
+    }
     await provider.applyFilters(result);
   }
 
@@ -106,7 +105,66 @@ class _SshSessionsPageState extends State<SshSessionsPage> {
       confirmIcon: Icons.power_settings_new_outlined,
       isDestructive: true,
     );
-    if (!confirmed || !mounted) return;
+    if (!confirmed || !mounted) {
+      return;
+    }
     await context.read<SshSessionsProvider>().disconnectSession(item);
+  }
+}
+
+class _SshSessionFilterForm extends StatefulWidget {
+  const _SshSessionFilterForm({required this.initialQuery});
+
+  final SshSessionQuery initialQuery;
+
+  @override
+  State<_SshSessionFilterForm> createState() => _SshSessionFilterFormState();
+}
+
+class _SshSessionFilterFormState extends State<_SshSessionFilterForm> {
+  late final _loginUserController = TextEditingController(
+    text: widget.initialQuery.loginUser,
+  );
+  late final _loginIpController = TextEditingController(
+    text: widget.initialQuery.loginIP,
+  );
+
+  @override
+  void dispose() {
+    _loginUserController.dispose();
+    _loginIpController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.commonSearch,
+      onConfirm: () async => Navigator.of(context).pop(
+        SshSessionQuery(
+          loginUser: _loginUserController.text.trim(),
+          loginIP: _loginIpController.text.trim(),
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _loginUserController,
+            decoration: InputDecoration(
+              labelText: l10n.sshSessionsLoginUserLabel,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _loginIpController,
+            decoration: InputDecoration(
+              labelText: l10n.sshSessionsLoginIpLabel,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

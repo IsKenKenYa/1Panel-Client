@@ -4,8 +4,7 @@ import 'package:onepanel_client/data/models/system_group_models.dart';
 import 'package:onepanel_client/features/group/providers/group_options_provider.dart';
 import 'package:onepanel_client/features/group/widgets/group_edit_sheet_widget.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_list_widget.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class GroupSelectorSheetWidget extends StatelessWidget {
@@ -13,10 +12,12 @@ class GroupSelectorSheetWidget extends StatelessWidget {
     super.key,
     this.allowClearSelection = false,
     this.clearOptionLabel,
+    this.showTitle = true,
   });
 
   final bool allowClearSelection;
   final String? clearOptionLabel;
+  final bool showTitle;
 
   static Future<int?> show(
     BuildContext context, {
@@ -26,11 +27,9 @@ class GroupSelectorSheetWidget extends StatelessWidget {
     String? clearOptionLabel,
     GroupOptionsProvider? provider,
   }) {
-    return showModalBottomSheet<int?>(
-      context: context,
-      useSafeArea: true,
-      isScrollControlled: true,
-      showDragHandle: true,
+    return showAppFormSheet<int>(
+      context,
+      title: context.l10n.operationsGroupSelectorTitle,
       builder: (_) {
         if (provider != null) {
           return ChangeNotifierProvider<GroupOptionsProvider>.value(
@@ -38,6 +37,7 @@ class GroupSelectorSheetWidget extends StatelessWidget {
             child: GroupSelectorSheetWidget(
               allowClearSelection: allowClearSelection,
               clearOptionLabel: clearOptionLabel,
+              showTitle: false,
             ),
           );
         }
@@ -51,6 +51,7 @@ class GroupSelectorSheetWidget extends StatelessWidget {
           child: GroupSelectorSheetWidget(
             allowClearSelection: allowClearSelection,
             clearOptionLabel: clearOptionLabel,
+            showTitle: false,
           ),
         );
       },
@@ -63,12 +64,7 @@ class GroupSelectorSheetWidget extends StatelessWidget {
     return Consumer<GroupOptionsProvider>(
       builder: (context, provider, _) {
         return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 8,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,12 +72,18 @@ class GroupSelectorSheetWidget extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      l10n.operationsGroupSelectorTitle,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                    child: showTitle
+                        ? Text(
+                            l10n.operationsGroupSelectorTitle,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          )
+                        : const SizedBox.shrink(),
                   ),
                   IconButton(
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size.square(kMinInteractiveDimension),
+                      visualDensity: VisualDensity.standard,
+                    ),
                     onPressed: provider.isMutating
                         ? null
                         : () => _openEditor(context, provider),
@@ -91,25 +93,24 @@ class GroupSelectorSheetWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                height: 360,
-                child: AsyncStatePageBodyWidget(
-                  isLoading: provider.isLoading,
-                  isEmpty: provider.isEmpty,
-                  errorMessage: provider.errorMessage,
-                  onRetry: () => provider.load(forceRefresh: true),
-                  emptyTitle: l10n.commonEmpty,
-                  emptyDescription: l10n.operationsGroupEmptyDescription,
-                  emptyActionLabel: l10n.commonCreate,
-                  onEmptyAction: () => _openEditor(context, provider),
-                  child: GroupSelectorListWidget(
-                    provider: provider,
-                    allowClearSelection: allowClearSelection,
-                    clearOptionLabel: clearOptionLabel,
-                    onEditGroup: (group) => _openEditor(
-                      context,
-                      provider,
-                      group: group,
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 360),
+                  child: AsyncStatePageBodyWidget(
+                    isLoading: provider.isLoading,
+                    isEmpty: provider.isEmpty,
+                    errorMessage: provider.errorMessage,
+                    onRetry: () => provider.load(forceRefresh: true),
+                    emptyTitle: l10n.commonEmpty,
+                    emptyDescription: l10n.operationsGroupEmptyDescription,
+                    emptyActionLabel: l10n.commonCreate,
+                    onEmptyAction: () => _openEditor(context, provider),
+                    child: GroupSelectorListWidget(
+                      provider: provider,
+                      allowClearSelection: allowClearSelection,
+                      clearOptionLabel: clearOptionLabel,
+                      onEditGroup: (group) =>
+                          _openEditor(context, provider, group: group),
                     ),
                   ),
                 ),

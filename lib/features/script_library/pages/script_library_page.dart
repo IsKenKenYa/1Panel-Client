@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/script_library_models.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
-import 'package:onepanel_client/shared/widgets/text_preview_sheet.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/script_library/widgets/script_library_card_widget.dart';
-import 'package:onepanel_client/features/script_library/widgets/script_run_output_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
 class ScriptLibraryPage extends StatefulWidget {
@@ -119,8 +117,9 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
                           onViewCode: () => _viewCode(item),
                           onRun: () => _runScript(item),
                           onSync: _syncScripts,
-                          onDelete:
-                              item.isSystem ? null : () => _deleteScript(item),
+                          onDelete: item.isSystem
+                              ? null
+                              : () => _deleteScript(item),
                         );
                       },
                     ),
@@ -156,7 +155,9 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
       allowClearSelection: true,
       clearOptionLabel: context.l10n.scriptLibraryFilterAllGroups,
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     provider.updateGroupFilter(groupId);
     await provider.load();
   }
@@ -172,19 +173,64 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
   Future<void> _runScript(ScriptLibraryInfo item) async {
     final provider = context.read<ScriptLibraryProvider>();
     await provider.startRun(item);
-    if (!mounted) return;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => Consumer<ScriptLibraryProvider>(
-        builder: (context, state, _) {
-          return ScriptRunOutputSheetWidget(
-            title: context.l10n.scriptLibraryRunTitle,
-            output: state.runOutput,
-            isRunning: state.isRunning,
-            error: state.runError,
+    if (!mounted) {
+      return;
+    }
+    await showAppFormSheet<void>(
+      context,
+      title: context.l10n.scriptLibraryRunTitle,
+      builder: (_) => ListenableBuilder(
+        listenable: provider,
+        builder: (context, _) {
+          final l10n = context.l10n;
+          final output = provider.runOutput;
+          final error = provider.runError;
+          return ListView(
+            shrinkWrap: true,
+            padding: AppDesignTokens.cardPadding,
+            children: [
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: IconButton(
+                  tooltip: l10n.commonCopy,
+                  icon: const Icon(Icons.copy_all_outlined),
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size.square(kMinInteractiveDimension),
+                    visualDensity: VisualDensity.standard,
+                  ),
+                  onPressed: output.isEmpty
+                      ? null
+                      : () async {
+                          await Clipboard.setData(ClipboardData(text: output));
+                          if (context.mounted) {
+                            SnackBarUtils.showSuccess(
+                              context,
+                              l10n.commonCopySuccess,
+                            );
+                          }
+                        },
+                ),
+              ),
+              if (error != null && error.isNotEmpty)
+                Text(
+                  error,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              if (provider.isRunning && output.isEmpty) ...[
+                const LinearProgressIndicator(),
+                const SizedBox(height: 12),
+                Text(l10n.scriptLibraryRunWaiting),
+              ],
+              if (!provider.isRunning &&
+                  output.isEmpty &&
+                  (error == null || error.isEmpty))
+                Text(l10n.scriptLibraryRunNoOutput),
+              if (output.isNotEmpty)
+                SelectableText(
+                  output,
+                  style: const TextStyle(fontFamily: 'monospace'),
+                ),
+            ],
           );
         },
       ),
@@ -199,7 +245,9 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
       message: context.l10n.scriptLibrarySyncConfirm,
       confirmLabel: context.l10n.commonConfirm,
     );
-    if (!confirmed || !mounted) return;
+    if (!confirmed || !mounted) {
+      return;
+    }
     await context.read<ScriptLibraryProvider>().syncScripts();
   }
 
@@ -212,7 +260,9 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
       confirmIcon: Icons.delete_outline,
       isDestructive: true,
     );
-    if (!confirmed || !mounted) return;
+    if (!confirmed || !mounted) {
+      return;
+    }
     await context.read<ScriptLibraryProvider>().deleteScript(item);
   }
 }

@@ -8,17 +8,13 @@ import 'package:onepanel_client/features/runtimes/providers/php_supervisor_provi
 import 'package:onepanel_client/features/runtimes/utils/runtime_l10n_helper.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
 
 class PhpSupervisorPage extends StatefulWidget {
-  const PhpSupervisorPage({
-    super.key,
-    required this.args,
-  });
+  const PhpSupervisorPage({super.key, required this.args});
 
   final RuntimeManageArgs args;
 
@@ -135,7 +131,10 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                 _buildInfoChip(context, Icons.person_outline, item.user),
                 _buildInfoChip(context, Icons.folder_outlined, item.dir),
                 _buildInfoChip(
-                    context, Icons.view_list_outlined, item.numprocs),
+                  context,
+                  Icons.view_list_outlined,
+                  item.numprocs,
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -148,9 +147,9 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                     onPressed: provider.isOperating
                         ? null
                         : () => _openFile(
-                              processName: item.name,
-                              fileName: 'config',
-                            ),
+                            processName: item.name,
+                            fileName: 'config',
+                          ),
                     child: Text(l10n.runtimeFieldSource),
                   ),
                 if (!isBuiltin)
@@ -158,9 +157,9 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                     onPressed: provider.isOperating
                         ? null
                         : () => _openFile(
-                              processName: item.name,
-                              fileName: 'out.log',
-                            ),
+                            processName: item.name,
+                            fileName: 'out.log',
+                          ),
                     child: Text(l10n.commonLogs),
                   ),
                 if (action != null)
@@ -227,10 +226,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
       visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
       backgroundColor: color.withValues(alpha: 0.12),
       side: BorderSide(color: color.withValues(alpha: 0.3)),
-      label: Text(
-        text,
-        style: TextStyle(color: color),
-      ),
+      label: Text(text, style: TextStyle(color: color)),
     );
   }
 
@@ -256,9 +252,9 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
 
   Future<void> _operate(String processName, String operation) async {
     final success = await context.read<PhpSupervisorProvider>().operateProcess(
-          processName: processName,
-          operation: operation,
-        );
+      processName: processName,
+      operation: operation,
+    );
     if (!mounted) {
       return;
     }
@@ -266,7 +262,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     final message = success
         ? context.l10n.commonSaveSuccess
         : (localizeRuntimeError(context.l10n, provider.errorMessage) ??
-            context.l10n.commonSaveFailed);
+              context.l10n.commonSaveFailed);
     SnackBarUtils.showSuccess(context, message);
   }
 
@@ -285,7 +281,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     if (!opened) {
       final message =
           localizeRuntimeError(context.l10n, provider.fileErrorMessage) ??
-              context.l10n.commonSaveFailed;
+          context.l10n.commonSaveFailed;
       SnackBarUtils.showSuccess(context, message);
       return;
     }
@@ -294,126 +290,126 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
       _fileEditorController.text = provider.activeFileContent;
     }
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return SafeArea(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.78,
-            child: Consumer<PhpSupervisorProvider>(
-              builder: (context, fileProvider, _) {
-                final l10n = context.l10n;
-                final fileError =
-                    localizeRuntimeError(l10n, fileProvider.fileErrorMessage);
-                final isConfig = fileProvider.activeFileName == 'config';
-                final isLog = fileProvider.activeFileName == 'out.log' ||
-                    fileProvider.activeFileName == 'err.log';
+    await showAppFormSheet<void>(
+      context,
+      title:
+          '${provider.activeProcessName} · ${_fileLabel(context.l10n, provider.activeFileName)}',
+      maxHeightFactor: 0.78,
+      builder: (_) => ListenableBuilder(
+        listenable: provider,
+        builder: (context, _) {
+          final fileProvider = provider;
+          final l10n = context.l10n;
+          final fileError = localizeRuntimeError(
+            l10n,
+            fileProvider.fileErrorMessage,
+          );
+          final isConfig = fileProvider.activeFileName == 'config';
+          final isLog =
+              fileProvider.activeFileName == 'out.log' ||
+              fileProvider.activeFileName == 'err.log';
 
-                if (isConfig &&
-                    !fileProvider.isFileLoading &&
-                    _fileEditorController.text !=
-                        fileProvider.activeFileContent) {
-                  _fileEditorController.text = fileProvider.activeFileContent;
-                }
+          if (isConfig &&
+              !fileProvider.isFileLoading &&
+              _fileEditorController.text != fileProvider.activeFileContent) {
+            _fileEditorController.text = fileProvider.activeFileContent;
+          }
 
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              '${fileProvider.activeProcessName} · ${_fileLabel(l10n, fileProvider.activeFileName)}',
-                              style: Theme.of(context).textTheme.titleMedium,
+          return LayoutBuilder(
+            builder: (context, constraints) => ListView(
+              primary: false,
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              children: <Widget>[
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: IconButton(
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size.square(kMinInteractiveDimension),
+                      visualDensity: VisualDensity.standard,
+                    ),
+                    onPressed: fileProvider.isFileLoading
+                        ? null
+                        : fileProvider.refreshActiveFile,
+                    icon: const Icon(Icons.refresh_outlined),
+                    tooltip: l10n.commonRefresh,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (fileProvider.isFileLoading)
+                  const LinearProgressIndicator(minHeight: 3),
+                if (fileError != null && fileError.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: 8),
+                  Text(fileError),
+                ],
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: (constraints.maxHeight * 0.68)
+                      .clamp(160.0, 640.0)
+                      .toDouble(),
+                  child: isConfig
+                      ? TextField(
+                          controller: _fileEditorController,
+                          expands: true,
+                          maxLines: null,
+                          enabled: !fileProvider.isFileSaving,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.outlineVariant,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: SingleChildScrollView(
+                            primary: false,
+                            child: SelectableText(
+                              fileProvider.activeFileContent.isEmpty
+                                  ? '-'
+                                  : fileProvider.activeFileContent,
                             ),
                           ),
-                          IconButton(
-                            onPressed: fileProvider.isFileLoading
-                                ? null
-                                : fileProvider.refreshActiveFile,
-                            icon: const Icon(Icons.refresh_outlined),
-                            tooltip: l10n.commonRefresh,
-                          ),
-                        ],
+                        ),
+                ),
+                const SizedBox(height: 10),
+                OverflowBar(
+                  alignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    if (isLog)
+                      OutlinedButton(
+                        onPressed: fileProvider.isFileSaving
+                            ? null
+                            : _clearActiveLog,
+                        child: Text(l10n.commonDelete),
                       ),
-                      const SizedBox(height: 8),
-                      if (fileProvider.isFileLoading)
-                        const LinearProgressIndicator(minHeight: 3),
-                      if (fileError != null &&
-                          fileError.isNotEmpty) ...<Widget>[
-                        const SizedBox(height: 8),
-                        Text(fileError),
-                      ],
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: isConfig
-                            ? TextField(
-                                controller: _fileEditorController,
-                                expands: true,
-                                maxLines: null,
-                                enabled: !fileProvider.isFileSaving,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
+                    if (isConfig)
+                      FilledButton(
+                        onPressed: fileProvider.isFileSaving
+                            ? null
+                            : _saveActiveConfig,
+                        child: fileProvider.isFileSaving
+                            ? const SizedBox.square(
+                                dimension: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                 ),
                               )
-                            : Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .outlineVariant,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: SingleChildScrollView(
-                                  child: SelectableText(
-                                    fileProvider.activeFileContent.isEmpty
-                                        ? '-'
-                                        : fileProvider.activeFileContent,
-                                  ),
-                                ),
-                              ),
+                            : Text(l10n.commonSave),
                       ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: <Widget>[
-                          if (isLog)
-                            OutlinedButton(
-                              onPressed: fileProvider.isFileSaving
-                                  ? null
-                                  : _clearActiveLog,
-                              child: Text(l10n.commonDelete),
-                            ),
-                          const Spacer(),
-                          if (isConfig)
-                            FilledButton(
-                              onPressed: fileProvider.isFileSaving
-                                  ? null
-                                  : _saveActiveConfig,
-                              child: fileProvider.isFileSaving
-                                  ? const SizedBox.square(
-                                      dimension: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Text(l10n.commonSave),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                  ],
+                ),
+              ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
 
     if (mounted) {
@@ -440,13 +436,14 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     final message = success
         ? context.l10n.commonSaveSuccess
         : (localizeRuntimeError(context.l10n, provider.fileErrorMessage) ??
-            context.l10n.commonSaveFailed);
+              context.l10n.commonSaveFailed);
     SnackBarUtils.showSuccess(context, message);
   }
 
   Future<void> _clearActiveLog() async {
-    final success =
-        await context.read<PhpSupervisorProvider>().clearActiveLog();
+    final success = await context
+        .read<PhpSupervisorProvider>()
+        .clearActiveLog();
     if (!mounted) {
       return;
     }
@@ -454,19 +451,18 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     final message = success
         ? context.l10n.commonSaveSuccess
         : (localizeRuntimeError(context.l10n, provider.fileErrorMessage) ??
-            context.l10n.commonSaveFailed);
+              context.l10n.commonSaveFailed);
     SnackBarUtils.showSuccess(context, message);
   }
 
-  Future<void> _openProcessEditor({
-    SupervisorProcessInfo? initial,
-  }) async {
+  Future<void> _openProcessEditor({SupervisorProcessInfo? initial}) async {
     final l10n = context.l10n;
     final isEdit = initial != null;
 
     final nameController = TextEditingController(text: initial?.name ?? '');
-    final commandController =
-        TextEditingController(text: initial?.command ?? '');
+    final commandController = TextEditingController(
+      text: initial?.command ?? '',
+    );
     final userController = TextEditingController(
       text: initial == null
           ? 'www-data'
@@ -478,8 +474,9 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
           ? '1'
           : (initial.numprocs.trim().isEmpty ? '1' : initial.numprocs),
     );
-    final environmentController =
-        TextEditingController(text: initial?.environment ?? '');
+    final environmentController = TextEditingController(
+      text: initial?.environment ?? '',
+    );
 
     await showAppFormSheet<void>(
       context,
@@ -556,18 +553,18 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                         onPressed: provider.isOperating
                             ? null
                             : () async {
-                                final supervisorProvider =
-                                    context.read<PhpSupervisorProvider>();
+                                final supervisorProvider = context
+                                    .read<PhpSupervisorProvider>();
                                 final success = await supervisorProvider
                                     .saveProcessDefinition(
-                                  operate: isEdit ? 'update' : 'create',
-                                  name: nameController.text,
-                                  command: commandController.text,
-                                  user: userController.text,
-                                  dir: dirController.text,
-                                  numprocs: numprocsController.text,
-                                  environment: environmentController.text,
-                                );
+                                      operate: isEdit ? 'update' : 'create',
+                                      name: nameController.text,
+                                      command: commandController.text,
+                                      user: userController.text,
+                                      dir: dirController.text,
+                                      numprocs: numprocsController.text,
+                                      environment: environmentController.text,
+                                    );
                                 if (!sheetContext.mounted) {
                                   return;
                                 }
@@ -575,15 +572,18 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                                 final message = success
                                     ? localized.commonSaveSuccess
                                     : (localizeRuntimeError(
-                                          localized,
-                                          supervisorProvider.errorMessage,
-                                        ) ??
-                                        localized.commonSaveFailed);
+                                            localized,
+                                            supervisorProvider.errorMessage,
+                                          ) ??
+                                          localized.commonSaveFailed);
                                 if (success &&
                                     Navigator.of(sheetContext).canPop()) {
                                   Navigator.of(sheetContext).pop();
                                 }
-                                SnackBarUtils.showSuccess(sheetContext, message);
+                                SnackBarUtils.showSuccess(
+                                  sheetContext,
+                                  message,
+                                );
                               },
                         child: provider.isOperating
                             ? const SizedBox.square(
