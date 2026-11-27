@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/i18n/l10n_x.dart';
 import '../../core/theme/app_design_tokens.dart';
 import '../../core/utils/snackbar_utils.dart';
-import '../../shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import '../security/security_verification_page.dart';
 import 'settings_provider.dart';
 import 'widgets/settings_scaffold.dart';
@@ -117,35 +117,26 @@ class SecuritySettingsPage extends StatelessWidget {
     TextInputType keyboard = TextInputType.text,
   }) async {
     final l10n = context.l10n;
-    var value = initialValue;
-    final result = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(title),
-        content: TextFormField(
-          initialValue: initialValue,
-          keyboardType: keyboard,
-          onChanged: (input) => value = input,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, value.trim()),
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
+    final result = await showAppTextInputDialog(
+      context,
+      title: title,
+      initialValue: initialValue,
+      keyboardType: keyboard,
+      autofocus: false,
+      allowEmpty: true,
+      confirmLabel: l10n.commonSave,
     );
     if (result != null && result != initialValue && context.mounted) {
       await _save(context, provider, key, result);
     }
   }
 
-  Future<void> _save(BuildContext context, SettingsProvider provider,
-      String key, String value) async {
+  Future<void> _save(
+    BuildContext context,
+    SettingsProvider provider,
+    String key,
+    String value,
+  ) async {
     final saved = await provider.updateSystemSetting(key, value);
     if (!context.mounted) return;
     if (saved) {

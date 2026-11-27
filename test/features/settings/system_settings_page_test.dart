@@ -117,7 +117,7 @@ void main() {
     await tester.tap(networkTile.first);
     await _pumpWithFrameCap(tester);
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(BottomSheet), findsOneWidget);
     expect(find.text('eth0'), findsOneWidget);
     expect(find.text('wlan0'), findsOneWidget);
   });

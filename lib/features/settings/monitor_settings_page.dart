@@ -8,10 +8,7 @@ import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class MonitorSettingsPage extends StatefulWidget {
   const MonitorSettingsPage({super.key, required this.server, this.onChanged});
@@ -26,12 +23,14 @@ class MonitorSettingsPage extends StatefulWidget {
       return;
     }
     final monitor = context.read<MonitoringProvider?>();
-    await Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => MonitorSettingsPage(
-        server: server,
-        onChanged: monitor?.invalidateMonitorSettings,
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => MonitorSettingsPage(
+          server: server,
+          onChanged: monitor?.invalidateMonitorSettings,
+        ),
       ),
-    ));
+    );
   }
 
   @override
@@ -70,20 +69,28 @@ class _MonitorSettingsPageState extends State<MonitorSettingsPage> {
     if (saved) {
       SnackBarUtils.showSuccess(context, context.l10n.monitorSettingsSaved);
     } else {
-      SnackBarUtils.showError(context, ErrorMessageUtils.truncateForToast(
-        _provider.data.error ?? context.l10n.monitorSettingsFailed,
-      ));
+      SnackBarUtils.showError(
+        context,
+        ErrorMessageUtils.truncateForToast(
+          _provider.data.error ?? context.l10n.monitorSettingsFailed,
+        ),
+      );
     }
   }
 
-  Future<void> _editNumber({required bool interval, required int? current}) async {
+  Future<void> _editNumber({
+    required bool interval,
+    required int? current,
+  }) async {
     final l10n = context.l10n;
     final form = GlobalKey<FormState>();
     int? edited = current;
-    final value = await showDialog<int>(
-      context: context,
-      builder: (dialogContext) => AppFormDialog(
-        title: interval ? l10n.monitorSettingsInterval : l10n.monitorSettingsStoreDays,
+    final value = await showAdaptiveFormPanel<int>(
+      context,
+      builder: (dialogContext) => AppFormPanel(
+        title: interval
+            ? l10n.monitorSettingsInterval
+            : l10n.monitorSettingsStoreDays,
         confirmLabel: l10n.commonSave,
         content: Form(
           key: form,
@@ -92,51 +99,69 @@ class _MonitorSettingsPageState extends State<MonitorSettingsPage> {
             initialValue: current?.toString(),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              suffixText: interval ? l10n.monitorIntervalUnit : l10n.monitorRetentionUnit,
+              suffixText: interval
+                  ? l10n.monitorIntervalUnit
+                  : l10n.monitorRetentionUnit,
             ),
             validator: (raw) {
               edited = int.tryParse(raw?.trim() ?? '');
               if (interval) {
-                return isValidMonitorInterval(edited) ? null : l10n.monitorIntervalValidation;
+                return isValidMonitorInterval(edited)
+                    ? null
+                    : l10n.monitorIntervalValidation;
               }
-              return edited != null && edited! > 0 ? null : l10n.monitorRetentionValidation;
+              return edited != null && edited! > 0
+                  ? null
+                  : l10n.monitorRetentionValidation;
             },
           ),
         ),
         onConfirm: () async {
-          if (form.currentState!.validate()) Navigator.pop(dialogContext, edited);
+          if (form.currentState!.validate()) {
+            Navigator.pop(dialogContext, edited);
+          }
         },
       ),
     );
     if (!mounted || value == null || value == current) return;
-    await _save(() => interval
-        ? _provider.updateSettings(interval: value)
-        : _provider.updateSettings(retention: value));
+    await _save(
+      () => interval
+          ? _provider.updateSettings(interval: value)
+          : _provider.updateSettings(retention: value),
+    );
   }
 
-  Future<void> _chooseDevice({required bool disk, required String? current}) async {
+  Future<void> _chooseDevice({
+    required bool disk,
+    required String? current,
+  }) async {
     final l10n = context.l10n;
-    final options = disk ? _provider.data.ioOptions : _provider.data.networkOptions;
-    final selected = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => SimpleDialog(
-        title: Text(disk ? l10n.monitorIoDeviceLabel : l10n.monitorNetworkInterfaceLabel),
+    final options = disk
+        ? _provider.data.ioOptions
+        : _provider.data.networkOptions;
+    final selected = await showAppFormSheet<String>(
+      context,
+      title: disk
+          ? l10n.monitorIoDeviceLabel
+          : l10n.monitorNetworkInterfaceLabel,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
         children: [
           for (final option in options.toSet())
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(dialogContext, option),
-              child: ListTile(
-                title: Text(option == 'all' ? l10n.monitorAll : option),
-                trailing: option == current ? const Icon(Icons.check) : null,
-              ),
+            ListTile(
+              onTap: () => Navigator.pop(sheetContext, option),
+              title: Text(option == 'all' ? l10n.monitorAll : option),
+              trailing: option == current ? const Icon(Icons.check) : null,
             ),
         ],
       ),
     );
     if (!mounted || selected == null || selected == current) return;
-    await _save(() => disk
-        ? _provider.updateSettings(defaultIO: selected)
-        : _provider.updateSettings(defaultNetwork: selected));
+    await _save(
+      () => disk
+          ? _provider.updateSettings(defaultIO: selected)
+          : _provider.updateSettings(defaultNetwork: selected),
+    );
   }
 
   Future<void> _clean() async {
@@ -158,9 +183,12 @@ class _MonitorSettingsPageState extends State<MonitorSettingsPage> {
     if (success) {
       SnackBarUtils.showSuccess(context, l10n.monitorCleanSuccess);
     } else {
-      SnackBarUtils.showError(context, ErrorMessageUtils.truncateForToast(
-        _provider.data.error ?? l10n.monitorCleanFailed,
-      ));
+      SnackBarUtils.showError(
+        context,
+        ErrorMessageUtils.truncateForToast(
+          _provider.data.error ?? l10n.monitorCleanFailed,
+        ),
+      );
     }
   }
 
@@ -197,36 +225,66 @@ class _MonitorSettingsPageState extends State<MonitorSettingsPage> {
                     secondary: const Icon(Icons.monitor_heart_outlined),
                     title: Text(l10n.monitorSettingsEnable),
                     value: settings.enabled!,
-                    onChanged: _busy ? null : (value) => _save(() => _provider.updateSettings(enabled: value)),
+                    onChanged: _busy
+                        ? null
+                        : (value) => _save(
+                            () => _provider.updateSettings(enabled: value),
+                          ),
                   ),
                 ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
-                SectionEntryList(items: [
-                  SectionEntryItem(
-                    icon: Icons.timer_outlined,
-                    title: l10n.monitorSettingsInterval,
-                    subtitle: settings.interval == null ? '—' : '${settings.interval} ${l10n.monitorIntervalUnit}',
-                    onTap: _busy ? null : () => _editNumber(interval: true, current: settings.interval),
-                  ),
-                  SectionEntryItem(
-                    icon: Icons.history_outlined,
-                    title: l10n.monitorSettingsStoreDays,
-                    subtitle: settings.retention == null ? '—' : '${settings.retention} ${l10n.monitorRetentionUnit}',
-                    onTap: _busy ? null : () => _editNumber(interval: false, current: settings.retention),
-                  ),
-                  SectionEntryItem(
-                    icon: Icons.storage_outlined,
-                    title: l10n.monitorIoDeviceLabel,
-                    subtitle: deviceLabel(settings.defaultIO),
-                    onTap: _busy || _provider.data.ioOptions.isEmpty ? null : () => _chooseDevice(disk: true, current: settings.defaultIO),
-                  ),
-                  SectionEntryItem(
-                    icon: Icons.lan_outlined,
-                    title: l10n.monitorNetworkInterfaceLabel,
-                    subtitle: deviceLabel(settings.defaultNetwork),
-                    onTap: _busy || _provider.data.networkOptions.isEmpty ? null : () => _chooseDevice(disk: false, current: settings.defaultNetwork),
-                  ),
-                ]),
+                SectionEntryList(
+                  items: [
+                    SectionEntryItem(
+                      icon: Icons.timer_outlined,
+                      title: l10n.monitorSettingsInterval,
+                      subtitle: settings.interval == null
+                          ? '—'
+                          : '${settings.interval} ${l10n.monitorIntervalUnit}',
+                      onTap: _busy
+                          ? null
+                          : () => _editNumber(
+                              interval: true,
+                              current: settings.interval,
+                            ),
+                    ),
+                    SectionEntryItem(
+                      icon: Icons.history_outlined,
+                      title: l10n.monitorSettingsStoreDays,
+                      subtitle: settings.retention == null
+                          ? '—'
+                          : '${settings.retention} ${l10n.monitorRetentionUnit}',
+                      onTap: _busy
+                          ? null
+                          : () => _editNumber(
+                              interval: false,
+                              current: settings.retention,
+                            ),
+                    ),
+                    SectionEntryItem(
+                      icon: Icons.storage_outlined,
+                      title: l10n.monitorIoDeviceLabel,
+                      subtitle: deviceLabel(settings.defaultIO),
+                      onTap: _busy || _provider.data.ioOptions.isEmpty
+                          ? null
+                          : () => _chooseDevice(
+                              disk: true,
+                              current: settings.defaultIO,
+                            ),
+                    ),
+                    SectionEntryItem(
+                      icon: Icons.lan_outlined,
+                      title: l10n.monitorNetworkInterfaceLabel,
+                      subtitle: deviceLabel(settings.defaultNetwork),
+                      onTap: _busy || _provider.data.networkOptions.isEmpty
+                          ? null
+                          : () => _chooseDevice(
+                              disk: false,
+                              current: settings.defaultNetwork,
+                            ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
                 SectionCard(
                   child: ListTile(

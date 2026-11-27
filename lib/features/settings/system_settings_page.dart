@@ -15,9 +15,7 @@ import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 
 class SystemSettingsPage extends StatefulWidget {
@@ -143,7 +141,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               icon: Icons.sticky_note_2_outlined,
               title: l10n.systemSettingsDashboardMemo,
               subtitle: provider.data.dashboardMemo == null
-                  ? null : _formatMemoSummary(provider.data.dashboardMemo, l10n),
+                  ? null
+                  : _formatMemoSummary(provider.data.dashboardMemo, l10n),
               onTap: () => _showDashboardMemoDialog(context, provider, l10n),
             ),
           ],
@@ -156,16 +155,18 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               icon: Icons.terminal_outlined,
               title: l10n.systemSettingsTerminal,
               subtitle: l10n.systemSettingsTerminalDesc,
-              onTap: () =>
-                  _navigateTo(context, TerminalSettingsPage(provider: provider)),
+              onTap: () => _navigateTo(
+                context,
+                TerminalSettingsPage(provider: provider),
+              ),
             ),
             SectionEntryItem(
               icon: Icons.vpn_lock_outlined,
               title: l10n.proxySettingsTitle,
               subtitle:
                   settings?.proxyUrl != null && settings!.proxyUrl!.isNotEmpty
-                      ? l10n.systemSettingsEnabled
-                      : l10n.systemSettingsDisabled,
+                  ? l10n.systemSettingsEnabled
+                  : l10n.systemSettingsDisabled,
               onTap: () => _navigateTo(context, const ProxySettingsPage()),
             ),
             SectionEntryItem(
@@ -178,7 +179,11 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               icon: Icons.device_hub_outlined,
               title: l10n.sshSettingsNetworkSectionTitle,
               subtitle: provider.data.networkInterfaces == null
-                  ? null : _formatNetworkInterfacesSummary(provider.data.networkInterfaces, l10n),
+                  ? null
+                  : _formatNetworkInterfacesSummary(
+                      provider.data.networkInterfaces,
+                      l10n,
+                    ),
               onTap: () =>
                   _showNetworkInterfacesDialog(context, provider, l10n),
             ),
@@ -200,7 +205,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               subtitle: settings?.ssl == 'Mux' || _isEnabled(settings?.ssl)
                   ? l10n.systemSettingsEnabled
                   : l10n.systemSettingsDisabled,
-              onTap: () => openRouteRespectingShell(context, AppRoutes.panelSsl),
+              onTap: () =>
+                  openRouteRespectingShell(context, AppRoutes.panelSsl),
             ),
           ],
         ),
@@ -345,52 +351,41 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       return;
     }
     if (!loaded) {
-      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
+      SnackBarUtils.showError(
+        context,
+        provider.data.error ?? l10n.systemSettingsLoadFailed,
+      );
       return;
     }
 
-    final controller = TextEditingController(text: provider.data.dashboardMemo);
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.systemSettingsDashboardMemo),
-        content: TextField(
-          controller: controller,
+    var memo = provider.data.dashboardMemo ?? '';
+    await showAdaptiveFormPanel<void>(
+      context,
+      builder: (dialogContext) => AppFormPanel(
+        title: l10n.systemSettingsDashboardMemo,
+        content: TextFormField(
+          initialValue: memo,
           minLines: 4,
           maxLines: 8,
           maxLength: 500,
+          onChanged: (value) => memo = value,
           decoration: InputDecoration(
             hintText: l10n.systemSettingsDashboardMemoHint,
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await provider.updateDashboardMemo(controller.text);
-              if (!dialogContext.mounted) {
-                return;
-              }
-              if (ok) {
-                SnackBarUtils.showSuccess(
-                    dialogContext, l10n.commonSaveSuccess);
-                Navigator.of(dialogContext).pop();
-              } else {
-                SnackBarUtils.showError(
-                    dialogContext, l10n.commonSaveFailed);
-              }
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
+        confirmLabel: l10n.commonSave,
+        onConfirm: () async {
+          final ok = await provider.updateDashboardMemo(memo);
+          if (!dialogContext.mounted) return;
+          if (ok) {
+            SnackBarUtils.showSuccess(dialogContext, l10n.commonSaveSuccess);
+            Navigator.of(dialogContext).pop();
+          } else {
+            SnackBarUtils.showError(dialogContext, l10n.commonSaveFailed);
+          }
+        },
       ),
     );
-
-    controller.dispose();
   }
 
   Future<void> _showAppStoreConfigDialog(
@@ -404,52 +399,35 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     }
 
     if (!loaded) {
-      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
+      SnackBarUtils.showError(
+        context,
+        provider.data.error ?? l10n.systemSettingsLoadFailed,
+      );
       return;
     }
     final initialUrl = _extractAppStoreUrl(provider.data.appStoreConfig) ?? '';
-    final controller = TextEditingController(text: initialUrl);
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.appStoreTitle),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.appStoreTitle,
-            hintText: 'https://',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await provider.updateAppStoreConfig(
-                controller.text.trim().isEmpty ? null : controller.text.trim(),
-              );
-              if (!dialogContext.mounted) {
-                return;
-              }
-              if (ok) {
-                SnackBarUtils.showSuccess(
-                    dialogContext, l10n.commonSaveSuccess);
-                Navigator.of(dialogContext).pop();
-              } else {
-                SnackBarUtils.showError(
-                    dialogContext, l10n.commonSaveFailed);
-              }
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
+    await showAppTextInputDialog(
+      context,
+      title: l10n.appStoreTitle,
+      initialValue: initialUrl,
+      labelText: l10n.appStoreTitle,
+      hintText: 'https://',
+      autofocus: false,
+      allowEmpty: true,
+      confirmLabel: l10n.commonSave,
+      onSubmit: (value) async {
+        final ok = await provider.updateAppStoreConfig(
+          value.isEmpty ? null : value,
+        );
+        if (!context.mounted) return ok;
+        if (ok) {
+          SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+        } else {
+          SnackBarUtils.showError(context, l10n.commonSaveFailed);
+        }
+        return ok;
+      },
     );
-
-    controller.dispose();
   }
 
   Future<void> _showNetworkInterfacesDialog(
@@ -462,32 +440,34 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       return;
     }
     if (!loaded) {
-      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
+      SnackBarUtils.showError(
+        context,
+        provider.data.error ?? l10n.systemSettingsLoadFailed,
+      );
       return;
     }
     final interfaces = provider.data.networkInterfaces ?? const <String>[];
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.sshSettingsNetworkSectionTitle),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: interfaces.isEmpty
-              ? Text(l10n.commonEmpty)
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: interfaces.length,
-                  itemBuilder: (context, index) => ListTile(
-                    dense: true,
-                    leading: const Icon(Icons.lan_outlined),
-                    title: Text(interfaces[index]),
-                  ),
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonClose),
+    await showAppFormSheet<void>(
+      context,
+      title: l10n.sshSettingsNetworkSectionTitle,
+      showCloseButton: false,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        padding: AppDesignTokens.cardPadding,
+        children: [
+          if (interfaces.isEmpty) Text(l10n.commonEmpty),
+          for (final name in interfaces)
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.lan_outlined),
+              title: Text(name),
+            ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              onPressed: () => Navigator.of(sheetContext).pop(),
+              child: Text(l10n.commonClose),
+            ),
           ),
         ],
       ),
@@ -503,10 +483,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider.value(
-          value: _provider,
-          child: page,
-        ),
+        builder: (_) =>
+            ChangeNotifierProvider.value(value: _provider, child: page),
       ),
     );
   }
@@ -515,5 +493,4 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     return '${time.year}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')} '
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
-
 }

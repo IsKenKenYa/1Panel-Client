@@ -114,12 +114,19 @@ class _PanelSslBody extends StatelessWidget {
                           IconButton(
                             onPressed: () async {
                               final summary = fields.entries
-                                  .map((field) => '${field.key}: ${field.value}')
+                                  .map(
+                                    (field) => '${field.key}: ${field.value}',
+                                  )
                                   .join('\n');
                               try {
-                                await Clipboard.setData(ClipboardData(text: summary));
+                                await Clipboard.setData(
+                                  ClipboardData(text: summary),
+                                );
                                 if (context.mounted) {
-                                  SnackBarUtils.showSuccess(context, l10n.commonCopySuccess);
+                                  SnackBarUtils.showSuccess(
+                                    context,
+                                    l10n.commonCopySuccess,
+                                  );
                                 }
                               } catch (error) {
                                 if (context.mounted) _showError(context, error);
@@ -179,9 +186,9 @@ class _PanelSslBody extends StatelessWidget {
     final form = GlobalKey<FormState>();
     var cert = '';
     var key = '';
-    final accepted = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AppFormDialog(
+    final accepted = await showAdaptiveFormPanel<bool>(
+      context,
+      builder: (dialogContext) => AppFormPanel(
         title: l10n.panelTlsUploadDialogTitle,
         confirmLabel: l10n.commonSave,
         onConfirm: () async {
@@ -229,22 +236,27 @@ class _PanelSslBody extends StatelessWidget {
                     errorText: field.errorText,
                   ),
                   child: TextButton.icon(
-                    icon: Icon(key.isEmpty
-                        ? Icons.content_paste_outlined
-                        : Icons.check_circle_outline),
+                    icon: Icon(
+                      key.isEmpty
+                          ? Icons.content_paste_outlined
+                          : Icons.check_circle_outline,
+                    ),
                     label: Text(
                       MaterialLocalizations.of(dialogContext).pasteButtonLabel,
                     ),
                     onPressed: () async {
                       try {
-                        final data =
-                            await Clipboard.getData(Clipboard.kTextPlain);
+                        final data = await Clipboard.getData(
+                          Clipboard.kTextPlain,
+                        );
                         if (!field.mounted) return;
                         key = data?.text?.trim() ?? '';
                         field.didChange(key);
                         field.validate();
                       } catch (error) {
-                        if (dialogContext.mounted) _showError(dialogContext, error);
+                        if (dialogContext.mounted) {
+                          _showError(dialogContext, error);
+                        }
                       }
                     },
                   ),
@@ -268,7 +280,10 @@ class _PanelSslBody extends StatelessWidget {
     }
   }
 
-  Future<void> _download(BuildContext context, PanelSslProvider provider) async {
+  Future<void> _download(
+    BuildContext context,
+    PanelSslProvider provider,
+  ) async {
     final l10n = context.l10n;
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
@@ -294,6 +309,9 @@ class _PanelSslBody extends StatelessWidget {
   }
 
   void _showError(BuildContext context, Object error) {
-    SnackBarUtils.showError(context, ErrorMessageUtils.userFacingMessage(error));
+    SnackBarUtils.showError(
+      context,
+      ErrorMessageUtils.userFacingMessage(error),
+    );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -98,8 +98,10 @@ class _UpgradePageState extends State<UpgradePage> {
                 child: ListTile(
                   leading: const Icon(Icons.info_outlined),
                   title: Text(l10n.upgradeCurrentVersionLabel),
-                  trailing: Text(currentVersion,
-                      style: const TextStyle(color: Colors.grey)),
+                  trailing: Text(
+                    currentVersion,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
@@ -122,8 +124,11 @@ class _UpgradePageState extends State<UpgradePage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.error_outline,
-                                  color: Colors.red, size: 48),
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 48,
+                              ),
                               const SizedBox(height: 8),
                               Text(l10n.commonLoadFailedTitle),
                             ],
@@ -139,8 +144,11 @@ class _UpgradePageState extends State<UpgradePage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.check_circle,
-                                  color: Colors.green, size: 48),
+                              const Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 48,
+                              ),
                               const SizedBox(height: 8),
                               Text(l10n.upgradeNoUpdates),
                             ],
@@ -156,21 +164,23 @@ class _UpgradePageState extends State<UpgradePage> {
                         final description =
                             release['description'] as String? ?? '';
                         final isLatest = release['isLatest'] == true;
-                        final isDowngrade =
-                            _isDowngrade(currentVersion, version);
+                        final isDowngrade = _isDowngrade(
+                          currentVersion,
+                          version,
+                        );
 
                         return ListTile(
                           leading: Icon(
                             isLatest
                                 ? Icons.new_releases
                                 : isDowngrade
-                                    ? Icons.history
-                                    : Icons.update_outlined,
+                                ? Icons.history
+                                : Icons.update_outlined,
                             color: isLatest
                                 ? Colors.green
                                 : isDowngrade
-                                    ? Colors.orange
-                                    : null,
+                                ? Colors.orange
+                                : null,
                           ),
                           title: Row(
                             children: [
@@ -179,7 +189,9 @@ class _UpgradePageState extends State<UpgradePage> {
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.green.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
@@ -187,7 +199,9 @@ class _UpgradePageState extends State<UpgradePage> {
                                   child: Text(
                                     l10n.upgradeLatest,
                                     style: const TextStyle(
-                                        fontSize: 10, color: Colors.green),
+                                      fontSize: 10,
+                                      color: Colors.green,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -195,7 +209,9 @@ class _UpgradePageState extends State<UpgradePage> {
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.orange.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
@@ -203,7 +219,9 @@ class _UpgradePageState extends State<UpgradePage> {
                                   child: Text(
                                     l10n.upgradeDowngradeButton,
                                     style: const TextStyle(
-                                        fontSize: 10, color: Colors.orange),
+                                      fontSize: 10,
+                                      color: Colors.orange,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -216,10 +234,19 @@ class _UpgradePageState extends State<UpgradePage> {
                             icon: const Icon(Icons.notes_outlined),
                             tooltip: l10n.upgradeViewNotes,
                             onPressed: () => _showReleaseNotes(
-                                context, provider, l10n, version),
+                              context,
+                              provider,
+                              l10n,
+                              version,
+                            ),
                           ),
                           onTap: () => _showUpgradeDialog(
-                              context, provider, l10n, version, isDowngrade),
+                            context,
+                            provider,
+                            l10n,
+                            version,
+                            isDowngrade,
+                          ),
                         );
                       }).toList(),
                     );
@@ -233,81 +260,76 @@ class _UpgradePageState extends State<UpgradePage> {
     );
   }
 
-  void _showReleaseNotes(BuildContext context, SettingsProvider provider,
-      AppLocalizations l10n, String version) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.upgradeNotesTitle(version)),
-        content: FutureBuilder<String?>(
-          future: provider.getReleaseNotes(version),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox(
-                height: 100,
-                child: Center(child: Text(l10n.upgradeNotesLoading)),
-              );
-            }
+  void _showReleaseNotes(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+    String version,
+  ) {
+    final notesFuture = provider.getReleaseNotes(version);
+    showAppFormSheet<void>(
+      context,
+      title: l10n.upgradeNotesTitle(version),
+      showCloseButton: false,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        padding: AppDesignTokens.cardPadding,
+        children: [
+          FutureBuilder<String?>(
+            future: notesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  height: 100,
+                  child: Center(child: Text(l10n.upgradeNotesLoading)),
+                );
+              }
 
-            if (snapshot.hasError || snapshot.data == null) {
-              return Text(l10n.upgradeNotesError);
-            }
+              if (snapshot.hasError || snapshot.data == null) {
+                return Text(l10n.upgradeNotesError);
+              }
 
-            final notes = snapshot.data!;
-            if (notes.isEmpty) {
-              return Text(l10n.upgradeNotesEmpty);
-            }
-
-            return SingleChildScrollView(
-              child: Text(notes),
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonConfirm),
+              final notes = snapshot.data!;
+              return Text(notes.isEmpty ? l10n.upgradeNotesEmpty : notes);
+            },
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              onPressed: () => Navigator.of(sheetContext).pop(),
+              child: Text(l10n.commonConfirm),
+            ),
           ),
         ],
       ),
     );
   }
 
-  void _showUpgradeDialog(BuildContext context, SettingsProvider provider,
-      AppLocalizations l10n, String version, bool isDowngrade) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-            isDowngrade ? l10n.upgradeDowngradeConfirm : l10n.upgradeConfirm),
-        content: Text(isDowngrade
-            ? l10n.upgradeDowngradeMessage(version)
-            : l10n.upgradeConfirmMessage(version)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: isDowngrade
-                ? FilledButton.styleFrom(backgroundColor: Colors.orange)
-                : null,
-            onPressed: () async {
-              Navigator.pop(context);
-              final success = await provider.upgrade(version: version);
-              if (context.mounted) {
-                if (success) {
-                  SnackBarUtils.showSuccess(context, l10n.upgradeStarted);
-                } else {
-                  SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                }
-              }
-            },
-            child: Text(
-                isDowngrade ? l10n.upgradeDowngradeButton : l10n.upgradeButton),
-          ),
-        ],
-      ),
+  Future<void> _showUpgradeDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+    String version,
+    bool isDowngrade,
+  ) async {
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: isDowngrade ? l10n.upgradeDowngradeConfirm : l10n.upgradeConfirm,
+      message: isDowngrade
+          ? l10n.upgradeDowngradeMessage(version)
+          : l10n.upgradeConfirmMessage(version),
+      confirmLabel: isDowngrade
+          ? l10n.upgradeDowngradeButton
+          : l10n.upgradeButton,
+      isDestructive: isDowngrade,
     );
+    if (!confirmed || !context.mounted) return;
+    final success = await provider.upgrade(version: version);
+    if (!context.mounted) return;
+    if (success) {
+      SnackBarUtils.showSuccess(context, l10n.upgradeStarted);
+    } else {
+      SnackBarUtils.showError(context, l10n.commonSaveFailed);
+    }
   }
 }

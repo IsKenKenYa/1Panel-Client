@@ -15,8 +15,7 @@ import 'package:onepanel_client/core/services/logger/widgets/log_preview_dialog.
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class FeedbackCenterPage extends StatefulWidget {
   const FeedbackCenterPage({super.key});
@@ -71,8 +70,9 @@ class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
                 icon: Icons.filter_alt_outlined,
                 title: l10n.systemSettingsAppLogsLevelTitle,
                 subtitle: logLevelSubtitle,
-                onTap:
-                    isLogLevelLocked ? null : () => _selectAppLogLevel(context),
+                onTap: isLogLevelLocked
+                    ? null
+                    : () => _selectAppLogLevel(context),
               ),
               SectionEntryItem(
                 icon: Icons.download_outlined,
@@ -105,9 +105,10 @@ class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
 
   Future<void> _copyTemplate(BuildContext context) async {
     final l10n = context.l10n;
-    final platformTemplate =
-        await PlatformDiagnosticsService().buildFeedbackTemplate();
-    final template = '''
+    final platformTemplate = await PlatformDiagnosticsService()
+        .buildFeedbackTemplate();
+    final template =
+        '''
 ${l10n.settingsFeedbackTemplateTitle}
 
 ${l10n.settingsFeedbackTemplateSummary}
@@ -140,8 +141,8 @@ $platformTemplate
   }
 
   Future<void> _previewLogs(BuildContext context) async {
-    final format = await showDialog<LogFormat>(
-      context: context,
+    final format = await showAdaptiveFormPanel<LogFormat>(
+      context,
       builder: (_) => const LogPreviewDialog(),
     );
     if (context.mounted && format != null) {
@@ -214,7 +215,9 @@ $platformTemplate
       );
       if (context.mounted) {
         SnackBarUtils.showError(
-            context, ErrorMessageUtils.userFacingMessage(error));
+          context,
+          ErrorMessageUtils.userFacingMessage(error),
+        );
       }
       return;
     }
@@ -224,8 +227,10 @@ $platformTemplate
 
   Future<void> _selectAppLogLevel(BuildContext context) async {
     final l10n = context.l10n;
-    final selected =
-        await showAppLogLevelDialog(context, appLogger.minLogLevel);
+    final selected = await showAppLogLevelDialog(
+      context,
+      appLogger.minLogLevel,
+    );
     if (selected == null) return;
 
     await appLogger.setMinLogLevel(selected);
@@ -233,8 +238,10 @@ $platformTemplate
 
     if (!context.mounted) return;
     setState(() {});
-    SnackBarUtils.showSuccess(context,
-        '${l10n.commonSaveSuccess}: ${appLogLevelLabel(l10n, appLogger.minLogLevel)}');
+    SnackBarUtils.showSuccess(
+      context,
+      '${l10n.commonSaveSuccess}: ${appLogLevelLabel(l10n, appLogger.minLogLevel)}',
+    );
   }
 
   String _channelLabel(AppLocalizations l10n) {

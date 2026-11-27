@@ -4,18 +4,15 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
+import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/terminal/services/terminal_appearance.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class TerminalSettingsPage extends StatefulWidget {
-  const TerminalSettingsPage({
-    super.key,
-    this.provider,
-  });
+  const TerminalSettingsPage({super.key, this.provider});
 
   final SettingsProvider? provider;
 
@@ -76,7 +73,8 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
     return FutureBuilder<bool>(
       future: _initialLoad,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done && snapshot.data == true) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data == true) {
           return _buildSettings(context);
         }
         return Scaffold(
@@ -135,7 +133,10 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                     SectionEntryItem(
                       icon: Icons.arrow_right_alt_outlined,
                       title: l10n.terminalSettingsCursorStyle,
-                      subtitle: _cursorStyleLabel(context, terminal.cursorStyle),
+                      subtitle: _cursorStyleLabel(
+                        context,
+                        terminal.cursorStyle,
+                      ),
                       onTap: () => _showCursorStyleSheet(provider, terminal),
                     ),
                     SectionEntryItem(
@@ -158,20 +159,27 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                     SectionEntryItem(
                       icon: Icons.font_download_outlined,
                       title: l10n.terminalSettingsFontFamily,
-                      subtitle: terminal.fontFamily ?? 'Monaco, Menlo, Consolas',
+                      subtitle:
+                          terminal.fontFamily ?? 'Monaco, Menlo, Consolas',
                       onTap: () => _showFontFamilySheet(provider, terminal),
                     ),
                     SectionEntryItem(
                       icon: Icons.format_color_fill_outlined,
                       title: l10n.terminalSettingsBackgroundColor,
                       subtitle: terminal.backgroundColor ?? '#000000',
-                      trailing: colorSwatchTrailing(_parseColor(
-                          terminal.backgroundColor, const Color(0xFF000000))),
+                      trailing: colorSwatchTrailing(
+                        _parseColor(
+                          terminal.backgroundColor,
+                          const Color(0xFF000000),
+                        ),
+                      ),
                       onTap: () => _showColorPickerDialog(
                         context,
                         title: l10n.terminalSettingsBackgroundColor,
-                        initialColor:
-                            _parseColor(terminal.backgroundColor, const Color(0xFF000000)),
+                        initialColor: _parseColor(
+                          terminal.backgroundColor,
+                          const Color(0xFF000000),
+                        ),
                         onSave: (color) => provider.updateTerminalSettings(
                           backgroundColor: _toHex(color),
                         ),
@@ -181,13 +189,19 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                       icon: Icons.format_color_text_outlined,
                       title: l10n.terminalSettingsForegroundColor,
                       subtitle: terminal.foregroundColor ?? '#f5f5f5',
-                      trailing: colorSwatchTrailing(_parseColor(
-                          terminal.foregroundColor, const Color(0xFFF5F5F5))),
+                      trailing: colorSwatchTrailing(
+                        _parseColor(
+                          terminal.foregroundColor,
+                          const Color(0xFFF5F5F5),
+                        ),
+                      ),
                       onTap: () => _showColorPickerDialog(
                         context,
                         title: l10n.terminalSettingsForegroundColor,
-                        initialColor:
-                            _parseColor(terminal.foregroundColor, const Color(0xFFF5F5F5)),
+                        initialColor: _parseColor(
+                          terminal.foregroundColor,
+                          const Color(0xFFF5F5F5),
+                        ),
                         onSave: (color) => provider.updateTerminalSettings(
                           foregroundColor: _toHex(color),
                         ),
@@ -199,7 +213,8 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                   child: SwitchListTile.adaptive(
                     secondary: const Icon(Icons.flash_on_outlined),
                     title: Text(l10n.terminalSettingsCursorBlink),
-                    value: (terminal.cursorBlink ?? 'Enable').toLowerCase() ==
+                    value:
+                        (terminal.cursorBlink ?? 'Enable').toLowerCase() ==
                         'enable',
                     onChanged: (value) async {
                       final success = await provider.updateTerminalSettings(
@@ -207,9 +222,15 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                       );
                       if (context.mounted) {
                         if (success) {
-                          SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+                          SnackBarUtils.showSuccess(
+                            context,
+                            l10n.commonSaveSuccess,
+                          );
                         } else {
-                          SnackBarUtils.showError(context, l10n.commonSaveFailed);
+                          SnackBarUtils.showError(
+                            context,
+                            l10n.commonSaveFailed,
+                          );
                         }
                       }
                     },
@@ -246,7 +267,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                         title: l10n.terminalSettingsScrollSensitivity,
                         initial:
                             double.tryParse(terminal.scrollSensitivity ?? '') ??
-                                6,
+                            6,
                         min: 0,
                         max: 16,
                         step: 1,
@@ -311,15 +332,21 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                         subtitle: Text(connection?.summary ?? '-'),
                         value: connection?.isVisibleByDefault ?? false,
                         onChanged: (value) async {
-                          final success =
-                              await provider.updateDefaultSSHConnectionVisibility(
-                            visible: value,
-                          );
+                          final success = await provider
+                              .updateDefaultSSHConnectionVisibility(
+                                visible: value,
+                              );
                           if (context.mounted) {
                             if (success) {
-                              SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+                              SnackBarUtils.showSuccess(
+                                context,
+                                l10n.commonSaveSuccess,
+                              );
                             } else {
-                              SnackBarUtils.showError(context, l10n.commonSaveFailed);
+                              SnackBarUtils.showError(
+                                context,
+                                l10n.commonSaveFailed,
+                              );
                             }
                           }
                         },
@@ -351,75 +378,29 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
   ) async {
     final currentStyle = terminal.cursorStyle ?? 'block';
     final l10n = context.l10n;
-    await showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(l10n.terminalSettingsCursorBlock),
-                trailing:
-                    currentStyle == 'block' ? const Icon(Icons.check) : null,
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  final success = await provider.updateTerminalSettings(
-                    cursorStyle: 'block',
-                  );
-                  if (mounted) {
-                    if (success) {
-                      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                    } else {
-                      SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                    }
-                  }
-                },
-              ),
-              ListTile(
-                title: Text(l10n.terminalSettingsCursorUnderline),
-                trailing: currentStyle == 'underline'
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  final success = await provider.updateTerminalSettings(
-                    cursorStyle: 'underline',
-                  );
-                  if (mounted) {
-                    if (success) {
-                      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                    } else {
-                      SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                    }
-                  }
-                },
-              ),
-              ListTile(
-                title: Text(l10n.terminalSettingsCursorBar),
-                trailing:
-                    currentStyle == 'bar' ? const Icon(Icons.check) : null,
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  final success = await provider.updateTerminalSettings(
-                    cursorStyle: 'bar',
-                  );
-                  if (mounted) {
-                    if (success) {
-                      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                    } else {
-                      SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                    }
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
+    final style = await showAppFormSheet<String>(
+      context,
+      title: l10n.terminalSettingsCursorStyle,
+      builder: (sheetContext) => ListView(
+        shrinkWrap: true,
+        children: [
+          for (final style in const ['block', 'underline', 'bar'])
+            ListTile(
+              title: Text(_cursorStyleLabel(sheetContext, style)),
+              trailing: currentStyle == style ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.pop(sheetContext, style),
+            ),
+        ],
+      ),
     );
+    if (style == null || !mounted) return;
+    final success = await provider.updateTerminalSettings(cursorStyle: style);
+    if (!mounted) return;
+    if (success) {
+      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+    } else {
+      SnackBarUtils.showError(context, l10n.commonSaveFailed);
+    }
   }
 
   Future<void> _showFontFamilySheet(
@@ -434,94 +415,92 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
           .where((item) => item.isNotEmpty)),
     };
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
+    await showAppFormSheet<void>(
+      context,
+      title: l10n.terminalSettingsFontFamily,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            return SafeArea(
-              child: Padding(
-                padding: AppDesignTokens.cardPadding,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.terminalSettingsFontFamily,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      context.l10n.terminalSettingsFontFamilyHint,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 12),
-                    Flexible(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: _fontFamilyOptions.map((option) {
-                          return CheckboxListTile(
-                            value: selected.contains(option),
-                            title: Text(option),
-                            onChanged: (checked) {
-                              setSheetState(() {
-                                if (checked == true) {
-                                  selected.add(option);
-                                } else {
-                                  selected.remove(option);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(growable: false),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            setSheetState(() {
-                              selected
-                                ..clear()
-                                ..addAll(const <String>[
-                                  'Monaco',
-                                  'Menlo',
-                                  'Consolas',
-                                  'Courier New',
-                                  'monospace',
-                                ]);
-                            });
-                          },
-                          child: Text(context.l10n.commonReset),
-                        ),
-                        const Spacer(),
-                        FilledButton(
-                          onPressed: () async {
-                            final families = selected.isEmpty
-                                ? "Monaco, Menlo, Consolas, 'Courier New', monospace"
-                                : selected.join(', ');
-                            Navigator.pop(sheetContext);
-                            final success =
-                                await provider.updateTerminalSettings(
-                              fontFamily: families,
+            return Padding(
+              padding: AppDesignTokens.cardPadding,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.terminalSettingsFontFamilyHint,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 12),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: _fontFamilyOptions
+                          .map((option) {
+                            return CheckboxListTile(
+                              value: selected.contains(option),
+                              title: Text(option),
+                              onChanged: (checked) {
+                                setSheetState(() {
+                                  if (checked == true) {
+                                    selected.add(option);
+                                  } else {
+                                    selected.remove(option);
+                                  }
+                                });
+                              },
                             );
-                            if (!mounted) return;
-                            if (success) {
-                              SnackBarUtils.showSuccess(this.context, l10n.commonSaveSuccess);
-                            } else {
-                              SnackBarUtils.showError(this.context, l10n.commonSaveFailed);
-                            }
-                          },
-                          child: Text(l10n.commonSave),
-                        ),
-                      ],
+                          })
+                          .toList(growable: false),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setSheetState(() {
+                            selected
+                              ..clear()
+                              ..addAll(const <String>[
+                                'Monaco',
+                                'Menlo',
+                                'Consolas',
+                                'Courier New',
+                                'monospace',
+                              ]);
+                          });
+                        },
+                        child: Text(context.l10n.commonReset),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: () async {
+                          final families = selected.isEmpty
+                              ? "Monaco, Menlo, Consolas, 'Courier New', monospace"
+                              : selected.join(', ');
+                          Navigator.pop(sheetContext);
+                          final success = await provider.updateTerminalSettings(
+                            fontFamily: families,
+                          );
+                          if (!mounted) return;
+                          if (success) {
+                            SnackBarUtils.showSuccess(
+                              this.context,
+                              l10n.commonSaveSuccess,
+                            );
+                          } else {
+                            SnackBarUtils.showError(
+                              this.context,
+                              l10n.commonSaveFailed,
+                            );
+                          }
+                        },
+                        child: Text(l10n.commonSave),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },
@@ -543,96 +522,90 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
     final l10n = context.l10n;
     var value = initial.clamp(min, max);
 
-    await showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      showDragHandle: true,
+    final selected = await showAppFormSheet<double>(
+      context,
+      title: title,
+      showCloseButton: false,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
             final divisions = ((max - min) / step).round();
-            return SafeArea(
-              child: Padding(
-                padding: AppDesignTokens.cardPadding,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 16),
-                    Text(
-                      display(value),
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    Slider(
-                      value: value,
-                      min: min,
-                      max: max,
-                      divisions: divisions <= 0 ? null : divisions,
-                      label: display(value),
-                      onChanged: (next) {
-                        setSheetState(() {
-                          value = ((next - min) / step).round() * step + min;
-                          value = double.parse(value.toStringAsFixed(2));
-                        });
-                      },
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          tooltip: context.l10n.commonDelete,
-                          onPressed: value <= min
-                              ? null
-                              : () => setSheetState(() {
-                                    value = (value - step).clamp(min, max);
-                                    value = double.parse(value.toStringAsFixed(2));
-                                  }),
-                          icon: const Icon(Icons.remove_circle_outline),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          tooltip: context.l10n.commonCreate,
-                          onPressed: value >= max
-                              ? null
-                              : () => setSheetState(() {
-                                    value = (value + step).clamp(min, max);
-                                    value = double.parse(value.toStringAsFixed(2));
-                                  }),
-                          icon: const Icon(Icons.add_circle_outline),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(sheetContext),
-                          child: Text(l10n.commonCancel),
-                        ),
-                        const Spacer(),
-                        FilledButton(
-                          onPressed: () async {
-                            Navigator.pop(sheetContext);
-                            final success = await onSave(value);
-                            if (context.mounted) {
-                              if (success) {
-                                SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                              } else {
-                                SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                              }
-                            }
-                          },
-                          child: Text(l10n.commonSave),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+            return SingleChildScrollView(
+              padding: AppDesignTokens.cardPadding,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    display(value),
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Slider(
+                    value: value,
+                    min: min,
+                    max: max,
+                    divisions: divisions <= 0 ? null : divisions,
+                    label: display(value),
+                    onChanged: (next) {
+                      setSheetState(() {
+                        value = ((next - min) / step).round() * step + min;
+                        value = double.parse(value.toStringAsFixed(2));
+                      });
+                    },
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: context.l10n.commonDelete,
+                        onPressed: value <= min
+                            ? null
+                            : () => setSheetState(() {
+                                value = (value - step).clamp(min, max);
+                                value = double.parse(value.toStringAsFixed(2));
+                              }),
+                        icon: const Icon(Icons.remove_circle_outline),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        tooltip: context.l10n.commonCreate,
+                        onPressed: value >= max
+                            ? null
+                            : () => setSheetState(() {
+                                value = (value + step).clamp(min, max);
+                                value = double.parse(value.toStringAsFixed(2));
+                              }),
+                        icon: const Icon(Icons.add_circle_outline),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(sheetContext),
+                        child: Text(l10n.commonCancel),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: () => Navigator.pop(sheetContext, value),
+                        child: Text(l10n.commonSave),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },
         );
       },
     );
+    if (selected == null || !context.mounted) return;
+    final success = await onSave(selected);
+    if (!context.mounted) return;
+    if (success) {
+      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+    } else {
+      SnackBarUtils.showError(context, l10n.commonSaveFailed);
+    }
   }
 
   Future<void> _showColorPickerDialog(
@@ -644,284 +617,296 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
     final l10n = context.l10n;
     Color selected = initialColor;
 
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: BlockPicker(
-              pickerColor: selected,
-              onColorChanged: (color) {
-                selected = color;
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(dialogContext);
-                final success = await onSave(selected);
-                if (context.mounted) {
-                  if (success) {
-                    SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                  } else {
-                    SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                  }
-                }
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
-        );
-      },
+    final confirmed = await showAppFormDialog(
+      context,
+      title: title,
+      content: BlockPicker(
+        pickerColor: initialColor,
+        onColorChanged: (color) => selected = color,
+      ),
+      confirmLabel: l10n.commonSave,
+      onConfirm: () async {},
     );
+    if (!confirmed || !context.mounted) return;
+    final success = await onSave(selected);
+    if (!context.mounted) return;
+    if (success) {
+      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+    } else {
+      SnackBarUtils.showError(context, l10n.commonSaveFailed);
+    }
   }
-
 }
 
 Future<void> showTerminalConnectionDialog(
   BuildContext context,
   SettingsProvider provider,
 ) async {
-    final l10n = context.l10n;
-    final loaded = await provider.loadSSHConnection();
-    if (!context.mounted) return;
-    if (!loaded) {
-      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
-      return;
-    }
-    final current = provider.data.sshConnection;
-    final hostController = TextEditingController(text: current?.addr ?? '');
-    final portController =
-        TextEditingController(text: (current?.port ?? 22).toString());
-    final userController = TextEditingController(text: current?.user ?? '');
-    final passwordController =
-        TextEditingController(text: current?.password ?? '');
-    final privateKeyController =
-        TextEditingController(text: current?.privateKey ?? '');
-    final passPhraseController =
-        TextEditingController(text: current?.passPhrase ?? '');
-    var authMode = current?.authMode ?? 'password';
-    final form = GlobalKey<FormState>();
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text(l10n.terminalSettingsConnectionSetup),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: form,
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: hostController,
-                      decoration: InputDecoration(labelText: l10n.sshSessionsHostLabel),
-                      validator: (value) => value == null || value.trim().isEmpty ? l10n.serverFormRequired : null,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: portController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: l10n.sshPortLabel),
-                      validator: (value) {
-                        final port = int.tryParse(value?.trim() ?? '');
-                        return port == null || port < 1 || port > 65535
-                            ? l10n.websitesDomainValidationPort
-                            : null;
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: userController,
-                      decoration: InputDecoration(labelText: l10n.sshSessionsLoginUserLabel),
-                      validator: (value) => value == null || value.trim().isEmpty ? l10n.serverFormRequired : null,
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(l10n.terminalSettingsConnectionAuthMode),
-                    ),
-                    const SizedBox(height: 8),
-                    SegmentedButton<String>(
-                      segments: <ButtonSegment<String>>[
-                        ButtonSegment<String>(
-                          value: 'password',
-                          label: Text(l10n.terminalSettingsConnectionPassword),
-                        ),
-                        ButtonSegment<String>(
-                          value: 'key',
-                          label: Text(l10n.terminalSettingsConnectionPrivateKey),
-                        ),
-                      ],
-                      selected: <String>{authMode},
-                      onSelectionChanged: (selection) {
-                        setDialogState(() {
-                          authMode = selection.first;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    if (authMode == 'password')
-                      TextField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: l10n.terminalSettingsConnectionPassword,
-                        ),
-                      )
-                    else ...[
-                      TextFormField(
-                        controller: privateKeyController,
-                        minLines: 3,
-                        maxLines: 6,
-                        validator: (value) => value == null || value.trim().isEmpty ? l10n.panelTlsValidationPrivateKeyRequired : null,
-                        decoration: InputDecoration(
-                          labelText:
-                              l10n.terminalSettingsConnectionPrivateKey,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: passPhraseController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText:
-                              l10n.terminalSettingsConnectionPassPhrase,
-                        ),
-                      ),
-                    ],
-                  ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text(l10n.commonCancel),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (!form.currentState!.validate()) return;
-                    final ok = await provider.checkSSHConnection(
-                      host: hostController.text.trim(),
-                      port: int.tryParse(portController.text.trim()),
-                      user: userController.text.trim(),
-                      authMode: authMode,
-                      password: passwordController.text,
-                      privateKey: privateKeyController.text.trim().isEmpty
-                          ? null
-                          : privateKeyController.text.trim(),
-                      passPhrase: passPhraseController.text.trim().isEmpty
-                          ? null
-                          : passPhraseController.text.trim(),
-                    );
-                    if (context.mounted) {
-                      if (ok) {
-                        SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-                      } else {
-                        SnackBarUtils.showError(context, l10n.commonSaveFailed);
-                      }
-                    }
-                  },
-                  child: Text(l10n.terminalSettingsTestConnection),
-                ),
-                FilledButton(
-                  onPressed: () async {
-                    if (!form.currentState!.validate()) return;
-                    final ok = await provider.saveSSHConnection(
-                      host: hostController.text.trim().isEmpty
-                          ? null
-                          : hostController.text.trim(),
-                      port: int.tryParse(portController.text.trim()),
-                      user: userController.text.trim().isEmpty
-                          ? null
-                          : userController.text.trim(),
-                      password: authMode == 'password'
-                          ? passwordController.text
-                          : null,
-                      privateKey: authMode == 'key' &&
-                              privateKeyController.text.trim().isNotEmpty
-                          ? privateKeyController.text.trim()
-                          : null,
-                      passPhrase: authMode == 'key' &&
-                              passPhraseController.text.trim().isNotEmpty
-                          ? passPhraseController.text.trim()
-                          : null,
-                    );
-                    if (!dialogContext.mounted) {
-                      return;
-                    }
-                    if (ok) {
-                      SnackBarUtils.showSuccess(dialogContext, l10n.commonSaveSuccess);
-                    } else {
-                      SnackBarUtils.showError(dialogContext, l10n.commonSaveFailed);
-                    }
-                    if (ok) {
-                      Navigator.pop(dialogContext);
-                    }
-                  },
-                  child: Text(l10n.commonSave),
-                ),
-              ],
-            );
-          },
-        );
-      },
+  final l10n = context.l10n;
+  final loaded = await provider.loadSSHConnection();
+  if (!context.mounted) return;
+  if (!loaded) {
+    SnackBarUtils.showError(
+      context,
+      provider.data.error ?? l10n.systemSettingsLoadFailed,
     );
+    return;
+  }
+  final current = provider.data.sshConnection;
+  await showAdaptiveFormPanel<void>(
+    context,
+    builder: (_) =>
+        _TerminalConnectionForm(provider: provider, current: current),
+  );
+}
 
+class _TerminalConnectionForm extends StatefulWidget {
+  const _TerminalConnectionForm({
+    required this.provider,
+    required this.current,
+  });
+
+  final SettingsProvider provider;
+  final SshLocalConnectionInfo? current;
+
+  @override
+  State<_TerminalConnectionForm> createState() =>
+      _TerminalConnectionFormState();
+}
+
+class _TerminalConnectionFormState extends State<_TerminalConnectionForm> {
+  late final hostController = TextEditingController(
+    text: widget.current?.addr ?? '',
+  );
+  late final portController = TextEditingController(
+    text: (widget.current?.port ?? 22).toString(),
+  );
+  late final userController = TextEditingController(
+    text: widget.current?.user ?? '',
+  );
+  late final passwordController = TextEditingController(
+    text: widget.current?.password ?? '',
+  );
+  late final privateKeyController = TextEditingController(
+    text: widget.current?.privateKey ?? '',
+  );
+  late final passPhraseController = TextEditingController(
+    text: widget.current?.passPhrase ?? '',
+  );
+  late var authMode = widget.current?.authMode ?? 'password';
+  final form = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
     hostController.dispose();
     portController.dispose();
     userController.dispose();
     passwordController.dispose();
     privateKeyController.dispose();
     passPhraseController.dispose();
+    super.dispose();
   }
 
-  String _cursorStyleLabel(BuildContext context, String? value) {
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
-    switch ((value ?? 'block').toLowerCase()) {
-      case 'underline':
-        return l10n.terminalSettingsCursorUnderline;
-      case 'bar':
-        return l10n.terminalSettingsCursorBar;
-      case 'block':
-      default:
-        return l10n.terminalSettingsCursorBlock;
-    }
+    final provider = widget.provider;
+    return AppFormPanel(
+      title: l10n.terminalSettingsConnectionSetup,
+      content: Form(
+        key: form,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: hostController,
+              decoration: InputDecoration(labelText: l10n.sshSessionsHostLabel),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? l10n.serverFormRequired
+                  : null,
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: portController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: l10n.sshPortLabel),
+              validator: (value) {
+                final port = int.tryParse(value?.trim() ?? '');
+                return port == null || port < 1 || port > 65535
+                    ? l10n.websitesDomainValidationPort
+                    : null;
+              },
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: userController,
+              decoration: InputDecoration(
+                labelText: l10n.sshSessionsLoginUserLabel,
+              ),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? l10n.serverFormRequired
+                  : null,
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(l10n.terminalSettingsConnectionAuthMode),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<String>(
+              segments: <ButtonSegment<String>>[
+                ButtonSegment<String>(
+                  value: 'password',
+                  label: Text(l10n.terminalSettingsConnectionPassword),
+                ),
+                ButtonSegment<String>(
+                  value: 'key',
+                  label: Text(l10n.terminalSettingsConnectionPrivateKey),
+                ),
+              ],
+              selected: <String>{authMode},
+              onSelectionChanged: (selection) {
+                setState(() {
+                  authMode = selection.first;
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            if (authMode == 'password')
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: l10n.terminalSettingsConnectionPassword,
+                ),
+              )
+            else ...[
+              TextFormField(
+                controller: privateKeyController,
+                minLines: 3,
+                maxLines: 6,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? l10n.panelTlsValidationPrivateKeyRequired
+                    : null,
+                decoration: InputDecoration(
+                  labelText: l10n.terminalSettingsConnectionPrivateKey,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: passPhraseController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: l10n.terminalSettingsConnectionPassPhrase,
+                ),
+              ),
+            ],
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                onPressed: () async {
+                  if (!form.currentState!.validate()) return;
+                  final ok = await provider.checkSSHConnection(
+                    host: hostController.text.trim(),
+                    port: int.tryParse(portController.text.trim()),
+                    user: userController.text.trim(),
+                    authMode: authMode,
+                    password: passwordController.text,
+                    privateKey: privateKeyController.text.trim().isEmpty
+                        ? null
+                        : privateKeyController.text.trim(),
+                    passPhrase: passPhraseController.text.trim().isEmpty
+                        ? null
+                        : passPhraseController.text.trim(),
+                  );
+                  if (context.mounted) {
+                    if (ok) {
+                      SnackBarUtils.showSuccess(
+                        context,
+                        l10n.commonSaveSuccess,
+                      );
+                    } else {
+                      SnackBarUtils.showError(context, l10n.commonSaveFailed);
+                    }
+                  }
+                },
+                child: Text(l10n.terminalSettingsTestConnection),
+              ),
+            ),
+          ],
+        ),
+      ),
+      confirmLabel: l10n.commonSave,
+      onConfirm: () async {
+        if (!form.currentState!.validate()) return;
+        final ok = await provider.saveSSHConnection(
+          host: hostController.text.trim().isEmpty
+              ? null
+              : hostController.text.trim(),
+          port: int.tryParse(portController.text.trim()),
+          user: userController.text.trim().isEmpty
+              ? null
+              : userController.text.trim(),
+          password: authMode == 'password' ? passwordController.text : null,
+          privateKey:
+              authMode == 'key' && privateKeyController.text.trim().isNotEmpty
+              ? privateKeyController.text.trim()
+              : null,
+          passPhrase:
+              authMode == 'key' && passPhraseController.text.trim().isNotEmpty
+              ? passPhraseController.text.trim()
+              : null,
+        );
+        if (!context.mounted) {
+          return;
+        }
+        if (ok) {
+          SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+        } else {
+          SnackBarUtils.showError(context, l10n.commonSaveFailed);
+        }
+        if (ok) {
+          Navigator.pop(context);
+        }
+      },
+    );
   }
+}
 
-  // Server stores RGB hex (6 chars), but Color() needs ARGB (8 chars).
-  Color _parseColor(String? raw, Color fallback) {
-    if (raw == null || raw.trim().isEmpty) {
-      return fallback;
-    }
-    final normalized = raw.trim().replaceFirst('#', '');
-    final full = normalized.length == 6 ? 'FF$normalized' : normalized;
-    final value = int.tryParse(full, radix: 16);
-    if (value == null) {
-      return fallback;
-    }
-    return Color(value);
+String _cursorStyleLabel(BuildContext context, String? value) {
+  final l10n = context.l10n;
+  switch ((value ?? 'block').toLowerCase()) {
+    case 'underline':
+      return l10n.terminalSettingsCursorUnderline;
+    case 'bar':
+      return l10n.terminalSettingsCursorBar;
+    case 'block':
+    default:
+      return l10n.terminalSettingsCursorBlock;
   }
+}
 
-  // Strip alpha prefix -- server expects RGB hex, not ARGB.
-  String _toHex(Color color) {
-    return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+// Server stores RGB hex (6 chars), but Color() needs ARGB (8 chars).
+Color _parseColor(String? raw, Color fallback) {
+  if (raw == null || raw.trim().isEmpty) {
+    return fallback;
   }
+  final normalized = raw.trim().replaceFirst('#', '');
+  final full = normalized.length == 6 ? 'FF$normalized' : normalized;
+  final value = int.tryParse(full, radix: 16);
+  if (value == null) {
+    return fallback;
+  }
+  return Color(value);
+}
+
+// Strip alpha prefix -- server expects RGB hex, not ARGB.
+String _toHex(Color color) {
+  return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+}
 
 class _PreviewCard extends StatelessWidget {
-  const _PreviewCard({
-    required this.settings,
-  });
+  const _PreviewCard({required this.settings});
 
   final TerminalInfo settings;
 

@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class MenuSettingsPage extends StatefulWidget {
@@ -62,9 +63,9 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
               suffixIcon: IconButton(
                 tooltip: context.l10n.commonCreate,
                 onPressed: () {
-                  context
-                      .read<MenuSettingsProvider>()
-                      .addMenu(_controller.text);
+                  context.read<MenuSettingsProvider>().addMenu(
+                    _controller.text,
+                  );
                   _controller.clear();
                 },
                 icon: const Icon(Icons.add_outlined),
@@ -132,11 +133,14 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
                     if (!context.mounted) return;
                     if (success) {
                       SnackBarUtils.showSuccess(
-                          context, l10n.menuSettingsSaveSuccess);
+                        context,
+                        l10n.menuSettingsSaveSuccess,
+                      );
                     } else {
                       SnackBarUtils.showError(
-                          context,
-                          menuProvider.error ?? l10n.commonSaveFailed);
+                        context,
+                        menuProvider.error ?? l10n.commonSaveFailed,
+                      );
                     }
                   },
             icon: const Icon(Icons.save_outlined),
@@ -153,34 +157,18 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
     String initialValue,
   ) async {
     final l10n = context.l10n;
-    final controller = TextEditingController(text: initialValue);
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext dialogContext) => AlertDialog(
-        title: Text(l10n.menuSettingsEditTitle),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.menuSettingsAddLabel,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              context
-                  .read<MenuSettingsProvider>()
-                  .updateMenu(index, controller.text);
-              Navigator.of(dialogContext).pop();
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
+    final value = await showAppTextInputDialog(
+      context,
+      title: l10n.menuSettingsEditTitle,
+      initialValue: initialValue,
+      labelText: l10n.menuSettingsAddLabel,
+      autofocus: false,
+      trim: false,
+      allowEmpty: true,
+      confirmLabel: l10n.commonSave,
     );
+    if (value != null && context.mounted) {
+      context.read<MenuSettingsProvider>().updateMenu(index, value);
+    }
   }
 }

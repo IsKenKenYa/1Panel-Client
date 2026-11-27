@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/logger/log_level.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 String appLogLevelLabel(AppLocalizations l10n, AppLogLevel level) =>
     switch (level) {
@@ -25,31 +26,31 @@ Future<AppLogLevel?> showAppLogLevelDialog(
     AppReleaseChannel.preRelease => AppLogLevel.info,
     AppReleaseChannel.release => AppLogLevel.warning,
   };
-  return showDialog<AppLogLevel>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.systemSettingsAppLogsLevelTitle),
-      content: RadioGroup<AppLogLevel>(
-        groupValue: currentLevel,
-        onChanged: (value) => Navigator.of(dialogContext).pop(value),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final level in AppLogLevel.values)
-              if (level.weight >= minimum.weight)
-                RadioListTile<AppLogLevel>(
-                  value: level,
-                  title: Text(appLogLevelLabel(l10n, level)),
-                ),
-          ],
-        ),
+  return showAppFormSheet<AppLogLevel>(
+    context,
+    title: l10n.systemSettingsAppLogsLevelTitle,
+    showCloseButton: false,
+    builder: (sheetContext) => RadioGroup<AppLogLevel>(
+      groupValue: currentLevel,
+      onChanged: (value) => Navigator.of(sheetContext).pop(value),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          for (final level in AppLogLevel.values)
+            if (level.weight >= minimum.weight)
+              RadioListTile<AppLogLevel>(
+                value: level,
+                title: Text(appLogLevelLabel(l10n, level)),
+              ),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              onPressed: () => Navigator.of(sheetContext).pop(),
+              child: Text(l10n.commonCancel),
+            ),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(l10n.commonCancel),
-        ),
-      ],
     ),
   );
 }
