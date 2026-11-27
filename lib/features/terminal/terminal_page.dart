@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -18,11 +18,7 @@ import 'package:xterm/ui.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 
 class TerminalPage extends StatefulWidget {
-  const TerminalPage({
-    super.key,
-    this.provider,
-    this.launchIntentOverride,
-  });
+  const TerminalPage({super.key, this.provider, this.launchIntentOverride});
 
   final TerminalWorkbenchProvider? provider;
   final TerminalLaunchIntent? launchIntentOverride;
@@ -51,14 +47,17 @@ class _TerminalPageState extends State<TerminalPage> {
       return;
     }
     _bootstrapped = true;
-    _initialIntent = widget.launchIntentOverride ??
+    _initialIntent =
+        widget.launchIntentOverride ??
         TerminalLaunchIntent.fromRouteArgs(
           ModalRoute.of(context)?.settings.arguments,
         );
   }
 
   Future<void> _initialize() async {
-    if (kIsWeb) return;
+    if (kIsWeb) {
+      return;
+    }
     await _provider.initialize(_initialIntent);
     // On mobile, auto-open the detail page for an explicitly requested session
     // (e.g. from a deep link) so the user lands directly on the terminal.
@@ -105,11 +104,9 @@ class _TerminalPageState extends State<TerminalPage> {
   }
 
   Future<void> _openHostPicker() async {
-    final selected = await showModalBottomSheet<HostTreeChild>(
-      context: context,
-      useSafeArea: true,
-      showDragHandle: true,
-      isScrollControlled: true,
+    final selected = await showAppFormSheet<HostTreeChild>(
+      context,
+      title: context.l10n.terminalWorkbenchSearchHost,
       builder: (_) => _HostPickerSheet(hostTree: _provider.hostTree),
     );
     if (selected == null || !mounted) {
@@ -170,7 +167,9 @@ class _TerminalPageState extends State<TerminalPage> {
               title: Text(_initialIntent.title(context)),
               actions: <Widget>[
                 IconButton(
-                  onPressed: provider.isLoading ? null : provider.refreshCatalogs,
+                  onPressed: provider.isLoading
+                      ? null
+                      : provider.refreshCatalogs,
                   icon: const Icon(Icons.refresh_outlined),
                   tooltip: l10n.commonRefresh,
                 ),
@@ -193,17 +192,17 @@ class _TerminalPageState extends State<TerminalPage> {
             body: provider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _isWideLayout(context)
-                    ? _TerminalWorkbenchWideLayout(
-                        provider: provider,
-                        onOpenHostPicker: _openHostPicker,
-                        onOpenLocalSession: _openLocalSession,
-                      )
-                    : _TerminalWorkbenchMobileLayout(
-                        provider: provider,
-                        onOpenHostPicker: _openHostPicker,
-                        onOpenLocalSession: _openLocalSession,
-                        onOpenSessionDetail: _openSessionDetail,
-                      ),
+                ? _TerminalWorkbenchWideLayout(
+                    provider: provider,
+                    onOpenHostPicker: _openHostPicker,
+                    onOpenLocalSession: _openLocalSession,
+                  )
+                : _TerminalWorkbenchMobileLayout(
+                    provider: provider,
+                    onOpenHostPicker: _openHostPicker,
+                    onOpenLocalSession: _openLocalSession,
+                    onOpenSessionDetail: _openSessionDetail,
+                  ),
           );
         },
       ),
@@ -226,7 +225,8 @@ class _TerminalWorkbenchWideLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth, 
+        SizedBox(
+          width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
           child: _WorkbenchSidebar(
             provider: provider,
             onOpenHostPicker: onOpenHostPicker,
@@ -260,7 +260,8 @@ class _TerminalWorkbenchMobileLayout extends StatelessWidget {
   final TerminalWorkbenchProvider provider;
   final Future<void> Function() onOpenHostPicker;
   final Future<void> Function() onOpenLocalSession;
-  final Future<void> Function(TerminalRuntimeSession session) onOpenSessionDetail;
+  final Future<void> Function(TerminalRuntimeSession session)
+  onOpenSessionDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -301,16 +302,17 @@ class _WorkbenchSidebar extends StatelessWidget {
         Text(
           provider.localConnection.summary,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 12),
         Row(
           children: <Widget>[
             Expanded(
               child: FilledButton.icon(
-                onPressed:
-                    provider.isLaunchingSession ? null : () => onOpenLocalSession(),
+                onPressed: provider.isLaunchingSession
+                    ? null
+                    : () => onOpenLocalSession(),
                 icon: const Icon(Icons.computer_outlined),
                 label: Text(l10n.terminalWorkbenchLocalLabel),
               ),
@@ -318,8 +320,9 @@ class _WorkbenchSidebar extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed:
-                    provider.isLaunchingSession ? null : () => onOpenHostPicker(),
+                onPressed: provider.isLaunchingSession
+                    ? null
+                    : () => onOpenHostPicker(),
                 icon: const Icon(Icons.dns_outlined),
                 label: Text(l10n.serverPageTitle),
               ),
@@ -341,7 +344,8 @@ class _WorkbenchSidebar extends StatelessWidget {
           )
         else
           ...provider.sessions.map((session) {
-            final isActive = provider.activeSession?.descriptor.sessionKey ==
+            final isActive =
+                provider.activeSession?.descriptor.sessionKey ==
                 session.descriptor.sessionKey;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -355,18 +359,21 @@ class _WorkbenchSidebar extends StatelessWidget {
                         session.latencyMs == null
                             ? l10n.terminalWorkbenchStatusConnected
                             : '${l10n.terminalWorkbenchStatusConnected} · ${session.latencyMs}ms',
-                      TerminalSessionConnectionState.connecting => l10n.dashboardServerStatusConnecting,
-                      TerminalSessionConnectionState.closed => l10n.terminalWorkbenchStatusClosed,
+                      TerminalSessionConnectionState.connecting =>
+                        l10n.dashboardServerStatusConnecting,
+                      TerminalSessionConnectionState.closed =>
+                        l10n.terminalWorkbenchStatusClosed,
                       TerminalSessionConnectionState.error =>
                         session.errorMessage ?? l10n.commonError,
-                      TerminalSessionConnectionState.idle => l10n.terminalWorkbenchStatusIdle,
+                      TerminalSessionConnectionState.idle =>
+                        l10n.terminalWorkbenchStatusIdle,
                     },
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   trailing: IconButton(
-                    onPressed: () => provider
-                        .closeSession(session.descriptor.sessionKey),
+                    onPressed: () =>
+                        provider.closeSession(session.descriptor.sessionKey),
                     icon: const Icon(Icons.close),
                     tooltip: l10n.commonClose,
                   ),
@@ -416,9 +423,7 @@ class _WorkbenchSidebar extends StatelessWidget {
 }
 
 class _TerminalSessionDetailPage extends StatefulWidget {
-  const _TerminalSessionDetailPage({
-    required this.sessionKey,
-  });
+  const _TerminalSessionDetailPage({required this.sessionKey});
 
   final String sessionKey;
 
@@ -427,7 +432,8 @@ class _TerminalSessionDetailPage extends StatefulWidget {
       _TerminalSessionDetailPageState();
 }
 
-class _TerminalSessionDetailPageState extends State<_TerminalSessionDetailPage> {
+class _TerminalSessionDetailPageState
+    extends State<_TerminalSessionDetailPage> {
   late String _currentSessionKey;
 
   @override
@@ -549,16 +555,12 @@ class _TerminalSessionDetailPageState extends State<_TerminalSessionDetailPage> 
     TerminalWorkbenchProvider provider,
     TerminalRuntimeSession session,
   ) async {
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      useSafeArea: true,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (_) => _QuickCommandSheet(
-        commandTree: provider.commandTree,
-      ),
+    final selected = await showAppFormSheet<String>(
+      context,
+      title: context.l10n.terminalWorkbenchQuickCommand,
+      builder: (_) => _QuickCommandSheet(commandTree: provider.commandTree),
     );
-    if (selected == null || selected.isEmpty) {
+    if (!context.mounted || selected == null || selected.isEmpty) {
       return;
     }
     await provider.sendQuickCommand(session, selected);
@@ -597,7 +599,8 @@ class _TerminalSessionViewport extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final item = provider.sessions[index];
-                  final selected = item.descriptor.sessionKey ==
+                  final selected =
+                      item.descriptor.sessionKey ==
                       session.descriptor.sessionKey;
                   return ChoiceChip(
                     label: Text(item.descriptor.title),
@@ -620,8 +623,7 @@ class _TerminalSessionViewport extends StatelessWidget {
                     Icons.cloud_sync_outlined,
                   TerminalSessionConnectionState.closed =>
                     Icons.cloud_off_outlined,
-                  TerminalSessionConnectionState.error =>
-                    Icons.error_outline,
+                  TerminalSessionConnectionState.error => Icons.error_outline,
                   TerminalSessionConnectionState.idle =>
                     Icons.terminal_outlined,
                 },
@@ -639,8 +641,8 @@ class _TerminalSessionViewport extends StatelessWidget {
                 child: Text(
                   session.errorMessage ?? _statusText(context, session),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],
@@ -650,14 +652,10 @@ class _TerminalSessionViewport extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: theme.background,
-                borderRadius: BorderRadius.circular(
-                  AppDesignTokens.radiusLg,
-                ),
+                borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  AppDesignTokens.radiusLg,
-                ),
+                borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
                 child: TerminalView(
                   session.terminal,
                   controller: session.controller,
@@ -699,8 +697,10 @@ class _TerminalSessionViewport extends StatelessWidget {
         l10n.terminalWorkbenchStatusConnected,
       TerminalSessionConnectionState.connecting =>
         l10n.dashboardServerStatusConnecting,
-      TerminalSessionConnectionState.closed => l10n.terminalWorkbenchStatusClosed,
-      TerminalSessionConnectionState.error => session.errorMessage ?? l10n.commonError,
+      TerminalSessionConnectionState.closed =>
+        l10n.terminalWorkbenchStatusClosed,
+      TerminalSessionConnectionState.error =>
+        session.errorMessage ?? l10n.commonError,
       TerminalSessionConnectionState.idle => l10n.terminalWorkbenchStatusIdle,
     };
     if (session.connectionState != TerminalSessionConnectionState.connected ||
@@ -716,16 +716,12 @@ class _EmptyTerminalState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(context.l10n.terminalWorkbenchOpenHint),
-    );
+    return Center(child: Text(context.l10n.terminalWorkbenchOpenHint));
   }
 }
 
 class _HostPickerSheet extends StatefulWidget {
-  const _HostPickerSheet({
-    required this.hostTree,
-  });
+  const _HostPickerSheet({required this.hostTree});
 
   final List<HostTreeNode> hostTree;
 
@@ -746,65 +742,65 @@ class _HostPickerSheetState extends State<_HostPickerSheet> {
   @override
   Widget build(BuildContext context) {
     final groups = widget.hostTree
-        .map((group) => HostTreeNode(
-              id: group.id,
-              label: group.label,
-              children: group.children
-                  .where(
-                    (item) => _query.isEmpty ||
-                        item.label.toLowerCase().contains(_query.toLowerCase()),
-                  )
-                  .toList(growable: false),
-            ))
+        .map(
+          (group) => HostTreeNode(
+            id: group.id,
+            label: group.label,
+            children: group.children
+                .where(
+                  (item) =>
+                      _query.isEmpty ||
+                      item.label.toLowerCase().contains(_query.toLowerCase()),
+                )
+                .toList(growable: false),
+          ),
+        )
         .where((group) => group.children.isNotEmpty)
         .toList(growable: false);
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 8,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ModuleSearchField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => _query = value.trim()),
-              hintText: context.l10n.terminalWorkbenchSearchHost,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ModuleSearchField(
+            controller: _searchController,
+            onChanged: (value) => setState(() => _query = value.trim()),
+            hintText: context.l10n.commonSearch,
+          ),
+          const SizedBox(height: 12),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: groups
+                  .map((group) {
+                    return ExpansionTile(
+                      initiallyExpanded: true,
+                      title: Text(group.label),
+                      children: group.children
+                          .map((child) {
+                            return ListTile(
+                              minTileHeight: kMinInteractiveDimension,
+                              visualDensity: VisualDensity.standard,
+                              title: Text(child.label),
+                              leading: const Icon(Icons.dns_outlined),
+                              onTap: () => Navigator.of(context).pop(child),
+                            );
+                          })
+                          .toList(growable: false),
+                    );
+                  })
+                  .toList(growable: false),
             ),
-            const SizedBox(height: 12),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                children: groups.map((group) {
-                  return ExpansionTile(
-                    initiallyExpanded: true,
-                    title: Text(group.label),
-                    children: group.children.map((child) {
-                      return ListTile(
-                        title: Text(child.label),
-                        leading: const Icon(Icons.dns_outlined),
-                        onTap: () => Navigator.of(context).pop(child),
-                      );
-                    }).toList(growable: false),
-                  );
-                }).toList(growable: false),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _QuickCommandSheet extends StatefulWidget {
-  const _QuickCommandSheet({
-    required this.commandTree,
-  });
+  const _QuickCommandSheet({required this.commandTree});
 
   final List<CommandTree> commandTree;
 
@@ -835,43 +831,38 @@ class _QuickCommandSheetState extends State<_QuickCommandSheet> {
         })
         .toList(growable: false);
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 8,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ModuleSearchField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => _query = value.trim()),
-              hintText: context.l10n.terminalWorkbenchQuickCommand,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ModuleSearchField(
+            controller: _searchController,
+            onChanged: (value) => setState(() => _query = value.trim()),
+            hintText: context.l10n.commonSearch,
+          ),
+          const SizedBox(height: 12),
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: commands.length,
+              itemBuilder: (context, index) {
+                final item = commands[index];
+                return ListTile(
+                  minTileHeight: kMinInteractiveDimension,
+                  visualDensity: VisualDensity.standard,
+                  title: Text(item.label),
+                  subtitle: Text(
+                    item.value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () => Navigator.of(context).pop(item.value),
+                );
+              },
             ),
-            const SizedBox(height: 12),
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: commands.length,
-                itemBuilder: (context, index) {
-                  final item = commands[index];
-                  return ListTile(
-                    title: Text(item.label),
-                    subtitle: Text(
-                      item.value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    onTap: () => Navigator.of(context).pop(item.value),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -903,10 +894,7 @@ class _QuickCommandSheetState extends State<_QuickCommandSheet> {
 }
 
 class _QuickCommandEntry {
-  const _QuickCommandEntry({
-    required this.label,
-    required this.value,
-  });
+  const _QuickCommandEntry({required this.label, required this.value});
 
   final String label;
   final String value;
