@@ -431,7 +431,7 @@ void main() {
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(BottomSheet), findsOneWidget);
     });
   });
 }

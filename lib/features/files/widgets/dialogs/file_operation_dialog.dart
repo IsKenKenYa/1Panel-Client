@@ -4,7 +4,7 @@ import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import 'path_selector_dialog.dart';
 
@@ -22,20 +22,54 @@ void showFileOperationDialog(
     FileOperation.move => l10n.filesMoveFailed,
     _ => l10n.filesCreateFailed,
   };
-  showDialog<bool>(
-    context: context,
+  void onError(Object error, StackTrace stack) {
+    appLogger.eWithPackage(
+      'files.dialog',
+      errorLabel,
+      error: error,
+      stackTrace: stack,
+    );
+    if (context.mounted) {
+      SnackBarUtils.showErrorWithDebugDetails(
+        context,
+        errorLabel,
+        error: error,
+        stackTrace: stack,
+      );
+    }
+  }
+
+  if (operation == FileOperation.createFile ||
+      operation == FileOperation.createDirectory) {
+    final createFile = operation == FileOperation.createFile;
+    showAppTextInputDialog(
+      context,
+      title: createFile ? l10n.filesActionNewFile : l10n.filesActionNewFolder,
+      labelText: l10n.filesNameLabel,
+      hintText: l10n.filesNameHint,
+      confirmLabel: l10n.commonCreate,
+      onSubmit: (name) async {
+        try {
+          await (createFile
+              ? provider.createFile(name)
+              : provider.createDirectory(name));
+          return true;
+        } catch (error, stack) {
+          onError(error, stack);
+          return false;
+        }
+      },
+    );
+    return;
+  }
+
+  showAdaptiveFormPanel<bool>(
+    context,
     builder: (_) => _FileOperationDialog(
       operation: operation,
       provider: provider,
       file: file,
-      onError: (error, stack) {
-        appLogger.eWithPackage('files.dialog', errorLabel,
-            error: error, stackTrace: stack);
-        if (context.mounted) {
-          SnackBarUtils.showErrorWithDebugDetails(context, errorLabel,
-              error: error, stackTrace: stack);
-        }
-      },
+      onError: onError,
     ),
   );
 }
@@ -61,16 +95,10 @@ class _FileOperationDialogState extends State<_FileOperationDialog> {
   late final TextEditingController _input;
   bool _saving = false;
 
-  bool get _creating =>
-      widget.operation == FileOperation.createFile ||
-      widget.operation == FileOperation.createDirectory;
-
   @override
   void initState() {
     super.initState();
-    _input = TextEditingController(
-      text: _creating ? '' : widget.provider.data.currentPath,
-    );
+    _input = TextEditingController(text: widget.provider.data.currentPath);
   }
 
   @override
@@ -81,37 +109,48 @@ class _FileOperationDialogState extends State<_FileOperationDialog> {
 
   Future<void> _pickPath() async {
     final path = await showPathSelectorDialog(
-      context, widget.provider, _input.text, context.l10n,
+      context,
+      widget.provider,
+      _input.text,
+      context.l10n,
     );
-    if (mounted && path != null) _input.text = path;
+    if (mounted && path != null) {
+      _input.text = path;
+    }
   }
 
   Future<void> _submit() async {
-    final input = _creating ? _input.text.trim() : _input.text;
-    if (_saving || (_creating && input.isEmpty)) return;
+    final input = _input.text;
+    if (_saving) {
+      return;
+    }
     final provider = widget.provider;
     final file = widget.file;
-    final operation = widget.operation;
+    final copy = widget.operation == FileOperation.copy;
     final onError = widget.onError;
-    final batch = !_creating && file == null;
+    final batch = file == null;
     setState(() => _saving = true);
-    if (batch) Navigator.of(context).pop(true);
+    if (batch) {
+      Navigator.of(context).pop(true);
+    }
     try {
-      final request = switch (operation) {
-        FileOperation.copy => file == null
+      if (file == null) {
+        await (copy
             ? provider.copySelected(input)
-            : provider.copyFile(file.path, input),
-        FileOperation.move => file == null
-            ? provider.moveSelected(input)
-            : provider.moveFile(file.path, input),
-        FileOperation.createFile => provider.createFile(input),
-        FileOperation.createDirectory => provider.createDirectory(input),
-      };
-      await request;
-      if (mounted && !batch) Navigator.of(context).pop(true);
+            : provider.moveSelected(input));
+      } else {
+        await (copy
+            ? provider.copyFile(file.path, input)
+            : provider.moveFile(file.path, input));
+      }
+      if (mounted && !batch) {
+        Navigator.of(context).pop(true);
+      }
     } catch (error, stack) {
       onError(error, stack);
-      if (mounted && !batch) setState(() => _saving = false);
+      if (mounted && !batch) {
+        setState(() => _saving = false);
+      }
     }
   }
 
@@ -119,50 +158,45 @@ class _FileOperationDialogState extends State<_FileOperationDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final file = widget.file;
-    return AppFormDialog(
-      title: switch (widget.operation) {
-        FileOperation.copy => l10n.filesActionCopy,
-        FileOperation.move => l10n.filesActionMove,
-        FileOperation.createFile => l10n.filesActionNewFile,
-        FileOperation.createDirectory => l10n.filesActionNewFolder,
-      },
-      confirmLabel: _creating ? l10n.commonCreate : l10n.commonConfirm,
+    return AppFormPanel(
+      title: widget.operation == FileOperation.copy
+          ? l10n.filesActionCopy
+          : l10n.filesActionMove,
       isSaving: _saving,
       onConfirm: _submit,
-      content: _creating
-          ? TextField(
-              controller: _input,
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: l10n.filesNameLabel,
-                hintText: l10n.filesNameHint,
-              ),
-            )
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  file == null
-                      ? '${l10n.filesSelected}: ${widget.provider.data.selectionCount}'
-                      : '${l10n.filesNameLabel}: ${file.name}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _input,
-                  decoration: InputDecoration(
-                    labelText: l10n.filesTargetPath,
-                    prefixIcon: const Icon(Icons.folder_outlined),
-                    suffixIcon: file == null ? null : IconButton(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            file == null
+                ? '${l10n.filesSelected}: ${widget.provider.data.selectionCount}'
+                : '${l10n.filesNameLabel}: ${file.name}',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _input,
+            decoration: InputDecoration(
+              labelText: l10n.filesTargetPath,
+              prefixIcon: const Icon(Icons.folder_outlined),
+              suffixIcon: file == null
+                  ? null
+                  : IconButton(
                       tooltip: l10n.filesSelectPath,
                       icon: const Icon(Icons.folder_open),
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size.square(
+                          kMinInteractiveDimension,
+                        ),
+                        visualDensity: VisualDensity.standard,
+                      ),
                       onPressed: _saving ? null : _pickPath,
                     ),
-                  ),
-                ),
-              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

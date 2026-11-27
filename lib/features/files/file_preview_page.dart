@@ -21,7 +21,7 @@ import 'package:onepanel_client/features/files/file_editor_page.dart';
 import 'package:onepanel_client/features/files/providers/file_preview_provider.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/file_properties_dialog.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class FilePreviewPage extends StatefulWidget {
   final String filePath;
@@ -101,13 +101,17 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   int? get _highlightLine => _provider.highlightLine;
 
   Future<void> _bootstrapPreview() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     final settingsController = context.read<AppSettingsController>();
     await _provider.initialize(
       cacheStrategy: settingsController.cacheStrategy,
       cacheMaxSizeMB: settingsController.cacheMaxSizeMB,
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     if (_provider.usePagedTextPreview && !_scrollListenerAttached) {
       _textScrollController.addListener(_onTextScroll);
       _scrollListenerAttached = true;
@@ -115,9 +119,13 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   }
 
   void _onTextScroll() {
-    if (!_usePagedTextPreview || _isLoadingMore || !_hasMoreLines) return;
+    if (!_usePagedTextPreview || _isLoadingMore || !_hasMoreLines) {
+      return;
+    }
     final position = _textScrollController.position;
-    if (!position.hasPixels || !position.hasContentDimensions) return;
+    if (!position.hasPixels || !position.hasContentDimensions) {
+      return;
+    }
     // Trigger prefetch 240px before reaching the bottom — enough buffer
     // to hide the network round-trip latency on most connections.
     if (position.pixels >= position.maxScrollExtent - 240) {
@@ -182,8 +190,12 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
         },
       );
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_preview', '_initVideoPlayer: 初始化失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'file_preview',
+        '_initVideoPlayer: 初始化失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -196,9 +208,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
 
       _audioPlayer = AudioPlayer();
 
-      await _audioPlayer!.setSource(kIsWeb
-          ? UrlSource(_localFilePath!)
-          : DeviceFileSource(_localFilePath!));
+      await _audioPlayer!.setSource(
+        kIsWeb ? UrlSource(_localFilePath!) : DeviceFileSource(_localFilePath!),
+      );
       _audioDuration = (await _audioPlayer!.getDuration()) ?? Duration.zero;
 
       _audioPlayer!.onPositionChanged.listen((position) {
@@ -217,8 +229,12 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
         }
       });
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_preview', '_initAudioPlayer: 初始化失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'file_preview',
+        '_initAudioPlayer: 初始化失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -243,10 +259,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.fileName,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(widget.fileName, overflow: TextOverflow.ellipsis),
               if (_cacheSource != null)
                 Text(
                   _getCacheSourceText(),
@@ -302,38 +315,20 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
 
   Future<void> _showGoToLineDialog(BuildContext context) async {
     final l10n = context.l10n;
-    final controller =
-        TextEditingController(text: '${_highlightLine ?? _baseLine}');
-    final line = await showDialog<int>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.filesGoToLine),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: l10n.filesLineNumber,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                final value = int.tryParse(controller.text.trim());
-                Navigator.pop(context, value);
-              },
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
-        );
-      },
+    final input = await showAppTextInputDialog(
+      context,
+      title: l10n.filesGoToLine,
+      initialValue: '${_highlightLine ?? _baseLine}',
+      labelText: l10n.filesLineNumber,
+      keyboardType: TextInputType.number,
+      autofocus: false,
+      allowEmpty: true,
     );
 
-    if (line == null || line <= 0) return;
+    final line = int.tryParse(input ?? '');
+    if (!mounted || line == null || line <= 0) {
+      return;
+    }
     await _loadPreviewWindow(initialLine: line);
     if (_textScrollController.hasClients) {
       _textScrollController.jumpTo(0);
@@ -356,7 +351,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     if (_error != null) {
       return ModuleErrorStateWidget(
         message: _error,
-          onRetry: _bootstrapPreview,
+        onRetry: _bootstrapPreview,
       );
     }
 
@@ -406,8 +401,11 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.broken_image,
-                    size: 48, color: theme.colorScheme.error),
+                Icon(
+                  Icons.broken_image,
+                  size: 48,
+                  color: theme.colorScheme.error,
+                ),
                 const SizedBox(height: 16),
                 Text(error.toString()),
               ],
@@ -450,8 +448,11 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.video_library_outlined,
-                size: 48, color: theme.colorScheme.error),
+            Icon(
+              Icons.video_library_outlined,
+              size: 48,
+              color: theme.colorScheme.error,
+            ),
             const SizedBox(height: 16),
             Text(context.l10n.filePreviewVideoNotInitialized),
           ],
@@ -468,7 +469,10 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   }
 
   Widget _buildAudioPreview(
-      BuildContext context, ThemeData theme, dynamic l10n) {
+    BuildContext context,
+    ThemeData theme,
+    dynamic l10n,
+  ) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -526,7 +530,8 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                     final newPosition =
                         _audioPosition - const Duration(seconds: 10);
                     await _audioPlayer?.seek(
-                        newPosition.isNegative ? Duration.zero : newPosition);
+                      newPosition.isNegative ? Duration.zero : newPosition,
+                    );
                   },
                 ),
                 const SizedBox(width: 16),
@@ -539,8 +544,10 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                       await _audioPlayer?.resume();
                     }
                   },
-                  child: Icon(_isAudioPlaying ? Icons.pause : Icons.play_arrow_outlined,
-                      size: 48),
+                  child: Icon(
+                    _isAudioPlaying ? Icons.pause : Icons.play_arrow_outlined,
+                    size: 48,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 IconButton(
@@ -550,9 +557,11 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                   onPressed: () async {
                     final newPosition =
                         _audioPosition + const Duration(seconds: 10);
-                    await _audioPlayer?.seek(newPosition > _audioDuration
-                        ? _audioDuration
-                        : newPosition);
+                    await _audioPlayer?.seek(
+                      newPosition > _audioDuration
+                          ? _audioDuration
+                          : newPosition,
+                    );
                   },
                 ),
               ],
@@ -598,7 +607,8 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
         ),
         blockquoteDecoration: BoxDecoration(
           border: Border(
-              left: BorderSide(color: theme.colorScheme.primary, width: 4)),
+            left: BorderSide(color: theme.colorScheme.primary, width: 4),
+          ),
         ),
       ),
       onTapLink: (text, href, title) {
@@ -630,7 +640,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
       },
       onDocumentLoadFailed: (details) {
         appLogger.eWithPackage(
-            'file_preview', 'PDF load failed: ${details.error}');
+          'file_preview',
+          'PDF load failed: ${details.error}',
+        );
       },
       canShowScrollHead: true,
       canShowScrollStatus: true,
@@ -661,8 +673,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
             padding: const EdgeInsets.symmetric(vertical: 2),
             decoration: highlighted
                 ? BoxDecoration(
-                    color: theme.colorScheme.secondaryContainer
-                        .withValues(alpha: 0.35),
+                    color: theme.colorScheme.secondaryContainer.withValues(
+                      alpha: 0.35,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   )
                 : null,
@@ -720,10 +733,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
               )
             : SelectableText(
                 _content!,
-                style: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 14,
-                ),
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
               ),
       ),
     );
@@ -736,9 +746,15 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     if (name == 'dockerfile' || name.startsWith('dockerfile.')) {
       return 'dockerfile';
     }
-    if (name == 'makefile') return 'makefile';
-    if (name == '.gitignore') return 'gitignore';
-    if (name.startsWith('.env')) return 'bash';
+    if (name == 'makefile') {
+      return 'makefile';
+    }
+    if (name == '.gitignore') {
+      return 'gitignore';
+    }
+    if (name.startsWith('.env')) {
+      return 'bash';
+    }
 
     const extToLanguage = {
       'dart': 'dart',
@@ -786,7 +802,10 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   }
 
   Widget _buildUnsupportedPreview(
-      BuildContext context, dynamic l10n, ThemeData theme) {
+    BuildContext context,
+    dynamic l10n,
+    ThemeData theme,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

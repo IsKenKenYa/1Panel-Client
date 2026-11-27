@@ -32,12 +32,18 @@ extension _FilesViewItemOpeners on _FilesViewState {
         break;
       case 'copy':
         showFileOperationDialog(
-          context, provider, FileOperation.copy, file: file,
+          context,
+          provider,
+          FileOperation.copy,
+          file: file,
         );
         break;
       case 'move':
         showFileOperationDialog(
-          context, provider, FileOperation.move, file: file,
+          context,
+          provider,
+          FileOperation.move,
+          file: file,
         );
         break;
       case 'extract':
@@ -78,10 +84,8 @@ extension _FilesViewItemOpeners on _FilesViewState {
     appLogger.dWithPackage('files_page', '_openFileEditor: 打开编辑器 ${file.path}');
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FileEditorPage(
-          filePath: file.path,
-          fileName: file.name,
-        ),
+        builder: (context) =>
+            FileEditorPage(filePath: file.path, fileName: file.name),
       ),
     );
   }
@@ -92,93 +96,97 @@ extension _FilesViewItemOpeners on _FilesViewState {
     FileInfo file,
     AppLocalizations l10n,
   ) async {
-    final outputPathController = TextEditingController(
-      text: provider.data.currentPath,
-    );
-    final outputFormatController = TextEditingController();
-    var backupSource = true;
+    final input =
+        await showAdaptiveFormPanel<
+          ({String outputPath, String outputFormat, bool backupSource})
+        >(
+          context,
+          builder: (_) =>
+              _FileEncodingForm(initialPath: provider.data.currentPath),
+        );
+    if (input == null || !context.mounted) {
+      return;
+    }
+
+    if (input.outputFormat.isEmpty) {
+      SnackBarUtils.showWarning(context, l10n.commonEmpty);
+      return;
+    }
 
     try {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) {
-          return StatefulBuilder(
-            builder: (dialogContext, setDialogState) {
-              return AlertDialog(
-                title: Text(l10n.filesEncodingConvert),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: outputPathController,
-                      decoration: InputDecoration(labelText: l10n.filesPath),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: outputFormatController,
-                      decoration:
-                          InputDecoration(labelText: l10n.filesEncodingTo),
-                    ),
-                    const SizedBox(height: 12),
-                    CheckboxListTile(
-                      value: backupSource,
-                      onChanged: (value) {
-                        setDialogState(() {
-                          backupSource = value ?? true;
-                        });
-                      },
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(l10n.filesEncodingBackup),
-                      controlAffinity: ListTileControlAffinity.leading,
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(false),
-                    child: Text(l10n.commonCancel),
-                  ),
-                  FilledButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(true),
-                    child: Text(l10n.commonConfirm),
-                  ),
-                ],
-              );
-            },
-          );
-        },
+      await provider.convertFile(
+        file,
+        outputFormat: input.outputFormat,
+        outputPath: input.outputPath,
+        deleteSource: !input.backupSource,
       );
-
-      if (confirmed != true || !context.mounted) {
-        return;
-      }
-
-      final outputFormat = outputFormatController.text.trim();
-      if (outputFormat.isEmpty) {
-        SnackBarUtils.showWarning(context, l10n.commonEmpty);
-        return;
-      }
-
-      try {
-        await provider.convertFile(
-          file,
-          outputFormat: outputFormat,
-          outputPath: outputPathController.text.trim(),
-          deleteSource: !backupSource,
-        );
-        if (!context.mounted) {
-          return;
-        }
+      if (context.mounted) {
         SnackBarUtils.showSuccess(context, l10n.filesEncodingConvertDone);
-      } catch (_) {
-        if (!context.mounted) {
-          return;
-        }
+      }
+    } catch (_) {
+      if (context.mounted) {
         SnackBarUtils.showError(context, l10n.filesEncodingConvertFailed);
       }
-    } finally {
-      outputPathController.dispose();
-      outputFormatController.dispose();
     }
+  }
+}
+
+class _FileEncodingForm extends StatefulWidget {
+  const _FileEncodingForm({required this.initialPath});
+
+  final String initialPath;
+
+  @override
+  State<_FileEncodingForm> createState() => _FileEncodingFormState();
+}
+
+class _FileEncodingFormState extends State<_FileEncodingForm> {
+  late final outputPathController = TextEditingController(
+    text: widget.initialPath,
+  );
+  final outputFormatController = TextEditingController();
+  var backupSource = true;
+
+  @override
+  void dispose() {
+    outputPathController.dispose();
+    outputFormatController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppFormPanel(
+      title: l10n.filesEncodingConvert,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: outputPathController,
+            decoration: InputDecoration(labelText: l10n.filesPath),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: outputFormatController,
+            decoration: InputDecoration(labelText: l10n.filesEncodingTo),
+          ),
+          const SizedBox(height: 12),
+          CheckboxListTile(
+            value: backupSource,
+            onChanged: (value) => setState(() => backupSource = value ?? true),
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.standard,
+            title: Text(l10n.filesEncodingBackup),
+            controlAffinity: ListTileControlAffinity.leading,
+          ),
+        ],
+      ),
+      onConfirm: () async => Navigator.of(context).pop((
+        outputPath: outputPathController.text.trim(),
+        outputFormat: outputFormatController.text.trim(),
+        backupSource: backupSource,
+      )),
+    );
   }
 }

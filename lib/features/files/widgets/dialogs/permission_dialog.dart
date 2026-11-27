@@ -4,7 +4,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
-import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 void showPermissionDialog(
   BuildContext context,
@@ -12,16 +12,17 @@ void showPermissionDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('permission_dialog',
-      'showPermissionDialog: 打开权限管理对话框, file=${file.path}');
+  appLogger.dWithPackage(
+    'permission_dialog',
+    'showPermissionDialog: 打开权限管理对话框, file=${file.path}',
+  );
 
-  showDialog(
-    context: context,
-    builder: (dialogContext) => _PermissionDialog(
-      file: file,
-      provider: provider,
-      l10n: l10n,
-    ),
+  showAppFormSheet<void>(
+    context,
+    title: l10n.filesPermissionTitle,
+    showCloseButton: false,
+    builder: (dialogContext) =>
+        _PermissionDialog(file: file, provider: provider, l10n: l10n),
   );
 }
 
@@ -43,6 +44,7 @@ class _PermissionDialog extends StatefulWidget {
 class _PermissionDialogState extends State<_PermissionDialog> {
   FileUserGroupResponse? _userGroup;
   bool _isLoading = true;
+  bool _isSaving = false;
   String? _error;
 
   int _ownerRead = 0;
@@ -68,6 +70,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   Future<void> _loadPermissionData() async {
     try {
       final userGroup = await widget.provider.getUserGroup();
+      if (!mounted) {
+        return;
+      }
 
       final mode = widget.file.permission ?? widget.file.mode ?? '755';
       _parseMode(mode);
@@ -79,8 +84,15 @@ class _PermissionDialogState extends State<_PermissionDialog> {
         _isLoading = false;
       });
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('permission_dialog', '_loadPermissionData: 加载失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'permission_dialog',
+        '_loadPermissionData: 加载失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -132,9 +144,16 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   }
 
   Future<void> _savePermission() async {
+    if (_isLoading || _isSaving) {
+      return;
+    }
+    setState(() => _isSaving = true);
     final mode = _calculateMode();
-    appLogger.dWithPackage('permission_dialog',
-        '_savePermission: mode=$mode, user=$_selectedUser, group=$_selectedGroup, sub=$_sub');
+    final sub = _sub;
+    appLogger.dWithPackage(
+      'permission_dialog',
+      '_savePermission: mode=$mode, user=$_selectedUser, group=$_selectedGroup, sub=$_sub',
+    );
 
     try {
       if (_selectedUser != null && _selectedGroup != null) {
@@ -142,25 +161,31 @@ class _PermissionDialogState extends State<_PermissionDialog> {
           widget.file.path,
           _selectedUser!,
           _selectedGroup!,
-          sub: _sub,
+          sub: sub,
         );
       }
 
-      await widget.provider.changeFileMode(
-        widget.file.path,
-        mode,
-        sub: _sub,
-      );
+      await widget.provider.changeFileMode(widget.file.path, mode, sub: sub);
 
       if (mounted) {
         Navigator.pop(context);
         SnackBarUtils.showSuccess(context, widget.l10n.filesPermissionSuccess);
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('permission_dialog', '_savePermission: 保存失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'permission_dialog',
+        '_savePermission: 保存失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (mounted) {
-        SnackBarUtils.showErrorWithDebugDetails(context, widget.l10n.filesPermissionFailed, error: e, stackTrace: stackTrace);
+        setState(() => _isSaving = false);
+        SnackBarUtils.showErrorWithDebugDetails(
+          context,
+          widget.l10n.filesPermissionFailed,
+          error: e,
+          stackTrace: stackTrace,
+        );
       }
     }
   }
@@ -170,45 +195,62 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return AlertDialog(
-      title: Row(
+    const buttonStyle = ButtonStyle(
+      minimumSize: WidgetStatePropertyAll(
+        Size.square(kMinInteractiveDimension),
+      ),
+      visualDensity: VisualDensity.standard,
+    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(Icons.lock_outlined, color: colorScheme.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              widget.l10n.filesPermissionTitle,
-              overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: SingleChildScrollView(
+              child: _buildContent(theme, colorScheme),
             ),
+          ),
+          const SizedBox(height: 16),
+          OverflowBar(
+            alignment: MainAxisAlignment.end,
+            spacing: 8,
+            children: [
+              TextButton(
+                style: buttonStyle,
+                onPressed: _isSaving ? null : () => Navigator.pop(context),
+                child: Text(widget.l10n.commonCancel),
+              ),
+              FilledButtonTheme(
+                data: FilledButtonThemeData(
+                  style: buttonStyle.merge(theme.filledButtonTheme.style),
+                ),
+                child: AppFormSaveButton(
+                  onSave: _isLoading ? null : _savePermission,
+                  isSaving: _isSaving,
+                  label: widget.l10n.commonSave,
+                ),
+              ),
+            ],
           ),
         ],
       ),
-      content: _buildContent(theme, colorScheme),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(widget.l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: _isLoading ? null : _savePermission,
-          child: Text(widget.l10n.commonSave),
-        ),
-      ],
     );
   }
 
   Widget _buildContent(ThemeData theme, ColorScheme colorScheme) {
     if (_isLoading) {
       return const SizedBox(
-          width: 40,
+        width: 40,
         height: 300,
         child: Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_error != null) {
-      return SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth, 
-        height: 200,
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -217,31 +259,29 @@ class _PermissionDialogState extends State<_PermissionDialog> {
               const SizedBox(height: 16),
               Text(widget.l10n.filesPermissionLoadFailed),
               const SizedBox(height: 8),
-              Text(_error!,
-                  style: theme.textTheme.bodySmall,
-                  textAlign: TextAlign.center),
+              Text(
+                _error!,
+                style: theme.textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
       );
     }
 
-    return SingleChildScrollView(
-      child: SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth, 
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFileInfo(theme, colorScheme),
-            const SizedBox(height: 16),
-            _buildModeSection(theme, colorScheme),
-            const SizedBox(height: 16),
-            _buildOwnerSection(theme, colorScheme),
-            const SizedBox(height: 16),
-            _buildRecursiveOption(theme),
-          ],
-        ),
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildFileInfo(theme, colorScheme),
+        const SizedBox(height: 16),
+        _buildModeSection(theme, colorScheme),
+        const SizedBox(height: 16),
+        _buildOwnerSection(theme, colorScheme),
+        const SizedBox(height: 16),
+        _buildRecursiveOption(theme),
+      ],
     );
   }
 
@@ -278,8 +318,10 @@ class _PermissionDialogState extends State<_PermissionDialog> {
       children: [
         Row(
           children: [
-            Text(widget.l10n.filesPermissionMode,
-                style: theme.textTheme.titleSmall),
+            Text(
+              widget.l10n.filesPermissionMode,
+              style: theme.textTheme.titleSmall,
+            ),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -397,17 +439,16 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     return Row(
       children: [
         Expanded(
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
         ),
         SizedBox(
           width: 60,
           child: Checkbox(
             value: read == 1,
             onChanged: (v) => onChanged(v == true ? 1 : 0, write, execute),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            semanticLabel: '$label · ${widget.l10n.filesPermissionRead}',
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            visualDensity: VisualDensity.standard,
           ),
         ),
         SizedBox(
@@ -415,7 +456,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
           child: Checkbox(
             value: write == 1,
             onChanged: (v) => onChanged(read, v == true ? 1 : 0, execute),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            semanticLabel: '$label · ${widget.l10n.filesPermissionWrite}',
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            visualDensity: VisualDensity.standard,
           ),
         ),
         SizedBox(
@@ -423,7 +466,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
           child: Checkbox(
             value: execute == 1,
             onChanged: (v) => onChanged(read, write, v == true ? 1 : 0),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            semanticLabel: '$label · ${widget.l10n.filesPermissionExecute}',
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            visualDensity: VisualDensity.standard,
           ),
         ),
       ],
@@ -434,8 +479,10 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.l10n.filesPermissionChangeOwner,
-            style: theme.textTheme.titleSmall),
+        Text(
+          widget.l10n.filesPermissionChangeOwner,
+          style: theme.textTheme.titleSmall,
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -443,17 +490,29 @@ class _PermissionDialogState extends State<_PermissionDialog> {
               child: DropdownButtonFormField<String>(
                 key: ValueKey('user-$_selectedUser'),
                 initialValue: _selectedUser,
+                isExpanded: true,
                 decoration: InputDecoration(
+                  constraints: const BoxConstraints(
+                    minHeight: kMinInteractiveDimension,
+                  ),
                   labelText: widget.l10n.filesPermissionUser,
                   border: const OutlineInputBorder(),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
-                items: _userGroup?.users
-                        .map((u) => DropdownMenuItem(
-                              value: u.user,
-                              child: Text(u.user),
-                            ))
+                items:
+                    _userGroup?.users
+                        .map(
+                          (u) => DropdownMenuItem(
+                            value: u.user,
+                            child: Text(
+                              u.user,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
                         .toList() ??
                     [],
                 onChanged: (v) => setState(() => _selectedUser = v),
@@ -464,17 +523,26 @@ class _PermissionDialogState extends State<_PermissionDialog> {
               child: DropdownButtonFormField<String>(
                 key: ValueKey('group-$_selectedGroup'),
                 initialValue: _selectedGroup,
+                isExpanded: true,
                 decoration: InputDecoration(
+                  constraints: const BoxConstraints(
+                    minHeight: kMinInteractiveDimension,
+                  ),
                   labelText: widget.l10n.filesPermissionGroup,
                   border: const OutlineInputBorder(),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
-                items: _userGroup?.groups
-                        .map((g) => DropdownMenuItem(
-                              value: g,
-                              child: Text(g),
-                            ))
+                items:
+                    _userGroup?.groups
+                        .map(
+                          (g) => DropdownMenuItem(
+                            value: g,
+                            child: Text(g, overflow: TextOverflow.ellipsis),
+                          ),
+                        )
                         .toList() ??
                     [],
                 onChanged: (v) => setState(() => _selectedGroup = v),
@@ -490,6 +558,7 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     return Card(
       margin: EdgeInsets.zero,
       child: SwitchListTile(
+        visualDensity: VisualDensity.standard,
         title: Text(widget.l10n.filesPermissionRecursive),
         subtitle: Text(
           widget.file.isDir

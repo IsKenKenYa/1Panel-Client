@@ -1,10 +1,12 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_service.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 /// 浏览服务器文件系统并选择目录。
 ///
@@ -25,8 +27,8 @@ class ServerDirectoryPickerDialog extends StatefulWidget {
     required FilesService filesService,
     String initialPath = '/',
   }) {
-    return showDialog<String>(
-      context: context,
+    return showAdaptiveFormPanel<String>(
+      context,
       builder: (_) => ServerDirectoryPickerDialog(
         filesService: filesService,
         initialPath: initialPath,
@@ -60,14 +62,18 @@ class _ServerDirectoryPickerDialogState
     });
     try {
       final files = await widget.filesService.getFiles(path: path);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _currentPath = path;
         _entries = files.where((file) => file.isDir).toList();
         _isLoading = false;
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _error = error.toString();
         _isLoading = false;
@@ -78,11 +84,12 @@ class _ServerDirectoryPickerDialogState
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AlertDialog(
-      title: Text(l10n.commonSelectDirectory),
+    return AppFormPanel(
+      title: l10n.commonSelectDirectory,
+      onConfirm: () async => Navigator.of(context).pop(_currentPath),
       content: SizedBox(
         width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
-        height: 420,
+        height: math.min(420.0, MediaQuery.sizeOf(context).height * 0.6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -97,16 +104,6 @@ class _ServerDirectoryPickerDialogState
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(_currentPath),
-          child: Text(l10n.commonConfirm),
-        ),
-      ],
     );
   }
 
@@ -121,31 +118,39 @@ class _ServerDirectoryPickerDialogState
         onRetry: () => _load(_currentPath),
       );
     }
-    return ListView(
-      children: [
-        if (_currentPath != '/')
-          ListTile(
+    final hasParent = _currentPath != '/';
+    return ListView.builder(
+      itemCount: _entries.length + (hasParent || _entries.isEmpty ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (hasParent && index == 0) {
+          return ListTile(
             leading: const Icon(Icons.arrow_upward),
             title: Text(l10n.commonParentDirectory),
+            minTileHeight: kMinInteractiveDimension,
+            visualDensity: VisualDensity.standard,
             onTap: () => _load(_parentOf(_currentPath)),
-          ),
-        for (final entry in _entries)
-          ListTile(
-            leading: const Icon(Icons.folder_outlined),
-            title: Text(entry.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-            onTap: () => _load(entry.path),
-          ),
-        if (_entries.isEmpty && _currentPath == '/')
-          ListTile(
-            title: Text(l10n.commonNoSubdirectory),
-          ),
-      ],
+          );
+        }
+        if (_entries.isEmpty) {
+          return ListTile(title: Text(l10n.commonNoSubdirectory));
+        }
+        final entry = _entries[index - (hasParent ? 1 : 0)];
+        return ListTile(
+          leading: const Icon(Icons.folder_outlined),
+          title: Text(entry.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+          minTileHeight: kMinInteractiveDimension,
+          visualDensity: VisualDensity.standard,
+          onTap: () => _load(entry.path),
+        );
+      },
     );
   }
 
   String _parentOf(String path) {
     final segments = path.split('/').where((s) => s.isNotEmpty).toList();
-    if (segments.isEmpty) return '/';
+    if (segments.isEmpty) {
+      return '/';
+    }
     segments.removeLast();
     return segments.isEmpty ? '/' : '/${segments.join('/')}';
   }

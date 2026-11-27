@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 Future<String?> showPathSelectorDialog(
   BuildContext context,
@@ -11,27 +14,32 @@ Future<String?> showPathSelectorDialog(
   AppLocalizations l10n,
 ) async {
   String selectedPath = currentPath;
+  var files = provider.fetchFiles(selectedPath);
 
-  return showDialog<String>(
-    context: context,
+  return showAdaptiveFormPanel<String>(
+    context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (context, setDialogState) {
         final parentPath = _getParentPath(selectedPath);
 
-        return AlertDialog(
-          title: Text(l10n.filesPathSelectorTitle),
-          content: SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth, 
-            height: 400,
+        return AppFormPanel(
+          title: l10n.filesPathSelectorTitle,
+          onConfirm: () async => Navigator.pop(dialogContext, selectedPath),
+          content: SizedBox(
+            width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
+            height: math.min(400.0, MediaQuery.sizeOf(context).height * 0.6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Current path display and navigation
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -40,9 +48,16 @@ Future<String?> showPathSelectorDialog(
                         IconButton(
                           icon: const Icon(Icons.arrow_upward),
                           tooltip: l10n.filesActionUp,
+                          style: IconButton.styleFrom(
+                            minimumSize: const Size.square(
+                              kMinInteractiveDimension,
+                            ),
+                            visualDensity: VisualDensity.standard,
+                          ),
                           onPressed: () {
                             setDialogState(() {
                               selectedPath = parentPath;
+                              files = provider.fetchFiles(selectedPath);
                             });
                           },
                         ),
@@ -65,7 +80,7 @@ Future<String?> showPathSelectorDialog(
                 const SizedBox(height: 8),
                 Expanded(
                   child: FutureBuilder<List<FileInfo>>(
-                    future: provider.fetchFiles(selectedPath),
+                    future: files,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -75,8 +90,10 @@ Future<String?> showPathSelectorDialog(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.error_outline,
-                                  color: Theme.of(context).colorScheme.error),
+                              Icon(
+                                Icons.error_outline,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                               const SizedBox(height: 8),
                               Text(l10n.commonError),
                             ],
@@ -86,7 +103,6 @@ Future<String?> showPathSelectorDialog(
 
                       final allFiles = snapshot.data ?? [];
                       final folders = allFiles.where((f) => f.isDir).toList();
-                      // Sort folders by name
                       folders.sort((a, b) => a.name.compareTo(b.name));
 
                       if (folders.isEmpty) {
@@ -97,12 +113,17 @@ Future<String?> showPathSelectorDialog(
                         itemBuilder: (context, index) {
                           final folder = folders[index];
                           return ListTile(
-                            leading:
-                                const Icon(Icons.folder, color: Colors.amber),
+                            leading: const Icon(
+                              Icons.folder,
+                              color: Colors.amber,
+                            ),
                             title: Text(folder.name),
+                            minTileHeight: kMinInteractiveDimension,
+                            visualDensity: VisualDensity.standard,
                             onTap: () {
                               setDialogState(() {
                                 selectedPath = folder.path;
+                                files = provider.fetchFiles(selectedPath);
                               });
                             },
                           );
@@ -114,16 +135,6 @@ Future<String?> showPathSelectorDialog(
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(dialogContext, selectedPath),
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
         );
       },
     ),
@@ -131,10 +142,16 @@ Future<String?> showPathSelectorDialog(
 }
 
 String _getParentPath(String path) {
-  if (path == '/') return '/';
+  if (path == '/') {
+    return '/';
+  }
   final segments = path.split('/').where((s) => s.isNotEmpty).toList();
-  if (segments.isEmpty) return '/';
+  if (segments.isEmpty) {
+    return '/';
+  }
   segments.removeLast();
-  if (segments.isEmpty) return '/';
+  if (segments.isEmpty) {
+    return '/';
+  }
   return '/${segments.join('/')}';
 }

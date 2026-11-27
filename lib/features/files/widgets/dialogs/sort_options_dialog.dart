@@ -2,34 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 void showSortOptionsDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(context.l10n.filesActionSort),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
+  final provider = context.read<FilesProvider>();
+  final l10n = context.l10n;
+  showAppFormSheet<void>(
+    context,
+    title: l10n.filesActionSort,
+    builder: (sheetContext) => ListTileTheme(
+      data: const ListTileThemeData(
+        minTileHeight: kMinInteractiveDimension,
+        visualDensity: VisualDensity.standard,
+      ),
+      child: ListView(
+        shrinkWrap: true,
         children: [
           ListTile(
-            title: Text(context.l10n.filesSortByName),
+            title: Text(l10n.filesSortByName),
             onTap: () {
-              Navigator.pop(context);
-              context.read<FilesProvider>().setSorting('name', 'asc');
+              Navigator.pop(sheetContext);
+              provider.setSorting('name', 'asc');
             },
           ),
           ListTile(
-            title: Text(context.l10n.filesSortBySize),
+            title: Text(l10n.filesSortBySize),
             onTap: () {
-              Navigator.pop(context);
-              context.read<FilesProvider>().setSorting('size', 'desc');
+              Navigator.pop(sheetContext);
+              provider.setSorting('size', 'desc');
             },
           ),
           ListTile(
-            title: Text(context.l10n.filesSortByDate),
+            title: Text(l10n.filesSortByDate),
             onTap: () {
-              Navigator.pop(context);
-              context.read<FilesProvider>().setSorting('modifiedAt', 'desc');
+              Navigator.pop(sheetContext);
+              provider.setSorting('modifiedAt', 'desc');
             },
           ),
         ],

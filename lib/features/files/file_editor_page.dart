@@ -6,8 +6,7 @@ import 'package:onepanel_client/core/utils/keyboard_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 enum _EditorExitAction { discard, save }
 
@@ -77,17 +76,23 @@ class _FileEditorPageState extends State<FileEditorPage> {
 
   Future<void> _loadContent() async {
     appLogger.dWithPackage(
-        'file_editor', '_loadContent: path=${widget.filePath}');
+      'file_editor',
+      '_loadContent: path=${widget.filePath}',
+    );
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final content =
-          await _service.readFile(widget.filePath, encoding: _encoding);
+      final content = await _service.readFile(
+        widget.filePath,
+        encoding: _encoding,
+      );
       appLogger.iWithPackage(
-          'file_editor', '_loadContent: 成功加载, 长度=${content.length}');
+        'file_editor',
+        '_loadContent: 成功加载, 长度=${content.length}',
+      );
       if (mounted) {
         _originalContent = content;
         _controller.text = _originalContent;
@@ -97,8 +102,12 @@ class _FileEditorPageState extends State<FileEditorPage> {
         });
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_editor', '_loadContent: 加载失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'file_editor',
+        '_loadContent: 加载失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (mounted) {
         setState(() {
           _error = e.toString();
@@ -109,10 +118,14 @@ class _FileEditorPageState extends State<FileEditorPage> {
   }
 
   Future<bool> _saveContent() async {
-    if (_isSaving || !_hasChanges) return false;
+    if (_isSaving || !_hasChanges) {
+      return false;
+    }
 
     appLogger.dWithPackage(
-        'file_editor', '_saveContent: path=${widget.filePath}');
+      'file_editor',
+      '_saveContent: path=${widget.filePath}',
+    );
     final savedContent = _controller.text;
     setState(() {
       _isSaving = true;
@@ -125,7 +138,9 @@ class _FileEditorPageState extends State<FileEditorPage> {
         encoding: _encoding,
       );
       appLogger.iWithPackage('file_editor', '_saveContent: 保存成功');
-      if (!mounted) return false;
+      if (!mounted) {
+        return false;
+      }
       setState(() {
         _isSaving = false;
         _originalContent = savedContent;
@@ -134,8 +149,12 @@ class _FileEditorPageState extends State<FileEditorPage> {
       SnackBarUtils.showSuccess(context, context.l10n.commonSaveSuccess);
       return !_hasChanges;
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_editor', '_saveContent: 保存失败',
-          error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage(
+        'file_editor',
+        '_saveContent: 保存失败',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (mounted) {
         setState(() {
           _isSaving = false;
@@ -152,36 +171,47 @@ class _FileEditorPageState extends State<FileEditorPage> {
   }
 
   Future<void> _handlePop(bool didPop, Object? _) async {
-    if (didPop || _isSaving || _confirmingExit) return;
+    if (didPop || _isSaving || _confirmingExit) {
+      return;
+    }
 
     _confirmingExit = true;
     try {
       final l10n = context.l10n;
-      final action = await showDialog<_EditorExitAction>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(l10n.filesEditorUnsaved),
-          content: Text(widget.fileName),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.commonCancel),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, _EditorExitAction.discard),
-              child: Text(l10n.filesEditorDiscardChanges),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, _EditorExitAction.save),
-              child: Text(l10n.commonSave),
-            ),
-          ],
+      final action = await showAdaptiveFormPanel<_EditorExitAction>(
+        context,
+        builder: (dialogContext) => AppFormPanel(
+          title: l10n.filesEditorUnsaved,
+          confirmLabel: l10n.commonSave,
+          onConfirm: () async =>
+              Navigator.pop(dialogContext, _EditorExitAction.save),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.fileName),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.square(kMinInteractiveDimension),
+                    visualDensity: VisualDensity.standard,
+                  ),
+                  onPressed: () =>
+                      Navigator.pop(dialogContext, _EditorExitAction.discard),
+                  child: Text(l10n.filesEditorDiscardChanges),
+                ),
+              ),
+            ],
+          ),
         ),
       );
 
-      if (!mounted) return;
-      final shouldPop = action == _EditorExitAction.discard ||
+      if (!mounted) {
+        return;
+      }
+      final shouldPop =
+          action == _EditorExitAction.discard ||
           (action == _EditorExitAction.save && await _saveContent());
       if (shouldPop && mounted && ModalRoute.of(context)?.isCurrent == true) {
         Navigator.of(context).pop();
@@ -205,10 +235,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.fileName,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(widget.fileName, overflow: TextOverflow.ellipsis),
                 if (_hasChanges)
                   Text(
                     l10n.filesEditorUnsaved,
@@ -246,10 +273,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
       bindings: <ShortcutActivator, VoidCallback>{
         KeyboardUtils.modifierPlus(LogicalKeyboardKey.keyS): _saveShortcut,
       },
-      child: Focus(
-        autofocus: true,
-        child: child,
-      ),
+      child: Focus(autofocus: true, child: child),
     );
   }
 
@@ -273,11 +297,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
           child: Row(
             children: [
               if (_encoding == encoding)
-                Icon(
-                  Icons.check,
-                  size: 18,
-                  color: theme.colorScheme.primary,
-                )
+                Icon(Icons.check, size: 18, color: theme.colorScheme.primary)
               else
                 const SizedBox(width: 18),
               const SizedBox(width: 8),
@@ -295,10 +315,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
     }
 
     if (_error != null) {
-      return ModuleErrorStateWidget(
-        message: _error,
-        onRetry: _loadContent,
-      );
+      return ModuleErrorStateWidget(message: _error, onRetry: _loadContent);
     }
 
     return Column(
@@ -311,10 +328,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
               controller: _controller,
               maxLines: null,
               expands: true,
-              style: const TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 14,
-              ),
+              style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: AppDesignTokens.cardPadding,
@@ -336,9 +350,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outlineVariant,
-          ),
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
       ),
       child: Row(
@@ -382,7 +394,9 @@ class _FileEditorPageState extends State<FileEditorPage> {
   }
 
   Future<void> _onEncodingSelected(String value) async {
-    if (value == _encoding) return;
+    if (value == _encoding) {
+      return;
+    }
     if (_hasChanges) {
       final l10n = context.l10n;
       final proceed = await ConfirmActionSheetWidget.show(
@@ -391,7 +405,9 @@ class _FileEditorPageState extends State<FileEditorPage> {
         message: l10n.filesEditorReloadConfirm,
         confirmLabel: l10n.commonConfirm,
       );
-      if (proceed != true) return;
+      if (proceed != true) {
+        return;
+      }
     }
 
     setState(() {

@@ -1,7 +1,7 @@
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_filex/open_filex.dart';
@@ -17,8 +17,6 @@ import 'package:onepanel_client/core/services/file_save_service.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/features/files/providers/transfer_manager_provider.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 
 class TransferManagerPage extends StatefulWidget {
   const TransferManagerPage({super.key});
@@ -84,78 +82,77 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
             body: provider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : !provider.isDownloadSupported
-                    ? ModuleEmptyStateWidget(
-                        title: provider.unsupportedReason ==
-                                'transferBackgroundDownloadUnsupported'
-                            ? l10n.transferBackgroundDownloadUnsupported
-                            : (provider.unsupportedReason ??
-                                l10n.transferBackgroundDownloadUnsupported),
-                      )
-                    : LayoutBuilder(
-                        builder: (context, constraints) {
-                          final isWide = constraints.maxWidth >= 840;
-                          if (isWide) {
-                            return Row(
-                              children: [
-                                Expanded(
-                                  child: _buildDownloadsPane(
-                                    context,
-                                    l10n,
-                                    theme,
-                                    provider,
-                                  ),
+                ? ModuleEmptyStateWidget(
+                    title:
+                        provider.unsupportedReason ==
+                            'transferBackgroundDownloadUnsupported'
+                        ? l10n.transferBackgroundDownloadUnsupported
+                        : (provider.unsupportedReason ??
+                              l10n.transferBackgroundDownloadUnsupported),
+                  )
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth >= 840;
+                      if (isWide) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: _buildDownloadsPane(
+                                context,
+                                l10n,
+                                theme,
+                                provider,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildUploadsPane(context, l10n, theme),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                            child: SegmentedButton<TransferChannel>(
+                              segments: [
+                                ButtonSegment<TransferChannel>(
+                                  value: TransferChannel.downloads,
+                                  icon: const Icon(Icons.download),
+                                  label: Text(l10n.transferDownloads),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child:
-                                      _buildUploadsPane(context, l10n, theme),
+                                ButtonSegment<TransferChannel>(
+                                  value: TransferChannel.uploads,
+                                  icon: const Icon(Icons.upload),
+                                  label: Text(l10n.transferUploads),
                                 ),
                               ],
-                            );
-                          }
-
-                          return Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                                child: SegmentedButton<TransferChannel>(
-                                  segments: [
-                                    ButtonSegment<TransferChannel>(
-                                      value: TransferChannel.downloads,
-                                      icon: const Icon(Icons.download),
-                                      label: Text(l10n.transferDownloads),
-                                    ),
-                                    ButtonSegment<TransferChannel>(
-                                      value: TransferChannel.uploads,
-                                      icon: const Icon(Icons.upload),
-                                      label: Text(l10n.transferUploads),
-                                    ),
-                                  ],
-                                  selected: {provider.channel},
-                                  onSelectionChanged: (value) {
-                                    provider.setChannel(value.first);
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 200),
-                                  child: provider.channel ==
-                                          TransferChannel.downloads
-                                      ? _buildDownloadsPane(
-                                          context,
-                                          l10n,
-                                          theme,
-                                          provider,
-                                        )
-                                      : _buildUploadsPane(context, l10n, theme),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                              selected: {provider.channel},
+                              onSelectionChanged: (value) {
+                                provider.setChannel(value.first);
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child:
+                                  provider.channel == TransferChannel.downloads
+                                  ? _buildDownloadsPane(
+                                      context,
+                                      l10n,
+                                      theme,
+                                      provider,
+                                    )
+                                  : _buildUploadsPane(context, l10n, theme),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
           );
         },
       ),
@@ -182,27 +179,24 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
           _SectionHeader(text: l10n.transferTabActive),
           const SizedBox(height: 8),
           for (final task in active)
-            _DownloadTaskTile(
-              task: task,
-              onRefresh: provider.loadTasks,
-            ),
+            _DownloadTaskTile(task: task, onRefresh: provider.loadTasks),
           const SizedBox(height: 16),
         ],
         if (completed.isNotEmpty) ...[
           _SectionHeader(text: l10n.transferTabCompleted),
           const SizedBox(height: 8),
           for (final task in completed)
-            _DownloadTaskTile(
-              task: task,
-              onRefresh: provider.loadTasks,
-            ),
+            _DownloadTaskTile(task: task, onRefresh: provider.loadTasks),
         ],
       ],
     );
   }
 
   Widget _buildUploadsPane(
-      BuildContext context, AppLocalizations l10n, ThemeData theme) {
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+  ) {
     return Consumer<TransferManager>(
       builder: (context, manager, _) {
         final active = manager.activeTasks;
@@ -232,31 +226,20 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
     );
   }
 
-  void _showClearDialog(
+  Future<void> _showClearDialog(
     BuildContext context,
     TransferManagerProvider provider,
-  ) {
+  ) async {
     final l10n = context.l10n;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.transferClearTitle),
-        content: Text(l10n.transferClearConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await provider.clearCompletedDownloads();
-              if (context.mounted) Navigator.pop(context);
-            },
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.transferClearTitle,
+      message: l10n.transferClearConfirm,
+      isDestructive: true,
     );
+    if (confirmed && context.mounted) {
+      await provider.clearCompletedDownloads();
+    }
   }
 }
 
@@ -281,10 +264,7 @@ class _DownloadTaskTile extends StatelessWidget {
   final DownloadTask task;
   final VoidCallback onRefresh;
 
-  const _DownloadTaskTile({
-    required this.task,
-    required this.onRefresh,
-  });
+  const _DownloadTaskTile({required this.task, required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -294,7 +274,9 @@ class _DownloadTaskTile extends StatelessWidget {
 
     return Card.filled(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+      ),
       child: Padding(
         padding: AppDesignTokens.cardPadding,
         child: Column(
@@ -347,10 +329,7 @@ class _DownloadTaskTile extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Text(
-                  '${task.progress}%',
-                  style: theme.textTheme.bodySmall,
-                ),
+                Text('${task.progress}%', style: theme.textTheme.bodySmall),
                 const Spacer(),
                 Text(
                   _getStatusText(displayStatus, l10n),
@@ -429,7 +408,9 @@ class _DownloadTaskTile extends StatelessWidget {
             label: Text(l10n.commonRetry),
             onPressed: () async {
               final result = await provider.retryTaskWithNewAuth(task);
-              if (!context.mounted) return;
+              if (!context.mounted) {
+                return;
+              }
               switch (result) {
                 case RetryDownloadTaskWithNewAuthResult.recreated:
                   onRefresh();
@@ -536,23 +517,29 @@ class _DownloadTaskTile extends StatelessWidget {
 
   String _resolveFileName() {
     final fromTask = task.filename;
-    if (fromTask != null && fromTask.trim().isNotEmpty) return fromTask.trim();
+    if (fromTask != null && fromTask.trim().isNotEmpty) {
+      return fromTask.trim();
+    }
 
     final uri = Uri.tryParse(task.url);
     final rawPath = uri?.queryParameters['path'];
-    if (rawPath == null || rawPath.isEmpty) return '';
+    if (rawPath == null || rawPath.isEmpty) {
+      return '';
+    }
 
     final decoded = Uri.decodeComponent(rawPath);
     final lastSlash = decoded.lastIndexOf('/');
-    if (lastSlash < 0) return decoded;
+    if (lastSlash < 0) {
+      return decoded;
+    }
     return decoded.substring(lastSlash + 1);
   }
 
   Future<String?> _downloadedFilePath(BuildContext context) {
     if (PlatformCapabilities.current().isOhos) {
-      return context
-          .read<TransferManagerProvider>()
-          .savedDownloadLocation(task.taskId);
+      return context.read<TransferManagerProvider>().savedDownloadLocation(
+        task.taskId,
+      );
     }
     final fileName = _resolveFileName();
     return Future.value(
@@ -564,18 +551,24 @@ class _DownloadTaskTile extends StatelessWidget {
     final l10n = context.l10n;
     final capabilities = PlatformCapabilities.current();
     final filePath = await _downloadedFilePath(context);
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     if (filePath == null) {
       SnackBarUtils.showError(context, l10n.transferFileNotFound);
       return;
     }
     if (capabilities.isOhos) {
       final uri = Uri.parse(filePath);
-      final opened = await PlatformFileService().openSaveOutcome(SaveOutcome(
-        uri: filePath,
-        displayName: _resolveFileName(),
-        kind: uri.hasScheme ? SaveLocationKind.pickerUri : SaveLocationKind.other,
-      ));
+      final opened = await PlatformFileService().openSaveOutcome(
+        SaveOutcome(
+          uri: filePath,
+          displayName: _resolveFileName(),
+          kind: uri.hasScheme
+              ? SaveLocationKind.pickerUri
+              : SaveLocationKind.other,
+        ),
+      );
       if (!opened && context.mounted) {
         SnackBarUtils.showError(context, l10n.transferOpenFileError);
       }
@@ -601,7 +594,9 @@ class _DownloadTaskTile extends StatelessWidget {
           (Platform.isAndroid || Platform.isIOS)) {
         if (task.status == DownloadTaskStatus.complete) {
           final ok = await FlutterDownloader.open(taskId: task.taskId);
-          if (ok == true) return;
+          if (ok == true) {
+            return;
+          }
         }
 
         final result = await OpenFilex.open(filePath);
@@ -654,74 +649,82 @@ class _DownloadTaskTile extends StatelessWidget {
     final l10n = context.l10n;
     final provider = context.read<TransferManagerProvider>();
     final filePath = await _downloadedFilePath(context);
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     final dirPath = task.savedDir;
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+    await showAppFormSheet<void>(
+      context,
+      title: task.filename ?? l10n.systemSettingsUnknown,
+      builder: (sheetContext) => ListTileTheme(
+        data: const ListTileThemeData(
+          minTileHeight: kMinInteractiveDimension,
+          visualDensity: VisualDensity.standard,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: Text(l10n.transferOpenFile),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await _openDownloadedFile(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.folder_open),
+              title: Text(l10n.transferOpenDownloadsFolder),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                final ok = await FileSaveService().openDownloadsDirectory();
+                if (!context.mounted) {
+                  return;
+                }
+                if (!ok) {
+                  SnackBarUtils.showError(
+                    context,
+                    l10n.transferOpenFileError,
+                    action: SnackBarAction(
+                      label: l10n.transferCopyDirectoryPath,
+                      onPressed: () => _copyToClipboard(context, dirPath),
+                    ),
+                  );
+                  return;
+                }
+              },
+            ),
+            if (filePath != null)
               ListTile(
-                leading: const Icon(Icons.open_in_new),
-                title: Text(l10n.transferOpenFile),
-                onTap: () async {
+                leading: const Icon(Icons.copy),
+                title: Text(l10n.transferCopyPath),
+                onTap: () {
                   Navigator.pop(sheetContext);
-                  await _openDownloadedFile(context);
+                  _copyToClipboard(context, filePath);
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.folder_open),
-                title: Text(l10n.transferOpenDownloadsFolder),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  final ok = await FileSaveService().openDownloadsDirectory();
-                  if (!context.mounted) return;
-                  if (!ok) {
-                    SnackBarUtils.showError(
-                      context,
-                      l10n.transferOpenFileError,
-                      action: SnackBarAction(
-                        label: l10n.transferCopyDirectoryPath,
-                        onPressed: () => _copyToClipboard(context, dirPath),
-                      ),
-                    );
-                    return;
-                  }
-                },
-              ),
-              if (filePath != null)
-                ListTile(
-                  leading: const Icon(Icons.copy),
-                  title: Text(l10n.transferCopyPath),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _copyToClipboard(context, filePath);
-                  },
-                ),
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: Text(l10n.commonDelete),
-                textColor: Theme.of(context).colorScheme.error,
-                iconColor: Theme.of(context).colorScheme.error,
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  await provider.deleteTask(task.taskId);
-                  onRefresh();
-                },
-              ),
-            ],
-          ),
-        );
-      },
+            ListTile(
+              leading: const Icon(Icons.delete_outline),
+              title: Text(l10n.commonDelete),
+              textColor: Theme.of(context).colorScheme.error,
+              iconColor: Theme.of(context).colorScheme.error,
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await provider.deleteTask(task.taskId);
+                onRefresh();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     SnackBarUtils.showSuccess(context, context.l10n.commonCopied);
   }
 
@@ -765,9 +768,7 @@ class _DownloadTaskTile extends StatelessWidget {
 class _UploadTaskTile extends StatelessWidget {
   final TransferTask task;
 
-  const _UploadTaskTile({
-    required this.task,
-  });
+  const _UploadTaskTile({required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -776,7 +777,9 @@ class _UploadTaskTile extends StatelessWidget {
 
     return Card.filled(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+      ),
       child: Padding(
         padding: AppDesignTokens.cardPadding,
         child: Column(
@@ -829,10 +832,7 @@ class _UploadTaskTile extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Text(
-                  task.progressPercent,
-                  style: theme.textTheme.bodySmall,
-                ),
+                Text(task.progressPercent, style: theme.textTheme.bodySmall),
                 const Spacer(),
                 Text(
                   _getStatusText(task.status, l10n),
@@ -964,4 +964,3 @@ class _UploadTaskTile extends StatelessWidget {
     }
   }
 }
-

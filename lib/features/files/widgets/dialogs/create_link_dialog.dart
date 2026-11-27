@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class CreateLinkDialog extends StatefulWidget {
   final FilesProvider provider;
@@ -29,6 +30,12 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     _nameController.text = _getLinkName(widget.sourcePath);
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
   String _getLinkName(String path) {
     final name = path.split('/').last;
     return '$name.link';
@@ -38,8 +45,11 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return AlertDialog(
-      title: Text(l10n.filesCreateLinkTitle),
+    return AppFormPanel(
+      title: l10n.filesCreateLinkTitle,
+      confirmLabel: l10n.commonCreate,
+      isSaving: _isLoading,
+      onConfirm: _createLink,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -54,7 +64,11 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _linkType,
+            isExpanded: true,
             decoration: InputDecoration(
+              constraints: const BoxConstraints(
+                minHeight: kMinInteractiveDimension,
+              ),
               labelText: l10n.filesLinkTypeLabel,
             ),
             items: [
@@ -75,26 +89,13 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: _isLoading ? null : _createLink,
-          child: _isLoading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2))
-              : Text(l10n.commonCreate),
-        ),
-      ],
     );
   }
 
   Future<void> _createLink() async {
-    if (_nameController.text.isEmpty) return;
+    if (_isLoading || _nameController.text.isEmpty) {
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -125,12 +126,13 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
 }
 
 void showCreateLinkDialog(
-    BuildContext context, FilesProvider provider, String sourcePath) {
-  showDialog(
-    context: context,
-    builder: (context) => CreateLinkDialog(
-      provider: provider,
-      sourcePath: sourcePath,
-    ),
+  BuildContext context,
+  FilesProvider provider,
+  String sourcePath,
+) {
+  showAdaptiveFormPanel<void>(
+    context,
+    builder: (context) =>
+        CreateLinkDialog(provider: provider, sourcePath: sourcePath),
   );
 }

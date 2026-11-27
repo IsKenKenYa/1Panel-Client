@@ -24,7 +24,7 @@ import 'package:onepanel_client/features/files/transfer_manager_page.dart';
 import 'package:onepanel_client/features/files/widgets/file_list_item.dart';
 import 'package:onepanel_client/features/files/widgets/selection_bar.dart';
 import 'package:onepanel_client/features/files/widgets/empty_state.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/compress_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/create_link_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/delete_confirm_dialog.dart';
@@ -40,7 +40,6 @@ import 'package:onepanel_client/features/files/widgets/dialogs/wget_dialog.dart'
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
 export 'models/models.dart' show WgetDownloadState;
