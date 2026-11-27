@@ -160,6 +160,68 @@ jobs:
             --build-number="${{ github.run_number }}"
           cp build/app/outputs/flutter-apk/app-release.apk "build/${{ steps.meta.outputs.apk_name }}"
 
+      - name: Prepare Release Notes
+        id: notes
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          APK_PATH="build/${{ steps.meta.outputs.apk_name }}"
+          APK_SHA256=$(sha256sum "$APK_PATH" | awk '{print $1}')
+          CERT_INFO=$(keytool -J-Duser.language=en -J-Duser.country=US -list -v -keystore android/upload-keystore.jks -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" 2>/dev/null)
+          CERT_OWNER=$(echo "$CERT_INFO" | grep -m1 'Owner:' | sed 's/^[[:space:]]*Owner:[[:space:]]*//')
+          CERT_SHA256=$(echo "$CERT_INFO" | grep -m1 'SHA256:' | sed 's/^[[:space:]]*SHA256:[[:space:]]*//')
+
+          case "${{ steps.meta.outputs.release_kind }}" in
+            debug)
+              CHANNEL_DESC="Internal alpha build from \`${{ steps.meta.outputs.source_branch }}\` (GitHub prerelease)."
+              ;;
+            beta)
+              CHANNEL_DESC="Public beta preview build from \`${{ steps.meta.outputs.source_branch }}\`."
+              ;;
+            pre-release)
+              CHANNEL_DESC="Release candidate build from \`${{ steps.meta.outputs.source_branch }}\`."
+              ;;
+            release)
+              CHANNEL_DESC="Official Android release build from \`${{ steps.meta.outputs.source_branch }}\`."
+              ;;
+          esac
+
+          {
+            echo "## KenPanel ${{ steps.meta.outputs.tag_name }} (${{ steps.meta.outputs.channel_label }})"
+            echo ""
+            echo "$CHANNEL_DESC"
+            echo ""
+            echo "### Build & Signing"
+            echo "- **Tag**: \`${{ steps.meta.outputs.tag_name }}\`"
+            echo "- **Version**: \`${{ steps.meta.outputs.version }}\`"
+            echo "- **Channel**: \`${{ steps.meta.outputs.channel_label }}\`"
+            echo "- **Source Branch**: \`${{ steps.meta.outputs.source_branch }}\`"
+            echo "- **Package**: \`${{ steps.meta.outputs.apk_name }}\`"
+            echo "- **APK SHA-256**: \`$APK_SHA256\`"
+            echo "- **Signing**: \`release keystore\` (shared across CI \`debug\` / \`beta\` / \`pre-release\` / \`release\` tags)"
+            if [ -n "$CERT_OWNER" ]; then
+              echo "- **Signer DN**: \`$CERT_OWNER\`"
+            fi
+            if [ -n "$CERT_SHA256" ]; then
+              echo "- **Cert SHA-256**: \`$CERT_SHA256\`"
+            fi
+            echo "- **Feedback**: [GitHub Issues](https://github.com/${{ github.repository }}/issues)"
+
+            if [ -f CHANGELOG.md ]; then
+              CHANGELOG_SECTION=$(awk -v ver="${{ steps.meta.outputs.version_name }}" '
+                $0 ~ "^## \\[" ver "\\]" { in_section=1; next }
+                in_section && /^## \[/ { exit }
+                in_section { print }
+              ' CHANGELOG.md)
+              if [ -n "$CHANGELOG_SECTION" ]; then
+                echo ""
+                echo "$CHANGELOG_SECTION"
+              fi
+            fi
+          } > build/release-notes.md
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -181,17 +243,7 @@ jobs:
           # from the draft (manually or via a separate workflow) to trigger release.published.
           draft: ${{ steps.meta.outputs.prerelease == 'true' }}
           generate_release_notes: true
-          body: |
-            Automated Android APK build from tag.
-
-            - Tag: `${{ steps.meta.outputs.tag_name }}`
-            - Version: `${{ steps.meta.outputs.version }}`
-            - Channel: `${{ steps.meta.outputs.channel_label }}`
-            - Source branch policy: `${{ steps.meta.outputs.source_branch }}`
-            - Signing: `release keystore`
-            - Package: `APK only`
-            - Feedback: `GitHub Issues`
-            - Note: `debug` tags are internal alpha builds, published as GitHub prereleases for direct APK download
+          body_path: build/release-notes.md
           files: |
             build/${{ steps.meta.outputs.apk_name }}
 
