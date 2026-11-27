@@ -7,6 +7,7 @@ import 'package:onepanel_client/features/apps/app_service.dart';
 import 'package:onepanel_client/features/apps/installed_app_detail_page.dart';
 import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class _MockAppService extends Mock implements AppService {}
@@ -105,7 +106,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, strings.appConnInfo));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(TextPreviewSheet), findsOneWidget);
     expect(find.text(strings.appConnInfo), findsWidgets);
     expect(find.textContaining('"username": "root"'), findsOneWidget);
     expect(find.textContaining('"password": "secret"'), findsOneWidget);

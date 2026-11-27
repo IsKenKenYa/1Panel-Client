@@ -5,14 +5,13 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
 import 'package:onepanel_client/features/apps/providers/app_store_provider.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import 'package:onepanel_client/features/apps/widgets/app_icon.dart';
 import 'app_install_dialog.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class AppStoreView extends StatefulWidget {
   const AppStoreView({super.key});
 
@@ -32,7 +31,7 @@ class _AppStoreViewState extends State<AppStoreView> {
     'Tool',
     'Docker',
     'CI/CD',
-    'Monitoring'
+    'Monitoring',
   ];
 
   String _tagLabel(String key, AppLocalizations l10n) {
@@ -86,7 +85,10 @@ class _AppStoreViewState extends State<AppStoreView> {
       }
     } catch (e) {
       if (mounted) {
-        SnackBarUtils.showError(context, '${context.l10n.appStoreSyncFailed}: $e');
+        SnackBarUtils.showError(
+          context,
+          '${context.l10n.appStoreSyncFailed}: $e',
+        );
       }
     }
   }
@@ -176,45 +178,45 @@ class _AppStoreViewState extends State<AppStoreView> {
                 hasCachedData: provider.apps.isNotEmpty,
                 onRetry: () => _loadApps(refresh: true),
                 child: NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollInfo) {
-                  if (scrollInfo.metrics.pixels >=
-                          scrollInfo.metrics.maxScrollExtent - 200 &&
-                      !provider.isLoading &&
-                      provider.hasMore) {
-                    _loadApps(refresh: false);
-                  }
-                  return false;
-                },
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await _loadApps(refresh: true);
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 200 &&
+                        !provider.isLoading &&
+                        provider.hasMore) {
+                      _loadApps(refresh: false);
+                    }
+                    return false;
                   },
-                  child: GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 400,
-                      mainAxisExtent: 200,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount:
-                        provider.apps.length + (provider.hasMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == provider.apps.length) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      final app = provider.apps[index];
-                      return _buildAppCard(context, app, l10n);
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await _loadApps(refresh: true);
                     },
+                    child: GridView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 400,
+                            mainAxisExtent: 200,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                      itemCount:
+                          provider.apps.length + (provider.hasMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == provider.apps.length) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        final app = provider.apps[index];
+                        return _buildAppCard(context, app, l10n);
+                      },
+                    ),
                   ),
                 ),
-              ),
               );
             },
           ),
@@ -224,7 +226,10 @@ class _AppStoreViewState extends State<AppStoreView> {
   }
 
   Widget _buildAppCard(
-      BuildContext context, AppItem app, AppLocalizations l10n) {
+    BuildContext context,
+    AppItem app,
+    AppLocalizations l10n,
+  ) {
     return AppCard(
       title: app.name ?? '',
       leading: AppIcon(app: app, iconUrl: app.icon, size: 40),
@@ -263,17 +268,23 @@ class _AppStoreViewState extends State<AppStoreView> {
               child: Row(
                 children: app.tagNames
                     .take(3)
-                    .map((tag) => Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: Chip(
-                            label:
-                                Text(tag, style: const TextStyle(fontSize: 10)),
-                            visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
-                            padding: EdgeInsets.zero,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                    .map(
+                      (tag) => Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Chip(
+                          label: Text(
+                            tag,
+                            style: const TextStyle(fontSize: 10),
                           ),
-                        ))
+                          visualDensity: AdaptiveLayoutSpec.of(
+                            context,
+                          ).adaptiveDensity,
+                          padding: EdgeInsets.zero,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
             )
@@ -283,8 +294,8 @@ class _AppStoreViewState extends State<AppStoreView> {
 
   Future<void> _showInstallDialog(BuildContext context, AppItem app) async {
     final provider = this.context.read<AppStoreProvider>();
-    final result = await showDialog<bool>(
-      context: context,
+    final result = await showAdaptiveFormPanel<bool>(
+      context,
       builder: (context) => AppInstallDialog(app: app),
     );
 

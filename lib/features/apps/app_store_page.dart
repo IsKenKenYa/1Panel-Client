@@ -4,8 +4,10 @@ import 'package:onepanel_client/features/apps/providers/app_store_provider.dart'
 import 'package:onepanel_client/features/apps/widgets/app_store_view.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import '../../core/utils/snackbar_utils.dart';
+
 class AppStorePage extends StatelessWidget {
   const AppStorePage({super.key, this.provider});
 
@@ -76,52 +78,50 @@ class AppStorePage extends StatelessWidget {
       ignoredApps = await provider.loadIgnoredUpdates();
     } catch (e) {
       if (context.mounted) {
-        SnackBarUtils.showError(context, '${l10n.appIgnoredUpdatesLoadFailed}: $e');
+        SnackBarUtils.showError(
+          context,
+          '${l10n.appIgnoredUpdatesLoadFailed}: $e',
+        );
       }
       return;
     }
 
     if (!context.mounted) return;
 
-    await showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.appIgnoredUpdatesTitle),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ignoredApps.isEmpty
-                ? Center(child: Text(l10n.appIgnoredUpdatesEmpty))
-                : ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final app = ignoredApps[index];
-                      return ListTile(
-                        title: Text(app.name ?? '-'),
-                        subtitle: Text(app.version ?? '-'),
-                        trailing: TextButton(
-                          onPressed: () async {
-                            if (app.id == null) return;
-                            await provider.cancelIgnoreUpdate(app.id!);
-                            setState(() {
-                              ignoredApps.removeAt(index);
-                            });
-                          },
-                          child: Text(l10n.appIgnoreUpdateCancel),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: ignoredApps.length,
-                  ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.commonClose),
-            ),
-          ],
-        ),
+    await showAppFormSheet<void>(
+      context,
+      title: l10n.appIgnoredUpdatesTitle,
+      builder: (_) => StatefulBuilder(
+        builder: (sheetContext, setState) => ignoredApps.isEmpty
+            ? Center(
+                heightFactor: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(l10n.appIgnoredUpdatesEmpty),
+                ),
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+                itemBuilder: (context, index) {
+                  final app = ignoredApps[index];
+                  return ListTile(
+                    title: Text(app.name ?? '-'),
+                    subtitle: Text(app.version ?? '-'),
+                    trailing: TextButton(
+                      onPressed: () async {
+                        if (app.id == null) return;
+                        await provider.cancelIgnoreUpdate(app.id!);
+                        if (!sheetContext.mounted) return;
+                        setState(() => ignoredApps.remove(app));
+                      },
+                      child: Text(l10n.appIgnoreUpdateCancel),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: ignoredApps.length,
+              ),
       ),
     );
   }

@@ -7,8 +7,7 @@ import 'app_service.dart';
 import 'providers/app_store_provider.dart';
 import 'widgets/app_install_dialog.dart';
 import 'widgets/app_icon.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 class AppDetailPage extends StatefulWidget {
   final AppItem app;
@@ -35,7 +34,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
   Future<void> _loadDetail() async {
     try {
       final appService = context.read<AppService>();
-      
+
       // First, try to get app by key to fetch README content
       // This is more reliable than getAppDetail for display purposes
       try {
@@ -65,8 +64,9 @@ class _AppDetailPageState extends State<AppDetailPage> {
         if (mounted) {
           setState(() {
             // Merge detail info but keep the README from getAppByKey
-            final mergedReadMe =
-                (_readme?.isNotEmpty == true) ? _readme! : detail.readMe;
+            final mergedReadMe = (_readme?.isNotEmpty == true)
+                ? _readme!
+                : detail.readMe;
             _readme = mergedReadMe;
             _app = AppItem(
               description: detail.description ?? _app.description,
@@ -117,28 +117,30 @@ class _AppDetailPageState extends State<AppDetailPage> {
   /// 格式化错误信息,使其更友好
   String _formatError(Object error) {
     final errorStr = error.toString();
-    
+
     // 处理 docker-compose.yml 获取失败的错误
-    if (errorStr.contains('docker-compose.yml') && 
+    if (errorStr.contains('docker-compose.yml') &&
         errorStr.contains('unsupported protocol scheme')) {
       return '部分应用配置信息暂时无法获取，但不影响查看应用介绍。这是服务端数据问题，请联系管理员检查应用商店配置。';
     }
-    
+
     // 处理其他常见错误
     if (errorStr.contains('DioException')) {
       // 提取 message 部分
-      final messageMatch = RegExp(r'message:\s*(.+?)(?:,|$)').firstMatch(errorStr);
+      final messageMatch = RegExp(
+        r'message:\s*(.+?)(?:,|$)',
+      ).firstMatch(errorStr);
       if (messageMatch != null) {
         return messageMatch.group(1)?.trim() ?? errorStr;
       }
     }
-    
+
     return errorStr;
   }
 
   Future<void> _showInstallDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
+    final result = await showAdaptiveFormPanel<bool>(
+      context,
       builder: (context) => AppInstallDialog(app: _app),
     );
 
@@ -176,9 +178,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(_app.name ?? l10n.appStoreTitle),
-      ),
+      appBar: AppBar(title: Text(_app.name ?? l10n.appStoreTitle)),
       body: _buildBody(context, theme),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -231,32 +231,29 @@ class _AppDetailPageState extends State<AppDetailPage> {
         _loadDetail();
       },
       child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context, theme),
-          const SizedBox(height: 24),
-          Text(
-            l10n.appDescription,
-            style: theme.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          if (hasReadme)
-            MarkdownBody(
-              data: _readme!,
-              styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                p: theme.textTheme.bodyMedium,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context, theme),
+            const SizedBox(height: 24),
+            Text(l10n.appDescription, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 8),
+            if (hasReadme)
+              MarkdownBody(
+                data: _readme!,
+                styleSheet: MarkdownStyleSheet.fromTheme(
+                  theme,
+                ).copyWith(p: theme.textTheme.bodyMedium),
+              )
+            else
+              Text(
+                _app.description ?? context.l10n.commonEmpty,
+                style: theme.textTheme.bodyMedium,
               ),
-            )
-          else
-            Text(
-              _app.description ?? context.l10n.commonEmpty,
-              style: theme.textTheme.bodyMedium,
-            ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -279,8 +276,10 @@ class _AppDetailPageState extends State<AppDetailPage> {
               const SizedBox(height: 4),
               if (_app.versions != null && _app.versions!.isNotEmpty)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(4),

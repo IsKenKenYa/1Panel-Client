@@ -7,6 +7,7 @@ import '../app_service.dart';
 import '../../../core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 class AppInstallDialog extends StatefulWidget {
   final AppItem app;
 
@@ -228,9 +229,11 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AlertDialog.adaptive(
-      title: Text('${l10n.appStoreInstall} ${widget.app.name}'),
-      scrollable: true,
+    return AppFormPanel(
+      title: '${l10n.appStoreInstall} ${widget.app.name}',
+      isSaving: _isLoading || _isCheckingVersion,
+      confirmLabel: l10n.commonConfirm,
+      onConfirm: _handleSubmit,
       content: SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,  // Reasonable width for desktop/tablet
         child: Form(
           key: _formKey,
@@ -333,25 +336,6 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: (_isLoading || _isCheckingVersion) ? null : _handleSubmit,
-          child: _isLoading
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                )
-              : Text(l10n.commonConfirm),
-        ),
-      ],
     );
   }
 

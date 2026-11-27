@@ -64,7 +64,7 @@ void main() {
     await tester.tap(find.text('Ignored Updates').last);
     await tester.pumpAndSettle();
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(BottomSheet), findsOneWidget);
     expect(find.text('mysql'), findsOneWidget);
 
     await tester.tap(find.text('Cancel Ignore'));

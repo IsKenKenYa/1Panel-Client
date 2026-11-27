@@ -110,12 +110,12 @@ void main() {
     );
     await tester.tap(find.widgetWithText(FilledButton, l10n.appConnInfo));
     await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(BottomSheet), findsOneWidget);
 
-    await tester.tap(find.text(l10n.commonClose));
+    await tester.tap(find.byTooltip(l10n.commonClose));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.byType(BottomSheet), findsNothing);
     expect(find.byType(InstalledAppDetailPage), findsOneWidget);
   });
 }

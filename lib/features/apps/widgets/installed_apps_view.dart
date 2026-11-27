@@ -9,11 +9,10 @@ import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import '../../../data/models/app_models.dart';
 import '../providers/installed_apps_provider.dart';
 import 'installed_app_card.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
-import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class InstalledAppsView extends StatefulWidget {
   const InstalledAppsView({super.key});
 
@@ -53,43 +52,24 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
         : '\n\n${const JsonEncoder.withIndent('  ').convert(checkResult)}';
 
     if (!mounted) return;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.appActionUninstall),
-          content: SingleChildScrollView(
-            child: SelectableText('${l10n.appUninstallConfirm}$checkText'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                try {
-                  await provider.uninstallApp(app.id.toString());
-                  if (mounted) {
-                    SnackBarUtils.showSuccess(this.context, l10n.appOperateSuccess);
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    SnackBarUtils.showError(this.context, l10n.appOperateFailed(e.toString()),
-                    );
-                  }
-                }
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(l10n.appActionUninstall),
-            ),
-          ],
-        );
-      },
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.appActionUninstall,
+      message: '${l10n.appUninstallConfirm}$checkText',
+      confirmLabel: l10n.appActionUninstall,
+      isDestructive: true,
     );
+    if (!confirmed || !mounted) return;
+    try {
+      await provider.uninstallApp(app.id.toString());
+      if (mounted) {
+        SnackBarUtils.showSuccess(context, l10n.appOperateSuccess);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackBarUtils.showError(context, l10n.appOperateFailed(e.toString()));
+      }
+    }
   }
 
   Future<void> _handleOperate(String id, String operation) async {
@@ -101,8 +81,7 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
       }
     } catch (e) {
       if (mounted) {
-        SnackBarUtils.showError(context, l10n.appOperateFailed(e.toString()),
-        );
+        SnackBarUtils.showError(context, l10n.appOperateFailed(e.toString()));
       }
     }
   }
@@ -131,23 +110,23 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           hasCachedData: provider.installedApps.isNotEmpty,
           onRetry: _handleRefresh,
           child: RefreshIndicator(
-          onRefresh: _handleRefresh,
-          child: ListView.separated(
-            padding: AppDesignTokens.cardPadding,
-            itemCount: provider.installedApps.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final app = provider.installedApps[index];
-              return InstalledAppCard(
-                app: app,
-                onStart: () => _handleOperate(app.id.toString(), 'start'),
-                onStop: () => _handleOperate(app.id.toString(), 'stop'),
-                onRestart: () => _handleOperate(app.id.toString(), 'restart'),
-                onUninstall: () => _showUninstallDialog(app),
-              );
-            },
+            onRefresh: _handleRefresh,
+            child: ListView.separated(
+              padding: AppDesignTokens.cardPadding,
+              itemCount: provider.installedApps.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final app = provider.installedApps[index];
+                return InstalledAppCard(
+                  app: app,
+                  onStart: () => _handleOperate(app.id.toString(), 'start'),
+                  onStop: () => _handleOperate(app.id.toString(), 'stop'),
+                  onRestart: () => _handleOperate(app.id.toString(), 'restart'),
+                  onUninstall: () => _showUninstallDialog(app),
+                );
+              },
+            ),
           ),
-        ),
         );
       },
     );
