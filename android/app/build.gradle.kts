@@ -62,6 +62,9 @@ android {
 
     signingConfigs {
         create("release") {
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
             if (hasReleaseSigning) {
                 keyAlias = releaseKeyAlias
                 keyPassword = releaseKeyPassword
